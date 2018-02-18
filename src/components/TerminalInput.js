@@ -26,7 +26,7 @@ class TerminalInput extends Component {
 
   handleSubmit (e) {
     e.preventDefault()
-    this.props.handleSubmit(this.state.value)
+    this.props.handleSubmit(this.state.value.trim())
     this.setState({ value: '' })
   }
 

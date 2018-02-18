@@ -9,8 +9,11 @@ class Terminal extends Component {
     this.state = {
       history: [
         {
+          output: makeOutput('intro')
+        },
+        {
           output: makeOutput('help')
-        }
+        },
       ]
     }
     this.handleSubmit = this.handleSubmit.bind(this)
