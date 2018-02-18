@@ -1,7 +1,6 @@
 import reducer from './reducer.js'
 import actions from './../actions/actions.js'
 import initialState from './../store/initialState.js'
-import makeOutput from './../utils/makeOutput.js'
 
 describe('actions.inputTerminalCommand', () => {
   test('clear', () => {
@@ -22,7 +21,42 @@ describe('actions.inputTerminalCommand', () => {
         ...before.terminalHistory,
         {
           input: command,
-          output: makeOutput(command)
+          output: [
+            '<div>Enter <em>clear</em> to clear the screen.</div>',
+            '<div>Enter <em>edit my-game</em> to open <em>my-game</em> in the game editor.</div>',
+            '<div>Enter <em>help</em> for help.</div>'
+          ].join('')
+        }
+      ]
+    })
+  })
+  test('edit', () => {
+    const command = 'edit'
+    const before = initialState
+    const action = actions.inputTerminalCommand(command)
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      terminalHistory: [
+        ...before.terminalHistory,
+        {
+          input: command,
+          output:
+            'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
+        }
+      ]
+    })
+  })
+  test('edit my-game', () => {
+    const command = 'edit my-game'
+    const before = initialState
+    const action = actions.inputTerminalCommand(command)
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      terminalHistory: [
+        ...before.terminalHistory,
+        {
+          input: command,
+          output: ''
         }
       ]
     })
@@ -37,7 +71,8 @@ describe('actions.inputTerminalCommand', () => {
         ...before.terminalHistory,
         {
           input: command,
-          output: makeOutput(command)
+          output:
+            "<span class='error'>I did not understand that command.</span>"
         }
       ]
     })

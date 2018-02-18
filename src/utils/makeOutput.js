@@ -1,19 +1,11 @@
-const commands = {
-  clear: { description: 'Enter <em>clear</em> to clear the screen.' },
-  help: { description: 'Enter <em>help</em> for help.' }
-}
-
-commands.help.output = () =>
-  Object.values(commands)
-    .map(d => `<div>${d.description}</div>`)
-    .join('')
+import commands from './commands.js'
 
 const errorOutput =
   "<span class='error'>I did not understand that command.</span>"
 
 const makeOutput = input => {
   // Find the right command.
-  const command = commands[input]
+  const command = commands.find(input)
 
   let output
 
