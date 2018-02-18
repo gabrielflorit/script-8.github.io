@@ -16,10 +16,10 @@ const mapDispatchToProps = dispatch => ({
 const Editor = ({ game, onUpdate }) => (
   <div className='Editor'>
     <CodeEditor onUpdate={onUpdate} />
+    <Output game={game} />
   </div>
 )
 
-    // <Output game={game} />
 
 Editor.propTypes = {
   game: PropTypes.string,

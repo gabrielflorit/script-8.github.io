@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      body { background: black; }
+      body { background: #08141e; }
       canvas {
         margin: 1em auto;
         display: block;
-        background: #815ba4;
+        background: #0f2a3f;
+        image-rendering: pixelated;
       }
       * { box-sizing: border-box; }
       body {
@@ -25,20 +26,32 @@
     <script>
       const canvas = document.querySelector('canvas')
       const ctx = canvas.getContext('2d')
+      ctx.imageSmoothingEnabled = false
 
       // Set display size (css pixels).
-      const size = 256
-      canvas.style.width = size + 'px'
-      canvas.style.height = size + 'px'
+      const size = 128
+      canvas.style.width = (size * 4) + 'px'
+      canvas.style.height = (size * 4) + 'px'
 
-      // Set actual size in memory (scaled to account for extra pixel density).
-      // <--- Change to 1 on retina screens to see blurry canvas.
-      const scale = window.devicePixelRatio
-      canvas.width = size * scale
-      canvas.height = size * scale
+      canvas.width = size
+      canvas.height = size
 
-      // Normalize coordinate system to use css pixels.
-      ctx.scale(scale, scale)
+      // // Normalize coordinate system to use css pixels.
+      // ctx.scale(scale, scale)
+
+      // // Set display size (css pixels).
+      // const size = 256
+      // canvas.style.width = size + 'px'
+      // canvas.style.height = size + 'px'
+
+      // // Set actual size in memory (scaled to account for extra pixel density).
+      // // Change to 1 on retina screens to see blurry canvas.
+      // const scale = window.devicePixelRatio
+      // canvas.width = size * scale
+      // canvas.height = size * scale
+
+      // // Normalize coordinate system to use css pixels.
+      // ctx.scale(scale, scale)
 
       const arrowUp = () => keys.has('ArrowUp')
       const arrowRight = () => keys.has('ArrowRight')
@@ -76,11 +89,13 @@
             const func = new Function(javascriptString)
             func()
             clear()
-            const iterations = [...new Array(70)]
-            iterations.forEach(() => {
-              update && update()
-              draw && draw()
-            })
+            update()
+            draw()
+            // const iterations = [...new Array(70)]
+            // iterations.forEach(() => {
+            //   update && update()
+            //   draw && draw()
+            // })
 
           }
           catch(e) {}

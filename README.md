@@ -1,11 +1,10 @@
 # gametron
 
-### wishlist
+### roadmap
 
-- overall design
-  - gameboy palette?
-  - nyt 8 palette?
+- figure out overall size
+  - also figure out how to size the canvas, can we use scale smartly?
 
 - saving
-- JS api
+- JS api must restrict colors also
 - run game
