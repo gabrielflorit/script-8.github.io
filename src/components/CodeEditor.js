@@ -6,7 +6,7 @@ class CodeEditor extends Component {
   componentDidMount () {
     setupLinter()
     const codeMirror = window.CodeMirror(this._editor, {
-      value: this.props.game,
+      value: this.props.game || '',
       mode: 'javascript',
       theme: 'nyx8',
       lint: true
@@ -19,8 +19,10 @@ class CodeEditor extends Component {
       this.props.onUpdate(content)
     })
 
+    // This timeout is to force CodeMirror to set
+    // its layout correctly, so it knows how to draw cursors.
     setTimeout(() => {
-      codeMirror.setValue(this.props.game)
+      codeMirror.setValue(this.props.game || '')
     }, 1000)
   }
 
