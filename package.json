@@ -1,6 +1,6 @@
 {
   "name": "script-8",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "acorn": "^5.4.1",
@@ -14,7 +14,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1"
   },
-  "homepage" : "http://script-8.github.io",
+  "homepage": "http://script-8.github.io",
   "scripts": {
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
