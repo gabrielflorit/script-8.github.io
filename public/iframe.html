@@ -8,7 +8,6 @@
       canvas {
         margin: 1em auto;
         display: block;
-        background: #2f1e2e;
         background: #815ba4;
       }
       * { box-sizing: border-box; }
@@ -19,19 +18,68 @@
       }
     </style>
     <title></title>
+
+  </head>
+  <body>
+    <canvas></canvas>
     <script>
+      const canvas = document.querySelector('canvas')
+      const ctx = canvas.getContext('2d')
+
+      // Set display size (css pixels).
+      const size = 256
+      canvas.style.width = size + 'px'
+      canvas.style.height = size + 'px'
+
+      // Set actual size in memory (scaled to account for extra pixel density).
+      // <--- Change to 1 on retina screens to see blurry canvas.
+      const scale = window.devicePixelRatio
+      canvas.width = size * scale
+      canvas.height = size * scale
+
+      // Normalize coordinate system to use css pixels.
+      ctx.scale(scale, scale)
+
+      const arrowUp = () => keys.has('ArrowUp')
+      const arrowRight = () => keys.has('ArrowRight')
+      const arrowDown = () => keys.has('ArrowDown')
+      const arrowLeft = () => keys.has('ArrowLeft')
+
+      let keys = new Set()
+
+      document.addEventListener('keydown', function (e) {
+        const keyName = event.key
+        keys.add(keyName)
+        console.log(keys)
+      }, )
+
+      document.addEventListener('keyup', function (e) {
+        const keyName = event.key
+        keys.delete(keyName)
+        console.log(keys)
+      }, )
+
+      const clear = function () {
+        ctx.clearRect(0, 0, size, size)
+      }
+
+      let update = function () {}
+      let draw = function () {}
+
+      setInterval(function () {
+        update && update()
+        clear()
+        draw && draw()
+      }, 1000/30)
+
       window.gametron = {
         callCode: function(javascriptString) {
           try {
-            var func = new Function(javascriptString);
-            func();
+            const func = new Function(javascriptString)
+            func()
           }
           catch(e) {}
         }
-      };
-    </script>
-  </head>
-  <body>
-    <canvas id='canvas_1' width=256 height=256></canvas>
-  </body>
+      }
+    </script>  </body>
 </html>

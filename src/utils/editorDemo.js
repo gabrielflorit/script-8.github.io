@@ -1,22 +1,61 @@
-const demo = `const drawCar = ({ car, g, getCoords }) => {
-  const data = [car].map(d => getCoords({ pct: d.measures.slice(-1)[0].pct }))
+const demo = `
 
-  const triangles = g.selectAll('path.car').data(data)
+padx=52 * 2
+pady=122 * 2
+padw=24 * 2
+padh=4 * 2
+ballx=64 * 2
+bally=64 * 2
+ballsize=3 * 2
+ballxdir=5 * 2
+ballydir=-3 * 2
 
-  triangles
-    .enter()
-    .append('path')
-    .attr('class', 'car')
-    .attr('d', d =>
-      d3
-        .symbol()
-        .type(d3.symbolTriangle)
-        .size(100)()
-    )
-    .merge(triangles)
-
-  triangles.exit().remove()
+moveball = function () {
+  ballx += ballxdir
+  bally += ballydir
 }
+
+bounceball = function() {
+  if (ballx < ballsize) ballxdir = -ballxdir
+  if (ballx > 256 - ballsize) ballxdir = -ballxdir
+  if (bally < ballsize) ballydir = -ballydir
+}
+
+movepaddle = function () {
+  if (arrowLeft()) padx -= 3
+  if (arrowRight()) padx += 3
+}
+
+bouncepaddle = function () {
+  if (ballx >= padx &&
+      ballx <= (padx + padw) &&
+      bally > pady) {
+    ballydir =- ballydir
+  }
+}
+
+losedeadball = function () {
+  if (bally > 256) bally = 48
+}
+
+update = function () {
+  movepaddle()
+  moveball()
+  bounceball()
+  bouncepaddle()
+  losedeadball()
+}
+
+draw = function () {
+  ctx.fillStyle = 'white'
+  ctx.fillRect(padx, pady, padw, padh)
+
+  ctx.beginPath()
+  ctx.fillStyle = 'red'
+  ctx.arc(ballx, bally, ballsize, 0, Math.PI * 2)
+  ctx.fill()
+}
+
 `
 
 export default demo

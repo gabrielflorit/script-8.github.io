@@ -8,10 +8,10 @@ class CodeEditor extends Component {
     setupLinter()
     const codeMirror = window.CodeMirror(this._editor, {
       mode: 'javascript',
-      theme: 'paraiso-dark'
-      // lineNumbers: true,
-      // lint: true,
-      // gutters: ['CodeMirror-lint-markers']
+      theme: 'paraiso-dark',
+      lineNumbers: true,
+      lint: true,
+      gutters: ['CodeMirror-lint-markers']
     })
 
     codeMirror.on('change', cm => {
