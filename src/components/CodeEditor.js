@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import demo from '../utils/editorDemo.js'
 
 class CodeEditor extends Component {
   cm: null
 
   componentDidMount () {
     this.cm = window.CodeMirror(this._editor, {
-      value: 'const square = x => x * x\n',
+      value: demo,
       mode: 'javascript',
       theme: 'paraiso-dark'
     })
