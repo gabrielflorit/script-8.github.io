@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
 
-// const addBlock = s => s
-// // s.replace('█', '').replace(/$/, '█')
-
-// const removeBlock = s => s
-//   // s.replace('█', '')
-
 class TerminalInput extends Component {
   constructor (props) {
     super(props)
@@ -40,7 +34,7 @@ class TerminalInput extends Component {
     return (
       <div className='TerminalInput'>
         <div className='display'>
-          <span>>{this.state.value}</span>
+          <span>> {this.state.value}</span>
           <span className={'caret ' + (this.props.input ? 'hide' : 'show')}>■</span>
         </div>
         <form onSubmit={this.handleSubmit}>

@@ -8,21 +8,20 @@ class Terminal extends Component {
     this.state = {
       history: [
         {
-          input: 'help',
-          output: 'type help for help'
+          output: 'type <em>help</em> for help'
         }
       ]
     }
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  handleSubmit (s) {
+  handleSubmit (input) {
     this.setState({
       history: [
         ...this.state.history,
         {
-          input: s,
-          output: 'type help for help'
+          input,
+          output: 'type <em>help</em> for help'
         }
       ]
     })
