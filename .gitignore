@@ -1,4 +1,5 @@
 node_modules
+build
 src/css/App.css
 
 .DS_Store
