@@ -1,6 +1,4 @@
-const demo = `
-
-padx=52 * 2
+const demo = `padx=52 * 2
 pady=122 * 2
 padw=24 * 2
 padh=4 * 2
@@ -59,3 +57,75 @@ draw = function () {
 `
 
 export default demo
+
+
+
+
+
+
+
+
+
+
+
+// const demo = `import createPathAnchors from './createPathAnchors.js'
+
+// const { parkPrepareFactor, parkingStaggerDelay } = dimensions
+
+// const animate = ({ mode, names, onFinish, racers, svgOptions }) => {
+//   // Choose models from names.
+//   const competitors = racers.filter(d => names.indexOf(d.name) !== -1)
+
+//   const anchors = competitors.map((competitor, i) =>
+//     createPathAnchors[mode]({
+//       parkPosition: competitor.parkPosition
+//     })
+//   )
+
+//   const { compoundLength } = svgOptions
+
+//   // Create the animations.
+//   let animationsFinished = 0
+//   const animations = paths
+//     .map((path, i) =>
+//       createAnimation({
+//         coords: path.coords,
+//         racer: competitors[i],
+//         duration:
+//           mode === 'race'
+//             ? competitors[i].duration
+//             : parkPrepareFactor * path.totalLength / compoundLength,
+//         onFinishCallback () {
+//           animationsFinished++
+//           if (animationsFinished === paths.length) {
+//             onFinish && onFinish()
+//           }
+//         }
+//       })
+//     )
+//     .reverse()
+
+//   // Start the animations,
+//   animations.forEach((animation, i) => {
+//     // but if we're not racing, don't start them both at the same time.
+//     const delay =
+//       mode === 'race'
+//         ? 0
+//         : mode === 'prepare'
+//           ? i * parkingStaggerDelay / 2
+//           : i * parkingStaggerDelay * 2
+
+//     timerManager.timeout(() => {
+//       animation.stop()
+//       animation.start()
+//     }, delay)
+//   })
+// }
+
+// export default animate
+// `
+
+
+
+
+

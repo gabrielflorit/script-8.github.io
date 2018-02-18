@@ -1,27 +1,21 @@
-/*
+$cm-line-selection   = red
+$cm-guttesr-subtles  = red
+$cm-active-line      = red
+$cm-matching-bracket = red
 
-    Name:       Paraíso (Dark)
-    Author:     Jan T. Sott
+$cm-background       = $palette-8 // background
+$cm-selected         = $palette-7 // selected
+$cm-comment          = $palette-5 // comment
+$cm-foreground       = $palette-5 // punctuation bits
+$cm-cursor           = $palette-3 // cursor
+$cm-keyword          = $palette-4 // const
 
-    Color scheme by Jan T. Sott (https://github.com/idleberg/Paraiso-CodeMirror)
-    Inspired by the art of Rubens LP (http://www.rubenslp.com.br)
+$cm-string           = $palette-4 // string
+$cm-number           = $palette-1 // number
 
-*/
-$cm-background       = #2f1e2e
-$cm-foreground       = #b9b6b0
-$cm-selected         = #41323f
-$cm-line-selection   = rgba(65, 50, 63, .99)
-$cm-gutter           = #ef6155
-$cm-gutter-subtle    = #776e71
-$cm-cursor           = #8d8687
-$cm-comment          = #e96ba8
-$cm-atom             = #815ba4
-$cm-property         = #48b685
-$cm-string           = #fec418
-$cm-variable-2       = #06b6ef
-$cm-def              = #f99b15
-$cm-active-line      = #4D344A
-$cm-matching-bracket = #ffffff
+$cm-property         = $palette-2 // createPathAnchors
+$cm-property-2       = $palette-3 // svgOptions
+$cm-object           = $palette-1 // createPathAnchors inside braces
 
 .cm-s-paraiso-dark.CodeMirror
   background: $cm-background
@@ -45,13 +39,13 @@ $cm-matching-bracket = #ffffff
   border-right: 0px
 
 .cm-s-paraiso-dark .CodeMirror-guttermarker
-  color: $cm-gutter
+  color: $cm-keyword
 
 .cm-s-paraiso-dark .CodeMirror-guttermarker-subtle
-  color: $cm-gutter-subtle
+  color: $cm-guttesr-subtles
 
 .cm-s-paraiso-dark .CodeMirror-linenumber
-  color: $cm-gutter-subtle
+  color: $cm-guttesr-subtles
 
 .cm-s-paraiso-dark .CodeMirror-cursor
   border-left: 1px solid $cm-cursor
@@ -60,17 +54,17 @@ $cm-matching-bracket = #ffffff
   color: $cm-comment
 
 .cm-s-paraiso-dark span.cm-atom
-  color: $cm-atom
+  color: $cm-number
 
 .cm-s-paraiso-dark span.cm-number
-  color: $cm-atom
+  color: $cm-number
 
 .cm-s-paraiso-dark span.cm-property,
 .cm-s-paraiso-dark span.cm-attribute
   color: $cm-property
 
 .cm-s-paraiso-dark span.cm-keyword
-  color: $cm-gutter
+  color: $cm-keyword
 
 .cm-s-paraiso-dark span.cm-string
   color: $cm-string
@@ -79,22 +73,22 @@ $cm-matching-bracket = #ffffff
   color: $cm-property
 
 .cm-s-paraiso-dark span.cm-variable-2
-  color: $cm-variable-2
+  color: $cm-property-2
 
 .cm-s-paraiso-dark span.cm-def
-  color: $cm-def
+  color: $cm-object
 
 .cm-s-paraiso-dark span.cm-bracket
   color: $cm-foreground
 
 .cm-s-paraiso-dark span.cm-tag
-  color: $cm-gutter
+  color: $cm-keyword
 
 .cm-s-paraiso-dark span.cm-link
-  color: $cm-atom
+  color: $cm-number
 
 .cm-s-paraiso-dark span.cm-error
-  background: $cm-gutter
+  background: $cm-keyword
   color: $cm-cursor
 
 .cm-s-paraiso-dark .CodeMirror-activeline-background

@@ -50,13 +50,11 @@
       document.addEventListener('keydown', function (e) {
         const keyName = event.key
         keys.add(keyName)
-        console.log(keys)
       }, )
 
       document.addEventListener('keyup', function (e) {
         const keyName = event.key
         keys.delete(keyName)
-        console.log(keys)
       }, )
 
       const clear = function () {
@@ -66,17 +64,24 @@
       let update = function () {}
       let draw = function () {}
 
-      setInterval(function () {
-        update && update()
-        clear()
-        draw && draw()
-      }, 1000/30)
+      // setInterval(function () {
+      //   update && update()
+      //   clear()
+      //   draw && draw()
+      // }, 1000/30)
 
       window.gametron = {
         callCode: function(javascriptString) {
           try {
             const func = new Function(javascriptString)
             func()
+            clear()
+            const iterations = [...new Array(70)]
+            iterations.forEach(() => {
+              update && update()
+              draw && draw()
+            })
+
           }
           catch(e) {}
         }

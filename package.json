@@ -18,7 +18,6 @@
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
-    "startx": "npm-run-all -p watch-css start-js",
     "start": "npm-run-all -p start-js",
     "build-js": "react-scripts build",
     "buildx": "npm-run-all build-css build-js",
