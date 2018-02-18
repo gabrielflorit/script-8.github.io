@@ -5,16 +5,17 @@ const list = [
     description: 'Enter <em>clear</em> to clear the screen.'
   },
   {
-    regex: /^edit (.*)$/,
+    // regex: /^edit (.*)$/,
+    regex: /^edit$/,
     name: 'edit',
     description:
-      'Enter <em>edit my-game</em> to open <em>my-game</em> in the game editor.'
+      'Enter <em>edit</em> to open the game editor.'
   },
-  {
-    regex: /^edit$/,
-    output: () =>
-      'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
-  },
+  // {
+  //   regex: /^edit$/,
+  //   output: () =>
+  //     'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
+  // },
   {
     regex: /^help$/,
     description: 'Enter <em>help</em> for help.'

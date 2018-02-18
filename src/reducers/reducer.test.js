@@ -23,7 +23,7 @@ describe('actions.inputTerminalCommand', () => {
           input: command,
           output: [
             '<div>Enter <em>clear</em> to clear the screen.</div>',
-            '<div>Enter <em>edit my-game</em> to open <em>my-game</em> in the game editor.</div>',
+            '<div>Enter <em>edit</em> to open the game editor.</div>',
             '<div>Enter <em>help</em> for help.</div>'
           ].join('')
         }
@@ -41,29 +41,30 @@ describe('actions.inputTerminalCommand', () => {
         {
           input: command,
           output:
-            'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
+            // 'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
+            ''
         }
       ]
     })
   })
-  test('edit my-game', () => {
-    const command = 'edit my-game'
-    const before = initialState
-    const action = actions.inputTerminalCommand(command)
-    expect(reducer(before, action)).toEqual({
-      ...before,
-      game: {
-        name: 'my-game'
-      },
-      terminalHistory: [
-        ...before.terminalHistory,
-        {
-          input: command,
-          output: ''
-        }
-      ]
-    })
-  })
+  // test('edit my-game', () => {
+  //   const command = 'edit my-game'
+  //   const before = initialState
+  //   const action = actions.inputTerminalCommand(command)
+  //   expect(reducer(before, action)).toEqual({
+  //     ...before,
+  //     game: {
+  //       name: 'my-game'
+  //     },
+  //     terminalHistory: [
+  //       ...before.terminalHistory,
+  //       {
+  //         input: command,
+  //         output: ''
+  //       }
+  //     ]
+  //   })
+  // })
   test('yo', () => {
     const command = 'yo'
     const before = initialState
