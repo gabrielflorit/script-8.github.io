@@ -64,7 +64,7 @@ class TerminalInput extends Component {
 
 TerminalInput.propTypes = {
   input: PropTypes.string,
-  onInput: PropTypes.func.isRequired
+  onInput: PropTypes.func
 }
 
 export default TerminalInput
