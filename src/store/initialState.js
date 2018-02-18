@@ -8,8 +8,8 @@ const initialState = {
     {
       output: makeOutput('help')
     }
-  ]
-  // game: {}
+  ],
+  game: null
 }
 
 export default initialState

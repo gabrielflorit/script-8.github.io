@@ -5,8 +5,8 @@ import TerminalHistory from '../components/TerminalHistory.js'
 import TerminalInput from '../components/TerminalInput.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = state => ({
-  terminalHistory: state.terminalHistory
+const mapStateToProps = ({ terminalHistory}) => ({
+  terminalHistory
 })
 
 const mapDispatchToProps = (dispatch, props) => ({

@@ -13,7 +13,8 @@ const actions = createActions({
 
     return input
   },
-  [actionTypes.CLEAR_TERMINAL]: () => {}
+  [actionTypes.CLEAR_TERMINAL]: () => {},
+  [actionTypes.UPDATE_GAME]: game => game
 })
 
 export default actions

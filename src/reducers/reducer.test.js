@@ -47,24 +47,6 @@ describe('actions.inputTerminalCommand', () => {
       ]
     })
   })
-  // test('edit my-game', () => {
-  //   const command = 'edit my-game'
-  //   const before = initialState
-  //   const action = actions.inputTerminalCommand(command)
-  //   expect(reducer(before, action)).toEqual({
-  //     ...before,
-  //     game: {
-  //       name: 'my-game'
-  //     },
-  //     terminalHistory: [
-  //       ...before.terminalHistory,
-  //       {
-  //         input: command,
-  //         output: ''
-  //       }
-  //     ]
-  //   })
-  // })
   test('yo', () => {
     const command = 'yo'
     const before = initialState
@@ -92,5 +74,16 @@ test('actions.clearTerminal', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     terminalHistory: []
+  })
+})
+
+test('actions.updateGame', () => {
+  const before = {
+    ...initialState
+  }
+  const action = actions.updateGame('one two three')
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    game: 'one two three'
   })
 })
