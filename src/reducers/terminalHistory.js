@@ -1,8 +1,8 @@
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from './../store/initialState.js'
-import makeOutput from './../utils/makeOutput.js'
-import commands from './../utils/commands.js'
+import initialState from '../store/initialState.js'
+import makeOutput from '../utils/makeOutput.js'
+import commands from '../utils/commands.js'
 
 const terminalHistory = handleActions(
   {

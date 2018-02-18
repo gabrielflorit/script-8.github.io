@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from './../store/initialState.js'
-import commands from './../utils/commands.js'
+import initialState from '../store/initialState.js'
+import commands from '../utils/commands.js'
 
 const game = handleActions(
   {

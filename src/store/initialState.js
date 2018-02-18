@@ -1,4 +1,4 @@
-import makeOutput from './../utils/makeOutput.js'
+import makeOutput from '../utils/makeOutput.js'
 
 const initialState = {
   terminalHistory: [
