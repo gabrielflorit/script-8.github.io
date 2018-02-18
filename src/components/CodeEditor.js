@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import demo from '../utils/editorDemo.js'
+import setupLinter from '../utils/setupLinter.js'
 
 class CodeEditor extends Component {
-  cm: null
-
   componentDidMount () {
-    this.cm = window.CodeMirror(this._editor, {
+    setupLinter()
+    window.CodeMirror(this._editor, {
       value: demo,
       mode: 'javascript',
-      theme: 'paraiso-dark'
+      theme: 'paraiso-dark',
+      lineNumbers: true,
+      lint: true,
+      gutters: ['CodeMirror-lint-markers']
     })
   }
 
@@ -22,7 +25,6 @@ class CodeEditor extends Component {
             this._editor = _editor
           }}
         />
-        this is the code editor
       </div>
     )
   }

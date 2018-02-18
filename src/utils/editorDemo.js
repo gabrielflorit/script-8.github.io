@@ -17,8 +17,6 @@ const demo = `const drawCar = ({ car, g, getCoords }) => {
 
   triangles.exit().remove()
 }
-
-export default drawCar
 `
 
 export default demo
