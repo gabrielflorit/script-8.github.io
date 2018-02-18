@@ -1,0 +1,25 @@
+.TerminalInput
+  position relative
+  border solid white 1px
+  margin 0.5em 0
+  &:before
+    position absolute
+    top 0
+    left -0.5em
+    content '>'
+    color $terminal-text-bright
+    opacity 0.5
+  input
+    border none
+    background none
+    color $terminal-text-bright
+    @extend .VT323
+    font-size 1em
+    width 30%
+    caret-color transparent
+    
+    &.prompt
+      opacity
+
+    &:focus
+      outline none
