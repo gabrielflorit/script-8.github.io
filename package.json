@@ -18,10 +18,9 @@
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p start-js",
+    "start": "npm-run-all -p start-js watch-css",
     "build-js": "react-scripts build",
-    "buildx": "npm-run-all build-css build-js",
-    "build": "npm-run-all build-js",
+    "build": "npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
