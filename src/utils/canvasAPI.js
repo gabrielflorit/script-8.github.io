@@ -1,6 +1,5 @@
 import colors from './colors.js'
-import strokeCircle from './strokeCircle.js'
-import fillCircle from './fillCircle.js'
+import circle from './circle.js'
 
 const canvasAPI = ({ ctx, size }) => ({
   strokeRect (x, y, w, h, c) {
@@ -19,17 +18,18 @@ const canvasAPI = ({ ctx, size }) => ({
   },
 
   strokeCirc (x, y, r, c) {
-    strokeCircle({
+    circle({
       cx: Math.floor(x),
       cy: Math.floor(y),
       radius: Math.floor(r),
       ctx,
-      color: colors.one(c)
+      color: colors.one(c),
+      onlyStroke: true
     })
   },
 
   fillCirc (x, y, r, c) {
-    fillCircle({
+    circle({
       cx: Math.floor(x),
       cy: Math.floor(y),
       radius: Math.floor(r),
