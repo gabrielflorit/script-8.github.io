@@ -35,7 +35,9 @@ class TerminalInput extends Component {
       <div className='TerminalInput'>
         <div className='display'>
           <span>> {this.state.value}</span>
-          <span className={'caret ' + (this.props.input ? 'hide' : 'show')}>■</span>
+          <span className={'caret ' + (this.props.input ? 'hide' : 'show')}>
+            ■
+          </span>
         </div>
         <form onSubmit={this.handleSubmit}>
           <input

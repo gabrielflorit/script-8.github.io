@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import TerminalInput from './TerminalInput.js'
 import TerminalHistory from './TerminalHistory.js'
+import makeOutput from './../utils/makeOutput.js'
 
 class Terminal extends Component {
   constructor (props) {
@@ -8,7 +9,7 @@ class Terminal extends Component {
     this.state = {
       history: [
         {
-          output: 'type <em>help</em> for help'
+          output: makeOutput('help')
         }
       ]
     }
@@ -21,7 +22,7 @@ class Terminal extends Component {
         ...this.state.history,
         {
           input,
-          output: 'type <em>help</em> for help'
+          output: makeOutput(input)
         }
       ]
     })
