@@ -42,7 +42,6 @@ class Output extends Component {
         // eslint-disable-next-line no-eval
         eval(game + '; update && update(); draw && draw(); ')
       } catch (e) {
-        console.error(e.message)
       }
     }
   }
