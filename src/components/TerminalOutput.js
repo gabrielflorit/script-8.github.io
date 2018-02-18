@@ -1,12 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const TerminalOutput = ({ output }) => {
-  const outputHtml = {
-    __html: output
-  }
-  return (
-    <div className='TerminalOutput' dangerouslySetInnerHTML={outputHtml} />
-  )
+const TerminalOutput = ({ output }) => (
+  <div
+    className='TerminalOutput'
+    dangerouslySetInnerHTML={{ __html: output }}
+  />
+)
+
+TerminalOutput.propTypes = {
+  output: PropTypes.string.isRequired
 }
 
 export default TerminalOutput
