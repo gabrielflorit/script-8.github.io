@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import demo from '../utils/editorDemo.js'
 import setupLinter from '../utils/setupLinter.js'
 
 class CodeEditor extends Component {
   componentDidMount () {
     setupLinter()
     const codeMirror = window.CodeMirror(this._editor, {
+      value: this.props.game,
       mode: 'javascript',
       theme: 'nyx8',
+      lint: true
       // lineNumbers: true,
-      // lint: true,
       // gutters: ['CodeMirror-lint-markers']
     })
 
@@ -20,7 +20,7 @@ class CodeEditor extends Component {
     })
 
     setTimeout(() => {
-      codeMirror.setValue(demo)
+      codeMirror.setValue(this.props.game)
     }, 1000)
   }
 
@@ -43,7 +43,8 @@ class CodeEditor extends Component {
 }
 
 CodeEditor.propTypes = {
-  onUpdate: PropTypes.func.isRequired
+  onUpdate: PropTypes.func.isRequired,
+  game: PropTypes.string
 }
 
 export default CodeEditor

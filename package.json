@@ -27,7 +27,8 @@
   },
   "standard": {
     "globals": [
-      "it"
+      "it",
+      "localStorage"
     ]
   }
 }

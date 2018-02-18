@@ -5,7 +5,11 @@ const circle = ({ cx, cy, radius, ctx, color, onlyStroke }) => {
   let dy = 1
   let err = dx - (radius << 1)
 
-  ctx.fillStyle = color
+  if (onlyStroke) {
+    ctx.fillStyle = color
+  } else {
+    ctx.strokeStyle = color
+  }
 
   const drawPixel = (x, y) => {
     ctx.fillRect(x, y, 1, 1)

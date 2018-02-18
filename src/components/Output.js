@@ -15,11 +15,16 @@ class Output extends Component {
 
     // Setup the canvas api.
     this.canvasAPI = canvasAPI({ ctx: this.ctx, size: this.size })
+
+    this.draw(this.props.game)
   }
 
   componentDidUpdate () {
     const { game } = this.props
+    this.draw(game)
+  }
 
+  draw (game) {
     // Validate code before drawing.
     let isValid = true
     try {
@@ -35,7 +40,7 @@ class Output extends Component {
     if (isValid) {
       try {
         // eslint-disable-next-line no-eval
-        eval(game + '; update(); draw(); ')
+        eval(game + '; update && update(); draw && draw(); ')
       } catch (e) {
         console.error(e.message)
       }
