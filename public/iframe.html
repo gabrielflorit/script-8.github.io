@@ -24,40 +24,23 @@
   <body>
     <canvas></canvas>
     <script>
+      // Initialize canvas.
       const canvas = document.querySelector('canvas')
       const ctx = canvas.getContext('2d')
       ctx.imageSmoothingEnabled = false
-
-      // Set display size (css pixels).
       const size = 128
       canvas.style.width = (size * 4) + 'px'
       canvas.style.height = (size * 4) + 'px'
-
       canvas.width = size
       canvas.height = size
 
-      // // Normalize coordinate system to use css pixels.
-      // ctx.scale(scale, scale)
-
-      // // Set display size (css pixels).
-      // const size = 256
-      // canvas.style.width = size + 'px'
-      // canvas.style.height = size + 'px'
-
-      // // Set actual size in memory (scaled to account for extra pixel density).
-      // // Change to 1 on retina screens to see blurry canvas.
-      // const scale = window.devicePixelRatio
-      // canvas.width = size * scale
-      // canvas.height = size * scale
-
-      // // Normalize coordinate system to use css pixels.
-      // ctx.scale(scale, scale)
-
+      // Define arrow helpers,
       const arrowUp = () => keys.has('ArrowUp')
       const arrowRight = () => keys.has('ArrowRight')
       const arrowDown = () => keys.has('ArrowDown')
       const arrowLeft = () => keys.has('ArrowLeft')
 
+      // and keep track of what keys we're pressing.
       let keys = new Set()
 
       document.addEventListener('keydown', function (e) {
