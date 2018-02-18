@@ -6,6 +6,7 @@ const list = [
   },
   {
     regex: /^edit .*$/,
+    name: 'edit',
     description:
       'Enter <em>edit my-game</em> to open <em>my-game</em> in the game editor.'
   },
