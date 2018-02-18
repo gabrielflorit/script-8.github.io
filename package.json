@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "acorn": "^5.4.1",
+    "gh-pages": "^1.1.0",
     "npm-run-all": "^4.1.2",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
@@ -16,6 +17,8 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
