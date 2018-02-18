@@ -52,6 +52,9 @@ describe('actions.inputTerminalCommand', () => {
     const action = actions.inputTerminalCommand(command)
     expect(reducer(before, action)).toEqual({
       ...before,
+      game: {
+        name: 'my-game'
+      },
       terminalHistory: [
         ...before.terminalHistory,
         {
