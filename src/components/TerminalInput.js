@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class TerminalInput extends Component {
   constructor (props) {
@@ -26,12 +27,12 @@ class TerminalInput extends Component {
 
   handleSubmit (e) {
     e.preventDefault()
-    this.props.handleSubmit(this.state.value.trim())
+    this.props.onInput(this.state.value.trim())
     this.setState({ value: '' })
   }
 
   componentDidUpdate () {
-    this._input.scrollIntoView()
+    this._div.scrollIntoView()
   }
 
   render () {
@@ -39,14 +40,11 @@ class TerminalInput extends Component {
       <div className='TerminalInput'>
         <div
           className='display'
-          ref={_input => {
-            this._input = _input
+          ref={_div => {
+            this._div = _div
           }}
         >
           <span>> {this.state.value}</span>
-          <span className={'caret ' + (this.props.input ? 'hide' : 'show')}>
-            ■
-          </span>
         </div>
         <form onSubmit={this.handleSubmit}>
           <input
@@ -62,6 +60,11 @@ class TerminalInput extends Component {
       </div>
     )
   }
+}
+
+TerminalInput.propTypes = {
+  input: PropTypes.string,
+  onInput: PropTypes.func.isRequired
 }
 
 export default TerminalInput

@@ -1,17 +1,38 @@
-// const outputOptions = {
-//   // intro: 'Hello. My name is Computor. Welcome!',
-//   // help: `
-//   //   <div>Type <em>clear</em> to clear the screen.</div>
-//   //   <div>Type <em>help</em> for help.</div>
-//   // `,
-//   // clear: "Sorry - I haven't figured how to do that yet!"
-// }
+const commands = {
+  clear: { description: 'Enter <em>clear</em> to clear the screen.' },
+  help: { description: 'Enter <em>help</em> for help.' }
+}
 
-// const errorOutput =
-//   "<span class='error'>I did not understand that command.</span>"
+commands.help.output = () =>
+  Object.values(commands)
+    .map(d => `<div>${d.description}</div>`)
+    .join('')
 
-// const makeOutput = input => {
-//   return outputOptions[input] || errorOutput
-// }
+const errorOutput =
+  "<span class='error'>I did not understand that command.</span>"
 
-// export default makeOutput
+const makeOutput = input => {
+  // Find the right command.
+  const command = commands[input]
+
+  let output
+
+  // If we have a command,
+  if (command) {
+    // and it has an output function,
+    if (command.output) {
+      // use that.
+      output = command.output()
+    } else {
+      // Else we have a command with no output function (e.g. clear).
+      output = ''
+    }
+  } else {
+    // We could't find the command - return error.
+    output = errorOutput
+  }
+
+  return output
+}
+
+export default makeOutput

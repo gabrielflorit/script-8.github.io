@@ -20,17 +20,6 @@ export default TerminalHistory
 
 // DChM032kbz
 
-
-
-
-
-
-
-
-
-
-
-
 // import React from 'react'
 // import TerminalInput from './TerminalInput.js'
 // import TerminalOutput from './TerminalOutput.js'
