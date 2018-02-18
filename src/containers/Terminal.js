@@ -6,22 +6,22 @@ import TerminalInput from './../components/TerminalInput.js'
 import actions from './../actions/actions.js'
 
 const mapStateToProps = state => ({
-  history: state.terminalHistory
+  terminalHistory: state.terminalHistory
 })
 
-const mapDispatchToProps = dispatch => ({
-  onInput: input => dispatch(actions.inputTerminalCommand(input))
+const mapDispatchToProps = (dispatch, props) => ({
+  onInput: input => dispatch(actions.inputTerminalCommand(input, props.history))
 })
 
-const Terminal = ({ history, onInput }) => (
+const Terminal = ({ terminalHistory, onInput }) => (
   <div className='Terminal'>
-    <TerminalHistory history={history} />
+    <TerminalHistory terminalHistory={terminalHistory} />
     <TerminalInput onInput={onInput} />
   </div>
 )
 
 Terminal.propTypes = {
-  history: PropTypes.array.isRequired,
+  terminalHistory: PropTypes.array.isRequired,
   onInput: PropTypes.func.isRequired
 }
 

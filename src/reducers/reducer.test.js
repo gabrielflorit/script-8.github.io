@@ -1,7 +1,6 @@
 import reducer from './reducer.js'
 import actions from './../actions/actions.js'
 import initialState from './../store/initialState.js'
-import screenTypes from './../utils/screenTypes.js'
 
 describe('actions.inputTerminalCommand', () => {
   test('clear', () => {
@@ -53,7 +52,6 @@ describe('actions.inputTerminalCommand', () => {
     const action = actions.inputTerminalCommand(command)
     expect(reducer(before, action)).toEqual({
       ...before,
-      screen: screenTypes.EDITOR,
       terminalHistory: [
         ...before.terminalHistory,
         {

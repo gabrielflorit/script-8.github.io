@@ -1,5 +1,4 @@
 import makeOutput from './../utils/makeOutput.js'
-import screenTypes from './../utils/screenTypes.js'
 
 const initialState = {
   terminalHistory: [
@@ -9,8 +8,7 @@ const initialState = {
     {
       output: makeOutput('help')
     }
-  ],
-  screen: screenTypes.TERMINAL
+  ]
 }
 
 export default initialState
