@@ -1,7 +1,0 @@
-const actionTypes = {
-  INPUT_TERMINAL_COMMAND: 'INPUT_TERMINAL_COMMAND',
-  CLEAR_TERMINAL: 'CLEAR_TERMINAL',
-  UPDATE_GAME: 'UPDATE_GAME'
-}
-
-export default actionTypes
