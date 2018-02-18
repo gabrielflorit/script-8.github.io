@@ -1,17 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import CodeEditor from '../components/CodeEditor.js'
 // import PropTypes from 'prop-types'
-// import TerminalHistory from './../components/TerminalHistory.js'
-// import TerminalInput from './../components/TerminalInput.js'
 // import actions from './../actions/actions.js'
 
 const mapStateToProps = state => ({})
 
-const mapDispatchToProps = dispatch => ({
-  // onInput: input => dispatch(actions.inputTerminalCommand(input))
-})
+const mapDispatchToProps = dispatch => ({})
 
-const Editor = ({ history, onInput }) => <div className='Editor'>editor</div>
+const Editor = () => (
+  <div className='Editor'>
+    <CodeEditor />
+  </div>
+)
 
 Editor.propTypes = {}
 

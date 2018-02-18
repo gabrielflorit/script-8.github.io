@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions'
 import actionTypes from './actionTypes.js'
-import commands from './../utils/commands.js'
+import commands from '../utils/commands.js'
 
 const actions = createActions({
   [actionTypes.INPUT_TERMINAL_COMMAND]: (input, history) => {
