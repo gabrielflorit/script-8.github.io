@@ -30,10 +30,19 @@ class TerminalInput extends Component {
     this.setState({ value: '' })
   }
 
+  componentDidUpdate () {
+    this._input.scrollIntoView()
+  }
+
   render () {
     return (
       <div className='TerminalInput'>
-        <div className='display'>
+        <div
+          className='display'
+          ref={_input => {
+            this._input = _input
+          }}
+        >
           <span>> {this.state.value}</span>
           <span className={'caret ' + (this.props.input ? 'hide' : 'show')}>
             ■
