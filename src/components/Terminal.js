@@ -1,19 +1,38 @@
 import React, { Component } from 'react'
 import TerminalInput from './TerminalInput.js'
-
-// TODO:
-// there will be two kinds of displays
-// output and input
-//
+import TerminalHistory from './TerminalHistory.js'
 
 class Terminal extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      history: [
+        {
+          input: 'help',
+          output: 'type help for help'
+        }
+      ]
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleSubmit (s) {
+    this.setState({
+      history: [
+        ...this.state.history,
+        {
+          input: s,
+          output: 'type help for help'
+        }
+      ]
+    })
+  }
+
   render () {
     return (
       <div className='Terminal'>
-        <div className='TerminalOutput'>
-          <div>type <em>help</em> for help</div>
-        </div>
-        <TerminalInput />
+        <TerminalHistory history={this.state.history} />
+        <TerminalInput handleSubmit={this.handleSubmit} />
       </div>
     )
   }

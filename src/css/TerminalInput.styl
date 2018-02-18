@@ -1,25 +1,30 @@
+@keyframes pulse {
+  0% { opacity: 0; }
+  49.9% { opacity: 0; }
+
+  50% { opacity: 1; }
+  99.9% { opacity: 1; }
+
+  100% { opacity: 0; }
+}
+
 .TerminalInput
   position relative
-  border solid white 1px
-  margin 0.5em 0
-  &:before
-    position absolute
-    top 0
-    left -0.5em
-    content '>'
-    color $terminal-text-bright
-    opacity 0.5
-  input
+  margin 1em 0 0 0
+  .display
     border none
     background none
     color $terminal-text-bright
     @extend .VT323
     font-size 1em
-    width 30%
-    caret-color transparent
-    
-    &.prompt
-      opacity
-
-    &:focus
-      outline none
+    width 100%
+    .caret
+      animation-name pulse
+      animation-duration 2s
+      animation-iteration-count infinite
+    .hide
+      visibility hidden
+  .control
+    opacity 0
+    position absolute
+   
