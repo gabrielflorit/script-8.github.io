@@ -3,17 +3,19 @@ import PropTypes from 'prop-types'
 import * as acorn from 'acorn'
 
 class Output extends Component {
-  componentDidMount () {
-    setTimeout(() => {
-      this.evaluate({ ...this.props })
-    }, 1000)
+  constructor (props) {
+    super(props)
+
+    this.evaluate = this.evaluate.bind(this)
   }
 
   componentDidUpdate () {
-    this.evaluate({ ...this.props })
+    this.evaluate()
   }
 
-  evaluate ({ game, run }) {
+  evaluate () {
+    const { game, run } = this.props
+
     // Validate code before drawing.
     let isValid = true
     try {
@@ -32,9 +34,16 @@ class Output extends Component {
   }
 
   render () {
+    const iframeDimension = 512
     return (
       <div className='Output'>
-        <iframe width={512} height={512} title='script-8' src='iframe.html' />
+        <iframe
+          onLoad={this.evaluate}
+          width={iframeDimension}
+          height={iframeDimension}
+          title='script-8'
+          src='iframe.html'
+        />
       </div>
     )
   }

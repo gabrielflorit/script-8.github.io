@@ -1,18 +1,24 @@
 import colors from './colors.js'
 import canvasAPI from './canvasAPI.js'
 
+const iframeDimension = +window.frameElement.getAttribute('width')
+
 // Initialize canvas.
 const canvas = document.querySelector('canvas')
+
 const size = 128
-canvas.style.width = (size * 4) + 'px'
-canvas.style.height = (size * 4) + 'px'
+canvas.style.width = `${iframeDimension}px`
+canvas.style.height = `${iframeDimension}px`
 canvas.width = size
 canvas.height = size
 
 const ctx = canvas.getContext('2d')
 
 // Setup canvas API functions.
-const { rectStroke, rectFill, circStroke, circFill, clear } = canvasAPI({ ctx, size })
+const { rectStroke, rectFill, circStroke, circFill, clear } = canvasAPI({
+  ctx,
+  size
+})
 
 // Export them to global scope for eval's use later.
 window.clear = clear
@@ -60,4 +66,3 @@ window.callCode = (game, run) => {
     console.error(e.message)
   }
 }
-  
