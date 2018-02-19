@@ -1,30 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as acorn from 'acorn'
-import canvasAPI from '../utils/canvasAPI.js'
 
 class Output extends Component {
   componentDidMount () {
-    // Setup the canvas dimensions.
-    this.size = 128
-    this._canvas.style.width = this.size * 4 + 'px'
-    this._canvas.style.height = this.size * 4 + 'px'
-    this._canvas.width = this.size
-    this._canvas.height = this.size
-    this.ctx = this._canvas.getContext('2d')
-
-    // Setup the canvas api.
-    this.canvasAPI = canvasAPI({ ctx: this.ctx, size: this.size })
-
-    this.draw(this.props.game)
+    setTimeout(() => {
+      this.evaluate({ ...this.props })
+    }, 1000)
   }
 
   componentDidUpdate () {
-    const { game } = this.props
-    this.draw(game)
+    this.evaluate({ ...this.props })
   }
 
-  draw (game) {
+  evaluate ({ game, run }) {
     // Validate code before drawing.
     let isValid = true
     try {
@@ -33,34 +22,27 @@ class Output extends Component {
       isValid = false
     }
 
-    // Get the canvas API functions for the game code.
-    // eslint-disable-next-line no-unused-vars
-    const { strokeRect, fillRect, strokeCirc, fillCirc, clear } = this.canvasAPI
-
     if (isValid) {
-      try {
-        // eslint-disable-next-line no-eval
-        eval(game + '; update && update(); draw && draw(); ')
-      } catch (e) {
-      }
+      // Get the iframe.
+      const iframe = window.frames[0]
+
+      // Send iframe the game code.
+      iframe.callCode(game, run)
     }
   }
 
   render () {
     return (
       <div className='Output'>
-        <canvas
-          ref={_canvas => {
-            this._canvas = _canvas
-          }}
-        />
+        <iframe width={512} height={512} title='script-8' src='iframe.html' />
       </div>
     )
   }
 }
 
 Output.propTypes = {
-  game: PropTypes.string
+  game: PropTypes.string,
+  run: PropTypes.bool
 }
 
 export default Output

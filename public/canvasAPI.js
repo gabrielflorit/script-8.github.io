@@ -2,7 +2,7 @@ import colors from './colors.js'
 import circle from './circle.js'
 
 const canvasAPI = ({ ctx, size }) => ({
-  strokeRect (x, y, w, h, c) {
+  rectStroke (x, y, w, h, c) {
     ctx.strokeStyle = colors.one(c)
     ctx.strokeRect(
       Math.floor(x) + 0.5,
@@ -12,12 +12,12 @@ const canvasAPI = ({ ctx, size }) => ({
     )
   },
 
-  fillRect (x, y, w, h, c) {
+  rectFill (x, y, w, h, c) {
     ctx.fillStyle = colors.one(c)
     ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
   },
 
-  strokeCirc (x, y, r, c) {
+  circStroke (x, y, r, c) {
     circle({
       cx: Math.floor(x),
       cy: Math.floor(y),
@@ -28,7 +28,7 @@ const canvasAPI = ({ ctx, size }) => ({
     })
   },
 
-  fillCirc (x, y, r, c) {
+  circFill (x, y, r, c) {
     circle({
       cx: Math.floor(x),
       cy: Math.floor(y),

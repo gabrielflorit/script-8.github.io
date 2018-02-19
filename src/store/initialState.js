@@ -1,4 +1,5 @@
 import makeOutput from '../utils/makeOutput.js'
+import demo from '../utils/editorDemo.js'
 
 const initialState = {
   terminalHistory: [
@@ -6,7 +7,7 @@ const initialState = {
       output: makeOutput('help')
     }
   ],
-  game: null
+  game: demo
 }
 
 export default initialState
