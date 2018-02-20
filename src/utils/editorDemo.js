@@ -1,26 +1,20 @@
 const demo = `
-function update() {
+let radius = 1
+let delta = 1
 
+function update() {
+  radius += delta
+  if (radius >= 64) delta = -1
+  if (radius <= 0) delta = 1
 }
 
 function draw() {
   clear()
-
-  const grid = [...new Array(128)]
-  grid.forEach((_, i) => {
-    if (i % 32 === 0) {
-      fillRect(64 - i/2 + 1, 64 - i/2 + 1, i - 1, i - 1, 4)
-      fillCirc(64, 64, i / 2 - 4, 3)
-    }
+  
+  const loops = [...new Array(8)]
+  loops.forEach((_, i) => {
+    circFill(64, 64, radius - i * 7, i)
   })
-
-  grid.forEach((_, i) => {
-    if (i % 32 === 0) {
-      strokeRect(64 - i/2 + 1, 64 - i/2 + 1, i - 1, i - 1, 2)
-      strokeCirc(64, 64, i / 2 - 4, 0)
-    }
-  })
-
 }
 `
 
