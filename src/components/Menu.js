@@ -7,7 +7,8 @@ class Menu extends Component {
     super(props)
 
     this.onLoginClick = this.onLoginClick.bind(this)
-    window.handleToken = props.setToken
+    this.onSaveClick = this.onSaveClick.bind(this)
+    window.handleCode = props.tokenRequest
   }
 
   onLoginClick () {
@@ -16,6 +17,11 @@ class Menu extends Component {
       'popup',
       'width=600,height=700'
     )
+  }
+
+  onSaveClick () {
+    const { token, game, createGist } = this.props
+    createGist({ token: token.value, game })
   }
 
   render () {
@@ -37,7 +43,10 @@ class Menu extends Component {
           </NavLink>
         </li>
         <li>
-          <button onClick={this.onLoginClick}>Save</button>
+          <button onClick={this.onLoginClick}>Login</button>
+        </li>
+        <li>
+          <button onClick={this.onSaveClick}>Save</button>
         </li>
       </ul>
     )
@@ -45,7 +54,10 @@ class Menu extends Component {
 }
 
 Menu.propTypes = {
-  setToken: PropTypes.func
+  createGist: PropTypes.func,
+  tokenRequest: PropTypes.func,
+  game: PropTypes.string,
+  token: PropTypes.object
 }
 
 export default Menu

@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 
 class Oauth extends Component {
   componentDidMount () {
-    const token = window.location.href.match(/\?code=(.*)#\/oauth/)[1]
-    window.opener.handleToken(token)
+    const code = window.location.href.match(/\?code=(.*)#\/oauth/)[1]
+    window.opener.handleCode(code)
     window.close()
   }
 

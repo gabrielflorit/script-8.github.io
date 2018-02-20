@@ -12,7 +12,10 @@ const initialState = {
     }
   ],
   game: demo,
-  token: null
+  gist: {},
+  token: {
+    value: '42573fbda9b80cef90ebc5c25117edc581d416e8'
+  }
 }
 
 export default initialState

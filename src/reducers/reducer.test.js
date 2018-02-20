@@ -3,12 +3,69 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
 describe('actions.inputTerminalCommand', () => {
-  test('setToken', () => {
-    const before = initialState
-    const action = actions.setToken('my-token')
+  test('createGistRequest', () => {
+    const before = {
+      ...initialState,
+      gist: {
+        data: 'my-data'
+      }
+    }
+    const action = actions.createGistRequest()
     expect(reducer(before, action)).toEqual({
       ...before,
-      token: 'my-token'
+      gist: {
+        isFetching: true
+      }
+    })
+  })
+  test('createGistSuccess', () => {
+    const before = {
+      ...initialState,
+      gist: {
+        isFetching: true,
+        data: 'my-data'
+      }
+    }
+    const data = {
+      something: 'else'
+    }
+    const action = actions.createGistSuccess(data)
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      gist: {
+        isFetching: false,
+        data: {
+          something: 'else'
+        }
+      }
+    })
+  })
+  test('tokenRequest', () => {
+    const before = initialState
+    const action = actions.tokenRequest()
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      token: {
+        ...before.token,
+        isFetching: true
+      }
+    })
+  })
+  test('tokenSuccess', () => {
+    const before = {
+      ...initialState,
+      token: {
+        value: 'old',
+        isFetching: true
+      }
+    }
+    const action = actions.tokenSuccess('a token')
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      token: {
+        value: 'a token',
+        isFetching: false
+      }
     })
   })
   test('clear', () => {

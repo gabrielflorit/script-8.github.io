@@ -2,17 +2,17 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
-const token = handleActions(
+const gist = handleActions(
   {
-    [actionTypes.TOKEN_REQUEST]: () => ({
+    [actionTypes.CREATE_GIST_REQUEST]: () => ({
       isFetching: true
     }),
-    [actionTypes.TOKEN_SUCCESS]: (state, action) => ({
+    [actionTypes.CREATE_GIST_SUCCESS]: (state, action) => ({
       isFetching: false,
-      value: action.payload.token
+      data: action.payload
     })
   },
-  initialState.token
+  initialState.gist
 )
 
-export default token
+export default gist

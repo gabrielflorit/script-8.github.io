@@ -4,20 +4,27 @@ import CodeEditor from '../components/CodeEditor.js'
 import Output from '../components/Output.js'
 import Menu from '../components/Menu.js'
 import PropTypes from 'prop-types'
-import actions from './../actions/actions.js'
+import actions, { createGist, fetchToken } from './../actions/actions.js'
 
-const mapStateToProps = ({ game }) => ({
-  game
+const mapStateToProps = ({ game, token }) => ({
+  game,
+  token
 })
 
 const mapDispatchToProps = dispatch => ({
   onUpdate: update => dispatch(actions.updateGame(update)),
-  setToken: token => dispatch(actions.setToken(token))
+  tokenRequest: code => dispatch(fetchToken(code)),
+  createGist: ({ token, game }) => dispatch(createGist({ token, game }))
 })
 
-const Editor = ({ game, onUpdate, setToken }) => (
+const Editor = ({ game, onUpdate, tokenRequest, createGist, token }) => (
   <div className='Editor'>
-    <Menu setToken={setToken} />
+    <Menu
+      tokenRequest={tokenRequest}
+      token={token}
+      createGist={createGist}
+      game={game}
+    />
     <CodeEditor game={game} onUpdate={onUpdate} />
     <Output game={game} />
   </div>
@@ -25,8 +32,10 @@ const Editor = ({ game, onUpdate, setToken }) => (
 
 Editor.propTypes = {
   game: PropTypes.string,
+  token: PropTypes.object,
   onUpdate: PropTypes.func.isRequired,
-  setToken: PropTypes.func.isRequired
+  createGist: PropTypes.func.isRequired,
+  tokenRequest: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)
