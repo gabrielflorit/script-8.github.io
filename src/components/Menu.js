@@ -33,7 +33,7 @@ class Menu extends Component {
 
       // and log in.
       window.open(
-        'https://github.com/login/oauth/authorize?client_id=c1ca99e7f6da7d558e3c&scope=gist',
+        `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist`,
         'popup',
         'width=600,height=700'
       )

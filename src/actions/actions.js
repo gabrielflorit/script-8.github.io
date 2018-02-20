@@ -28,7 +28,7 @@ export const fetchToken = code => {
   return function (dispatch) {
     dispatch(actions.tokenRequest())
 
-    return fetch(`https://script-8-dev.herokuapp.com/authenticate/${code}`)
+    return fetch(`${process.env.REACT_APP_AUTHENTICATOR}/authenticate/${code}`)
       .then(
         response => response.json(),
         error => console.log('An error occurred.', error)

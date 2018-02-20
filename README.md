@@ -5,9 +5,8 @@
 
 - save to gist (MOST IMPORTANT)
   - first version
-    - learn how to distinguish between prod and dev (env variable?)
-    - add failure action handlers
     - show that the gist was saved, and show a way to get to the link
+    - add failure action handlers
 
   - second version
     - if it's mine, save a new revision
