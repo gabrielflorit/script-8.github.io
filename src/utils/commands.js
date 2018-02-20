@@ -6,13 +6,13 @@ const list = [
   },
   {
     // regex: /^edit (.*)$/,
-    regex: /^edit$/,
-    name: 'edit',
+    regex: /^editor$/,
+    name: 'editor',
     description:
-      'Enter <em>edit</em> to open the game editor.'
+      'Enter <em>editor</em> to open the game editor.'
   },
   // {
-  //   regex: /^edit$/,
+  //   regex: /^editor$/,
   //   output: () =>
   //     'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
   // },

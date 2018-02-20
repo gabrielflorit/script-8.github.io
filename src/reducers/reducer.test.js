@@ -23,15 +23,15 @@ describe('actions.inputTerminalCommand', () => {
           input: command,
           output: [
             '<div>Enter <em>clear</em> to clear the screen.</div>',
-            '<div>Enter <em>edit</em> to open the game editor.</div>',
+            '<div>Enter <em>editor</em> to open the game editor.</div>',
             '<div>Enter <em>help</em> for help.</div>'
           ].join('')
         }
       ]
     })
   })
-  test('edit', () => {
-    const command = 'edit'
+  test('editor', () => {
+    const command = 'editor'
     const before = initialState
     const action = actions.inputTerminalCommand(command)
     expect(reducer(before, action)).toEqual({
@@ -40,9 +40,7 @@ describe('actions.inputTerminalCommand', () => {
         ...before.terminalHistory,
         {
           input: command,
-          output:
-            // 'Please specify the file you wish to edit, e.g. <em>edit my-game</em>.'
-            ''
+          output: ''
         }
       ]
     })

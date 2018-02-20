@@ -7,7 +7,7 @@ const actions = createActions({
     // Get the corresponding command.
     const command = commands.find(input)
 
-    if (command && command.name === 'edit') {
+    if (command && command.name === 'editor') {
       history && history.push('/editor')
     }
 

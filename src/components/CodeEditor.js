@@ -12,7 +12,6 @@ class CodeEditor extends Component {
       lint: true,
       lineNumbers: true,
       cursorBlinkRate: 0
-      // gutters: ['CodeMirror-lint-markers']
     })
 
     codeMirror.on('change', cm => {
