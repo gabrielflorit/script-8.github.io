@@ -1,7 +1,9 @@
 import colors from './colors.js'
 import canvasAPI from './canvasAPI.js'
 
-const iframeDimension = +window.frameElement.getAttribute('width')
+const iframePadding = +window.frameElement.getAttribute('padding')
+const iframeDimension =
+  +window.frameElement.getAttribute('width') - iframePadding
 
 // Initialize canvas.
 const canvas = document.querySelector('canvas')

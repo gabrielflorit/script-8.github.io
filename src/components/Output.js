@@ -34,13 +34,15 @@ class Output extends Component {
   }
 
   render () {
-    const iframeDimension = 128
+    const iframeDimension = 128 * 3
+    const iframePadding = 32
     return (
       <div className='Output'>
         <iframe
           onLoad={this.evaluate}
           width={iframeDimension}
           height={iframeDimension}
+          padding={iframePadding}
           title='script-8'
           src='iframe.html'
         />
