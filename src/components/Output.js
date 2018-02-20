@@ -39,7 +39,7 @@ class Output extends Component {
     return (
       <div className='Output'>
         <iframe
-          onLoad={this.evaluate}
+          onLoad={() => {console.log('iframe onLoad'); this.evaluate()}}
           width={iframeDimension + iframePadding}
           height={iframeDimension}
           padding={iframePadding}
