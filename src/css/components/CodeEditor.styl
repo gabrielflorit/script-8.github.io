@@ -1,12 +1,17 @@
 .CodeEditor
-  height 100%
-  width 50%
-  border-right solid $palette-7 1px
 
-  ._editor
+  .wrapper
+    position relative
     height 100%
-
-    .CodeMirror
+    
+    ._editor
+      position absolute
+      top 0
+      left 0
+      width 100%
       height 100%
-      @extend .VT323
-      font-size 1.5em
+
+      .CodeMirror
+        height 100%
+        @extend .VT323
+        font-size 1.5em

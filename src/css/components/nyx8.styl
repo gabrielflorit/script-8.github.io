@@ -1,99 +1,101 @@
 $cm-line-selection   = red
-$cm-guttesr-subtles  = red
+$cm-gutters-subtles  = $palette-6
 $cm-active-line      = red
 $cm-matching-bracket = red
 
-$cm-background       = $palette-8 // background
-$cm-selected         = $palette-7 // selected
-$cm-comment          = $palette-5 // comment
-$cm-foreground       = $palette-5 // punctuation bits
-$cm-cursor           = $palette-3 // cursor
-$cm-keyword          = $palette-4 // const
+$cm-background       = $palette-7 // background
+$cm-gutters          = $palette-7
+$cm-selected         = $palette-6 // selected
+$cm-comment          = $palette-4 // comment
+$cm-foreground       = $palette-4 // punctuation bits
+$cm-cursor           = $palette-2 // cursor
+$cm-keyword          = $palette-3 // const
 
-$cm-string           = $palette-4 // string
-$cm-number           = $palette-1 // number
+$cm-string           = $palette-3 // string
+$cm-number           = $palette-0 // number
 
-$cm-property         = $palette-2 // createPathAnchors
-$cm-property-2       = $palette-3 // svgOptions
-$cm-object           = $palette-1 // createPathAnchors inside braces
+$cm-property         = $palette-1 // createPathAnchors
+$cm-property-2       = $palette-2 // svgOptions
+$cm-object           = $palette-0 // createPathAnchors inside braces
 
 .cm-s-nyx8.CodeMirror
-  background: $cm-background
-  color: $cm-foreground
+  background $cm-background
+  color $cm-foreground
 
 .cm-s-nyx8 div.CodeMirror-selected
-  background: $cm-selected
+  background $cm-selected
 
 .cm-s-nyx8 .CodeMirror-line::selection,
 .cm-s-nyx8 .CodeMirror-line > span::selection,
 .cm-s-nyx8 .CodeMirror-line > span > span::selection
-  background: $cm-line-selection
+  background $cm-line-selection
 
 .cm-s-nyx8 .CodeMirror-line::-moz-selection,
 .cm-s-nyx8 .CodeMirror-line > span::-moz-selection,
 .cm-s-nyx8 .CodeMirror-line > span > span::-moz-selection
-  background: $cm-line-selection
+  background $cm-line-selection
 
 .cm-s-nyx8 .CodeMirror-gutters
-  background: $background
-  border-right: 0px
+  background $cm-gutters
+  border-right solid $palette-6 1px
+  border none
 
 .cm-s-nyx8 .CodeMirror-guttermarker
-  color: $cm-keyword
+  color $cm-keyword
 
 .cm-s-nyx8 .CodeMirror-guttermarker-subtle
-  color: $cm-guttesr-subtles
+  color $cm-gutters-subtles
 
 .cm-s-nyx8 .CodeMirror-linenumber
-  color: $cm-guttesr-subtles
+  color $cm-gutters-subtles
 
 .cm-s-nyx8 .CodeMirror-cursor
-  border-left: 1px solid $cm-cursor
+  border-left 1px solid $cm-cursor
 
 .cm-s-nyx8 span.cm-comment
-  color: $cm-comment
+  color $cm-comment
 
 .cm-s-nyx8 span.cm-atom
-  color: $cm-number
+  color $cm-number
 
 .cm-s-nyx8 span.cm-number
-  color: $cm-number
+  color $cm-number
 
 .cm-s-nyx8 span.cm-property,
 .cm-s-nyx8 span.cm-attribute
-  color: $cm-property
+  color $cm-property
 
 .cm-s-nyx8 span.cm-keyword
-  color: $cm-keyword
+  color $cm-keyword
 
 .cm-s-nyx8 span.cm-string
-  color: $cm-string
+  color $cm-string
 
 .cm-s-nyx8 span.cm-variable
-  color: $cm-property
+  color $cm-property
 
 .cm-s-nyx8 span.cm-variable-2
-  color: $cm-property-2
+  color $cm-property-2
 
 .cm-s-nyx8 span.cm-def
-  color: $cm-object
+  color $cm-object
 
 .cm-s-nyx8 span.cm-bracket
-  color: $cm-foreground
+  color $cm-foreground
 
 .cm-s-nyx8 span.cm-tag
-  color: $cm-keyword
+  color $cm-keyword
 
 .cm-s-nyx8 span.cm-link
-  color: $cm-number
+  color $cm-number
 
 .cm-s-nyx8 span.cm-error
-  background: $cm-keyword
-  color: $cm-cursor
+  background $cm-keyword
+  color $cm-cursor
 
 .cm-s-nyx8 .CodeMirror-activeline-background
-  background: $cm-active-line
+  background $cm-active-line
 
 .cm-s-nyx8 .CodeMirror-matchingbracket
-  text-decoration: underline
-  color: $cm-matching-bracket !important
+  text-decoration underline
+  color $cm-matching-bracket !important
