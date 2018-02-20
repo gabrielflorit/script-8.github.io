@@ -68,3 +68,5 @@ window.callCode = (game, run) => {
     console.error(e.message)
   }
 }
+
+console.log('yello')
