@@ -34,7 +34,7 @@ class Output extends Component {
   }
 
   render () {
-    const iframeDimension = 512
+    const iframeDimension = 128
     return (
       <div className='Output'>
         <iframe
