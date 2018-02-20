@@ -8,7 +8,6 @@
     - learn how to distinguish between prod and dev (env variable?)
     - add failure action handlers
     - show that the gist was saved, and show a way to get to the link
-    - style save button
 
   - second version
     - if it's mine, save a new revision

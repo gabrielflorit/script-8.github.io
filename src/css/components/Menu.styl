@@ -1,22 +1,16 @@
 .Menu
-  background $palette-7
-  color $palette-4
-  @extend .VT323
-  text-transform uppercase
-  display flex
-  list-style none
   margin 0
   padding 0
+  list-style none
+  background $palette-7
+  display flex
   align-items center
-  font-size $font-large
-  
-  li
-    padding 0
-    
-    a
-      padding 0 0.45em
-      color $palette-5
-    
-    .active
-      color $palette-3
-      background $palette-6
+
+  button
+    border none
+    @extend .VT323
+    text-transform uppercase
+    font-size $font-large
+    color $palette-3
+    cursor pointer
+    background none
