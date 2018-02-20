@@ -9,8 +9,8 @@ class CodeEditor extends Component {
       value: this.props.game || '',
       mode: 'javascript',
       theme: 'nyx8',
-      lint: true
-      // lineNumbers: true,
+      lint: true,
+      lineNumbers: true,
       // gutters: ['CodeMirror-lint-markers']
     })
 
@@ -23,6 +23,7 @@ class CodeEditor extends Component {
     // its layout correctly, so it knows how to draw cursors.
     setTimeout(() => {
       codeMirror.setValue(this.props.game || '')
+      codeMirror.refresh()
     }, 1000)
   }
 
@@ -33,12 +34,14 @@ class CodeEditor extends Component {
   render () {
     return (
       <div className='CodeEditor'>
-        <div
-          className='_editor'
-          ref={_editor => {
-            this._editor = _editor
-          }}
-        />
+        <div className='wrapper'>
+          <div
+            className='_editor'
+            ref={_editor => {
+              this._editor = _editor
+            }}
+          />
+        </div>
       </div>
     )
   }
