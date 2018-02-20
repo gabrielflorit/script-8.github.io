@@ -5,7 +5,7 @@ import initialState from '../store/initialState.js'
 describe('actions.inputTerminalCommand', () => {
   test('clear', () => {
     const before = initialState
-    const action = actions.inputTerminalCommand('clear')
+    const action = actions.inputTerminalCommand('clEAR')
     expect(reducer(before, action)).toEqual({
       ...before,
       terminalHistory: []
@@ -31,7 +31,7 @@ describe('actions.inputTerminalCommand', () => {
     })
   })
   test('editor', () => {
-    const command = 'editor'
+    const command = 'editOr'
     const before = initialState
     const action = actions.inputTerminalCommand(command)
     expect(reducer(before, action)).toEqual({
