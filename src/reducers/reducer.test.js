@@ -3,6 +3,25 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
 describe('actions.inputTerminalCommand', () => {
+  test('setNextAction', () => {
+    const before = initialState
+    const action = actions.setNextAction('save')
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      nextAction: 'save'
+    })
+  })
+  test('clearNextAction', () => {
+    const before = {
+      ...initialState,
+      nextAction: 'save'
+    }
+    const action = actions.clearNextAction()
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      nextAction: null
+    })
+  })
   test('createGistRequest', () => {
     const before = {
       ...initialState,
@@ -59,12 +78,11 @@ describe('actions.inputTerminalCommand', () => {
         isFetching: true
       }
     }
-    const action = actions.tokenSuccess('a token')
+    const action = actions.tokenSuccess({ token: 'a token' })
     expect(reducer(before, action)).toEqual({
       ...before,
       token: {
-        value: 'a token',
-        isFetching: false
+        value: 'a token'
       }
     })
   })

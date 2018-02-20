@@ -1,4 +1,4 @@
-import { handleActions } from 'redux-actions'
+Pimport { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
@@ -8,7 +8,6 @@ const token = handleActions(
       isFetching: true
     }),
     [actionTypes.TOKEN_SUCCESS]: (state, action) => ({
-      isFetching: false,
       value: action.payload.token
     })
   },

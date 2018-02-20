@@ -19,7 +19,9 @@ const actions = createActions({
   [actionTypes.TOKEN_REQUEST]: tempCode => tempCode,
   [actionTypes.TOKEN_SUCCESS]: token => token,
   [actionTypes.CREATE_GIST_REQUEST]: () => {},
-  [actionTypes.CREATE_GIST_SUCCESS]: data => data
+  [actionTypes.CREATE_GIST_SUCCESS]: data => data,
+  [actionTypes.SET_NEXT_ACTION]: nextAction => nextAction,
+  [actionTypes.CLEAR_NEXT_ACTION]: () => {}
 })
 
 export const fetchToken = code => {
@@ -49,7 +51,7 @@ export const createGist = ({ game, token }) => {
       description: 'SCRIPT-8 files',
       files: {
         'code.js': {
-          content: 'a test'
+          content: game
         }
       }
     }

@@ -15,7 +15,8 @@ const store = createStore(
 
 store.subscribe(() => {
   saveState({
-    game: store.getState().game
+    game: store.getState().game,
+    token: store.getState().token
   })
 })
 
