@@ -13,12 +13,12 @@ const mapStateToProps = ({ game }) => ({
 const mapDispatchToProps = dispatch => ({
   onUpdate: update => dispatch(actions.updateGame(update))
 })
-    // <Output game={game} />
 
 const Editor = ({ game, onUpdate }) => (
   <div className='Editor'>
     <Menu />
     <CodeEditor game={game} onUpdate={onUpdate} />
+    <Output game={game} />
   </div>
 )
 

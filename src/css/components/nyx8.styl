@@ -8,7 +8,7 @@ $cm-gutters          = $palette-7
 $cm-selected         = $palette-6 // selected
 $cm-comment          = $palette-4 // comment
 $cm-foreground       = $palette-4 // punctuation bits
-$cm-cursor           = $palette-2 // cursor
+$cm-cursor           = $palette-6 // cursor
 $cm-keyword          = $palette-3 // const
 
 $cm-string           = $palette-3 // string
@@ -37,7 +37,6 @@ $cm-object           = $palette-0 // createPathAnchors inside braces
 
 .cm-s-nyx8 .CodeMirror-gutters
   background $cm-gutters
-  border-right solid $palette-6 1px
   border none
 
 .cm-s-nyx8 .CodeMirror-guttermarker
@@ -49,8 +48,12 @@ $cm-object           = $palette-0 // createPathAnchors inside braces
 .cm-s-nyx8 .CodeMirror-linenumber
   color $cm-gutters-subtles
 
+.cm-s-nyx8 .CodeMirror-cursors
+  z-index 0
+
 .cm-s-nyx8 .CodeMirror-cursor
   border-left 0.4em solid $cm-cursor
+  z-index 0
 
 .cm-s-nyx8 span.cm-comment
   color $cm-comment
