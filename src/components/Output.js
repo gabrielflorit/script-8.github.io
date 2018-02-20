@@ -40,7 +40,7 @@ class Output extends Component {
       <div className='Output'>
         <iframe
           onLoad={this.evaluate}
-          width={iframeDimension}
+          width={iframeDimension + iframePadding}
           height={iframeDimension}
           padding={iframePadding}
           title='script-8'
