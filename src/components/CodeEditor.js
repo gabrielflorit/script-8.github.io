@@ -11,6 +11,7 @@ class CodeEditor extends Component {
       theme: 'nyx8',
       lint: true,
       lineNumbers: true,
+      cursorBlinkRate: 0
       // gutters: ['CodeMirror-lint-markers']
     })
 
