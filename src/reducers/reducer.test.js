@@ -3,6 +3,14 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
 describe('actions.inputTerminalCommand', () => {
+  test('setToken', () => {
+    const before = initialState
+    const action = actions.setToken('my-token')
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      token: 'my-token'
+    })
+  })
   test('clear', () => {
     const before = initialState
     const action = actions.inputTerminalCommand('clEAR')

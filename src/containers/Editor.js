@@ -11,12 +11,13 @@ const mapStateToProps = ({ game }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onUpdate: update => dispatch(actions.updateGame(update))
+  onUpdate: update => dispatch(actions.updateGame(update)),
+  setToken: token => dispatch(actions.setToken(token))
 })
 
-const Editor = ({ game, onUpdate }) => (
+const Editor = ({ game, onUpdate, setToken }) => (
   <div className='Editor'>
-    <Menu />
+    <Menu setToken={setToken} />
     <CodeEditor game={game} onUpdate={onUpdate} />
     <Output game={game} />
   </div>
@@ -24,7 +25,8 @@ const Editor = ({ game, onUpdate }) => (
 
 Editor.propTypes = {
   game: PropTypes.string,
-  onUpdate: PropTypes.func.isRequired
+  onUpdate: PropTypes.func.isRequired,
+  setToken: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)

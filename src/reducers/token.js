@@ -2,11 +2,11 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
-const game = handleActions(
+const token = handleActions(
   {
-    [actionTypes.UPDATE_GAME]: (state, action) => action.payload
+    [actionTypes.SET_TOKEN]: (state, action) => action.payload
   },
-  initialState.game
+  initialState.token
 )
 
-export default game
+export default token

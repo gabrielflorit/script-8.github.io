@@ -11,7 +11,8 @@ const initialState = {
       output: makeOutput('help')
     }
   ],
-  game: demo
+  game: demo,
+  token: null
 }
 
 export default initialState
