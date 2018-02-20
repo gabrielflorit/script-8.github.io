@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import twas from 'twas'
 
 class Menu extends Component {
   constructor (props) {
@@ -33,7 +34,9 @@ class Menu extends Component {
 
       // and log in.
       window.open(
-        `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist`,
+        `https://github.com/login/oauth/authorize?client_id=${
+          process.env.REACT_APP_CLIENT_ID
+        }&scope=gist`,
         'popup',
         'width=600,height=700'
       )
@@ -44,11 +47,28 @@ class Menu extends Component {
   }
 
   render () {
+    const { gist } = this.props
+    let urlLi
+    if (gist.data && gist.data.html_url) {
+      urlLi = (
+        <li>
+          <a target='_blank' href={gist.data.html_url}>saved {twas(new Date(gist.data.updated_at))}</a>
+        </li>
+      )
+    }
+
     return (
       <ul className='Menu'>
         <li>
-          <button onClick={this.onSaveClick}>Save</button>
+          <button
+            disabled={gist.isFetching}
+            className={gist.isFetching ? 'disabled' : ''}
+            onClick={this.onSaveClick}
+          >
+            Save
+          </button>
         </li>
+        {urlLi}
       </ul>
     )
   }
@@ -61,6 +81,7 @@ Menu.propTypes = {
   clearNextAction: PropTypes.func,
   game: PropTypes.string,
   nextAction: PropTypes.string,
+  gist: PropTypes.object,
   token: PropTypes.object
 }
 

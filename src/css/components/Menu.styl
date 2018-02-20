@@ -7,6 +7,8 @@
   align-items center
 
   button
+    padding 0 0.45em
+    margin 0
     border none
     @extend .VT323
     text-transform uppercase
@@ -14,3 +16,12 @@
     color $palette-3
     cursor pointer
     background none
+    &.disabled
+      color $palette-5
+
+  a
+    padding 0 0.45em
+    color $palette-4
+    @extend .VT323
+    font-size $font-small
+    text-transform uppercase

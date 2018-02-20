@@ -7,9 +7,10 @@ import Menu from '../components/Menu.js'
 import PropTypes from 'prop-types'
 import actions, { createGist, fetchToken } from './../actions/actions.js'
 
-const mapStateToProps = ({ game, token, nextAction }) => ({
+const mapStateToProps = ({ game, token, nextAction, gist }) => ({
   game,
   token,
+  gist,
   nextAction
 })
 
@@ -28,11 +29,13 @@ const Editor = ({
   fetchToken,
   createGist,
   token,
+  gist,
   setNextAction,
   clearNextAction
 }) => (
   <div className='Editor'>
     <Menu
+      gist={gist}
       fetchToken={fetchToken}
       nextAction={nextAction}
       clearNextAction={clearNextAction}
@@ -51,6 +54,7 @@ Editor.propTypes = {
   game: PropTypes.string,
   nextAction: PropTypes.string,
   token: PropTypes.object,
+  gist: PropTypes.object,
   onUpdate: PropTypes.func.isRequired,
   createGist: PropTypes.func.isRequired,
   fetchToken: PropTypes.func.isRequired,

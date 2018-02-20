@@ -16,7 +16,8 @@
     "react-scripts": "1.1.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "twas": "^2.0.0"
   },
   "homepage": "http://script-8.github.io",
   "scripts": {

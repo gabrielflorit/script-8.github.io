@@ -4,10 +4,6 @@
 - start writing the game. additional features will be revealed
 
 - save to gist (MOST IMPORTANT)
-  - first version
-    - show that the gist was saved, and show a way to get to the link
-    - add failure action handlers
-
   - second version
     - if it's mine, save a new revision
     - if it's not mine, fork and save
