@@ -8,13 +8,38 @@ const actions = createActions({
   [actionTypes.FETCH_GIST_SUCCESS]: data => data
 })
 
-export const fetchGist = ({ token, id }) => {
-  return function (dispatch) {
-    dispatch(actions.fetchGistRequest())
+export default actions
 
-    const gh = new GitHub({
-      token
-    })
+// For fetching, try using the token, if present.
+// Otherwise hit the nowservice.
+// we can now use this https://my-service-dqzpehqqcr.now.sh/243c5109c793bf09c052
+export const fetchGist = id => dispatch => {
+  dispatch(actions.fetchGistRequest())
+
+  return fetch(`https://my-service-dqzpehqqcr.now.sh/${id}`)
+    .then(
+      response => response.json(),
+      error => console.log('An error occurred.', error)
+    )
+    .then(json => dispatch(actions.fetchGistSuccess(json)))
+}
+
+// export const fetchToken = code => {
+//   return function (dispatch) {
+//     dispatch(actions.tokenRequest())
+
+//     return fetch(`${process.env.REACT_APP_AUTHENTICATOR}/authenticate/${code}`)
+//       .then(
+//         response => response.json(),
+//         error => console.log('An error occurred.', error)
+//       )
+//       .then(json => dispatch(actions.tokenSuccess(json)))
+//   }
+// }
+
+// const gh = new GitHub({
+//   token
+// })
 
 //     const gist = gh.getGist()
 //     const data = {
@@ -34,11 +59,10 @@ export const fetchGist = ({ token, id }) => {
 //         error => console.log('An error occurred.', error)
 //       )
 //       .then(data => dispatch(actions.createGistSuccess(data)))
-  }
-}
+//   }
+// }
 
-export default actions
-
+// export default actions
 
 //   return function (dispatch) {
 //     dispatch(actions.createGistRequest())
@@ -67,56 +91,24 @@ export default actions
 //       .then(data => dispatch(actions.createGistSuccess(data)))
 //   }
 
+// [actionTypes.INPUT_TERMINAL_COMMAND]: (input, history) => {
+//   // Get the corresponding command.
+//   const command = commands.find(input)
 
+//   if (command && command.name === 'editor') {
+//     history && history.push('/editor')
+//   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // [actionTypes.INPUT_TERMINAL_COMMAND]: (input, history) => {
-  //   // Get the corresponding command.
-  //   const command = commands.find(input)
-
-  //   if (command && command.name === 'editor') {
-  //     history && history.push('/editor')
-  //   }
-
-  //   return input
-  // },
-  // [actionTypes.CLEAR_TERMINAL]: () => {},
-  // [actionTypes.UPDATE_GAME]: game => game,
-  // [actionTypes.TOKEN_REQUEST]: tempCode => tempCode,
-  // [actionTypes.TOKEN_SUCCESS]: token => token,
-  // [actionTypes.CREATE_GIST_REQUEST]: () => {},
-  // [actionTypes.CREATE_GIST_SUCCESS]: data => data,
-  // [actionTypes.SET_NEXT_ACTION]: nextAction => nextAction,
-  // [actionTypes.CLEAR_NEXT_ACTION]: () => {}
+//   return input
+// },
+// [actionTypes.CLEAR_TERMINAL]: () => {},
+// [actionTypes.UPDATE_GAME]: game => game,
+// [actionTypes.TOKEN_REQUEST]: tempCode => tempCode,
+// [actionTypes.TOKEN_SUCCESS]: token => token,
+// [actionTypes.CREATE_GIST_REQUEST]: () => {},
+// [actionTypes.CREATE_GIST_SUCCESS]: data => data,
+// [actionTypes.SET_NEXT_ACTION]: nextAction => nextAction,
+// [actionTypes.CLEAR_NEXT_ACTION]: () => {}
 
 // export const createGist = ({ game, token }) => {
 //   return function (dispatch) {
@@ -147,7 +139,6 @@ export default actions
 //   }
 // }
 
-
 // export const fetchToken = code => {
 //   return function (dispatch) {
 //     dispatch(actions.tokenRequest())
@@ -160,4 +151,3 @@ export default actions
 //       .then(json => dispatch(actions.tokenSuccess(json)))
 //   }
 // }
-
