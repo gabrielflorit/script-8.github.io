@@ -5,7 +5,7 @@ import Output from '../components/Output.js'
 import NavBar from '../components/NavBar.js'
 import Menu from '../components/Menu.js'
 import Title from '../components/Title.js'
-import PropTypes from 'prop-types'
+import Updater from '../components/Updater.js'
 import actions, { createGist, fetchToken } from './../actions/actions.js'
 
 const mapStateToProps = ({ game, token, nextAction, gist }) => ({
@@ -32,9 +32,11 @@ const Editor = ({
   token,
   gist,
   setNextAction,
-  clearNextAction
+  clearNextAction,
+  history
 }) => (
   <div className='Editor'>
+    <Updater gist={gist} history={history} />
     <Title isFetching={gist.isFetching || token.isFetching} />
     <Menu
       gist={gist}
@@ -51,17 +53,5 @@ const Editor = ({
     <Output game={game} />
   </div>
 )
-
-Editor.propTypes = {
-  game: PropTypes.string,
-  nextAction: PropTypes.string,
-  token: PropTypes.object,
-  gist: PropTypes.object,
-  onUpdate: PropTypes.func.isRequired,
-  createGist: PropTypes.func.isRequired,
-  fetchToken: PropTypes.func.isRequired,
-  setNextAction: PropTypes.func.isRequired,
-  clearNextAction: PropTypes.func.isRequired
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)
