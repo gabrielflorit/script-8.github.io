@@ -15,9 +15,7 @@
 
 - load from gist in url
   - parse the query string, and fetch the gist
-  - somehow display that we're showing a remote gist
 
-- read up on how long we should keep around a user token
 - add fps counter to iframe (perhaps a stats mode?)
 - make an icon for System
   - feels weird to click that and be taken to a barless place. maybe it shouldn't feel like another menu item.

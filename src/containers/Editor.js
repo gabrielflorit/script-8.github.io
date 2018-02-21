@@ -4,6 +4,7 @@ import CodeEditor from '../components/CodeEditor.js'
 import Output from '../components/Output.js'
 import NavBar from '../components/NavBar.js'
 import Menu from '../components/Menu.js'
+import Title from '../components/Title.js'
 import PropTypes from 'prop-types'
 import actions, { createGist, fetchToken } from './../actions/actions.js'
 
@@ -34,6 +35,7 @@ const Editor = ({
   clearNextAction
 }) => (
   <div className='Editor'>
+    <Title isFetching={gist.isFetching || token.isFetching} />
     <Menu
       gist={gist}
       fetchToken={fetchToken}

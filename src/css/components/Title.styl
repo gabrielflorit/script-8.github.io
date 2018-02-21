@@ -1,0 +1,16 @@
+.Title
+  position absolute
+  left 0
+  right 0
+  margin 0 auto
+  width 25%
+  color $palette-4
+  @extend .VT323
+  font-size $font-large
+  text-transform uppercase
+  text-align center
+  
+  &.is-fetching
+    animation-name pulse
+    animation-duration 0.5s
+    animation-iteration-count infinite
