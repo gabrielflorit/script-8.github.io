@@ -62,7 +62,8 @@ class Output extends Component {
         if (this.timer) this.timer.stop()
         this.timer = interval(() => {
           try {
-            geval('update && update(); draw && draw();')
+            geval("typeof update !== 'undefined' && update();")
+            geval("typeof draw !== 'undefined' && draw();")
             if (!run) this.timer.stop()
           } catch (e) {
             console.error(e.message)

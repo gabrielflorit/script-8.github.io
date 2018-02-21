@@ -1,24 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import Output from '../components/Output.js'
-import Menu from '../components/Menu.js'
+import Title from '../components/Title.js'
+import Updater from '../components/Updater.js'
+import NavBar from '../components/NavBar.js'
 
-const mapStateToProps = ({ game }) => ({
-  game
+const mapStateToProps = ({ game, gist }) => ({
+  game,
+  gist
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = () => ({})
 
-const Run = ({ game }) => (
+const Run = ({ game, gist, history }) => (
   <div className='Run'>
-    <Menu />
+    <Updater gist={gist} history={history} />
+    <Title />
+    <NavBar />
     <Output game={game} run />
   </div>
 )
-
-Run.propTypes = {
-  game: PropTypes.string
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Run)
