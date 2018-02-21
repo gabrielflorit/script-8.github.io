@@ -4,10 +4,10 @@ import initialState from '../store/initialState.js'
 
 const gist = handleActions(
   {
-    [actionTypes.CREATE_GIST_REQUEST]: () => ({
+    [actionTypes.FETCH_GIST_REQUEST]: () => ({
       isFetching: true
     }),
-    [actionTypes.CREATE_GIST_SUCCESS]: (state, action) => ({
+    [actionTypes.FETCH_GIST_SUCCESS]: (state, action) => ({
       isFetching: false,
       data: action.payload
     })
@@ -16,3 +16,12 @@ const gist = handleActions(
 )
 
 export default gist
+
+
+    // [actionTypes.CREATE_GIST_REQUEST]: () => ({
+    //   isFetching: true
+    // }),
+    // [actionTypes.CREATE_GIST_SUCCESS]: (state, action) => ({
+    //   isFetching: false,
+    //   data: action.payload
+    // })

@@ -1,18 +1,34 @@
 import React from 'react'
-import Terminal from './Terminal.js'
-import Editor from './Editor.js'
-import Run from './Run.js'
+import { connect } from 'react-redux'
 import Oauth from './Oauth.js'
-import { Route } from 'react-router-dom'
+import Boot from '../components/Boot.js'
+import actions from '../actions/actions.js'
 import '../css/App.css'
 
-const App = () => (
-  <div className='App'>
-    <Route exact path='/' component={Terminal} />
-    <Route exact path='/editor' component={Editor} />
-    <Route exact path='/run' component={Run} />
-    <Route path='/oauth' component={Oauth} />
-  </div>
-)
+const mapStateToProps = ({ screen }) => ({
+  screen
+})
 
-export default App
+const mapDispatchToProps = (dispatch, props) => ({
+  setScreen: screen => dispatch(actions.setScreen(screen))
+})
+
+const App = ({ screen, setScreen, fetchGist }) => {
+  console.log(screen)
+
+  window.handleCode = code => {
+    console.log({ code })
+  }
+
+  const { search } = window.location
+  const params = new URLSearchParams(search)
+  const component = params.has('code') ? (
+    <Oauth />
+  ) : (
+    <Boot setScreen={setScreen} fetchGist={fetchGist} />
+  )
+
+  return <div className='App'>{component}</div>
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
