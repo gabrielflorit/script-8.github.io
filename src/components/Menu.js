@@ -52,7 +52,9 @@ class Menu extends Component {
     if (gist.data && gist.data.html_url) {
       urlLi = (
         <li>
-          <a className='minor' target='_blank' href={gist.data.html_url}>(saved {twas(new Date(gist.data.updated_at))})</a>
+          <a className='minor' target='_blank' href={gist.data.html_url}>
+            (saved {twas(new Date(gist.data.updated_at))})
+          </a>
         </li>
       )
     }
@@ -60,13 +62,7 @@ class Menu extends Component {
     return (
       <ul className='Menu'>
         <li>
-          <button
-            disabled={gist.isFetching}
-            className={gist.isFetching ? 'disabled' : ''}
-            onClick={this.onSaveClick}
-          >
-            Save
-          </button>
+          <button onClick={this.onSaveClick}>Save</button>
         </li>
         {urlLi}
       </ul>
