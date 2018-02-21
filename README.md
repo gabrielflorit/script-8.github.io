@@ -3,13 +3,13 @@
 ## TODO
 - start writing the game. additional features will be revealed
 
+- load from gist in url
+  - parse the query string, and fetch the gist
+
 - save to gist (MOST IMPORTANT)
   - if it's mine, save a new revision
   - if it's not mine, fork and save
   - if it doesn't exist, create and save
-
-- load from gist in url
-  - parse the query string, and fetch the gist
 
 - drop gatekeeper, it's too slow
 
