@@ -8,8 +8,6 @@
   - if it's not mine, fork and save
   - if it doesn't exist, create and save
 
-- prevent update not defined error
-
 - load from gist in url
   - parse the query string, and fetch the gist
 
