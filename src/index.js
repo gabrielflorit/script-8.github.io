@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import App from './containers/App.js'
 import store from './store/store.js'
-import registerServiceWorker from './registerServiceWorker'
+import { unregister } from './registerServiceWorker'
 
 render(
   <Provider store={store}>
@@ -14,4 +14,4 @@ render(
   </Provider>,
   document.getElementById('root')
 )
-registerServiceWorker()
+unregister()
