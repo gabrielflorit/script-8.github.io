@@ -48,7 +48,7 @@ export const createGist = ({ game, token }) => {
     const gist = gh.getGist()
     const data = {
       public: true,
-      description: 'SCRIPT-8 files',
+      description: 'SCRIPT-8',
       files: {
         'code.js': {
           content: game

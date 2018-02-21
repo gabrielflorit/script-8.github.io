@@ -52,7 +52,7 @@ class Menu extends Component {
     if (gist.data && gist.data.html_url) {
       urlLi = (
         <li>
-          <a target='_blank' href={gist.data.html_url}>saved {twas(new Date(gist.data.updated_at))}</a>
+          <a className='minor' target='_blank' href={gist.data.html_url}>(saved {twas(new Date(gist.data.updated_at))})</a>
         </li>
       )
     }
