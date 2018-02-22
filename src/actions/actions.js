@@ -5,7 +5,8 @@ import actionTypes from './actionTypes.js'
 const actions = createActions({
   [actionTypes.SET_SCREEN]: screen => screen,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},
-  [actionTypes.FETCH_GIST_SUCCESS]: data => data
+  [actionTypes.FETCH_GIST_SUCCESS]: data => data,
+  [actionTypes.FINISH_BOOT]: () => {}
 })
 
 export default actions

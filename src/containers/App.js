@@ -7,28 +7,38 @@ import actions, { fetchGist } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import '../css/App.css'
 
-const mapStateToProps = ({ screen, gist }) => ({
+// window.handleCode = code => {
+//   console.log({ code })
+// }
+
+const mapStateToProps = ({ screen, gist, booted }) => ({
   screen,
-  gist
+  gist,
+  booted
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
+  finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id))
 })
 
-const App = ({ screen, setScreen, gist, fetchGist }) => {
+const App = ({ screen, setScreen, gist, fetchGist, booted, finishBoot }) => {
   const { search } = window.location
   const params = new URLSearchParams(search)
 
   const options = {
     [screenTypes.OAUTH]: () => <Oauth />,
     [screenTypes.BOOT]: () => (
-      <Boot setScreen={setScreen} fetchGist={fetchGist} gist={gist} />
+      <Boot
+        setScreen={setScreen}
+        fetchGist={fetchGist}
+        finishBoot={finishBoot}
+        gist={gist}
+        booted={booted}
+      />
     ),
-    [screenTypes.RUN]: () => (
-      <Run />
-    )
+    [screenTypes.RUN]: () => <Run />
   }
 
   const component = params.has('code')
@@ -39,7 +49,3 @@ const App = ({ screen, setScreen, gist, fetchGist }) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
-
-// window.handleCode = code => {
-//   console.log({ code })
-// }

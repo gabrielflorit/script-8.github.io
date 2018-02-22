@@ -3,6 +3,7 @@ import screenTypes from '../utils/screenTypes.js'
 
 const initialState = {
   screen: screenTypes.BOOT,
+  booted: false,
   gist: {}
 }
 

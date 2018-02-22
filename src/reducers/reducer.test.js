@@ -2,6 +2,15 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+test('finishBoot', () => {
+  const before = initialState
+  const action = actions.finishBoot()
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    booted: true
+  })
+})
+
 // test screen types
 test('setScreen', () => {
   const before = initialState
