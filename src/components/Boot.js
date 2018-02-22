@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import screenTypes from '../utils/screenTypes.js'
+import Output from './Output.js'
+import boot from '../utils/boot.js'
 
 // TODO
 // implement boot sequence
@@ -8,26 +10,24 @@ import screenTypes from '../utils/screenTypes.js'
 
 class Boot extends Component {
   componentDidMount () {
-    const { fetchGist, finishBoot } = this.props
-
-    // Start the boot sequence,
-    // and after N seconds,
-    // fire a FINISH_BOOT action
-    setTimeout(finishBoot, 5000)
-
-    const { search } = window.location
-    const params = new URLSearchParams(search)
-    const id = params.get('id')
-    // If there's an id in the query string,
-    if (id) {
-      // try fetching the gist.
-      fetchGist(id)
-    } else {
-      // If there is no id,
-      // load the default one,
-      // and set the id on the query string.
-      fetchGist('5e8973dbb5cfd1cb5559bb10bd95c127')
-    }
+    // const { fetchGist, finishBoot } = this.props
+    // // Start the boot sequence,
+    // // and after N seconds,
+    // // fire a FINISH_BOOT action
+    // setTimeout(finishBoot, 5000)
+    // const { search } = window.location
+    // const params = new URLSearchParams(search)
+    // const id = params.get('id')
+    // // If there's an id in the query string,
+    // if (id) {
+    //   // try fetching the gist.
+    //   fetchGist(id)
+    // } else {
+    //   // If there is no id,
+    //   // load the default one,
+    //   // and set the id on the query string.
+    //   fetchGist('5e8973dbb5cfd1cb5559bb10bd95c127')
+    // }
   }
 
   componentDidUpdate () {
@@ -51,8 +51,13 @@ class Boot extends Component {
   }
 
   render () {
-    const { gist } = this.props
-    return <div className='Boot'>gist is fetching: {!!gist.isFetching}</div>
+    return (
+      <div className='Boot'>
+        <div className='color-flash'>
+          <Output game={boot} run />
+        </div>
+      </div>
+    )
   }
 }
 
