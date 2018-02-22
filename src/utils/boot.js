@@ -1,15 +1,7 @@
 const boot = `
 const colors = [
   3,
-  5,5,5,5,5,5,
-  6,6,6,6,6,6,6,
-  7,7,7,7,7,7,7,7,
-  5,5,5,5,5,5,
-  6,6,6,6,6,6,6,
-  7,7,7,7,7,7,7,7,
-  5,5,5,5,5,5,
-  6,6,6,6,6,6,6,
-  7,7,7,7,7,7,7,7,
+  7
 ]
 
 function random(min, max) {
@@ -20,41 +12,75 @@ function random(min, max) {
 
 const d = 2
 rectFill(0, 0, 128, 128, 7)
-let y = 0
 
+let y = 0
 function update() {
-  if (y <= 32) {
-    y++
-  }
+  if (y < 128) y++
 }
 
-const xs = [...new Array(128)]
+let count = [...new Array(8)]
+
+let rects = count.map(_ => [0, 0])
 
 function draw() {
-  xs.forEach((_, x) => {
-    rectFill(x, y + 32 * 0, 1, 1, x)
-    rectFill(x, y + 32 * 1, 1, 1, x)
-    rectFill(x, y + 32 * 2, 1, 1, x)
-    rectFill(x, y + 32 * 3, 1, 1, x)
+  // every tick,
+
+  // draw the previous rects blue
+  rects.forEach(rect => {
+    rectFill(rect[0], rect[1], 1, 1, 6)
   })
-  // rectFill(random(0, 128), y, 1, 1, 7)
+
+  // set coords of new rects,
+  rects = rects.map(_ => [random(0, 64) * 2, y])
+
+  // and draw the new ones white
+  rects.forEach(rect => {
+    rectFill(rect[0], rect[1], 1, 1, 3)
+  })
 }
-
-// function update() {
-//   y = j
-//   if (y <= 64) {
-//     j++
-//   }
-// }
-
-// const xs = [...new Array(64)]
-
-// function draw() {
-//   xs.forEach((_, x) => {
-//     rectFill(x*2, y*2, 2, 2, x)
-//   })
-//   rectFill(random(0, 64) * 2, y*2, 2, 2, 7)
-// }
 `
 
 export default boot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const rects = [...new Array(128 * 16)]
+//   .map(_ => ({
+//     x: random(0, 64) * 2,
+//     y: random(0, 64) * 2
+//   }))
+
+// rects.forEach(r => {
+//   rectFill(r.x, r.y, 1, 1, 6)
+// })
+
+// let rect = [0, 0]
+
+// function draw() {
+//   // if (i % 32 === 0) {
+//     rectFill(rect[0], rect[1], 1, 1, 7)
+//     rect = [random(0, 64) * 2, i]
+//     rectFill(rect[0], rect[1], 1, 1, 0)
+//   // }
