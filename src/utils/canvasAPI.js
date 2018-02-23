@@ -25,7 +25,7 @@ const canvasAPI = ({ ctx, size }) => ({
 
         let yOffset = previous ? previous.yOffset : 0
         // Do we have space to draw this letter?
-        if (xOffset + current.width > 128) {
+        if (x + xOffset + current.width > 128) {
           // If not,
           // go to the beginning of the next line.
           yOffset += 7
