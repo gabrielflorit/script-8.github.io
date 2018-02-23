@@ -37,7 +37,7 @@ class Boot extends Component {
     // AND we are done booting,
     if (!gist.isFetching && gist.data && booted) {
       const { search } = window.location
-      const params = new URLSearchParams(search)
+      const params = new window.URLSearchParams(search)
       const id = params.get('id')
 
       // update the query string (if we have a new one),

@@ -1,4 +1,5 @@
 const boot = `
+
 function random(min, max) {
   min = Math.ceil(min)
   max = Math.floor(max)
@@ -7,54 +8,83 @@ function random(min, max) {
 
 rectFill(0, 0, 128, 128, 7)
 
-// first create the positions,
-// then cycle coloring the pixels
-)]
-  .map(_ => [random(0, 64) * 2,random(0, 64) * 2].join(','))
-))
+const screens = [
+  'glitch',
+  'stable',
+  'bios',
+  'next'
+]
 
-console.log(rects.length)
-
+let screenIndex = 0
 let i = 0
-function update() {
-  i++
-}
 
-function draw() {
-  if (i % 4 === 0) {
-    rects.forEach(rect => {
-      const [x, y] = rect.split(',')
-      rectFill(x, y, 1, 1, random(5, 6))
-    })
+function update() {
+  const screen = screens[screenIndex]
+  if (screen === 'glitch') {
+    i++
+    if (i > 20) {
+      i = 0
+      screenIndex++
+    }
+  }
+  if (screen === 'stable') {
+    i++
+    if (i > 20) {
+      i = 0
+      screenIndex++
+    }
+  }
+  if (screen === 'bios') {
+    i++
+    if (i > 20) {
+      i = 0
+      screenIndex++
+    }
+  }
+  if (screen === 'next') {
   }
 }
+
+const size = range(64)
+const d = 1
+
+const rects = flatten(
+  size.map(x => size.map(y => [x * 2, y * 2, d, d]))
+)
+
+clear()
+
+rects.forEach(rect => {
+  rectFill(...rect, 6)
+})
+
+print(0, 0, 'abcdefghijklmnopqrstuvwxyz', 0)
+
+function draw() {
+
+  const screen = screens[screenIndex]
+
+  // if (screen === 'glitch') {
+  //   rects.forEach(rect => {
+  //     rectFill(...rect, rect[0] + rect[1] * i/100)
+  //   })
+  // }
+
+  // if (screen === 'stable') {
+  //   rects.forEach(rect => {
+  //     rectFill(...rect, rect[0])
+  //   })
+  // }
+
+  // if (screen === 'bios') {
+  //   rectFill(0, 0, 128, 128, 7)
+  // }
+
+}
+
 `
 
 export default boot
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // const rects = [...new Array(128 * 16)]
 //   .map(_ => ({
