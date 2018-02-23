@@ -10,7 +10,7 @@ function update() {
 
 function draw() {
   clear()
-  
+
   const loops = [...new Array(8)]
   loops.forEach((_, i) => {
     circFill(64, 64, radius - i * 7, i)

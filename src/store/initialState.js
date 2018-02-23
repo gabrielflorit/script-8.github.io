@@ -1,20 +1,24 @@
-import makeOutput from '../utils/makeOutput.js'
-import demo from '../utils/editorDemo.js'
-import { version } from '../../package.json'
+import screenTypes from '../utils/screenTypes.js'
+// import { version } from '../../package.json'
 
 const initialState = {
-  terminalHistory: [
-    {
-      output: `script-8 ${version}`
-    },
-    {
-      output: makeOutput('help')
-    }
-  ],
-  game: demo,
-  gist: {},
-  token: {},
-  nextAction: null
+  screen: screenTypes.BOOT,
+  booted: false,
+  gist: {}
 }
 
 export default initialState
+
+
+  // terminalHistory: [
+  //   {
+  //     output: `script-8 ${version}`
+  //   },
+  //   {
+  //     output: makeOutput('help')
+  //   }
+  // ],
+  // game: demo,
+  // gist: {},
+  // token: {},
+  // nextAction: null

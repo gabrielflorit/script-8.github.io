@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import * as acorn from 'acorn'
 import { interval } from 'd3-timer'
 import canvasAPI from '../utils/canvasAPI.js'
+import _ from 'lodash'
 
 class Output extends Component {
   constructor (props) {
@@ -11,7 +12,7 @@ class Output extends Component {
     this.evaluate = this.evaluate.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const size = 128
     const cssSize = size * 3
     this._canvas.style.width = `${cssSize}px`
@@ -22,7 +23,14 @@ class Output extends Component {
     this.ctx = this._canvas.getContext('2d')
 
     // Setup canvas API functions.
-    const { rectStroke, rectFill, circStroke, circFill, clear } = canvasAPI({
+    const {
+      rectStroke,
+      rectFill,
+      circStroke,
+      circFill,
+      clear,
+      print
+    } = canvasAPI({
       ctx: this.ctx,
       size
     })
@@ -33,6 +41,9 @@ class Output extends Component {
     window.rectFill = rectFill
     window.circStroke = circStroke
     window.circFill = circFill
+    window.print = print
+    window.range = _.range
+    window.flatten = _.flatten
 
     this.evaluate()
   }
@@ -75,7 +86,7 @@ class Output extends Component {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     if (this.timer) this.timer.stop()
   }
 
@@ -85,7 +96,8 @@ class Output extends Component {
         <canvas
           ref={_canvas => {
             this._canvas = _canvas
-          }} />
+          }}
+        />
       </div>
     )
   }
