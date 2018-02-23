@@ -1,15 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Oauth from './Oauth.js'
 import Boot from '../components/Boot.js'
 import Run from '../components/Run.js'
 import actions, { fetchGist } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import '../css/App.css'
-
-// window.handleCode = code => {
-//   console.log({ code })
-// }
 
 const mapStateToProps = ({ screen, gist, booted }) => ({
   screen,
@@ -24,11 +19,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 })
 
 const App = ({ screen, setScreen, gist, fetchGist, booted, finishBoot }) => {
-  const { search } = window.location
-  const params = new URLSearchParams(search)
-
   const options = {
-    [screenTypes.OAUTH]: () => <Oauth />,
     [screenTypes.BOOT]: () => (
       <Boot
         setScreen={setScreen}
@@ -41,9 +32,7 @@ const App = ({ screen, setScreen, gist, fetchGist, booted, finishBoot }) => {
     [screenTypes.RUN]: () => <Run />
   }
 
-  const component = params.has('code')
-    ? options[screenTypes.OAUTH]()
-    : options[screen]()
+  const component = options[screen]()
 
   return <div className='App'>{component}</div>
 }

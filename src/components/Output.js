@@ -44,12 +44,17 @@ class Output extends Component {
     window.print = print
     window.range = _.range
     window.flatten = _.flatten
+    window.end = _.once(this.props.handleEnd)
 
     this.evaluate()
   }
 
   componentDidUpdate () {
     this.evaluate()
+  }
+
+  shouldComponentUpdate () {
+    return !this.props.doNotUpdate
   }
 
   evaluate () {
@@ -105,7 +110,9 @@ class Output extends Component {
 
 Output.propTypes = {
   game: PropTypes.string,
-  run: PropTypes.bool
+  run: PropTypes.bool,
+  doNotUpdate: PropTypes.bool,
+  handleEnd: PropTypes.func
 }
 
 export default Output

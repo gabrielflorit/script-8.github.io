@@ -17,7 +17,8 @@ export default actions
 export const fetchGist = id => dispatch => {
   dispatch(actions.fetchGistRequest())
 
-  return fetch(`https://my-service-dqzpehqqcr.now.sh/${id}`)
+  return window
+    .fetch(`https://my-service-dqzpehqqcr.now.sh/${id}`)
     .then(
       response => response.json(),
       error => console.log('An error occurred.', error)

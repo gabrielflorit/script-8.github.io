@@ -41,7 +41,7 @@ function update() {
     screenIndex++
   }
 
-  if (screen === 'stable' && elapsed > 600) {
+  if (screen === 'stable' && elapsed > 300) {
     before = Date.now()
     screenIndex++
   }
@@ -69,8 +69,9 @@ function update() {
     screenIndex++
   }
 
-  if (screen === 'end') {
-    // console.log(before - beforeTotal)
+  if (screen === 'end' && elapsed > 700) {
+    end()
+    console.log(before - beforeTotal)
   }
 }
 
