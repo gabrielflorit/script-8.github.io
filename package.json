@@ -39,6 +39,8 @@
   "standard": {
     "globals": [
       "it",
+      "test",
+      "expect",
       "localStorage"
     ]
   }

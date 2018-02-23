@@ -11,7 +11,6 @@ test('finishBoot', () => {
   })
 })
 
-// test screen types
 test('setScreen', () => {
   const before = initialState
   const action = actions.setScreen('RUN')
@@ -43,57 +42,41 @@ test('fetchGistSuccess', () => {
     }
   }
   const data = {
-    something: 'else'
+    something: 'else',
+    files: {
+      'code.js': {
+        content: 'my game'
+      }
+    }
   }
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
+    game: 'my game',
     gist: {
       isFetching: false,
       data: {
-        something: 'else'
+        something: 'else',
+        files: {
+          'code.js': {
+            content: 'my game'
+          }
+        }
       }
     }
   })
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+test('actions.updateGame', () => {
+  const before = {
+    ...initialState
+  }
+  const action = actions.updateGame('one two three')
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    game: 'one two three'
+  })
+})
 
 // describe('actions.inputTerminalCommand', () => {
 //   test('setNextAction', () => {
@@ -248,16 +231,5 @@ test('fetchGistSuccess', () => {
 //   expect(reducer(before, action)).toEqual({
 //     ...before,
 //     terminalHistory: []
-//   })
-// })
-
-// test('actions.updateGame', () => {
-//   const before = {
-//     ...initialState
-//   }
-//   const action = actions.updateGame('one two three')
-//   expect(reducer(before, action)).toEqual({
-//     ...before,
-//     game: 'one two three'
 //   })
 // })

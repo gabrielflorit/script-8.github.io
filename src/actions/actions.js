@@ -6,7 +6,8 @@ const actions = createActions({
   [actionTypes.SET_SCREEN]: screen => screen,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},
   [actionTypes.FETCH_GIST_SUCCESS]: data => data,
-  [actionTypes.FINISH_BOOT]: () => {}
+  [actionTypes.FINISH_BOOT]: () => {},
+  [actionTypes.UPDATE_GAME]: game => game
 })
 
 export default actions
