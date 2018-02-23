@@ -61,16 +61,16 @@ function update() {
     before = Date.now()
     screenIndex++
     i = 0
+    delta = 4
   }
 
-  if (screen === 'complete' && elapsed > 1000) {
+  if (screen === 'complete' && i >= 128) {
     before = Date.now()
     screenIndex++
   }
 
   if (screen === 'end') {
-    delta = 0
-    console.log(before - beforeTotal)
+    // console.log(before - beforeTotal)
   }
 }
 
@@ -120,15 +120,22 @@ function draw() {
     print(7, 7 * 1, 'script-8', 0)
     print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
     print(7, 7 * 4, 'version ${version}', 3)
-    print(7, 7 * 6, "loading RAM: " + (i * 64) + ' kb', 3)
+    print(7, 7 * 6, "loading RAM: " + (i) + ' kb', 3)
+    rectFill(48 + 3 * 0,  7, 3, 5, 0)
+    rectFill(48 + 3 * 1,  7, 3, 5, 1)
+    rectFill(48 + 3 * 2,  7, 3, 5, 2)
+    rectFill(48 + 3 * 3,  7, 3, 5, 3)
+    rectFill(48 + 3 * 4,  7, 3, 5, 4)
+    rectFill(48 + 3 * 5,  7, 3, 5, 5)
+    rectFill(48 + 3 * 6,  7, 3, 5, 4)
+    rectFill(48 + 3 * 7,  7, 3, 5, 3)
+    rectFill(48 + 3 * 8,  7, 3, 5, 2)
+    rectFill(48 + 3 * 9,  7, 3, 5, 1)
+    rectFill(48 + 3 * 10, 7, 3, 5, 0)
   }
 
   if (screen === 'end') {
-    rectFill(0, 0, 128, 128, 6)
-    print(7, 7 * 1, 'script-8', 0)
-    print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
-    print(7, 7 * 4, 'version ${version}', 3)
-    print(7, 7 * 6, "loading RAM: " + (i * 64) + ' kb', 3)
+    print(7, 7 * 6, 'loading RAM: 128 kb', 3)
     print(7, 7 * 8, 'ok', 0)
   }
 
