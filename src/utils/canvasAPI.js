@@ -6,7 +6,7 @@ const canvasAPI = ({ ctx, size }) => ({
   print (x, y, letters, c) {
     const color = colors.rgb(c)
 
-    const grids = letters
+    const grids = letters.toString()
       // Split into individual letters.
       .split('')
       // Get the pixels and the letter's width.

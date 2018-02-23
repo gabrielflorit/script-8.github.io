@@ -1,3 +1,4 @@
+import { version } from '../../package.json'
 const boot = `
 
 function random(min, max) {
@@ -11,92 +12,125 @@ rectFill(0, 0, 128, 128, 7)
 const screens = [
   'glitch',
   'stable',
-  'bios',
-  'next'
+  'prenumbers',
+  'numbers',
+  'pre-complete',
+  'complete',
+  'end'
 ]
 
+let beforeTotal = Date.now()
+
 let screenIndex = 0
+let before = Date.now()
+
 let i = 0
+let delta = 1
+const biosLines = range(18).map(() => {
+  return '  ' + range(4).map(() => random(1000, 9999)).join('      ')
+})
 
 function update() {
+
+  const elapsed = Date.now() - before
   const screen = screens[screenIndex]
-  if (screen === 'glitch') {
-    i++
-    if (i > 20) {
-      i = 0
-      screenIndex++
-    }
+  i += delta
+
+  if (screen === 'glitch' && elapsed > 1250) {
+    before = Date.now()
+    screenIndex++
   }
-  if (screen === 'stable') {
-    i++
-    if (i > 20) {
-      i = 0
-      screenIndex++
-    }
+
+  if (screen === 'stable' && elapsed > 600) {
+    before = Date.now()
+    screenIndex++
   }
-  if (screen === 'bios') {
-    i++
-    if (i > 20) {
-      i = 0
-      screenIndex++
-    }
+
+  if (screen === 'prenumbers' && elapsed > 50) {
+    before = Date.now()
+    screenIndex++
   }
-  if (screen === 'next') {
+
+  if (screen === 'numbers' && elapsed > 500) {
+    before = Date.now()
+    screenIndex++
+    i = 0
+  }
+
+  if (screen === 'pre-complete' && elapsed > 100) {
+    before = Date.now()
+    screenIndex++
+    i = 0
+  }
+
+  if (screen === 'complete' && elapsed > 1000) {
+    before = Date.now()
+    screenIndex++
+  }
+
+  if (screen === 'end') {
+    delta = 0
+    console.log(before - beforeTotal)
   }
 }
 
-const size = range(64)
+const size = range(128)
 const d = 1
 
 const rects = flatten(
-  size.map(x => size.map(y => [x * 2, y * 2, d, d]))
+  size.map(x => size.map(y => [x, y, d, d]))
 )
-
-clear()
-
-// rects.forEach(rect => {
-//   rectFill(...rect, 6)
-// })
-
-// print(0, 7 * 0, 'alpha bravo charlie delta echo', 0)
-// print(0, 7 * 1, 'foxtrot golf hotel india juliet', 0)
-// print(0, 7 * 2, 'kilo lima mike november oscar', 0)
-// print(0, 7 * 3, 'papa quebec romeo sierra', 0)
-// print(0, 7 * 4, 'tango uniform victor whiskey', 0)
-// print(0, 7 * 5, 'x-ray yankee zulu', 0)
-// print(0, 7 * 6, 'i really, really like this.', 0)
-// print(0, 7 * 7, 'I do! do you?', 0)
-
-// print(0, 7 * 9, '1ou! ', 0)
-print(0, 7 * 9, 'rescue the Princess? ok! i can do that.', 0)
-// print(0, 7 * 10, 'You', 0)
-// print(15, 7 * 10, 'have', 0)
-// print(34, 7 * 10, 'to', 0)
-// print(45, 7 * 10, 'rescue', 0)
-// print(72, 7 * 10, 'the', 0)
-// print(87, 7 * 10, 'Princess.', 0)
-
-
 
 function draw() {
 
   const screen = screens[screenIndex]
 
-  // if (screen === 'glitch') {
-  //   rects.forEach(rect => {
-  //     rectFill(...rect, rect[0] + rect[1] * i/100)
-  //   })
-  // }
+  if (screen === 'glitch') {
+    rects.forEach(rect => {
+      rectFill(...rect, rect[0] + rect[1] * i/100)
+    })
+  }
 
-  // if (screen === 'stable') {
-  //   rects.forEach(rect => {
-  //     rectFill(...rect, rect[0])
-  //   })
-  // }
+  if (screen === 'stable') {
+    rects.forEach(rect => {
+      rectFill(...rect, rect[0])
+    })
+  }
 
-  // if (screen === 'bios') {
-  //   rectFill(0, 0, 128, 128, 7)
-  // }
+  if (screen === 'prenumbers') {
+    rectFill(0, 0, 128, 128, 7)
+  }
+
+  if (screen === 'numbers') {
+    const factor = 4
+    if (i % factor === 0) {
+      rectFill(0, 0, 128, 128, 7)
+      biosLines.forEach((line, j) => {
+        print(0, 128 + 7 * j - 7 * i/factor, line, 5)
+      })
+    }
+  }
+
+  if (screen === 'pre-complete') {
+    rectFill(0, 0, 128, 128, 7)
+  }
+
+  if (screen === 'complete') {
+    rectFill(0, 0, 128, 128, 6)
+    print(7, 7 * 1, 'script-8', 0)
+    print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
+    print(7, 7 * 4, 'version ${version}', 3)
+    print(7, 7 * 6, "loading RAM: " + (i * 64) + ' kb', 3)
+  }
+
+  if (screen === 'end') {
+    rectFill(0, 0, 128, 128, 6)
+    print(7, 7 * 1, 'script-8', 0)
+    print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
+    print(7, 7 * 4, 'version ${version}', 3)
+    print(7, 7 * 6, "loading RAM: " + (i * 64) + ' kb', 3)
+    print(7, 7 * 8, 'ok', 0)
+  }
 
 }
 
