@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import colors from './colors.js'
 import circle from './circle.js'
 import alphabet from './alphabet.js'
@@ -19,15 +18,26 @@ const canvasAPI = ({ ctx, size }) => ({
           pixels
         }
       })
-      // Calculate the running letter position.
+      // Calculate running offsets.
       .reduce((acc, current, index, array) => {
+        const previous = acc[index - 1]
+        let xOffset = previous ? previous.width + 1 + previous.xOffset : 0
+
+        let yOffset = previous ? previous.yOffset : 0
+        // Do we have space to draw this letter?
+        if (xOffset + current.width > 128) {
+          // If not,
+          // go to the beginning of the next line.
+          yOffset += 7
+          xOffset = 0
+        }
+
         return [
           ...acc,
           {
             ...current,
-            position: acc.length
-              ? acc[index - 1].width + 1 + acc[index - 1].position
-              : 0
+            xOffset,
+            yOffset
           }
         ]
       }, [])
@@ -36,12 +46,11 @@ const canvasAPI = ({ ctx, size }) => ({
 
     // For each grid of pixels,
     grids.forEach(grid => {
-
       // get some properties,
-      const { pixels, position, width } = grid
+      const { pixels, xOffset, yOffset, width } = grid
 
       // get the image data this letter will occupy,
-      const imageData = ctx.getImageData(x + position, y, width, 6)
+      const imageData = ctx.getImageData(x + xOffset, y + yOffset, width, 6)
       const { data } = imageData
 
       // and for each pixel,
@@ -59,7 +68,7 @@ const canvasAPI = ({ ctx, size }) => ({
         })
 
       // And draw!
-      ctx.putImageData(imageData, x + position, y)
+      ctx.putImageData(imageData, x + xOffset, y + yOffset)
     })
   },
 
