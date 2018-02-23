@@ -1,6 +1,6 @@
 {
   "name": "script-8",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "dependencies": {
     "acorn": "^5.4.1",
