@@ -11,16 +11,18 @@ const canvasAPI = ({ ctx, size }) => ({
       const imageData = ctx.getImageData(x + 4 * i, y, 3, 5)
       const { data } = imageData
 
-      const match = alphabet[letter] || alphabet[' ']
-      const bits = _.flatten(match.map(d => [...color, d]))
-
-      for (var j = 0; j < data.length; j += 4) {
-        if (bits[j + 3] === 1) {
-          data[j + 0] = bits[j + 0]
-          data[j + 1] = bits[j + 1]
-          data[j + 2] = bits[j + 2]
-          data[j + 3] = 255
-        }
+      const match = alphabet[letter]
+      if (match) {
+        match
+          .map((pixel, pixelIndex) => ({ pixel, pixelIndex }))
+          .filter(d => d.pixel)
+          .forEach(d => {
+            const offset = d.pixelIndex * 4
+            data[offset + 0] = color[0]
+            data[offset + 1] = color[1]
+            data[offset + 2] = color[2]
+            data[offset + 3] = 255
+          })
       }
 
       ctx.putImageData(imageData, x + 4 * i, y)
