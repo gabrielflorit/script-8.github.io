@@ -54,11 +54,18 @@ const rects = flatten(
 
 clear()
 
-rects.forEach(rect => {
-  rectFill(...rect, 6)
-})
+// rects.forEach(rect => {
+//   rectFill(...rect, 6)
+// })
 
-print(0, 0, 'abcdefghijklmnopqrstuvwxyz', 0)
+print(0, 7 * 0, 'alpha bravo charlie delta echo', 0)
+print(0, 7 * 1, 'foxtrot golf hotel india juliet', 0)
+print(0, 7 * 2, 'kilo lima mike november oscar', 0)
+print(0, 7 * 3, 'papa quebec romeo sierra', 0)
+print(0, 7 * 4, 'tango uniform victor whiskey', 0)
+print(0, 7 * 5, 'x-ray yankee zulu', 0)
+print(0, 7 * 6, 'i really, really like this.', 0)
+print(0, 7 * 7, 'I do! do you?', 0)
 
 function draw() {
 
@@ -85,22 +92,3 @@ function draw() {
 `
 
 export default boot
-
-// const rects = [...new Array(128 * 16)]
-//   .map(_ => ({
-//     x: random(0, 64) * 2,
-//     y: random(0, 64) * 2
-//   }))
-
-// rects.forEach(r => {
-//   rectFill(r.x, r.y, 1, 1, 6)
-// })
-
-// let rect = [0, 0]
-
-// function draw() {
-//   // if (i % 32 === 0) {
-//     rectFill(rect[0], rect[1], 1, 1, 7)
-//     rect = [random(0, 64) * 2, i]
-//     rectFill(rect[0], rect[1], 1, 1, 0)
-//   // }

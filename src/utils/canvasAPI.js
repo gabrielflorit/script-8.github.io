@@ -8,10 +8,10 @@ const canvasAPI = ({ ctx, size }) => ({
     const color = colors.rgb(c)
 
     text.split('').forEach((letter, i) => {
-      const imageData = ctx.getImageData(x + 4 * i, y, 3, 5)
+      const imageData = ctx.getImageData(x + 4 * i, y, 3, 6)
       const { data } = imageData
 
-      const match = alphabet[letter]
+      const match = alphabet[letter.toLowerCase()]
       if (match) {
         match
           .map((pixel, pixelIndex) => ({ pixel, pixelIndex }))
