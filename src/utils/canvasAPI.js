@@ -4,28 +4,62 @@ import circle from './circle.js'
 import alphabet from './alphabet.js'
 
 const canvasAPI = ({ ctx, size }) => ({
-  print (x, y, text, c) {
+  print (x, y, letters, c) {
     const color = colors.rgb(c)
 
-    text.split('').forEach((letter, i) => {
-      const imageData = ctx.getImageData(x + 4 * i, y, 3, 6)
+    const grids = letters
+      // Split into individual letters.
+      .split('')
+      // Get the pixels and the letter's width.
+      .map(letter => {
+        const pixels = alphabet[letter.toLowerCase()]
+        return {
+          width: pixels ? pixels.length / 6 : 3,
+          letter,
+          pixels
+        }
+      })
+      // Calculate the running letter position.
+      .reduce((acc, current, index, array) => {
+        return [
+          ...acc,
+          {
+            ...current,
+            position: acc.length
+              ? acc[index - 1].width + 1 + acc[index - 1].position
+              : 0
+          }
+        ]
+      }, [])
+      // Ignore letters with no matches.
+      .filter(d => d.pixels)
+
+    // For each grid of pixels,
+    grids.forEach(grid => {
+
+      // get some properties,
+      const { pixels, position, width } = grid
+
+      // get the image data this letter will occupy,
+      const imageData = ctx.getImageData(x + position, y, width, 6)
       const { data } = imageData
 
-      const match = alphabet[letter.toLowerCase()]
-      if (match) {
-        match
-          .map((pixel, pixelIndex) => ({ pixel, pixelIndex }))
-          .filter(d => d.pixel)
-          .forEach(d => {
-            const offset = d.pixelIndex * 4
-            data[offset + 0] = color[0]
-            data[offset + 1] = color[1]
-            data[offset + 2] = color[2]
-            data[offset + 3] = 255
-          })
-      }
+      // and for each pixel,
+      pixels
+        .map((pixel, pixelIndex) => ({ pixel, pixelIndex }))
+        // ignore pixels set to 0,
+        .filter(d => d.pixel)
+        // and update the underlying canvas data.
+        .forEach(d => {
+          const offset = d.pixelIndex * 4
+          data[offset + 0] = color[0]
+          data[offset + 1] = color[1]
+          data[offset + 2] = color[2]
+          data[offset + 3] = 255
+        })
 
-      ctx.putImageData(imageData, x + 4 * i, y)
+      // And draw!
+      ctx.putImageData(imageData, x + position, y)
     })
   },
 
