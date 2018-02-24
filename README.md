@@ -1,7 +1,6 @@
 # script-8
 
 ## TODO
-- add hover state to buttons/links
 - maybe think of not having the title all the time,
   or perhaps we just need to think of a link style,
   because right now everything seems to be / not be a link?
