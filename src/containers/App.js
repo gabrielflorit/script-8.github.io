@@ -65,7 +65,7 @@ const App = ({
       />
     ),
     [screenTypes.RUN]: () => (
-      <Run game={game} screen={screen} setScreen={setScreen} />
+      <Run game={game} screen={screen} setScreen={setScreen} gist={gist} />
     ),
     [screenTypes.EDITOR]: () => (
       <Editor

@@ -5,6 +5,7 @@ import NavBar from './NavBar.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import CodeEditor from './CodeEditor.js'
+import Updater from './Updater.js'
 
 const Editor = ({
   game,
@@ -20,6 +21,7 @@ const Editor = ({
   nextAction
 }) => (
   <div className='Editor'>
+    <Updater gist={gist} />
     <Title isFetching={gist.isFetching || token.isFetching} />
     <Menu
       game={game}

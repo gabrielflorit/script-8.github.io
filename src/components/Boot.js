@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import screenTypes from '../utils/screenTypes.js'
 import Output from './Output.js'
+import Updater from './Updater.js'
 import bios from '../utils/bios.js'
 
 // TODO
@@ -31,24 +32,16 @@ class Boot extends Component {
     // If we are done fetching, and we have a gist,
     // AND we are done booting,
     if (!gist.isFetching && gist.data && booted) {
-      const { search } = window.location
-      const params = new window.URLSearchParams(search)
-      const id = params.get('id')
-
-      // update the query string (if we have a new one),
-      if (id !== gist.id) {
-        window.history.pushState(null, null, `/?id=${gist.data.id}`)
-      }
-
       // and set the new screen.
       setScreen(screenTypes.RUN)
     }
   }
 
   render () {
-    const { finishBoot } = this.props
+    const { finishBoot, gist } = this.props
     return (
       <div className='Boot'>
+        <Updater gist={gist} />
         <div className='color-flash'>
           <Output game={bios} run handleEnd={finishBoot} />
         </div>
@@ -61,7 +54,7 @@ Boot.propTypes = {
   fetchGist: PropTypes.func.isRequired,
   finishBoot: PropTypes.func.isRequired,
   setScreen: PropTypes.func.isRequired,
-  gist: PropTypes.object,
+  gist: PropTypes.object.isRequired,
   booted: PropTypes.bool.isRequired
 }
 

@@ -4,26 +4,35 @@ import _ from 'lodash'
 
 class Updater extends Component {
   componentDidMount () {
-    const { gist, history } = this.props
+    // on component mount,
+    // if we have an id in the gist,
+    // make sure the url reflects this
+    const { gist } = this.props
     const id = _.get(gist, 'data.id')
     if (id) {
-      this.updateHistory({ history, id })
+      this.updateUrl(id)
     }
   }
 
   componentDidUpdate (prevProps) {
-    const { gist, history } = this.props
+    // when we get new props,
+    // if the previous gist id is different than this one,
+    // update url!
+    const { gist } = this.props
     const oldId = _.get(prevProps, 'gist.data.id')
-    const id = _.get(gist, 'data.id')
-    if (id && id !== oldId) {
-      this.updateHistory({ history, id })
+    const newId = _.get(gist, 'data.id')
+    if (newId && newId !== oldId) {
+      this.updateUrl(newId)
     }
   }
 
-  updateHistory ({ history, id }) {
-    history.push({
-      search: `?id=${id}`
-    })
+  updateUrl (newId) {
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const urlId = params.get('id')
+    if (urlId !== newId) {
+      window.history.pushState(null, null, `/?id=${newId}`)
+    }
   }
 
   render () {
@@ -32,7 +41,7 @@ class Updater extends Component {
 }
 
 Updater.propTypes = {
-  gist: PropTypes.object
+  gist: PropTypes.object.isRequired
 }
 
 export default Updater
