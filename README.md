@@ -1,7 +1,6 @@
 # script-8
 
 ## TODO
-- if local storage has a valid token, but a null game, bad things happen
 - what if FETCH_GIST_SUCCESS happens after FINISH_BOOT
 - save to gist (MOST IMPORTANT)
   - if it's mine, save a new revision

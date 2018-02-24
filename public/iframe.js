@@ -40,10 +40,10 @@ window.callCode = (game, run, endCallback = noop) => {
     timer = d3.interval(() => {
       try {
         geval('update && update(); draw && draw();')
-        if (!run) timer.stop()
       } catch (e) {
-        console.error(e.message)
+        console.warn(e.message)
       }
+      if (!run) timer.stop()
     }, 1000 / 30)
   } catch (e) {
     console.error(e.message)
