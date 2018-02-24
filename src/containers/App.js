@@ -4,7 +4,7 @@ import Boot from '../components/Boot.js'
 import Run from '../components/Run.js'
 import Editor from '../components/Editor.js'
 import actions, {
-  createGist,
+  saveGist,
   fetchGist,
   fetchToken
 } from '../actions/actions.js'
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id)),
-  createGist: ({ game, token }) => dispatch(createGist({ game, token })),
+  saveGist: ({ game, token }) => dispatch(saveGist({ game, token })),
   fetchToken: token => dispatch(fetchToken(token))
 })
 
@@ -50,7 +50,7 @@ const App = ({
   clearNextAction,
   updateGame,
   token,
-  createGist,
+  saveGist,
   setNextAction,
   nextAction
 }) => {
@@ -75,7 +75,7 @@ const App = ({
         nextAction={nextAction}
         setNextAction={setNextAction}
         clearNextAction={clearNextAction}
-        createGist={createGist}
+        saveGist={saveGist}
         fetchToken={fetchToken}
         screen={screen}
         setScreen={setScreen}

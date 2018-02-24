@@ -20,8 +20,8 @@ class Menu extends Component {
   }
 
   save () {
-    const { token, game, createGist } = this.props
-    createGist({ token: token.value, game })
+    const { token, game, saveGist } = this.props
+    saveGist({ token: token.value, game })
   }
 
   onSaveClick () {
@@ -65,7 +65,7 @@ class Menu extends Component {
 }
 
 Menu.propTypes = {
-  createGist: PropTypes.func,
+  saveGist: PropTypes.func,
   clearNextAction: PropTypes.func.isRequired,
   game: PropTypes.string,
   gist: PropTypes.object.isRequired,

@@ -12,8 +12,8 @@ const actions = createActions({
   [actionTypes.TOKEN_SUCCESS]: token => token,
   [actionTypes.SET_NEXT_ACTION]: action => action,
   [actionTypes.CLEAR_NEXT_ACTION]: () => {},
-  [actionTypes.CREATE_GIST_REQUEST]: () => {},
-  [actionTypes.CREATE_GIST_SUCCESS]: data => data
+  [actionTypes.SAVE_GIST_REQUEST]: () => {},
+  [actionTypes.SAVE_GIST_SUCCESS]: data => data
 })
 
 export default actions
@@ -42,8 +42,8 @@ export const fetchToken = code => dispatch => {
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
-export const createGist = ({ game, token }) => dispatch => {
-  dispatch(actions.createGistRequest())
+export const saveGist = ({ game, token }) => dispatch => {
+  dispatch(actions.saveGistRequest())
 
   const gh = new GitHub({
     token
@@ -66,5 +66,5 @@ export const createGist = ({ game, token }) => dispatch => {
       response => response.data,
       error => console.log('An error occurred.', error)
     )
-    .then(data => dispatch(actions.createGistSuccess(data)))
+    .then(data => dispatch(actions.saveGistSuccess(data)))
 }

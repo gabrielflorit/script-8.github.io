@@ -16,7 +16,7 @@ const Editor = ({
   setNextAction,
   clearNextAction,
   fetchToken,
-  createGist,
+  saveGist,
   gist,
   nextAction
 }) => (
@@ -27,7 +27,7 @@ const Editor = ({
       game={game}
       gist={gist}
       nextAction={nextAction}
-      createGist={createGist}
+      saveGist={saveGist}
       token={token}
       fetchToken={fetchToken}
       clearNextAction={clearNextAction}
@@ -49,7 +49,7 @@ Editor.propTypes = {
   updateGame: PropTypes.func.isRequired,
   clearNextAction: PropTypes.func.isRequired,
   setNextAction: PropTypes.func.isRequired,
-  createGist: PropTypes.func.isRequired,
+  saveGist: PropTypes.func.isRequired,
   fetchToken: PropTypes.func.isRequired
 }
 

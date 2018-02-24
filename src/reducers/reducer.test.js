@@ -128,14 +128,14 @@ test('updateGame', () => {
   })
 })
 
-test('createGistRequest', () => {
+test('saveGistRequest', () => {
   const before = {
     ...initialState,
     gist: {
       data: 'my-data'
     }
   }
-  const action = actions.createGistRequest()
+  const action = actions.saveGistRequest()
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {
@@ -144,7 +144,7 @@ test('createGistRequest', () => {
   })
 })
 
-test('createGistSuccess', () => {
+test('saveGistSuccess', () => {
   const before = {
     ...initialState,
     gist: {
@@ -155,7 +155,7 @@ test('createGistSuccess', () => {
   const data = {
     something: 'else'
   }
-  const action = actions.createGistSuccess(data)
+  const action = actions.saveGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {
