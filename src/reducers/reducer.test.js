@@ -128,41 +128,41 @@ test('updateGame', () => {
   })
 })
 
-// describe('actions.inputTerminalCommand', () => {
-//   test('createGistRequest', () => {
-//     const before = {
-//       ...initialState,
-//       gist: {
-//         data: 'my-data'
-//       }
-//     }
-//     const action = actions.createGistRequest()
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       gist: {
-//         isFetching: true
-//       }
-//     })
-//   })
-//   test('createGistSuccess', () => {
-//     const before = {
-//       ...initialState,
-//       gist: {
-//         isFetching: true,
-//         data: 'my-data'
-//       }
-//     }
-//     const data = {
-//       something: 'else'
-//     }
-//     const action = actions.createGistSuccess(data)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       gist: {
-//         isFetching: false,
-//         data: {
-//           something: 'else'
-//         }
-//       }
-//     })
-//   })
+test('createGistRequest', () => {
+  const before = {
+    ...initialState,
+    gist: {
+      data: 'my-data'
+    }
+  }
+  const action = actions.createGistRequest()
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    gist: {
+      isFetching: true
+    }
+  })
+})
+
+test('createGistSuccess', () => {
+  const before = {
+    ...initialState,
+    gist: {
+      isFetching: true,
+      data: 'my-data'
+    }
+  }
+  const data = {
+    something: 'else'
+  }
+  const action = actions.createGistSuccess(data)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    gist: {
+      isFetching: false,
+      data: {
+        something: 'else'
+      }
+    }
+  })
+})

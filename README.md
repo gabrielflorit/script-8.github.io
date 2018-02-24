@@ -1,9 +1,8 @@
 # script-8
 
 ## TODO
+- things are getting too verbose! there are too many props being passed around
 - start writing the game. additional features will be revealed
-
-- set the iframe canvas size directly, don't wait for js, otherwise the size blinks
 
 - load from gist in url
   - parse the query string, and fetch the gist

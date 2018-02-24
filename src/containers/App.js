@@ -3,24 +3,38 @@ import { connect } from 'react-redux'
 import Boot from '../components/Boot.js'
 import Run from '../components/Run.js'
 import Editor from '../components/Editor.js'
-import actions, { fetchGist, fetchToken } from '../actions/actions.js'
+import actions, {
+  createGist,
+  fetchGist,
+  fetchToken
+} from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import '../css/App.css'
 
-const mapStateToProps = ({ screen, gist, booted, game, token }) => ({
+const mapStateToProps = ({
   screen,
   gist,
   booted,
   game,
-  token
+  token,
+  nextAction
+}) => ({
+  screen,
+  gist,
+  booted,
+  game,
+  token,
+  nextAction
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction)),
+  clearNextAction: () => dispatch(actions.clearNextAction()),
   updateGame: game => dispatch(actions.updateGame(game)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id)),
+  createGist: ({ game, token }) => dispatch(createGist({ game, token })),
   fetchToken: token => dispatch(fetchToken(token))
 })
 
@@ -33,9 +47,12 @@ const App = ({
   fetchGist,
   fetchToken,
   finishBoot,
+  clearNextAction,
   updateGame,
   token,
-  setNextAction
+  createGist,
+  setNextAction,
+  nextAction
 }) => {
   const options = {
     [screenTypes.BOOT]: () => (
@@ -55,7 +72,10 @@ const App = ({
         game={game}
         gist={gist}
         token={token}
+        nextAction={nextAction}
         setNextAction={setNextAction}
+        clearNextAction={clearNextAction}
+        createGist={createGist}
         fetchToken={fetchToken}
         screen={screen}
         setScreen={setScreen}

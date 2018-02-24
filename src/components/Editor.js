@@ -13,12 +13,24 @@ const Editor = ({
   updateGame,
   token,
   setNextAction,
+  clearNextAction,
   fetchToken,
-  gist
+  createGist,
+  gist,
+  nextAction
 }) => (
   <div className='Editor'>
     <Title isFetching={gist.isFetching || token.isFetching} />
-    <Menu token={token} fetchToken={fetchToken} setNextAction={setNextAction} />
+    <Menu
+      game={game}
+      gist={gist}
+      nextAction={nextAction}
+      createGist={createGist}
+      token={token}
+      fetchToken={fetchToken}
+      clearNextAction={clearNextAction}
+      setNextAction={setNextAction}
+    />
     <NavBar screen={screen} setScreen={setScreen} />
     <CodeEditor game={game} updateGame={updateGame} />
     <Output game={game} />
@@ -27,12 +39,15 @@ const Editor = ({
 
 Editor.propTypes = {
   game: PropTypes.string,
+  nextAction: PropTypes.string,
   gist: PropTypes.object.isRequired,
   screen: PropTypes.string.isRequired,
   token: PropTypes.object.isRequired,
   setScreen: PropTypes.func.isRequired,
   updateGame: PropTypes.func.isRequired,
+  clearNextAction: PropTypes.func.isRequired,
   setNextAction: PropTypes.func.isRequired,
+  createGist: PropTypes.func.isRequired,
   fetchToken: PropTypes.func.isRequired
 }
 
