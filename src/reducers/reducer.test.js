@@ -2,6 +2,56 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+test('setNextAction', () => {
+  const before = initialState
+  const action = actions.setNextAction('save')
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    nextAction: 'save'
+  })
+})
+
+test('clearNextAction', () => {
+  const before = {
+    ...initialState,
+    nextAction: 'save'
+  }
+  const action = actions.clearNextAction()
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    nextAction: null
+  })
+})
+
+test('tokenRequest', () => {
+  const before = initialState
+  const action = actions.tokenRequest()
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    token: {
+      ...before.token,
+      isFetching: true
+    }
+  })
+})
+
+test('tokenSuccess', () => {
+  const before = {
+    ...initialState,
+    token: {
+      value: 'old',
+      isFetching: true
+    }
+  }
+  const action = actions.tokenSuccess({ token: 'a token' })
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    token: {
+      value: 'a token'
+    }
+  })
+})
+
 test('finishBoot', () => {
   const before = initialState
   const action = actions.finishBoot()
@@ -67,7 +117,7 @@ test('fetchGistSuccess', () => {
   })
 })
 
-test('actions.updateGame', () => {
+test('updateGame', () => {
   const before = {
     ...initialState
   }
@@ -79,25 +129,6 @@ test('actions.updateGame', () => {
 })
 
 // describe('actions.inputTerminalCommand', () => {
-//   test('setNextAction', () => {
-//     const before = initialState
-//     const action = actions.setNextAction('save')
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       nextAction: 'save'
-//     })
-//   })
-//   test('clearNextAction', () => {
-//     const before = {
-//       ...initialState,
-//       nextAction: 'save'
-//     }
-//     const action = actions.clearNextAction()
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       nextAction: null
-//     })
-//   })
 //   test('createGistRequest', () => {
 //     const before = {
 //       ...initialState,
@@ -135,101 +166,3 @@ test('actions.updateGame', () => {
 //       }
 //     })
 //   })
-//   test('tokenRequest', () => {
-//     const before = initialState
-//     const action = actions.tokenRequest()
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       token: {
-//         ...before.token,
-//         isFetching: true
-//       }
-//     })
-//   })
-//   test('tokenSuccess', () => {
-//     const before = {
-//       ...initialState,
-//       token: {
-//         value: 'old',
-//         isFetching: true
-//       }
-//     }
-//     const action = actions.tokenSuccess({ token: 'a token' })
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       token: {
-//         value: 'a token'
-//       }
-//     })
-//   })
-//   test('clear', () => {
-//     const before = initialState
-//     const action = actions.inputTerminalCommand('clEAR')
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       terminalHistory: []
-//     })
-//   })
-//   test('help', () => {
-//     const command = 'help'
-//     const before = initialState
-//     const action = actions.inputTerminalCommand(command)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       terminalHistory: [
-//         ...before.terminalHistory,
-//         {
-//           input: command,
-//           output: [
-//             '<div>Enter <em>clear</em> to clear the screen.</div>',
-//             '<div>Enter <em>editor</em> to open the game editor.</div>',
-//             '<div>Enter <em>help</em> for help.</div>'
-//           ].join('')
-//         }
-//       ]
-//     })
-//   })
-//   test('editor', () => {
-//     const command = 'editOr'
-//     const before = initialState
-//     const action = actions.inputTerminalCommand(command)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       terminalHistory: [
-//         ...before.terminalHistory,
-//         {
-//           input: command,
-//           output: ''
-//         }
-//       ]
-//     })
-//   })
-//   test('yo', () => {
-//     const command = 'yo'
-//     const before = initialState
-//     const action = actions.inputTerminalCommand(command)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       terminalHistory: [
-//         ...before.terminalHistory,
-//         {
-//           input: command,
-//           output:
-//             "<span class='error'>I did not understand that command.</span>"
-//         }
-//       ]
-//     })
-//   })
-// })
-
-// test('actions.clearTerminal', () => {
-//   const before = {
-//     ...initialState,
-//     terminalHistory: ['a']
-//   }
-//   const action = actions.clearTerminal()
-//   expect(reducer(before, action)).toEqual({
-//     ...before,
-//     terminalHistory: []
-//   })
-// })

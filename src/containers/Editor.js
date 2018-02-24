@@ -37,7 +37,6 @@ const Editor = ({
 }) => (
   <div className='Editor'>
     <Updater gist={gist} history={history} />
-    <Title isFetching={gist.isFetching || token.isFetching} />
     <Menu
       gist={gist}
       fetchToken={fetchToken}

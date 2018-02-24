@@ -5,7 +5,9 @@ const initialState = {
   screen: screenTypes.EDITOR,
   booted: false,
   gist: {},
-  game: demo
+  game: demo,
+  token: {},
+  nextAction: null
 }
 
 export default initialState

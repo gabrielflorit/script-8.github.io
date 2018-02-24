@@ -17,11 +17,10 @@ const gist = handleActions(
 
 export default gist
 
-
-    // [actionTypes.CREATE_GIST_REQUEST]: () => ({
-    //   isFetching: true
-    // }),
-    // [actionTypes.CREATE_GIST_SUCCESS]: (state, action) => ({
-    //   isFetching: false,
-    //   data: action.payload
-    // })
+// [actionTypes.CREATE_GIST_REQUEST]: () => ({
+//   isFetching: true
+// }),
+// [actionTypes.CREATE_GIST_SUCCESS]: (state, action) => ({
+//   isFetching: false,
+//   data: action.payload
+// })

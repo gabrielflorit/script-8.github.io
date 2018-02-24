@@ -6,10 +6,19 @@ import Title from './Title.js'
 import Menu from './Menu.js'
 import CodeEditor from './CodeEditor.js'
 
-const Editor = ({ game, screen, setScreen, updateGame }) => (
+const Editor = ({
+  game,
+  screen,
+  setScreen,
+  updateGame,
+  token,
+  setNextAction,
+  fetchToken,
+  gist
+}) => (
   <div className='Editor'>
-    <Title />
-    <Menu />
+    <Title isFetching={gist.isFetching || token.isFetching} />
+    <Menu token={token} fetchToken={fetchToken} setNextAction={setNextAction} />
     <NavBar screen={screen} setScreen={setScreen} />
     <CodeEditor game={game} updateGame={updateGame} />
     <Output game={game} />
@@ -18,9 +27,13 @@ const Editor = ({ game, screen, setScreen, updateGame }) => (
 
 Editor.propTypes = {
   game: PropTypes.string,
+  gist: PropTypes.object.isRequired,
   screen: PropTypes.string.isRequired,
+  token: PropTypes.object.isRequired,
   setScreen: PropTypes.func.isRequired,
-  updateGame: PropTypes.func.isRequired
+  updateGame: PropTypes.func.isRequired,
+  setNextAction: PropTypes.func.isRequired,
+  fetchToken: PropTypes.func.isRequired
 }
 
 export default Editor

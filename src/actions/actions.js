@@ -1,20 +1,20 @@
 import { createActions } from 'redux-actions'
 import actionTypes from './actionTypes.js'
-// import GitHub from 'github-api'
 
 const actions = createActions({
   [actionTypes.SET_SCREEN]: screen => screen,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},
   [actionTypes.FETCH_GIST_SUCCESS]: data => data,
   [actionTypes.FINISH_BOOT]: () => {},
-  [actionTypes.UPDATE_GAME]: game => game
+  [actionTypes.UPDATE_GAME]: game => game,
+  [actionTypes.TOKEN_REQUEST]: () => {},
+  [actionTypes.TOKEN_SUCCESS]: token => token,
+  [actionTypes.SET_NEXT_ACTION]: action => action,
+  [actionTypes.CLEAR_NEXT_ACTION]: () => {}
 })
 
 export default actions
 
-// For fetching, try using the token, if present.
-// Otherwise hit the nowservice.
-// we can now use this https://my-service-dqzpehqqcr.now.sh/243c5109c793bf09c052
 export const fetchGist = id => dispatch => {
   dispatch(actions.fetchGistRequest())
 
@@ -27,18 +27,17 @@ export const fetchGist = id => dispatch => {
     .then(json => dispatch(actions.fetchGistSuccess(json)))
 }
 
-// export const fetchToken = code => {
-//   return function (dispatch) {
-//     dispatch(actions.tokenRequest())
+export const fetchToken = code => dispatch => {
+  dispatch(actions.tokenRequest())
 
-//     return fetch(`${process.env.REACT_APP_AUTHENTICATOR}/authenticate/${code}`)
-//       .then(
-//         response => response.json(),
-//         error => console.log('An error occurred.', error)
-//       )
-//       .then(json => dispatch(actions.tokenSuccess(json)))
-//   }
-// }
+  return window
+    .fetch(`${process.env.REACT_APP_AUTHENTICATOR}/authenticate/${code}`)
+    .then(
+      response => response.json(),
+      error => console.log('An error occurred.', error)
+    )
+    .then(json => dispatch(actions.tokenSuccess(json)))
+}
 
 // const gh = new GitHub({
 //   token
