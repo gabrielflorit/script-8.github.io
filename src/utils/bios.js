@@ -11,12 +11,11 @@ rectFill(0, 0, 128, 128, 7)
 
 const screens = [
   'glitch',
-  'stable',
-  'prenumbers',
   'numbers',
   'pre-complete',
   'complete',
-  'end'
+  'end',
+  'black'
 ]
 
 let beforeTotal = Date.now()
@@ -36,22 +35,12 @@ function update() {
   const screen = screens[screenIndex]
   i += delta
 
-  if (screen === 'glitch' && elapsed > 1000) {
+  if (screen === 'glitch' && elapsed > 500) {
     before = Date.now()
     screenIndex++
   }
 
-  if (screen === 'stable' && elapsed > 300) {
-    before = Date.now()
-    screenIndex++
-  }
-
-  if (screen === 'prenumbers' && elapsed > 50) {
-    before = Date.now()
-    screenIndex++
-  }
-
-  if (screen === 'numbers' && elapsed > 300) {
+  if (screen === 'numbers' && elapsed > 100) {
     before = Date.now()
     screenIndex++
     i = 0
@@ -61,7 +50,7 @@ function update() {
     before = Date.now()
     screenIndex++
     i = 0
-    delta = 4
+    delta = 8
   }
 
   if (screen === 'complete' && i >= 128) {
@@ -69,8 +58,9 @@ function update() {
     screenIndex++
   }
 
-  if (screen === 'end' && elapsed > 700) {
+  if (screen === 'end' && elapsed > 600) {
     end()
+    screenIndex++
     // console.log(before - beforeTotal)
   }
 }
@@ -90,16 +80,6 @@ function draw() {
     rects.forEach(rect => {
       rectFill(...rect, rect[0] + rect[1] * i/100)
     })
-  }
-
-  if (screen === 'stable') {
-    rects.forEach(rect => {
-      rectFill(...rect, rect[0])
-    })
-  }
-
-  if (screen === 'prenumbers') {
-    rectFill(0, 0, 128, 128, 7)
   }
 
   if (screen === 'numbers') {
@@ -138,6 +118,10 @@ function draw() {
   if (screen === 'end') {
     print(7, 7 * 6, 'loading RAM: 128 kb', 3)
     print(7, 7 * 8, 'ok', 0)
+  }
+
+  if (screen === 'black') {
+    // clear()
   }
 
 }
