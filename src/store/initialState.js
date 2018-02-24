@@ -1,23 +1,11 @@
 import screenTypes from '../utils/screenTypes.js'
+import demo from '../utils/demo.js'
 
 const initialState = {
-  screen: screenTypes.BOOT,
+  screen: screenTypes.RUN,
   booted: false,
   gist: {},
-  game: 'hey there'
+  game: demo
 }
 
 export default initialState
-
-// terminalHistory: [
-//   {
-//     output: `script-8 ${version}`
-//   },
-//   {
-//     output: makeOutput('help')
-//   }
-// ],
-// game: demo,
-// gist: {},
-// token: {},
-// nextAction: null

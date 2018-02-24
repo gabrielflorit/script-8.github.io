@@ -4,15 +4,14 @@ let delta = 1
 
 function update() {
   radius += delta
-  if (radius >= 64) delta = -1
-  if (radius <= 0) delta = 1
+  if (radius >= 64 || radius <= 0) delta = -delta
 }
 
 function draw() {
   clear()
+  rectFill(0, 0, 128, 128, 6)
 
-  const loops = [...new Array(8)]
-  loops.forEach((_, i) => {
+  range(8).forEach(i => {
     circFill(64, 64, radius - i * 7, i)
   })
 }
