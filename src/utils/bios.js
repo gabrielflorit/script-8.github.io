@@ -36,7 +36,7 @@ function update() {
   const screen = screens[screenIndex]
   i += delta
 
-  if (screen === 'glitch' && elapsed > 1250) {
+  if (screen === 'glitch' && elapsed > 1000) {
     before = Date.now()
     screenIndex++
   }
@@ -51,7 +51,7 @@ function update() {
     screenIndex++
   }
 
-  if (screen === 'numbers' && elapsed > 500) {
+  if (screen === 'numbers' && elapsed > 300) {
     before = Date.now()
     screenIndex++
     i = 0
