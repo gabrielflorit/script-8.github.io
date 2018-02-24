@@ -1,8 +1,7 @@
 const screenTypes = {
   BOOT: 'BOOT',
   RUN: 'RUN',
-  EDITOR: 'EDITOR',
-  OAUTH: 'OAUTH'
+  EDITOR: 'EDITOR'
 }
 
 export default screenTypes

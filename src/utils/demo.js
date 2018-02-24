@@ -1,5 +1,4 @@
-const demo = `
-let radius = 1
+const demo = `let radius = 1
 let delta = 1
 
 function update() {
@@ -14,7 +13,6 @@ function draw() {
   range(8).forEach(i => {
     circFill(64, 64, radius - i * 7, i)
   })
-}
-`
+}`
 
 export default demo

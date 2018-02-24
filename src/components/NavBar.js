@@ -1,15 +1,30 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import screenTypes from '../utils/screenTypes.js'
 
-// <NavLink exact activeClassName='active' to='/editor'>
-// <NavLink exact activeClassName='active' to='/run'>
-// <NavLink exact activeClassName='active' to='/'>
+const NavBar = ({ screen, setScreen }) => {
+  const items = [screenTypes.EDITOR, screenTypes.RUN]
 
-const NavBar = () => (
-  <ul className='NavBar'>
-    <li>Editor</li>
-    <li>Run</li>
-    <li>System</li>
-  </ul>
-)
+  const lis = items.map((d, i) => (
+    <li key={i}>
+      <button
+        onClick={() => {
+          setScreen(d)
+        }}
+        className={classNames({ active: screen === d })}
+      >
+        {d}
+      </button>
+    </li>
+  ))
+
+  return <ul className='NavBar'>{lis}</ul>
+}
+
+NavBar.propTypes = {
+  screen: PropTypes.string,
+  setScreen: PropTypes.func.isRequired
+}
 
 export default NavBar

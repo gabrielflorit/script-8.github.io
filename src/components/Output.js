@@ -3,27 +3,20 @@ import PropTypes from 'prop-types'
 import * as acorn from 'acorn'
 
 class Output extends Component {
-  constructor (props) {
-    super(props)
-
-    this.evaluate = this.evaluate.bind(this)
-  }
-
   shouldComponentUpdate () {
     return false
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.isLoaded) {
-      if (nextProps.game !== this.props.game) {
-        this.evaluate()
+      const { game } = nextProps
+      if (game !== this.props.game) {
+        this.evaluate(nextProps)
       }
     }
   }
 
-  evaluate () {
-    const { game, run, handleEnd } = this.props
-
+  evaluate ({ game, run, handleEnd }) {
     // Validate code before drawing.
     let isValid = true
     try {
@@ -52,7 +45,7 @@ class Output extends Component {
           }}
           onLoad={() => {
             this.isLoaded = true
-            this.evaluate()
+            this.evaluate(this.props)
           }}
         />
       </div>

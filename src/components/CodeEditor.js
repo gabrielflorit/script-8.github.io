@@ -16,7 +16,7 @@ class CodeEditor extends Component {
 
     codeMirror.on('change', cm => {
       const content = cm.getValue()
-      this.props.onUpdate(content)
+      this.props.updateGame(content)
     })
 
     // This timeout is to force CodeMirror to set
@@ -48,7 +48,7 @@ class CodeEditor extends Component {
 }
 
 CodeEditor.propTypes = {
-  onUpdate: PropTypes.func.isRequired,
+  updateGame: PropTypes.func.isRequired,
   game: PropTypes.string
 }
 

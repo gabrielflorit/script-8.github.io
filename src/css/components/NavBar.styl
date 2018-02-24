@@ -1,23 +1,30 @@
 .NavBar
   background $palette-7
+  margin 0
+  padding 0
+  list-style none
   color $palette-4
   @extend .VT323
   font-size $font-large
   text-transform uppercase
-  margin 0
-  padding 0
-  list-style none
+
   display flex
   align-items center
   justify-content flex-end
-  
+
   li
     padding 0
-    
-    a
-      padding 0 0.45em
+
+    button
+      border none
+      @extend .VT323
+      font-size $font-large
+      text-transform uppercase
+      padding 0 0.5em
       color $palette-5
-    
-    .active
-      color $palette-3
-      background $palette-6
+      background none
+      cursor pointer
+
+      &.active
+        color $palette-3
+        background $palette-6
