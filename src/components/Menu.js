@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import twas from 'twas'
+import _ from 'lodash'
 
 class Menu extends Component {
   constructor (props) {
@@ -47,24 +47,18 @@ class Menu extends Component {
   }
 
   render () {
-    const { gist } = this.props
-    let urlLi
-    if (gist.data && gist.data.html_url) {
-      urlLi = (
-        <li>
-          <a className='minor' target='_blank' href={gist.data.html_url}>
-            (saved {twas(new Date(gist.data.updated_at))})
-          </a>
-        </li>
-      )
-    }
+    const { gist, game } = this.props
+
+    // If the game isn't equal to the gist,
+    // set flag to dirty.
+    const gistGame = _.get(gist, 'data.files["code.js"].content', null)
+    const dirty = gistGame !== game
 
     return (
       <ul className='Menu'>
         <li>
-          <button onClick={this.onSaveClick}>Save</button>
+          <button onClick={this.onSaveClick}>Save{dirty ? ' *' : ''}</button>
         </li>
-        {urlLi}
       </ul>
     )
   }
