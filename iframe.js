@@ -23,27 +23,23 @@ window.flatten = _.flatten
 
 const noop = () => {}
 
-function update () {}
-
-function draw () {}
-
 // Force eval to run in global mode.
 const geval = eval
 
 let timer
 
 window.callCode = (game, run, endCallback = noop) => {
-  window.end = endCallback
+  window.end = _.once(endCallback)
   try {
     geval(game + ';')
     if (timer) timer.stop()
     timer = d3.interval(() => {
       try {
         geval('update && update(); draw && draw();')
-        if (!run) timer.stop()
       } catch (e) {
-        console.error(e.message)
+        console.warn(e.message)
       }
+      if (!run) timer.stop()
     }, 1000 / 30)
   } catch (e) {
     console.error(e.message)
