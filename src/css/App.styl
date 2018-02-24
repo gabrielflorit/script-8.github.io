@@ -22,3 +22,20 @@ body
 
 a
   text-decoration none
+
+button
+  border none
+  color $palette-2
+  cursor pointer
+  background none
+
+  padding 0 0.5em
+  margin 0
+
+  @extend .VT323
+  text-transform uppercase
+  font-size $font-large
+
+  &.active
+    color $palette-1
+    background $palette-6
