@@ -21,7 +21,7 @@ class Menu extends Component {
 
   save () {
     const { token, game, saveGist, gist } = this.props
-    saveGist({ token: token.value, game, gist })
+    saveGist({ token, game, gist })
   }
 
   onSaveClick () {

@@ -1,6 +1,7 @@
 import { createActions } from 'redux-actions'
-import actionTypes from './actionTypes.js'
 import GitHub from 'github-api'
+import _ from 'lodash'
+import actionTypes from './actionTypes.js'
 
 const actions = createActions({
   [actionTypes.SET_SCREEN]: screen => screen,
@@ -42,12 +43,13 @@ export const fetchToken = code => dispatch => {
     .then(({ token }) => {
       const gh = new GitHub({ token })
 
-      return gh.getUser()
+      return gh
+        .getUser()
         .getProfile()
         .then(
           response => ({
             token,
-            user: response.data,
+            user: response.data
           }),
           error => console.log('An error occurred.', error)
         )
@@ -56,19 +58,13 @@ export const fetchToken = code => dispatch => {
 }
 
 export const saveGist = ({ game, token, gist }) => dispatch => {
-
-  // If there is no gist, create it.
-  // If there is a gist, and it is ours, update it.
-  // If there is a gist, and it is not ours, fork it.
-
   dispatch(actions.saveGistRequest())
 
   const gh = new GitHub({
-    token
+    token: token.value
   })
 
-  const gist = gh.getGist()
-  const data = {
+  const preparePayload = () => ({
     public: true,
     description: 'SCRIPT-8',
     files: {
@@ -76,13 +72,39 @@ export const saveGist = ({ game, token, gist }) => dispatch => {
         content: game
       }
     }
-  }
+  })
 
-  return gist
-    .create(data)
-    .then(
-      response => response.data,
-      error => console.log('An error occurred.', error)
-    )
-    .then(data => dispatch(actions.saveGistSuccess(data)))
+  const createGist = () =>
+    gh
+      .getGist()
+      .create(preparePayload())
+      .then(
+        response => response.data,
+        error => console.log('An error occurred.', error)
+      )
+      .then(data => dispatch(actions.saveGistSuccess(data)))
+
+  const updateGist = () =>
+    gh
+      .getGist(gist.data.id)
+      .update(preparePayload())
+      .then(
+        response => response.data,
+        error => console.log('An error occurred.', error)
+      )
+      .then(data => dispatch(actions.saveGistSuccess(data)))
+
+  // If there is no gist, create it.
+  if (!gist.data) {
+    return createGist()
+  } else {
+    // If there is a gist, and it is ours,
+    if (_.get(gist, 'data.owner.login', null) === token.user.login) {
+      // update it.
+      return updateGist()
+    } else {
+      // If it is not ours, create it.
+      return createGist()
+    }
+  }
 }
