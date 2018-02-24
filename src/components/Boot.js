@@ -50,7 +50,7 @@ class Boot extends Component {
     return (
       <div className='Boot'>
         <div className='color-flash'>
-          <Output game={bios} run handleEnd={finishBoot} doNotUpdate />
+          <Output game={bios} run handleEnd={finishBoot} />
         </div>
       </div>
     )

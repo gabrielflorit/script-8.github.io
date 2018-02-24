@@ -1,11 +1,10 @@
 import screenTypes from '../utils/screenTypes.js'
-// import { version } from '../../package.json'
 
 const initialState = {
   screen: screenTypes.BOOT,
   booted: false,
   gist: {},
-  game: null
+  game: 'hey there'
 }
 
 export default initialState

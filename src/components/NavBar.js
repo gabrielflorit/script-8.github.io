@@ -1,23 +1,14 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+
+// <NavLink exact activeClassName='active' to='/editor'>
+// <NavLink exact activeClassName='active' to='/run'>
+// <NavLink exact activeClassName='active' to='/'>
 
 const NavBar = () => (
   <ul className='NavBar'>
-    <li>
-      <NavLink exact activeClassName='active' to='/editor'>
-        Editor
-      </NavLink>
-    </li>
-    <li>
-      <NavLink exact activeClassName='active' to='/run'>
-        Run
-      </NavLink>
-    </li>
-    <li>
-      <NavLink exact activeClassName='active' to='/'>
-        System
-      </NavLink>
-    </li>
+    <li>Editor</li>
+    <li>Run</li>
+    <li>System</li>
   </ul>
 )
 

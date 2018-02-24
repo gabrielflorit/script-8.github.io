@@ -6,10 +6,11 @@ import actions, { fetchGist } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import '../css/App.css'
 
-const mapStateToProps = ({ screen, gist, booted }) => ({
+const mapStateToProps = ({ screen, gist, booted, game }) => ({
   screen,
   gist,
-  booted
+  booted,
+  game
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
@@ -18,7 +19,15 @@ const mapDispatchToProps = (dispatch, props) => ({
   fetchGist: id => dispatch(fetchGist(id))
 })
 
-const App = ({ screen, setScreen, gist, fetchGist, booted, finishBoot }) => {
+const App = ({
+  screen,
+  setScreen,
+  gist,
+  fetchGist,
+  booted,
+  finishBoot,
+  game
+}) => {
   const options = {
     [screenTypes.BOOT]: () => (
       <Boot
@@ -29,7 +38,7 @@ const App = ({ screen, setScreen, gist, fetchGist, booted, finishBoot }) => {
         booted={booted}
       />
     ),
-    [screenTypes.RUN]: () => <Run />
+    [screenTypes.RUN]: () => <Run game={game} />
   }
 
   const component = options[screen]()

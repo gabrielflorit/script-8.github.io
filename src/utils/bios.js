@@ -71,7 +71,7 @@ function update() {
 
   if (screen === 'end' && elapsed > 700) {
     end()
-    console.log(before - beforeTotal)
+    // console.log(before - beforeTotal)
   }
 }
 

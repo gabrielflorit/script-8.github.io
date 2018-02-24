@@ -7,7 +7,7 @@ const game = handleActions(
   {
     [actionTypes.UPDATE_GAME]: (state, action) => action.payload,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      _.get(action.payload, 'files["code.js"].content')
+      _.get(action.payload, 'files["code.js"].content', null)
   },
   initialState.game
 )
