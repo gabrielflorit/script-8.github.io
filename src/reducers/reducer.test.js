@@ -43,11 +43,12 @@ test('tokenSuccess', () => {
       isFetching: true
     }
   }
-  const action = actions.tokenSuccess({ token: 'a token' })
+  const action = actions.tokenSuccess({ token: 'a token', user: 'gabriel' })
   expect(reducer(before, action)).toEqual({
     ...before,
     token: {
-      value: 'a token'
+      value: 'a token',
+      user: 'gabriel'
     }
   })
 })

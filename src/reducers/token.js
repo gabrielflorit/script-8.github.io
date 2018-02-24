@@ -8,7 +8,8 @@ const token = handleActions(
       isFetching: true
     }),
     [actionTypes.TOKEN_SUCCESS]: (state, action) => ({
-      value: action.payload.token
+      value: action.payload.token,
+      user: action.payload.user
     })
   },
   initialState.token

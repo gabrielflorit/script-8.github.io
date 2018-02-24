@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id)),
-  saveGist: ({ game, token }) => dispatch(saveGist({ game, token })),
+  saveGist: ({ game, token, gist }) => dispatch(saveGist({ game, token, gist })),
   fetchToken: token => dispatch(fetchToken(token))
 })
 

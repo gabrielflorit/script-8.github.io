@@ -9,7 +9,7 @@ const actions = createActions({
   [actionTypes.FINISH_BOOT]: () => {},
   [actionTypes.UPDATE_GAME]: game => game,
   [actionTypes.TOKEN_REQUEST]: () => {},
-  [actionTypes.TOKEN_SUCCESS]: token => token,
+  [actionTypes.TOKEN_SUCCESS]: data => data,
   [actionTypes.SET_NEXT_ACTION]: action => action,
   [actionTypes.CLEAR_NEXT_ACTION]: () => {},
   [actionTypes.SAVE_GIST_REQUEST]: () => {},
@@ -39,10 +39,28 @@ export const fetchToken = code => dispatch => {
       response => response.json(),
       error => console.log('An error occurred.', error)
     )
+    .then(({ token }) => {
+      const gh = new GitHub({ token })
+
+      return gh.getUser()
+        .getProfile()
+        .then(
+          response => ({
+            token,
+            user: response.data,
+          }),
+          error => console.log('An error occurred.', error)
+        )
+    })
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
-export const saveGist = ({ game, token }) => dispatch => {
+export const saveGist = ({ game, token, gist }) => dispatch => {
+
+  // If there is no gist, create it.
+  // If there is a gist, and it is ours, update it.
+  // If there is a gist, and it is not ours, fork it.
+
   dispatch(actions.saveGistRequest())
 
   const gh = new GitHub({
