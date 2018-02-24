@@ -1,7 +1,6 @@
 # script-8
 
 ## TODO
-- what if FETCH_GIST_SUCCESS happens after FINISH_BOOT
 - save to gist (MOST IMPORTANT)
   - if it's mine, save a new revision
   - if it's not mine, fork and save
