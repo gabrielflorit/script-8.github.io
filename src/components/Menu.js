@@ -7,6 +7,7 @@ class Menu extends Component {
     super(props)
 
     this.onSaveClick = this.onSaveClick.bind(this)
+    this.onNewClick = this.onNewClick.bind(this)
     this.save = this.save.bind(this)
     window.handleCode = props.fetchToken
   }
@@ -22,6 +23,10 @@ class Menu extends Component {
   save () {
     const { token, game, saveGist, gist } = this.props
     saveGist({ token, game, gist })
+  }
+
+  onNewClick () {
+    this.props.newGame()
   }
 
   onSaveClick () {
@@ -57,6 +62,9 @@ class Menu extends Component {
     return (
       <ul className='Menu'>
         <li>
+          <button onClick={this.onNewClick}>New</button>
+        </li>
+        <li>
           <button onClick={this.onSaveClick}>Save{dirty ? ' *' : ''}</button>
         </li>
       </ul>
@@ -71,6 +79,7 @@ Menu.propTypes = {
   gist: PropTypes.object.isRequired,
   setNextAction: PropTypes.func.isRequired,
   fetchToken: PropTypes.func.isRequired,
+  newGame: PropTypes.func.isRequired,
   nextAction: PropTypes.string,
   token: PropTypes.object.isRequired
 }

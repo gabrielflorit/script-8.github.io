@@ -2,6 +2,22 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+test('newGame', () => {
+  const before = {
+    ...initialState,
+    gist: {
+      something: 'here'
+    },
+    game: 'something here'
+  }
+  const action = actions.newGame()
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    gist: {},
+    game: 'SCRIPT-8 NEW'
+  })
+})
+
 test('setNextAction', () => {
   const before = initialState
   const action = actions.setNextAction('save')

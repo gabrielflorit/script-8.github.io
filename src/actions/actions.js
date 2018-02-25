@@ -9,6 +9,7 @@ const actions = createActions({
   [actionTypes.FETCH_GIST_SUCCESS]: data => data,
   [actionTypes.FINISH_BOOT]: () => {},
   [actionTypes.UPDATE_GAME]: game => game,
+  [actionTypes.NEW_GAME]: () => {},
   [actionTypes.TOKEN_REQUEST]: () => {},
   [actionTypes.TOKEN_SUCCESS]: data => data,
   [actionTypes.SET_NEXT_ACTION]: action => action,

@@ -18,6 +18,7 @@ const Editor = ({
   fetchToken,
   saveGist,
   gist,
+  newGame,
   nextAction
 }) => (
   <div className='Editor'>
@@ -32,6 +33,7 @@ const Editor = ({
       fetchToken={fetchToken}
       clearNextAction={clearNextAction}
       setNextAction={setNextAction}
+      newGame={newGame}
     />
     <NavBar screen={screen} setScreen={setScreen} />
     <CodeEditor game={game} updateGame={updateGame} />
@@ -50,7 +52,8 @@ Editor.propTypes = {
   clearNextAction: PropTypes.func.isRequired,
   setNextAction: PropTypes.func.isRequired,
   saveGist: PropTypes.func.isRequired,
-  fetchToken: PropTypes.func.isRequired
+  fetchToken: PropTypes.func.isRequired,
+  newGame: PropTypes.func.isRequired
 }
 
 export default Editor

@@ -4,6 +4,7 @@ import initialState from '../store/initialState.js'
 
 const gist = handleActions(
   {
+    [actionTypes.NEW_GAME]: () => {},
     [actionTypes.FETCH_GIST_REQUEST]: () => ({
       isFetching: true
     }),

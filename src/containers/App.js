@@ -29,6 +29,7 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch, props) => ({
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction)),
+  newGame: () => dispatch(actions.newGame()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
   updateGame: game => dispatch(actions.updateGame(game)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
@@ -52,7 +53,8 @@ const App = ({
   token,
   saveGist,
   setNextAction,
-  nextAction
+  nextAction,
+  newGame
 }) => {
   const options = {
     [screenTypes.BOOT]: () => (
@@ -80,6 +82,7 @@ const App = ({
         screen={screen}
         setScreen={setScreen}
         updateGame={updateGame}
+        newGame={newGame}
       />
     )
   }
