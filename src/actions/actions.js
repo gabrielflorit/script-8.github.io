@@ -65,12 +65,20 @@ export const saveGist = ({ game, token, gist }) => dispatch => {
     token: token.value
   })
 
-  const preparePayload = () => ({
+  const createLink = id =>
+    id ? ` Click [here](https://script-8.github.io/?id=${id}) to boot it.` : ''
+
+  const preparePayload = id => ({
     public: true,
     description: 'SCRIPT-8',
     files: {
       'code.js': {
         content: game
+      },
+      'README.md': {
+        content: `This is a [SCRIPT-8](https://script-8.github.io) cassette.${createLink(
+          id
+        )}`
       }
     }
   })
@@ -88,7 +96,7 @@ export const saveGist = ({ game, token, gist }) => dispatch => {
   const updateGist = () =>
     gh
       .getGist(gist.data.id)
-      .update(preparePayload())
+      .update(preparePayload(gist.data.id))
       .then(
         response => response.data,
         error => console.log('An error occurred.', error)
