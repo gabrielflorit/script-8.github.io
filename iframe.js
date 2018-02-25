@@ -1,4 +1,5 @@
 import canvasAPI from './canvasAPI.js'
+import blank from './blank.js'
 
 // Initialize canvas.
 const canvas = document.querySelector('canvas')
@@ -30,6 +31,9 @@ let timer
 
 window.callCode = (game, run, endCallback = noop) => {
   window.end = _.once(endCallback)
+  if (!game || !game.length) {
+    game = blank
+  }
   try {
     geval(game + ';')
     if (timer) timer.stop()
