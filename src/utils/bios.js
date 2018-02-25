@@ -14,8 +14,7 @@ const screens = [
   'numbers',
   'pre-complete',
   'complete',
-  'end',
-  'black'
+  'end'
 ]
 
 let beforeTotal = Date.now()
@@ -50,7 +49,7 @@ function update() {
     before = Date.now()
     screenIndex++
     i = 0
-    delta = 8
+    delta = 4
   }
 
   if (screen === 'complete' && i >= 128) {
@@ -60,7 +59,6 @@ function update() {
 
   if (screen === 'end' && elapsed > 600) {
     end()
-    screenIndex++
     // console.log(before - beforeTotal)
   }
 }
@@ -101,7 +99,8 @@ function draw() {
     print(7, 7 * 1, 'script-8', 0)
     print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
     print(7, 7 * 4, 'version ${version}', 3)
-    print(7, 7 * 6, "loading RAM: " + (i) + ' kb', 3)
+    print(7, 7 * 6, "RAM: " + (i) + ' kb', 3)
+    print(7, 7 * 9, "booting cassette " + range(Math.floor(i / 8)).map(d => '.').join(''), 3)
     rectFill(48 + 3 * 0,  7, 3, 5, 0)
     rectFill(48 + 3 * 1,  7, 3, 5, 1)
     rectFill(48 + 3 * 2,  7, 3, 5, 2)
@@ -116,12 +115,8 @@ function draw() {
   }
 
   if (screen === 'end') {
-    print(7, 7 * 6, 'loading RAM: 128 kb', 3)
-    print(7, 7 * 8, 'ok', 0)
-  }
-
-  if (screen === 'black') {
-    // clear()
+    print(7, 7 * 6, 'RAM: 128 kb', 3)
+    print(106, 7 * 9, 'OK', 0)
   }
 
 }
