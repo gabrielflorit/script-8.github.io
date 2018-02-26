@@ -9,9 +9,7 @@ class Updater extends Component {
     // make sure the url reflects this
     const { gist } = this.props
     const id = _.get(gist, 'data.id')
-    if (id) {
-      this.updateUrl(id)
-    }
+    this.updateUrl(id)
   }
 
   componentDidUpdate (prevProps) {
@@ -21,7 +19,7 @@ class Updater extends Component {
     const { gist } = this.props
     const oldId = _.get(prevProps, 'gist.data.id')
     const newId = _.get(gist, 'data.id')
-    if (newId && newId !== oldId) {
+    if (newId !== oldId) {
       this.updateUrl(newId)
     }
   }
@@ -31,7 +29,7 @@ class Updater extends Component {
     const params = new window.URLSearchParams(search)
     const urlId = params.get('id')
     if (urlId !== newId) {
-      window.history.pushState(null, null, `/?id=${newId}`)
+      window.history.pushState(null, null, newId ? `/?id=${newId}` : '/')
     }
   }
 

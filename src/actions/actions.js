@@ -24,7 +24,7 @@ export const fetchGist = id => dispatch => {
   dispatch(actions.fetchGistRequest())
 
   return window
-    .fetch(`https://my-service-aprcdrtrnj.now.sh/${id}`)
+    .fetch(`https://my-service-pyccaoirrn.now.sh/${id}`)
     .then(
       response => response.json(),
       error => console.log('An error occurred.', error)
