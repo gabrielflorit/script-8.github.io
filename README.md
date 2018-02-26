@@ -1,7 +1,7 @@
 # script-8
 
 ## TODO
-- add key listeners so we can play the game
+- don't show OK until we are done for real
 
 - add sound
 
