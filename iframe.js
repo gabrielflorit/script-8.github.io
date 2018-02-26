@@ -22,6 +22,24 @@ window.clear = clear
 window.range = _.range
 window.flatten = _.flatten
 
+// Define arrow key helpers.
+let keys = new Set()
+window.arrowUp = () => keys.has('ArrowUp')
+window.arrowRight = () => keys.has('ArrowRight')
+window.arrowDown = () => keys.has('ArrowDown')
+window.arrowLeft = () => keys.has('ArrowLeft')
+
+// Keep track of what keys we're pressing.
+document.addEventListener('keydown', e => {
+  const keyName = e.key
+  keys.add(keyName)
+})
+
+document.addEventListener('keyup', e => {
+  const keyName = e.key
+  keys.delete(keyName)
+})
+
 const noop = () => {}
 
 // Force eval to run in global mode.
@@ -49,21 +67,3 @@ window.callCode = (game, run, endCallback = noop) => {
     console.error(e.message)
   }
 }
-
-// // Define arrow key helpers.
-// let keys = new Set()
-// const arrowUp = () => keys.has('ArrowUp')
-// const arrowRight = () => keys.has('ArrowRight')
-// const arrowDown = () => keys.has('ArrowDown')
-// const arrowLeft = () => keys.has('ArrowLeft')
-
-// // Keep track of what keys we're pressing.
-// document.addEventListener('keydown', e => {
-//   const keyName = event.key
-//   keys.add(keyName)
-// })
-
-// document.addEventListener('keyup', e => {
-//   const keyName = event.key
-//   keys.delete(keyName)
-// })
