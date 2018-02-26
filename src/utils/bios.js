@@ -49,7 +49,7 @@ function update() {
     before = Date.now()
     screenIndex++
     i = 0
-    delta = 2
+    delta = 4
   }
 
   if (screen === 'ram' && i >= 128) {

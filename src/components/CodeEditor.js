@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import setupLinter from '../utils/setupLinter.js'
+import commands from '../utils/commands.js'
 
 class CodeEditor extends Component {
   constructor (props) {
@@ -17,7 +18,13 @@ class CodeEditor extends Component {
       theme: 'nyx8',
       lint: true,
       lineNumbers: true,
-      cursorBlinkRate: 0
+      tabSize: 2,
+      cursorBlinkRate: 0,
+      extraKeys: window.CodeMirror.normalizeKeyMap({
+        Tab: commands.tab,
+        'Cmd-/': commands.comment,
+        'Ctrl-/': commands.comment
+      })
     })
 
     this.codeMirror.on('change', cm => {
