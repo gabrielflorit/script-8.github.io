@@ -4,7 +4,8 @@ import classNames from 'classnames'
 import screenTypes from '../utils/screenTypes.js'
 
 const NavBar = ({ screen, setScreen }) => {
-  const items = [screenTypes.CODE, screenTypes.SFX, screenTypes.RUN]
+  // const items = [screenTypes.CODE, screenTypes.SFX, screenTypes.RUN]
+  const items = [screenTypes.CODE, screenTypes.RUN]
 
   const lis = items.map((d, i) => (
     <li key={i}>
