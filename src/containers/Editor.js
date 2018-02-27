@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Menu from './Menu.js'
-import Output from '../components/Output.js'
+import Output from './Output.js'
 import NavBar from '../components/NavBar.js'
 import Title from '../components/Title.js'
 import CodeEditor from '../components/CodeEditor.js'
@@ -22,12 +22,12 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 const Editor = ({ gist, token, screen, game, setScreen, updateGame }) => (
   <div className='Editor'>
-    <Updater gist={gist} />
+    <Updater />
     <Title isFetching={gist.isFetching || token.isFetching} />
     <Menu />
     <NavBar screen={screen} setScreen={setScreen} />
     <CodeEditor game={game} updateGame={updateGame} />
-    <Output game={game} />
+    <Output />
   </div>
 )
 

@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import * as acorn from 'acorn'
+import { connect } from 'react-redux'
+import actions from '../actions/actions.js'
+import bios from '../utils/bios.js'
+import screenTypes from '../utils/screenTypes.js'
+
+const mapStateToProps = ({ game, screen }) => ({
+  game,
+  screen
+})
+
+const mapDispatchToProps = (dispatch, props) => ({
+  finishBoot: () => dispatch(actions.finishBoot())
+})
 
 class Output extends Component {
   shouldComponentUpdate () {
@@ -16,11 +28,13 @@ class Output extends Component {
     }
   }
 
-  evaluate ({ game, run, handleEnd }) {
+  evaluate ({ game, finishBoot, screen }) {
+    const thegame = screen === screenTypes.BOOT ? bios : game
+    const run = screen === screenTypes.BOOT || screen === screenTypes.RUN
     // Validate code before drawing.
     let isValid = true
     try {
-      acorn.parse(game)
+      acorn.parse(thegame)
     } catch (e) {
       isValid = false
     }
@@ -30,7 +44,7 @@ class Output extends Component {
       const iframe = window.frames[0]
 
       // Send iframe the game code.
-      iframe.callCode(game, run, handleEnd)
+      iframe.callCode(thegame, run, finishBoot)
     }
   }
 
@@ -53,10 +67,4 @@ class Output extends Component {
   }
 }
 
-Output.propTypes = {
-  game: PropTypes.string,
-  run: PropTypes.bool,
-  handleEnd: PropTypes.func
-}
-
-export default Output
+export default connect(mapStateToProps, mapDispatchToProps)(Output)

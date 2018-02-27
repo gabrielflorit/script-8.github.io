@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Updater from './Updater.js'
-import Output from '../components/Output.js'
+import Output from './Output.js'
 import screenTypes from '../utils/screenTypes.js'
-import bios from '../utils/bios.js'
 import actions, { fetchGist } from '../actions/actions.js'
 
 const mapStateToProps = ({ gist, booted }) => ({
@@ -13,7 +12,6 @@ const mapStateToProps = ({ gist, booted }) => ({
 
 const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
-  finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id))
 })
 
@@ -47,11 +45,10 @@ class Boot extends Component {
   }
 
   render () {
-    const { finishBoot } = this.props
     return (
       <div className='Boot'>
         <Updater />
-        <Output game={bios} run handleEnd={finishBoot} />
+        <Output />
       </div>
     )
   }
