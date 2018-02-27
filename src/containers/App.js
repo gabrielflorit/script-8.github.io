@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Boot from './Boot.js'
-import Run from '../components/Run.js'
+import Run from './Run.js'
 import Editor from '../components/Editor.js'
 import actions, { saveGist, fetchGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -54,19 +54,8 @@ const App = ({
   newGame
 }) => {
   const options = {
-    [screenTypes.BOOT]: () => (
-      <Boot />
-      // <Boot
-      //   setScreen={setScreen}
-      //   fetchGist={fetchGist}
-      //   finishBoot={finishBoot}
-      //   gist={gist}
-      //   booted={booted}
-      // />
-    ),
-    [screenTypes.RUN]: () => (
-      <Run game={game} screen={screen} setScreen={setScreen} gist={gist} />
-    ),
+    [screenTypes.BOOT]: () => <Boot />,
+    [screenTypes.RUN]: () => <Run />,
     [screenTypes.CODE]: () => (
       <Editor
         game={game}
