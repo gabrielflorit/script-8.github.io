@@ -3,6 +3,8 @@ import * as d3 from 'd3'
 import canvasAPI from './utils/canvasAPI/index.js'
 import blank from './utils/blank.js'
 
+window.script8 = {}
+
 // Initialize canvas.
 const canvas = document.querySelector('canvas')
 const size = 128
@@ -50,8 +52,8 @@ const geval = eval
 
 let timer
 
-window.script8callCode = (game, run, endCallback = noop) => {
-  window.script8end = _.once(endCallback)
+window.script8.callCode = (game, run, endCallback = noop) => {
+  window.script8.end = _.once(endCallback)
   if (!game || !game.length) {
     game = blank
   }

@@ -5,6 +5,8 @@ import App from './containers/App.js'
 import store from './store/store.js'
 import { unregister } from './registerServiceWorker'
 
+window.script8 = window.script8 || {}
+
 render(
   <Provider store={store}>
     <App />

@@ -58,7 +58,7 @@ function update() {
   }
 
   if (screen === 'end' && elapsed > 600) {
-    script8end()
+    script8.end()
     // console.log(before - beforeTotal)
   }
 }
