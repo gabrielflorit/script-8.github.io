@@ -5,9 +5,9 @@ import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
 
-const mapStateToProps = ({ game, screen }) => ({
-  game,
-  screen
+const mapStateToProps = ({ screen, game }) => ({
+  game: screen === screenTypes.BOOT ? bios : game,
+  run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
@@ -28,13 +28,11 @@ class Output extends Component {
     }
   }
 
-  evaluate ({ game, finishBoot, screen }) {
-    const thegame = screen === screenTypes.BOOT ? bios : game
-    const run = screen === screenTypes.BOOT || screen === screenTypes.RUN
+  evaluate ({ game, finishBoot, run }) {
     // Validate code before drawing.
     let isValid = true
     try {
-      acorn.parse(thegame)
+      acorn.parse(game)
     } catch (e) {
       isValid = false
     }
@@ -44,7 +42,7 @@ class Output extends Component {
       const iframe = window.frames[0]
 
       // Send iframe the game code.
-      iframe.callCode(thegame, run, finishBoot)
+      iframe.callCode(game, run, finishBoot)
     }
   }
 
