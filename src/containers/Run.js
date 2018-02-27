@@ -4,7 +4,7 @@ import actions from '../actions/actions.js'
 import Output from '../components/Output.js'
 import NavBar from '../components/NavBar.js'
 import Title from '../components/Title.js'
-import Updater from '../components/Updater.js'
+import Updater from './Updater.js'
 
 const mapStateToProps = ({ screen, gist, game }) => ({
   screen,

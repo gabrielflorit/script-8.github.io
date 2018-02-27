@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import screenTypes from '../utils/screenTypes.js'
+import Updater from './Updater.js'
 import Output from '../components/Output.js'
-import Updater from '../components/Updater.js'
+import screenTypes from '../utils/screenTypes.js'
 import bios from '../utils/bios.js'
 import actions, { fetchGist } from '../actions/actions.js'
 
@@ -47,13 +47,11 @@ class Boot extends Component {
   }
 
   render () {
-    const { finishBoot, gist } = this.props
+    const { finishBoot } = this.props
     return (
       <div className='Boot'>
-        <Updater gist={gist} />
-        <div className='color-flash'>
-          <Output game={bios} run handleEnd={finishBoot} />
-        </div>
+        <Updater />
+        <Output game={bios} run handleEnd={finishBoot} />
       </div>
     )
   }

@@ -1,6 +1,12 @@
 import { Component } from 'react'
-import PropTypes from 'prop-types'
 import _ from 'lodash'
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ gist }) => ({
+  gist
+})
+
+const mapDispatchToProps = () => ({})
 
 class Updater extends Component {
   componentDidMount () {
@@ -38,8 +44,4 @@ class Updater extends Component {
   }
 }
 
-Updater.propTypes = {
-  gist: PropTypes.object.isRequired
-}
-
-export default Updater
+export default connect(mapStateToProps, mapDispatchToProps)(Updater)
