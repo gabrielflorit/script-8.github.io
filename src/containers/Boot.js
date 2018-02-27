@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import screenTypes from '../utils/screenTypes.js'
 import Output from '../components/Output.js'
 import Updater from '../components/Updater.js'
@@ -58,14 +57,6 @@ class Boot extends Component {
       </div>
     )
   }
-}
-
-Boot.propTypes = {
-  fetchGist: PropTypes.func.isRequired,
-  finishBoot: PropTypes.func.isRequired,
-  setScreen: PropTypes.func.isRequired,
-  gist: PropTypes.object.isRequired,
-  booted: PropTypes.bool.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Boot)
