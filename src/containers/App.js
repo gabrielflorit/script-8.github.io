@@ -5,7 +5,10 @@ import Sfx from './Sfx.js'
 import Run from './Run.js'
 import Editor from './Editor.js'
 import screenTypes from '../utils/screenTypes.js'
+import { version } from '../../package.json'
 import '../css/App.css'
+
+console.log(JSON.stringify(`SCRIPT-8 v ${version}`, null, 2))
 
 const mapStateToProps = ({ screen }) => ({
   screen
