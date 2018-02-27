@@ -1,4 +1,4 @@
-import colors from './colors.js'
+import colors from '../colors.js'
 import circle from './circle.js'
 import alphabet from './alphabet.js'
 
@@ -6,7 +6,8 @@ const canvasAPI = ({ ctx, size }) => ({
   print (x, y, letters, c) {
     const color = colors.rgb(c)
 
-    const grids = letters.toString()
+    const grids = letters
+      .toString()
       // Split into individual letters.
       .split('')
       // Get the pixels and the letter's width.
