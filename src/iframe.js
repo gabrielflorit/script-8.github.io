@@ -1,5 +1,7 @@
-import _ from 'lodash'
-import * as d3 from 'd3'
+import { interval } from 'd3-timer'
+import range from 'lodash/range'
+import flatten from 'lodash/flatten'
+import once from 'lodash/once'
 import canvasAPI from './utils/canvasAPI/index.js'
 import blank from './utils/blank.js'
 
@@ -23,8 +25,8 @@ window.rectFill = rectFill
 window.circStroke = circStroke
 window.circFill = circFill
 window.clear = clear
-window.range = _.range
-window.flatten = _.flatten
+window.range = range
+window.flatten = flatten
 
 // Define arrow key helpers.
 let keys = new Set()
@@ -53,14 +55,14 @@ const geval = eval
 let timer
 
 window.script8.callCode = (game, run, endCallback = noop) => {
-  window.script8.end = _.once(endCallback)
+  window.script8.end = once(endCallback)
   if (!game || !game.length) {
     game = blank
   }
   try {
     geval(game + ';')
     if (timer) timer.stop()
-    timer = d3.interval(() => {
+    timer = interval(() => {
       try {
         geval('update && update(); draw && draw();')
       } catch (e) {
