@@ -1,6 +1,23 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import _ from 'lodash'
+import actions, { saveGist, fetchToken } from '../actions/actions.js'
+
+const mapStateToProps = ({ gist, game, token, nextAction }) => ({
+  gist,
+  game,
+  token,
+  nextAction
+})
+
+const mapDispatchToProps = (dispatch, props) => ({
+  clearNextAction: () => dispatch(actions.clearNextAction()),
+  fetchToken: token => dispatch(fetchToken(token)),
+  newGame: () => dispatch(actions.newGame()),
+  saveGist: ({ game, token, gist }) =>
+    dispatch(saveGist({ game, token, gist })),
+  setNextAction: nextAction => dispatch(actions.setNextAction(nextAction))
+})
 
 class Menu extends Component {
   constructor (props) {
@@ -72,16 +89,4 @@ class Menu extends Component {
   }
 }
 
-Menu.propTypes = {
-  saveGist: PropTypes.func,
-  clearNextAction: PropTypes.func.isRequired,
-  game: PropTypes.string,
-  gist: PropTypes.object.isRequired,
-  setNextAction: PropTypes.func.isRequired,
-  fetchToken: PropTypes.func.isRequired,
-  newGame: PropTypes.func.isRequired,
-  nextAction: PropTypes.string,
-  token: PropTypes.object.isRequired
-}
-
-export default Menu
+export default connect(mapStateToProps, mapDispatchToProps)(Menu)

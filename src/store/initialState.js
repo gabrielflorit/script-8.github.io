@@ -2,7 +2,8 @@ import screenTypes from '../utils/screenTypes.js'
 import demo from '../utils/demo.js'
 
 const initialState = {
-  screen: screenTypes.BOOT,
+  screen: screenTypes.SFX,
+  // screen: screenTypes.BOOT,
   booted: false,
   gist: {},
   game: demo,
