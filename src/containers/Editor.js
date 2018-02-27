@@ -2,17 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Menu from './Menu.js'
 import Output from './Output.js'
+import Title from './Title.js'
 import NavBar from '../components/NavBar.js'
-import Title from '../components/Title.js'
 import CodeEditor from '../components/CodeEditor.js'
 import Updater from './Updater.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ screen, gist, game, token }) => ({
+const mapStateToProps = ({ screen, game }) => ({
   screen,
-  gist,
-  game,
-  token
+  game
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
@@ -20,10 +18,10 @@ const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen))
 })
 
-const Editor = ({ gist, token, screen, game, setScreen, updateGame }) => (
+const Editor = ({ screen, game, setScreen, updateGame }) => (
   <div className='Editor'>
     <Updater />
-    <Title isFetching={gist.isFetching || token.isFetching} />
+    <Title />
     <Menu />
     <NavBar screen={screen} setScreen={setScreen} />
     <CodeEditor game={game} updateGame={updateGame} />

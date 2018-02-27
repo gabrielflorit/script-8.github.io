@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import Output from './Output.js'
 import NavBar from '../components/NavBar.js'
-import Title from '../components/Title.js'
+import Title from './Title.js'
 import Updater from './Updater.js'
 
 const mapStateToProps = ({ screen }) => ({
