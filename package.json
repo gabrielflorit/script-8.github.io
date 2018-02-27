@@ -24,8 +24,8 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
-    "build-iframe": "cp src/index.js src/temp.js && cp src/iframe.js src/index.js && react-scripts build && mv build/static/js/*.js public/iframe-build.js && cp src/temp.js src/index.js && rm src/temp.js",
-    "predeploy": "npm run build && npm run build-iframe",
+    "build-iframe": "cp src/index.js src/temp.js && cp src/iframe.js src/index.js && react-scripts build && mv build/static/js/*.js public/iframe-build.js && cp src/temp.js src/index.js && rm src/temp.js && rm build/static/js/*.map",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
