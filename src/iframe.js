@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import * as d3 from 'd3'
-import canvasAPI from './canvasAPI.js'
-import blank from './blank.js'
+import canvasAPI from './utils/canvasAPI/index.js'
+import blank from './utils/blank.js'
 
 // Initialize canvas.
 const canvas = document.querySelector('canvas')

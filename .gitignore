@@ -1,5 +1,6 @@
 node_modules
 build
+public/iframe-build.js
 src/css/App.css
 
 .DS_Store
