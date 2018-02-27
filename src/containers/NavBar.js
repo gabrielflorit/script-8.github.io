@@ -1,7 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import classNames from 'classnames'
 import screenTypes from '../utils/screenTypes.js'
+import actions from '../actions/actions.js'
+
+const mapStateToProps = ({ screen }) => ({
+  screen
+})
+
+const mapDispatchToProps = (dispatch, props) => ({
+  setScreen: screen => dispatch(actions.setScreen(screen))
+})
 
 const NavBar = ({ screen, setScreen }) => {
   // const items = [screenTypes.CODE, screenTypes.SFX, screenTypes.RUN]
@@ -23,9 +32,4 @@ const NavBar = ({ screen, setScreen }) => {
   return <ul className='NavBar'>{lis}</ul>
 }
 
-NavBar.propTypes = {
-  screen: PropTypes.string,
-  setScreen: PropTypes.func.isRequired
-}
-
-export default NavBar
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar)

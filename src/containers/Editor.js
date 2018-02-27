@@ -8,22 +8,20 @@ import CodeEditor from '../components/CodeEditor.js'
 import Updater from './Updater.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ screen, game }) => ({
-  screen,
+const mapStateToProps = ({ game }) => ({
   game
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
-  updateGame: game => dispatch(actions.updateGame(game)),
-  setScreen: screen => dispatch(actions.setScreen(screen))
+  updateGame: game => dispatch(actions.updateGame(game))
 })
 
-const Editor = ({ screen, game, setScreen, updateGame }) => (
+const Editor = ({ game, updateGame }) => (
   <div className='Editor'>
     <Updater />
     <Title />
     <Menu />
-    <NavBar screen={screen} setScreen={setScreen} />
+    <NavBar />
     <CodeEditor game={game} updateGame={updateGame} />
     <Output />
   </div>
