@@ -19,6 +19,14 @@ class Output extends Component {
     return false
   }
 
+  // componentDidMount () {
+  //   window.script8 = window.script8 || {}
+  //   window.script8.iframeLoaded = () => {
+  //     this.isLoaded = true
+  //     this.evaluate(this.props)
+  //   }
+  // }
+
   componentWillReceiveProps (nextProps) {
     if (this.isLoaded) {
       const { game } = nextProps
@@ -42,7 +50,7 @@ class Output extends Component {
       const iframe = window.frames[0]
 
       // Send iframe the game code.
-      iframe.callCode(game, run, finishBoot)
+      iframe.script8callCode(game, run, finishBoot)
     }
   }
 

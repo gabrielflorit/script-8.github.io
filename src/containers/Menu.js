@@ -26,7 +26,8 @@ class Menu extends Component {
     this.onSaveClick = this.onSaveClick.bind(this)
     this.onNewClick = this.onNewClick.bind(this)
     this.save = this.save.bind(this)
-    window.handleCode = props.fetchToken
+    // TODO
+    // window.handleCode = props.fetchToken
   }
 
   componentDidUpdate () {

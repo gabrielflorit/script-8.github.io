@@ -47,8 +47,8 @@ const geval = eval
 
 let timer
 
-window.callCode = (game, run, endCallback = noop) => {
-  window.end = _.once(endCallback)
+window.script8callCode = (game, run, endCallback = noop) => {
+  window.script8end = _.once(endCallback)
   if (!game || !game.length) {
     game = blank
   }
