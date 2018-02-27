@@ -1,8 +1,6 @@
 # script-8
 
 ## TODO
-- don't show OK until we are done for real
-
 - add sound
 
 - add fps counter to iframe (perhaps a stats mode?)
