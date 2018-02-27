@@ -1,7 +1,8 @@
 const screenTypes = {
   BOOT: 'BOOT',
   RUN: 'RUN',
-  EDITOR: 'EDITOR'
+  CODE: 'CODE',
+  SFX: 'SFX'
 }
 
 export default screenTypes

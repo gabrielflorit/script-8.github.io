@@ -1,13 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Boot from '../components/Boot.js'
+import Boot from './Boot.js'
 import Run from '../components/Run.js'
 import Editor from '../components/Editor.js'
-import actions, {
-  saveGist,
-  fetchGist,
-  fetchToken
-} from '../actions/actions.js'
+import actions, { saveGist, fetchGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import '../css/App.css'
 
@@ -35,7 +31,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   fetchGist: id => dispatch(fetchGist(id)),
-  saveGist: ({ game, token, gist }) => dispatch(saveGist({ game, token, gist })),
+  saveGist: ({ game, token, gist }) =>
+    dispatch(saveGist({ game, token, gist })),
   fetchToken: token => dispatch(fetchToken(token))
 })
 
@@ -58,18 +55,19 @@ const App = ({
 }) => {
   const options = {
     [screenTypes.BOOT]: () => (
-      <Boot
-        setScreen={setScreen}
-        fetchGist={fetchGist}
-        finishBoot={finishBoot}
-        gist={gist}
-        booted={booted}
-      />
+      <Boot />
+      // <Boot
+      //   setScreen={setScreen}
+      //   fetchGist={fetchGist}
+      //   finishBoot={finishBoot}
+      //   gist={gist}
+      //   booted={booted}
+      // />
     ),
     [screenTypes.RUN]: () => (
       <Run game={game} screen={screen} setScreen={setScreen} gist={gist} />
     ),
-    [screenTypes.EDITOR]: () => (
+    [screenTypes.CODE]: () => (
       <Editor
         game={game}
         gist={gist}
