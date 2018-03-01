@@ -7,6 +7,7 @@ import screenTypes from '../utils/screenTypes.js'
 
 const mapStateToProps = ({ screen, game }) => ({
   game: screen === screenTypes.BOOT ? bios : game,
+  focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
 })
 
@@ -15,8 +16,24 @@ const mapDispatchToProps = (dispatch, props) => ({
 })
 
 class Output extends Component {
+  constructor (props) {
+    super(props)
+
+    this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
+  }
+
+  noop () {}
+
+  handleBlur (e) {
+    e.currentTarget.focus()
+  }
+
   shouldComponentUpdate () {
     return false
+  }
+
+  componentDidMount () {
+    this._iframe.focus()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -52,6 +69,7 @@ class Output extends Component {
         <iframe
           src='iframe.html'
           title='SCRIPT-8'
+          onBlur={this.handleBlur}
           ref={_iframe => {
             this._iframe = _iframe
           }}
