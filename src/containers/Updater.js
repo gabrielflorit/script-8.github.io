@@ -15,7 +15,9 @@ class Updater extends Component {
     // make sure the url reflects this
     const { gist } = this.props
     const id = _.get(gist, 'data.id')
-    this.updateUrl(id)
+    if (id) {
+      this.updateUrl(id)
+    }
   }
 
   componentDidUpdate (prevProps) {

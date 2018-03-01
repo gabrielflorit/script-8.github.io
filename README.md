@@ -1,6 +1,7 @@
 # script-8
 
 ## TODO
+- add way to specify frame rate
 - add sound
 
 - when fetching gist, try to do hit github directly by using user's token
