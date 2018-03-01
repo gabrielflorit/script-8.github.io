@@ -7,27 +7,34 @@
   background $palette-6
 
   .Menu
-    grid-column 1 / span 1
+    grid-column 1
 
   .NavBar
-    grid-column 2 / span 1
+    grid-column 2
 
   .temp
     grid-column 1 / span 2
     background $palette-7
     @extend .VT323
     font-size $font-large
+    padding 0.5em
 
-    ul.bank
-      color $palette-1
-      list-style none
-      padding 0
-      margin 0
-      li
-        border solid $palette-6 4px
-        &.active
-          color $palette-0
-          border-color $palette-1
+    .pad
+      width 100px
+      height @width
+      background $palette-5
+      margin 0 auto
+
+    // ul.bank
+    //   color $palette-1
+    //   list-style none
+    //   padding 0
+    //   margin 0
+    //   li
+    //     border solid $palette-6 4px
+    //     &.active
+    //       color $palette-0
+    //       border-color $palette-1
 
 //       display flex
 //         margin 0 0.5em
