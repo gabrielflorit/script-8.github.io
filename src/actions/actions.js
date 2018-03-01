@@ -68,20 +68,24 @@ export const saveGist = ({ game, token, gist }) => dispatch => {
   const createLink = id =>
     id ? ` Click [here](https://script-8.github.io/?id=${id}) to boot it.` : ''
 
-  const preparePayload = id => ({
-    public: true,
-    description: 'SCRIPT-8',
-    files: {
-      'code.js': {
-        content: game
-      },
-      'README.md': {
-        content: `This is a [SCRIPT-8](https://script-8.github.io) cassette.${createLink(
-          id
-        )}`
+  const preparePayload = id => {
+    const link = createLink(id)
+    const content = `This is a [SCRIPT-8](https://script-8.github.io) cassette.${link}`
+    const payload = {
+      public: true,
+      description: 'SCRIPT-8',
+      files: {
+        'code.js': {
+          content: game
+        },
+        'README.md': {
+          content
+        }
       }
     }
-  })
+
+    return payload
+  }
 
   const createGist = () =>
     gh

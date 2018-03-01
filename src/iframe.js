@@ -30,10 +30,13 @@ window.flatten = flatten
 
 // Define arrow key helpers.
 let keys = new Set()
-window.arrowUp = () => keys.has('ArrowUp')
-window.arrowRight = () => keys.has('ArrowRight')
-window.arrowDown = () => keys.has('ArrowDown')
-window.arrowLeft = () => keys.has('ArrowLeft')
+
+const updateKeys = () => {
+  window.arrowUp = keys.has('ArrowUp')
+  window.arrowRight = keys.has('ArrowRight')
+  window.arrowDown = keys.has('ArrowDown')
+  window.arrowLeft = keys.has('ArrowLeft')
+}
 
 // Keep track of what keys we're pressing.
 document.addEventListener('keydown', e => {
@@ -64,6 +67,7 @@ window.script8.callCode = (game, run, endCallback = noop) => {
     if (timer) timer.stop()
     timer = interval(() => {
       try {
+        updateKeys()
         geval('update && update(); draw && draw();')
       } catch (e) {
         console.warn(e.message)
