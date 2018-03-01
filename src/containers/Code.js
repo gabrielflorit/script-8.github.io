@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Menu from './Menu.js'
-import Output from './Output.js'
+import Updater from './Updater.js'
 import Title from './Title.js'
+import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import CodeEditor from '../components/CodeEditor.js'
-import Updater from './Updater.js'
+import Output from './Output.js'
 import actions from '../actions/actions.js'
 
 const mapStateToProps = ({ game }) => ({
@@ -16,8 +16,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   updateGame: game => dispatch(actions.updateGame(game))
 })
 
-const Editor = ({ game, updateGame }) => (
-  <div className='Editor'>
+const Code = ({ game, updateGame }) => (
+  <div className='Code'>
     <Updater />
     <Title />
     <Menu />
@@ -27,4 +27,4 @@ const Editor = ({ game, updateGame }) => (
   </div>
 )
 
-export default connect(mapStateToProps, mapDispatchToProps)(Editor)
+export default connect(mapStateToProps, mapDispatchToProps)(Code)

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Boot from './Boot.js'
 import Sfx from './Sfx.js'
 import Run from './Run.js'
-import Editor from './Editor.js'
+import Code from './Code.js'
 import screenTypes from '../utils/screenTypes.js'
 import { version } from '../../package.json'
 import '../css/App.css'
@@ -21,7 +21,7 @@ const App = ({ screen }) => {
     [screenTypes.BOOT]: () => <Boot />,
     [screenTypes.SFX]: () => <Sfx />,
     [screenTypes.RUN]: () => <Run />,
-    [screenTypes.CODE]: () => <Editor />
+    [screenTypes.CODE]: () => <Code />
   }
 
   const component = options[screen]()
