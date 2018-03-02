@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import canvasAPI from '../utils/canvasAPI/index.js'
+// import _ from 'lodash'
 
-const size = 200
+const size = 128
 
 class NotesPad extends Component {
   constructor (props) {
@@ -22,15 +23,18 @@ class NotesPad extends Component {
     if (this.props.enabled) {
       const { nativeEvent } = e
       let offset
+      const rect = e.target.getBoundingClientRect()
+      const { width, height } = rect
       if ('offsetX' in nativeEvent) {
         offset = [nativeEvent.offsetX, nativeEvent.offsetY]
       } else {
-        const rect = e.target.getBoundingClientRect()
         offset = [e.clientX - rect.left, e.clientY - rect.top]
       }
+      const [x, y] = offset
+
       this.api.clear()
-      this.api.circFill(offset[0] / 2, offset[1] / 2, 5, 1)
-      this.api.circStroke(offset[0] / 2, offset[1] / 2, 10, 0)
+      this.api.circFill(x * size / width, y * size / height, 10, 2)
+      this.api.circStroke(x * size / width, y * size / height, 10, 0)
     }
   }
 
