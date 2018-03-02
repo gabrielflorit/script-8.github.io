@@ -5,6 +5,7 @@ import booted from './booted.js'
 import game from './game.js'
 import token from './token.js'
 import nextAction from './nextAction.js'
+import sfx from './sfx.js'
 
 const reducer = combineReducers({
   screen,
@@ -12,7 +13,8 @@ const reducer = combineReducers({
   booted,
   token,
   game,
-  nextAction
+  nextAction,
+  sfx
 })
 
 export default reducer

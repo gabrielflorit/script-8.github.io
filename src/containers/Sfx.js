@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import NotesPad from '../components/NotesPad.js'
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ sfx }) => ({ sfx })
 
-const mapDispatchToProps = (dispatch, props) => ({})
+const mapDispatchToProps = (dispatch, props) => ({
+  updateBars: bars => dispatch(actions.updateSfx({ bars }))
+})
 
 class Sfx extends Component {
   constructor (props) {
@@ -39,7 +42,11 @@ class Sfx extends Component {
         <Menu />
         <NavBar />
         <div className='wrapper'>
-          <NotesPad enabled={this.state.isDown} />
+          <NotesPad
+            updateBars={this.props.updateBars}
+            bars={this.props.sfx.bars}
+            enabled={this.state.isDown}
+          />
         </div>
       </div>
     )

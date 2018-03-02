@@ -12,8 +12,23 @@ class NotesPad extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.drawBars = this.drawBars.bind(this)
     this.drawBar = this.drawBar.bind(this)
-    this.state = {
-      bars: [1, 2, 3, 5, 8, 5, 3, 2]
+  }
+
+  componentDidMount () {
+    const width = size
+    const height = width
+    const ctx = this._canvas.getContext('2d')
+    this.api = canvasAPI({ ctx, width, height })
+    this.drawBars()
+  }
+
+  shouldComponentUpdate () {
+    return false
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.bars.toString() === this.props.bars.toString()) {
+      this.drawBars()
     }
   }
 
@@ -30,17 +45,9 @@ class NotesPad extends Component {
     })
   }
 
-  componentDidMount () {
-    const width = size
-    const height = width
-    const ctx = this._canvas.getContext('2d')
-    this.api = canvasAPI({ ctx, width, height })
-    this.drawBars()
-  }
-
   drawBars () {
     this.api.clear()
-    this.state.bars.forEach((y, x) => {
+    this.props.bars.forEach((y, x) => {
       this.drawBar(x + 1, y)
     })
   }
@@ -64,17 +71,10 @@ class NotesPad extends Component {
         Math.ceil(normalizedOffset[0] / 16),
         9 - Math.ceil(normalizedOffset[1] / 16)
       ]
-      const bars = this.state.bars
+      const bars = this.props.bars
       bars[positions[0] - 1] = positions[1]
-      this.setState({
-        bars
-      })
-      this.drawBars()
+      this.props.updateBars(bars)
     }
-  }
-
-  shouldComponentUpdate () {
-    return false
   }
 
   render () {
@@ -94,7 +94,9 @@ class NotesPad extends Component {
 }
 
 NotesPad.propTypes = {
-  enabled: PropTypes.bool.isRequired
+  enabled: PropTypes.bool.isRequired,
+  updateBars: PropTypes.func.isRequired,
+  bars: PropTypes.array
 }
 
 export default NotesPad

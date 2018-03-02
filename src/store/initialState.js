@@ -8,7 +8,10 @@ const initialState = {
   gist: {},
   game: demo,
   token: {},
-  nextAction: null
+  nextAction: null,
+  sfx: {
+    bars: [1, 2, 3, 5, 8, 5, 3, 2]
+  }
 }
 
 export default initialState

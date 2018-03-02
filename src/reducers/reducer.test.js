@@ -2,6 +2,26 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+test('updateSfx', () => {
+  const before = {
+    ...initialState,
+    sfx: {
+      name: 'gabriel'
+    }
+  }
+  const sfx = {
+    bars: []
+  }
+  const action = actions.updateSfx(sfx)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    sfx: {
+      bars: [],
+      name: 'gabriel'
+    }
+  })
+})
+
 test('newGame', () => {
   const before = {
     ...initialState,
@@ -104,6 +124,9 @@ test('fetchGistRequest', () => {
 test('fetchGistSuccess', () => {
   const before = {
     ...initialState,
+    sfx: {
+      name: 'gabriel'
+    },
     gist: {
       isFetching: true
     }
@@ -113,6 +136,15 @@ test('fetchGistSuccess', () => {
     files: {
       'code.js': {
         content: 'my game'
+      },
+      'sfx.json': {
+        content: JSON.stringify(
+          {
+            bars: [7]
+          },
+          null,
+          2
+        )
       }
     }
   }
@@ -120,6 +152,10 @@ test('fetchGistSuccess', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     game: 'my game',
+    sfx: {
+      name: 'gabriel',
+      bars: [7]
+    },
     gist: {
       isFetching: false,
       data: {
@@ -127,6 +163,15 @@ test('fetchGistSuccess', () => {
         files: {
           'code.js': {
             content: 'my game'
+          },
+          'sfx.json': {
+            content: JSON.stringify(
+              {
+                bars: [7]
+              },
+              null,
+              2
+            )
           }
         }
       }
