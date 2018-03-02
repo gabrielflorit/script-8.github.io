@@ -2,7 +2,7 @@ import colors from '../colors.js'
 import circle from './circle.js'
 import alphabet from './alphabet.js'
 
-const canvasAPI = ({ ctx, size }) => ({
+const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
   print (x, y, letters, c) {
     const color = colors.rgb(c)
 
@@ -110,7 +110,7 @@ const canvasAPI = ({ ctx, size }) => ({
   },
 
   clear () {
-    ctx.clearRect(0, 0, size, size)
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
   }
 })
 

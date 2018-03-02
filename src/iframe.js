@@ -15,7 +15,8 @@ const ctx = canvas.getContext('2d')
 // Setup canvas API functions.
 const { print, rectStroke, rectFill, circStroke, circFill, clear } = canvasAPI({
   ctx,
-  size
+  width: size,
+  height: size
 })
 
 // Export them to global scope for eval's use later.

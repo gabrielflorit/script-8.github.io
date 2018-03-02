@@ -12,18 +12,20 @@
   .NavBar
     grid-column 2
 
-  .temp
+  .wrapper
     grid-column 1 / span 2
     background $palette-7
     @extend .VT323
     font-size $font-large
     padding 0.5em
 
-    .pad
-      width 100px
+    .NotesPad
+      display block
+      width 400px
       height @width
+      image-rendering -moz-crisp-edges
+      image-rendering pixelated
       background $palette-5
-      margin 0 auto
 
     // ul.bank
     //   color $palette-1
