@@ -96,7 +96,7 @@ class NotesPad extends Component {
 NotesPad.propTypes = {
   enabled: PropTypes.bool.isRequired,
   updateBars: PropTypes.func.isRequired,
-  bars: PropTypes.array
+  bars: PropTypes.array.isRequired
 }
 
 export default NotesPad
