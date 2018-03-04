@@ -14,7 +14,9 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunkMiddleware))
 )
 
-setupSocket(store.dispatch)
+if (process.env.NODE_ENV !== 'production') {
+  setupSocket(store.dispatch)
+}
 
 store.subscribe(() => {
   saveState({
