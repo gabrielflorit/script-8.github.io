@@ -6,6 +6,7 @@
     "acorn": "^5.4.1",
     "chokidar": "^2.0.2",
     "classnames": "^2.2.5",
+    "d3": "^4.13.0",
     "d3-timer": "^1.0.7",
     "gh-pages": "^1.1.0",
     "github-api": "^3.0.0",

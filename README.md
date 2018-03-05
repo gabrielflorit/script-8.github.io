@@ -1,6 +1,10 @@
 # script-8
 
 ## TODO
+- modify canvas api:
+  - don't allow rects like 1xN or Nx1
+  - add a line call
+
 - add sound
   - initial sfx state should be {},
     - and we should handle the null bars in notespad

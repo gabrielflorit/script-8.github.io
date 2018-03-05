@@ -1,6 +1,11 @@
 import { interval } from 'd3-timer'
+import * as d3 from 'd3'
+
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
+import random from 'lodash/random'
+import clamp from 'lodash/clamp'
+
 import once from 'lodash/once'
 import canvasAPI from './utils/canvasAPI/index.js'
 import blank from './utils/blank.js'
@@ -13,7 +18,16 @@ const size = 128
 const ctx = canvas.getContext('2d')
 
 // Setup canvas API functions.
-const { print, rectStroke, rectFill, circStroke, circFill, clear } = canvasAPI({
+const {
+  print,
+  rectStroke,
+  rectFill,
+  circStroke,
+  circFill,
+  clear,
+  lineH,
+  lineV
+} = canvasAPI({
   ctx,
   width: size,
   height: size
@@ -25,9 +39,16 @@ window.rectStroke = rectStroke
 window.rectFill = rectFill
 window.circStroke = circStroke
 window.circFill = circFill
+window.lineH = lineH
+window.lineV = lineV
 window.clear = clear
+window.__ctx = ctx
+window.d3 = d3
+
 window.range = range
 window.flatten = flatten
+window.random = random
+window.clamp = clamp
 
 // Define arrow key helpers.
 let keys = new Set()

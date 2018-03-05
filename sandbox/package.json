@@ -1,0 +1,13 @@
+{
+  "standard": {
+    "globals": [
+      "clear",
+      "print",
+      "rectFill",
+      "rectStroke",
+      "circFill",
+      "circStroke",
+      "range"
+    ]
+  }
+}
