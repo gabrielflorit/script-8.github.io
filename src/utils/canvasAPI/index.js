@@ -3,20 +3,28 @@ import circle from './circle.js'
 import print from './print.js'
 
 const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
-  lineH (x, y, l, c) {
+  lineH (x, y, l, c, dotted) {
+    if (dotted) {
+      ctx.setLineDash([1, 1])
+    }
     ctx.strokeStyle = colors.one(c)
     ctx.beginPath()
     ctx.moveTo(Math.floor(x), Math.floor(y) + 0.5)
     ctx.lineTo(Math.floor(x + l), Math.floor(y) + 0.5)
     ctx.stroke()
+    ctx.setLineDash([])
   },
 
-  lineV (x, y, l, c) {
+  lineV (x, y, l, c, dotted) {
+    if (dotted) {
+      ctx.setLineDash([1, 1])
+    }
     ctx.strokeStyle = colors.one(c)
     ctx.beginPath()
     ctx.moveTo(Math.floor(x) + 0.5, Math.floor(y))
     ctx.lineTo(Math.floor(x) + 0.5, Math.floor(y + l))
     ctx.stroke()
+    ctx.setLineDash([])
   },
 
   print (x, y, letters, c) {

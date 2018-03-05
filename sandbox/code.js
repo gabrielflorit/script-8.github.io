@@ -28,12 +28,11 @@ const volumeColor = d3.scale
 function update () {}
 
 const drawNote = ({ note, position, c = 6 }) => {
-  lineV(x(position) + gap/2, noteY(note), noteY(0) - noteY(note) + 1, 6)
+  lineV(x(position) + gap/2, noteY(note), noteY(0) - noteY(note) + 1, 6, true)
   rectFill(x(position) + gap/2 - noteWidth/2 + 1, noteY(note) - halfStepHeight + 1, noteWidth, halfStepHeight, 0)
 }
 
 const drawVolume = ({ volume, position }) => {
-  console.log(volume)
   rectFill(x(position) + gap/2 - noteWidth/2 + 1, volumeY(volume), noteWidth, volumeHeight, (4 - volume)*2)
 }
 
@@ -47,9 +46,6 @@ notes.forEach((note, position) => {
   drawNote({ note, position: position + 1 })
   drawVolume({ volume: ((position + 3) % 4) + 1, position: position + 1 })
 })
-
-
-
 
 // eslint-disable-next-line no-unused-vars
 function draw () {
