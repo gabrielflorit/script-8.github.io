@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import range from 'lodash/range'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
@@ -7,10 +8,11 @@ import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import NotesPad from '../components/NotesPad.js'
 
-const mapStateToProps = ({ sfx }) => ({ sfx })
+const mapStateToProps = ({ sfxs }) => ({ sfxs })
 
-const mapDispatchToProps = (dispatch, props) => ({
-  updateBars: bars => dispatch(actions.updateSfx({ bars }))
+const mapDispatchToProps = dispatch => ({
+  updateNotes: ({ notes, index }) =>
+    dispatch(actions.updateSfx({ sfx: notes, index }))
 })
 
 class Sfx extends Component {
@@ -19,7 +21,7 @@ class Sfx extends Component {
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
-    this.state = { isDown: false }
+    this.state = { isDown: false, sfxIndex: 0 }
   }
 
   handleMouseDown () {
@@ -31,6 +33,12 @@ class Sfx extends Component {
   }
 
   render () {
+    const notes =
+      this.props.sfxs[this.state.sfxIndex] ||
+      range(NotesPad.cols).map(d => ({
+        note: 0,
+        volume: 1
+      }))
     return (
       <div
         className='Sfx'
@@ -43,9 +51,10 @@ class Sfx extends Component {
         <NavBar />
         <div className='wrapper'>
           <NotesPad
-            updateBars={this.props.updateBars}
-            bars={this.props.sfx.bars}
             enabled={this.state.isDown}
+            updateNotes={this.props.updateNotes}
+            notes={notes}
+            index={this.state.sfxIndex}
           />
         </div>
       </div>

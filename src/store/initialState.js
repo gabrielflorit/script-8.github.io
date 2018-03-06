@@ -9,9 +9,7 @@ const initialState = {
   game: demo,
   token: {},
   nextAction: null,
-  sfx: {
-    bars: [...Array(8)]
-  }
+  sfxs: [...Array(8)].map(d => null)
 }
 
 export default initialState

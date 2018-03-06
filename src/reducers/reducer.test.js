@@ -5,20 +5,12 @@ import initialState from '../store/initialState.js'
 test('updateSfx', () => {
   const before = {
     ...initialState,
-    sfx: {
-      name: 'gabriel'
-    }
+    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
   }
-  const sfx = {
-    bars: []
-  }
-  const action = actions.updateSfx(sfx)
+  const action = actions.updateSfx({ sfx: 'new', index: 1 })
   expect(reducer(before, action)).toEqual({
     ...before,
-    sfx: {
-      bars: [],
-      name: 'gabriel'
-    }
+    sfxs: ['a', 'new', 'c', 'd', 'e', 'f', 'g', 'h']
   })
 })
 
@@ -121,12 +113,9 @@ test('fetchGistRequest', () => {
   })
 })
 
-test('fetchGistSuccess', () => {
+test('fetchGistSuccess good data', () => {
   const before = {
     ...initialState,
-    sfx: {
-      name: 'gabriel'
-    },
     gist: {
       isFetching: true
     }
@@ -137,11 +126,9 @@ test('fetchGistSuccess', () => {
       'code.js': {
         content: 'my game'
       },
-      'sfx.json': {
+      'sfxs.json': {
         content: JSON.stringify(
-          {
-            bars: [7]
-          },
+          ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
           null,
           2
         )
@@ -152,29 +139,34 @@ test('fetchGistSuccess', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     game: 'my game',
-    sfx: {
-      name: 'gabriel',
-      bars: [7]
-    },
+    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
     gist: {
       isFetching: false,
-      data: {
-        something: 'else',
-        files: {
-          'code.js': {
-            content: 'my game'
-          },
-          'sfx.json': {
-            content: JSON.stringify(
-              {
-                bars: [7]
-              },
-              null,
-              2
-            )
-          }
-        }
-      }
+      data
+    }
+  })
+})
+
+test('fetchGistSuccess bad data', () => {
+  const before = {
+    ...initialState,
+    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    gist: {
+      isFetching: true
+    }
+  }
+  const data = {
+    something: 'else',
+    files: {}
+  }
+  const action = actions.fetchGistSuccess(data)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    game: null,
+    sfxs: [...Array(8)].map(d => null),
+    gist: {
+      isFetching: false,
+      data
     }
   })
 })
