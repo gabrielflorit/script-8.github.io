@@ -97,6 +97,7 @@ class Sfx extends Component {
               index={this.state.sfxIndex}
               totalBlocks={4}
             />
+            <NotesInputs notes={sfx.volumes} />
           </div>
         </div>
       </div>

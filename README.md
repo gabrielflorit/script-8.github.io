@@ -7,7 +7,13 @@
 
 - add sound
   - sfx should have its own save
-  - make sfx height not fixed at a 100%
+  - notesinputs should not be clickable
+    - they should either be an input box, or just a span
+  - disable text selection on non-code elements
+  - if sfx is null, set it to something by default
+  - use different colors for volume bars
+  - maybe consider using notesinputs for volume too
+    - if so, specify a notesinputs formatter
 
 - add way to specify frame rate
 - when fetching gist, try to do hit github directly by using user's token
