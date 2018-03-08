@@ -1,18 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import numberToNote from '../utils/numberToNote.js'
 
-const NotesInputs = ({ notes }) => (
+const defaultFormatter = x => x
+
+const NotesInputs = ({ notes, formatter = defaultFormatter }) => (
   <ul className='NotesInputs'>
     {notes.map((note, i) => (
       <li key={i}>
-        <button>{note ? numberToNote(note - 1) : '-'}</button>
+        <button>{note ? formatter(note) : '-'}</button>
       </li>
     ))}
   </ul>
 )
 
 NotesInputs.propTypes = {
+  formatter: PropTypes.func,
   notes: PropTypes.array.isRequired
 }
 

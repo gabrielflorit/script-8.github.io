@@ -7,9 +7,9 @@
 
 - add sound
   - sfx should have its own save
-  - disable text selection on non-code elements
-  - maybe consider using notesinputs for volume too
-    - if so, specify a notesinputs formatter
+  - respond to mousedown, not only mousemove
+  - verify that saving works,
+    - and that loading works as well
 
 - add way to specify frame rate
 - when fetching gist, try to do hit github directly by using user's token

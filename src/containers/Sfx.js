@@ -8,6 +8,7 @@ import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import Pad from '../components/Pad.js'
 import NotesInputs from '../components/NotesInputs.js'
+import numberToNote from '../utils/numberToNote.js'
 
 const mapStateToProps = ({ sfxs }) => ({ sfxs })
 
@@ -69,9 +70,7 @@ class Sfx extends Component {
       volumes: sfx.volumes || range(16).map(d => d % 5)
     }
 
-    const volumeColorFormatter = block => {
-      return block > 0 ? 4 - block : 6
-    }
+    const volumeColorFormatter = block => (block > 0 ? 4 - block : 6)
 
     return (
       <div className='Sfx' onMouseUp={this.handleMouseUp}>
@@ -90,7 +89,7 @@ class Sfx extends Component {
               index={this.state.sfxIndex}
               totalBlocks={37}
             />
-            <NotesInputs notes={sfx.notes} />
+            <NotesInputs formatter={numberToNote} notes={sfx.notes} />
           </div>
           <div className='pad-title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
