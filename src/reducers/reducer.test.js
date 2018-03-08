@@ -2,15 +2,54 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
-test('updateSfx', () => {
-  const before = {
-    ...initialState,
-    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-  }
-  const action = actions.updateSfx({ sfx: 'new', index: 1 })
-  expect(reducer(before, action)).toEqual({
-    ...before,
-    sfxs: ['a', 'new', 'c', 'd', 'e', 'f', 'g', 'h']
+describe('updateSfx', () => {
+  test('complete', () => {
+    const before = initialState
+    const action = actions.updateSfx({
+      sfx: {
+        notes: ['c', 'c', 'c'],
+        volumes: [1, 2, 3]
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      sfxs: [
+        null,
+        {
+          notes: ['c', 'c', 'c'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    })
+  })
+  test('partial', () => {
+    const before = {
+      ...initialState,
+      sfxs: [
+        null,
+        {
+          notes: ['c', 'c', 'b'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    }
+    const action = actions.updateSfx({
+      sfx: {
+        notes: ['c', 'c', 'c']
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      sfxs: [
+        null,
+        {
+          notes: ['c', 'c', 'c'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    })
   })
 })
 
@@ -163,7 +202,7 @@ test('fetchGistSuccess bad data', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     game: null,
-    sfxs: [...Array(8)].map(d => null),
+    sfxs: [],
     gist: {
       isFetching: false,
       data

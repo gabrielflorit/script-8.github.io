@@ -14,11 +14,22 @@ const sfxs = handleActions(
           JSON.stringify(initialState.sfxs, null, 2)
         )
       ),
-    [actionTypes.UPDATE_SFX]: (state, { payload }) => [
-      ...state.slice(0, payload.index),
-      payload.sfx,
-      ...state.slice(payload.index + 1)
-    ]
+    [actionTypes.UPDATE_SFX]: (state, { payload }) => {
+      const { sfx, index } = payload
+      const sfxs =
+        state.length > index
+          ? [...state]
+          : state.concat([...Array(index + 1 - state.length)].map(d => null))
+
+      return [
+        ...sfxs.slice(0, index),
+        {
+          ...sfxs[index],
+          ...sfx
+        },
+        ...sfxs.slice(index + 1)
+      ]
+    }
   },
   initialState.sfxs
 )

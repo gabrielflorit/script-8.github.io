@@ -6,7 +6,7 @@ const NotesInputs = ({ notes }) => (
   <ul className='NotesInputs'>
     {notes.map((note, i) => (
       <li key={i}>
-        <button>{note.note ? numberToNote(note.note - 1) : '-'}</button>
+        <button>{note ? numberToNote(note - 1) : '-'}</button>
       </li>
     ))}
   </ul>
