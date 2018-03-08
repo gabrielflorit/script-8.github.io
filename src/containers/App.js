@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
 import Boot from './Boot.js'
 import Sfx from './Sfx.js'
 import Run from './Run.js'
@@ -26,7 +27,15 @@ const App = ({ screen }) => {
 
   const component = options[screen]()
 
-  return <div className='App'>{component}</div>
+  return (
+    <div
+      className={classNames('App', {
+        'full-height': screen !== screenTypes.SFX
+      })}
+    >
+      {component}
+    </div>
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

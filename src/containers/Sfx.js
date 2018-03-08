@@ -76,6 +76,7 @@ class Sfx extends Component {
         <Menu />
         <NavBar />
         <div className='wrapper'>
+          <div className='pad-title'>notes</div>
           <div className='pad-wrapper' onMouseDown={this.handleNotesDown}>
             <Pad
               drawLines
@@ -85,8 +86,9 @@ class Sfx extends Component {
               index={this.state.sfxIndex}
               totalBlocks={37}
             />
+            <NotesInputs notes={sfx.notes} />
           </div>
-          <NotesInputs notes={sfx.notes} />
+          <div className='pad-title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
             <Pad
               enabled={this.state.isVolumesDown}
