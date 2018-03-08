@@ -69,6 +69,10 @@ class Sfx extends Component {
       volumes: sfx.volumes || range(16).map(d => d % 5)
     }
 
+    const volumeColorFormatter = block => {
+      return block > 0 ? 4 - block : 6
+    }
+
     return (
       <div className='Sfx' onMouseUp={this.handleMouseUp}>
         <Updater />
@@ -91,6 +95,7 @@ class Sfx extends Component {
           <div className='pad-title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
             <Pad
+              colorFormatter={volumeColorFormatter}
               enabled={this.state.isVolumesDown}
               updateBlocks={this.props.updateVolumes}
               blocks={sfx.volumes}

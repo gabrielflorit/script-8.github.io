@@ -35,6 +35,7 @@ class Pad extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.drawBlocks = this.drawBlocks.bind(this)
     this.drawBlock = this.drawBlock.bind(this)
+    this.getColor = this.getColor.bind(this)
   }
 
   componentDidMount () {
@@ -79,8 +80,13 @@ class Pad extends Component {
       this.y(block) - halfStepHeight + 1,
       blockWidth,
       halfStepHeight,
-      block > 0 ? 0 : 6
+      this.getColor(block)
     )
+  }
+
+  getColor (block) {
+    const { colorFormatter } = this.props
+    return colorFormatter ? colorFormatter(block) : block > 0 ? 0 : 6
   }
 
   getOffset (e) {
@@ -148,6 +154,7 @@ Pad.propTypes = {
   drawLines: PropTypes.bool,
   enabled: PropTypes.bool.isRequired,
   updateBlocks: PropTypes.func.isRequired,
+  getColor: PropTypes.func,
   blocks: PropTypes.array.isRequired,
   index: PropTypes.number.isRequired,
   totalBlocks: PropTypes.number.isRequired
