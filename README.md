@@ -10,7 +10,6 @@
   - notesinputs should not be clickable
     - they should either be an input box, or just a span
   - disable text selection on non-code elements
-  - if sfx is null, set it to something by default
   - use different colors for volume bars
   - maybe consider using notesinputs for volume too
     - if so, specify a notesinputs formatter

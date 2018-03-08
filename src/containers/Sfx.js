@@ -65,8 +65,8 @@ class Sfx extends Component {
   render () {
     let sfx = this.props.sfxs[this.state.sfxIndex] || {}
     sfx = {
-      notes: sfx.notes || range(16).map(d => 0),
-      volumes: sfx.volumes || range(16).map(d => 0)
+      notes: sfx.notes || range(16).map(d => 37 - d * 2),
+      volumes: sfx.volumes || range(16).map(d => d % 5)
     }
 
     return (
