@@ -7,8 +7,6 @@
 
 - add sound
   - sfx should have its own save
-  - notesinputs should not be clickable
-    - they should either be an input box, or just a span
   - disable text selection on non-code elements
   - use different colors for volume bars
   - maybe consider using notesinputs for volume too
