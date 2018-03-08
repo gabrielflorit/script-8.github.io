@@ -7,6 +7,7 @@ import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import NotesPad from '../components/NotesPad.js'
+import NotesInputs from '../components/NotesInputs.js'
 
 const mapStateToProps = ({ sfxs }) => ({ sfxs })
 
@@ -37,7 +38,7 @@ class Sfx extends Component {
       this.props.sfxs[this.state.sfxIndex] ||
       range(NotesPad.cols).map(d => ({
         note: 0,
-        volume: 1
+        volume: 0
       }))
     return (
       <div
@@ -50,6 +51,7 @@ class Sfx extends Component {
         <Menu />
         <NavBar />
         <div className='wrapper'>
+          <NotesInputs notes={notes} />
           <NotesPad
             enabled={this.state.isDown}
             updateNotes={this.props.updateNotes}

@@ -5,20 +5,22 @@ import { scaleLinear } from 'd3-scale'
 import equal from 'deep-equal'
 import canvasAPI from '../utils/canvasAPI/index.js'
 
-const size = 128
 const cols = 16
+const width = 16 * 16
+const height = width / 2
 const octaves = 3
+const volumes = 4
 const halfStepHeight = 2
 const totalNotes = octaves * 12 + 1
-const noteWidth = 7
+const noteWidth = 15
 const volumeHeight = 2
-const notesVolumeMargin = 12
+const notesVolumeMargin = 4
 const notesPadding = { top: 6, bottom: 6 }
 const volumePadding = { top: 6, bottom: 6 }
 
 const x = scaleLinear()
   .domain([1, cols + 1])
-  .range([0, size])
+  .range([0, width])
 
 const gap = x(2) - x(1)
 
@@ -27,7 +29,7 @@ const noteY = scaleLinear()
   .range([notesPadding.top, totalNotes * halfStepHeight + notesPadding.top])
 
 const volumeY = scaleLinear()
-  .domain([4, 1])
+  .domain([volumes, 0])
   .range([
     noteY.range()[1] +
       notesPadding.bottom +
@@ -37,7 +39,7 @@ const volumeY = scaleLinear()
       notesPadding.bottom +
       notesVolumeMargin +
       volumePadding.top +
-      4 * volumeHeight
+      (volumes + 1) * volumeHeight
   ])
 
 class NotesPad extends Component {
@@ -51,8 +53,6 @@ class NotesPad extends Component {
   }
 
   componentDidMount () {
-    const width = size
-    const height = width
     const ctx = this._canvas.getContext('2d')
     this.api = canvasAPI({ ctx, width, height })
     this.drawNotes(this.props.notes)
@@ -71,10 +71,16 @@ class NotesPad extends Component {
 
   drawNotes (notes) {
     this.api.clear()
-    this.api.lineH(0, noteY.range()[0] - notesPadding.top, 128, 6, true)
-    this.api.lineH(0, noteY.range()[1] + notesPadding.bottom, 128, 6, true)
-    this.api.lineH(0, volumeY.range()[0] - volumePadding.top, 128, 6, true)
-    this.api.lineH(0, volumeY.range()[1] + volumePadding.bottom, 128, 6, true)
+
+    this.api.lineH(
+      0,
+      noteY.range()[1] + notesPadding.bottom + notesVolumeMargin - 2,
+      width,
+      6,
+      true
+    )
+    this.api.lineH(0, volumeY.range()[1] + volumePadding.bottom, width, 6, true)
+
     notes.forEach(({ note, volume }, position) => {
       this.drawNote({ note, position: position + 1 })
       this.drawVolume({ volume, position: position + 1 })
@@ -98,19 +104,19 @@ class NotesPad extends Component {
   }
 
   drawVolume ({ volume, position }) {
+    const color = volume > 0 ? volumes - volume : 6
     this.api.rectFill(
       x(position) + gap / 2 - noteWidth / 2 + 1,
       volumeY(volume),
       noteWidth,
       volumeHeight,
-      4 - volume
+      color
     )
   }
 
   getOffset (e) {
     const { nativeEvent } = e
     const rect = e.target.getBoundingClientRect()
-    const { width, height } = rect
     let offset
     if ('offsetX' in nativeEvent) {
       offset = [nativeEvent.offsetX, nativeEvent.offsetY]
@@ -118,8 +124,8 @@ class NotesPad extends Component {
       offset = [e.clientX - rect.left, e.clientY - rect.top]
     }
     const normalizedOffset = [
-      offset[0] * size / width,
-      offset[1] * size / height
+      offset[0] * width / rect.width,
+      offset[1] * height / rect.height
     ]
     return normalizedOffset
   }
@@ -136,7 +142,11 @@ class NotesPad extends Component {
         positionModulus > 0.15 &&
         positionModulus < 0.85
       ) {
-        const note = clamp(Math.ceil(noteY.invert(offset[1])), 0, 37)
+        const note = clamp(
+          Math.ceil(noteY.invert(offset[1])),
+          noteY.domain()[1],
+          noteY.domain()[0]
+        )
         const noteIndex = Math.floor(position) - 1
 
         const newNotes = [
@@ -156,7 +166,11 @@ class NotesPad extends Component {
         positionModulus > 0.15 &&
         positionModulus < 0.85
       ) {
-        const volume = clamp(Math.ceil(volumeY.invert(offset[1])), 1, 4)
+        const volume = clamp(
+          Math.ceil(volumeY.invert(offset[1])),
+          volumeY.domain()[1],
+          volumeY.domain()[0]
+        )
         const noteIndex = Math.floor(position) - 1
 
         const newNotes = [
@@ -176,8 +190,8 @@ class NotesPad extends Component {
     return (
       <canvas
         className='NotesPad'
-        width={size}
-        height={size}
+        width={width}
+        height={height}
         ref={_canvas => {
           this._canvas = _canvas
         }}
@@ -190,7 +204,7 @@ class NotesPad extends Component {
 NotesPad.propTypes = {
   enabled: PropTypes.bool.isRequired,
   updateNotes: PropTypes.func.isRequired,
-  notes: PropTypes.array,
+  notes: PropTypes.array.isRequired,
   index: PropTypes.number.isRequired
 }
 

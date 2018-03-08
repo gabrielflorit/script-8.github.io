@@ -1,7 +1,7 @@
 .Sfx
   height 100%
   display grid
-  grid-template-columns minmax(auto, 51.5em) auto
+  grid-template-columns minmax(auto, 51.5rem) auto
   grid-template-rows $font-large auto
   grid-row-gap 2px
   background $palette-6
@@ -17,32 +17,32 @@
     background $palette-7
     @extend .VT323
     font-size $font-large
-    padding 0.5em
+    padding 0.5rem
 
     .NotesPad
-      margin 2rem 2rem
       display block
-      width 400px
-      height @width
+      width 768px
+      height 384px
       image-rendering -moz-crisp-edges
       image-rendering pixelated
       background none
-      // border solid $palette-6 1px
-      // background $palette-5
 
-    // ul.bank
-    //   color $palette-1
-    //   list-style none
-    //   padding 0
-    //   margin 0
-    //   li
-    //     border solid $palette-6 4px
-    //     &.active
-    //       color $palette-0
-    //       border-color $palette-1
+    .NotesInputs
+      color $palette-1
+      list-style none
+      padding 0
+      margin 0
+      display flex
 
-//       display flex
-//         margin 0 0.5em
-//         padding 0.25em 0
-//         width 12.5%
-//         text-align center
+      li
+        border solid $palette-6 3px
+        border-right none
+        &:last-child
+          border-right solid $palette-6 3px
+        padding 0.125rem 0
+        width 3rem
+        text-align center
+
+        // &.active
+        //   color $palette-0
+        //   border-color $palette-1

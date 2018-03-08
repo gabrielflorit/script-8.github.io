@@ -3,13 +3,11 @@
 ## TODO
 - modify canvas api:
   - don't allow rects like 1xN or Nx1
-  - add a line call
   - add a diagonal line call
 
 - add sound
-  - initial sfx state should be {},
-    - and we should handle the null bars in notespad
   - sfx should have its own save
+  - make sfx height not fixed at a 100%
 
 - add way to specify frame rate
 - when fetching gist, try to do hit github directly by using user's token
