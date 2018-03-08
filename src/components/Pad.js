@@ -33,6 +33,7 @@ class Pad extends Component {
       ])
 
     this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.handleMouseDown = this.handleMouseDown.bind(this)
     this.drawBlocks = this.drawBlocks.bind(this)
     this.drawBlock = this.drawBlock.bind(this)
     this.getColor = this.getColor.bind(this)
@@ -105,32 +106,40 @@ class Pad extends Component {
     return normalizedOffset
   }
 
-  handleMouseMove (e) {
-    const { blocks, enabled, updateBlocks, index } = this.props
-    if (enabled) {
-      const offset = this.getOffset(e)
-      const position = x.invert(offset[0])
-      const positionModulus = position % 1
-      if (
-        offset[1] >= this.y.range()[0] - blocksPadding.top &&
-        offset[1] <= this.y.range()[1] + blocksPadding.bottom &&
-        positionModulus > 0.15 &&
-        positionModulus < 0.85
-      ) {
-        const block = clamp(
-          Math.ceil(this.y.invert(offset[1])),
-          this.y.domain()[1],
-          this.y.domain()[0]
-        )
-        const blockIndex = Math.floor(position) - 1
+  handleBlockEvent (e) {
+    const { blocks, updateBlocks, index } = this.props
+    const offset = this.getOffset(e)
+    const position = x.invert(offset[0])
+    const positionModulus = position % 1
+    if (
+      offset[1] >= this.y.range()[0] - blocksPadding.top &&
+      offset[1] <= this.y.range()[1] + blocksPadding.bottom &&
+      positionModulus > 0.15 &&
+      positionModulus < 0.85
+    ) {
+      const block = clamp(
+        Math.ceil(this.y.invert(offset[1])),
+        this.y.domain()[1],
+        this.y.domain()[0]
+      )
+      const blockIndex = Math.floor(position) - 1
 
-        const newBlocks = [
-          ...blocks.slice(0, blockIndex),
-          block,
-          ...blocks.slice(blockIndex + 1)
-        ]
-        updateBlocks({ blocks: newBlocks, index })
-      }
+      const newBlocks = [
+        ...blocks.slice(0, blockIndex),
+        block,
+        ...blocks.slice(blockIndex + 1)
+      ]
+      updateBlocks({ blocks: newBlocks, index })
+    }
+  }
+
+  handleMouseDown (e) {
+    this.handleBlockEvent(e)
+  }
+
+  handleMouseMove (e) {
+    if (this.props.enabled) {
+      this.handleBlockEvent(e)
     }
   }
 
@@ -144,6 +153,7 @@ class Pad extends Component {
         ref={_canvas => {
           this._canvas = _canvas
         }}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
       />
     )

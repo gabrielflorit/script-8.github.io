@@ -52,7 +52,6 @@ class Sfx extends Component {
   }
 
   handleNotesDown () {
-    console.log('hy')
     this.setState({ isNotesDown: true })
   }
 

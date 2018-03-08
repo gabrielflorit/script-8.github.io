@@ -7,7 +7,6 @@
 
 - add sound
   - sfx should have its own save
-  - respond to mousedown, not only mousemove
   - verify that saving works,
     - and that loading works as well
 
