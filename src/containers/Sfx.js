@@ -63,7 +63,8 @@ class Sfx extends Component {
   }
 
   render () {
-    let sfx = this.props.sfxs[this.state.sfxIndex] || {}
+    const { sfxIndex } = this.state
+    let sfx = this.props.sfxs[sfxIndex] || {}
     sfx = {
       notes: sfx.notes || range(16).map(d => 37 - d * 2),
       volumes: sfx.volumes || range(16).map(d => d % 5)
@@ -78,19 +79,29 @@ class Sfx extends Component {
         <Menu />
         <NavBar />
         <div className='wrapper'>
-          <div className='pad-title'>notes</div>
+          <div className='title'>sfx</div>
+          <ul className='sfx-buttons'>
+            {range(8).map(i => (
+              <li key={i}>
+                <button className={i === sfxIndex ? 'active' : ''}>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className='title'>notes</div>
           <div className='pad-wrapper' onMouseDown={this.handleNotesDown}>
             <Pad
               drawLines
               enabled={this.state.isNotesDown}
               updateBlocks={this.props.updateNotes}
               blocks={sfx.notes}
-              index={this.state.sfxIndex}
+              index={sfxIndex}
               totalBlocks={37}
             />
             <NotesInputs formatter={numberToNote} notes={sfx.notes} />
           </div>
-          <div className='pad-title'>vol</div>
+          <div className='title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
             <Pad
               colorFormatter={volumeColorFormatter}

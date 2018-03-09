@@ -6,6 +6,8 @@
   - add a diagonal line call
 
 - add sound
+  - add sfx buttons
+    - make sure individual sfxs get saved out
 
 - saving an empty code screen errors out
 
