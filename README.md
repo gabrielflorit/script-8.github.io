@@ -6,8 +6,11 @@
   - add a diagonal line call
 
 - add sound
-  - add sfx buttons
-    - make sure individual sfxs get saved out
+  - during editing,
+    - clicking a note should play it
+    - when you let go, you should hear it once
+    - we need a way to play the sfx
+  - so... time for tone js!
 
 - saving an empty code screen errors out
 
