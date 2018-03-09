@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import clamp from 'lodash/clamp'
+import range from 'lodash/range'
 import { scaleLinear } from 'd3-scale'
 import equal from 'deep-equal'
 import canvasAPI from '../utils/canvasAPI/index.js'
@@ -61,7 +62,9 @@ class Pad extends Component {
 
   drawBlocks (blocks) {
     this.api.clear()
-    this.api.lineH(0, this.y.range()[1] + blocksPadding.bottom, width, 6, true)
+    range(1, 4).forEach(i => {
+      this.api.lineH(0, this.y(1 + 12 * i), width, 6, true)
+    })
     blocks.forEach((block, position) => {
       this.drawBlock({ block, position: position + 1 })
     })
