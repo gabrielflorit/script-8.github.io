@@ -37,6 +37,7 @@ class Sfx extends Component {
   constructor (props) {
     super(props)
 
+    this.handleSfxClick = this.handleSfxClick.bind(this)
     this.handleNotesDown = this.handleNotesDown.bind(this)
     this.handleVolumesDown = this.handleVolumesDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -45,6 +46,12 @@ class Sfx extends Component {
       isVolumesDown: false,
       sfxIndex: 0
     }
+  }
+
+  handleSfxClick (e) {
+    this.setState({
+      sfxIndex: +e.target.textContent - 1
+    })
   }
 
   handleVolumesDown () {
@@ -66,8 +73,8 @@ class Sfx extends Component {
     const { sfxIndex } = this.state
     let sfx = this.props.sfxs[sfxIndex] || {}
     sfx = {
-      notes: sfx.notes || range(16).map(d => 37 - d * 2),
-      volumes: sfx.volumes || range(16).map(d => d % 5)
+      notes: sfx.notes || range(16).map(d => 0),
+      volumes: sfx.volumes || range(16).map(d => 0)
     }
 
     const volumeColorFormatter = block => (block > 0 ? 4 - block : 6)
@@ -83,7 +90,10 @@ class Sfx extends Component {
           <ul className='sfx-buttons'>
             {range(8).map(i => (
               <li key={i}>
-                <button className={i === sfxIndex ? 'active' : ''}>
+                <button
+                  onClick={this.handleSfxClick}
+                  className={i === sfxIndex ? 'active' : ''}
+                >
                   {i + 1}
                 </button>
               </li>
