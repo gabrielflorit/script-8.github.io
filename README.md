@@ -6,9 +6,10 @@
   - add a diagonal line call
 
 - add sound
-  - sfx should have its own save
-  - verify that saving works,
-    - and that loading works as well
+
+- saving an empty code screen errors out
+
+- add error screen
 
 - add way to specify frame rate
 - when fetching gist, try to do hit github directly by using user's token

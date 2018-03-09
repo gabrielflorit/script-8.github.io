@@ -3,17 +3,20 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
+const parseGistSfxs = data =>
+  JSON.parse(
+    _.get(
+      data,
+      'files["sfxs.json"].content',
+      JSON.stringify(initialState.sfxs, null, 2)
+    )
+  )
+
 const sfxs = handleActions(
   {
     [actionTypes.NEW_GAME]: () => initialState.sfxs,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      JSON.parse(
-        _.get(
-          action.payload,
-          'files["sfxs.json"].content',
-          JSON.stringify(initialState.sfxs, null, 2)
-        )
-      ),
+      parseGistSfxs(action.payload),
     [actionTypes.UPDATE_SFX]: (state, { payload }) => {
       const { sfx, index } = payload
       const sfxs =
@@ -35,3 +38,5 @@ const sfxs = handleActions(
 )
 
 export default sfxs
+
+export { parseGistSfxs }

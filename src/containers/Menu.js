@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import equal from 'deep-equal'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
+import { parseGistSfxs } from '../reducers/sfxs.js'
 
-const mapStateToProps = ({ gist, game, sfx, token, screen, nextAction }) => ({
+const mapStateToProps = ({ gist, game, sfxs, token, screen, nextAction }) => ({
   showNew: screen === screenTypes.CODE,
   gist,
   game,
-  sfx,
+  sfxs,
   token,
   nextAction
 })
@@ -17,8 +19,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: () => dispatch(actions.newGame()),
-  saveGist: ({ game, sfx, token, gist }) =>
-    dispatch(saveGist({ game, sfx, token, gist })),
+  saveGist: ({ game, sfxs, token, gist }) =>
+    dispatch(saveGist({ game, sfxs, token, gist })),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction))
 })
 
@@ -41,8 +43,8 @@ class Menu extends Component {
   }
 
   save () {
-    const { token, game, saveGist, gist, sfx } = this.props
-    saveGist({ token, game, sfx, gist })
+    const { token, game, saveGist, gist, sfxs } = this.props
+    saveGist({ token, game, sfxs, gist })
   }
 
   onNewClick () {
@@ -72,12 +74,13 @@ class Menu extends Component {
   }
 
   render () {
-    const { gist, game, showNew } = this.props
+    const { sfxs, gist, game, showNew } = this.props
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
+    const gistSfxs = parseGistSfxs(gist.data)
     const gistGame = _.get(gist, 'data.files["code.js"].content', null)
-    const dirty = gistGame !== game
+    const dirty = !(equal(gistGame, game) && equal(gistSfxs, sfxs))
 
     const newLi = showNew ? (
       <li>
