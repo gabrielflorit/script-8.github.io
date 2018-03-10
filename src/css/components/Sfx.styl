@@ -24,15 +24,23 @@
     grid-row-gap 1rem
     grid-column-gap 1rem
     justify-content center
-    
+
     .controls
       grid-column 1 / span 2
       button
         display block
         border solid $palette-6 3px
         width 100%
-        // padding 0 1rem
-      // border solid red 1px
+
+    ul.highlighter
+      display flex
+      li
+        margin 0
+        padding 0
+        width 6.25%
+        height 3px
+        &.active
+          background $palette-6
 
     .title
       color $palette-6
@@ -45,9 +53,6 @@
     ul.sfx-buttons
       display flex
       justify-content space-between
-      margin 0
-      padding 0
-      list-style none
 
       li
         button
@@ -64,9 +69,6 @@
 
     .BlocksLabels
       color $palette-1
-      list-style none
-      padding 0
-      margin 0
       display flex
       justify-content space-around
       width 100%

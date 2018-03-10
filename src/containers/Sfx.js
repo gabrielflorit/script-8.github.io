@@ -59,6 +59,7 @@ class Sfx extends Component {
       isNotesDown: false,
       isVolumesDown: false,
       isPlaying: false,
+      playingIndex: 0,
       sfxIndex: 0
     }
 
@@ -69,16 +70,17 @@ class Sfx extends Component {
         const sfx = this.getSfx({ sfxIndex, sfxs })
         const noteNumber = sfx.notes[noteIndex]
         const volume = sfx.volumes[noteIndex]
-        if (noteNumber) {
-          const note = numberToNote(noteNumber)
-          const octave = numberToOctave(noteNumber)
-          synth.triggerAttackRelease(
-            `${note}${octave}`,
-            '16n',
-            time,
-            normalizeVolume(volume)
-          )
-        }
+        const note = numberToNote(noteNumber)
+        const octave = numberToOctave(noteNumber)
+        synth.triggerAttackRelease(
+          `${note}${octave}`,
+          '16n',
+          time,
+          normalizeVolume(volume)
+        )
+        this.setState({
+          playingIndex: noteIndex
+        })
       },
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
       '16n'
@@ -99,7 +101,7 @@ class Sfx extends Component {
       ...notes.slice(blockIndex + 1)
     ]
 
-    if (note && !isPlaying) {
+    if (!isPlaying) {
       const octave = numberToOctave(block)
       synth.triggerAttackRelease(`${note}${octave}`, '16n')
     }
@@ -121,7 +123,7 @@ class Sfx extends Component {
       ...volumes.slice(blockIndex + 1)
     ]
 
-    if (noteNumber && !isPlaying) {
+    if (!isPlaying) {
       const octave = numberToOctave(noteNumber)
       synth.triggerAttackRelease(
         `${numberToNote(noteNumber)}${octave}`,
@@ -178,7 +180,7 @@ class Sfx extends Component {
 
   render () {
     const { sfxs } = this.props
-    const { sfxIndex, isPlaying } = this.state
+    const { playingIndex, sfxIndex, isPlaying } = this.state
     const sfx = this.getSfx({ sfxIndex, sfxs })
 
     return (
@@ -204,6 +206,15 @@ class Sfx extends Component {
                   {i + 1}
                 </button>
               </li>
+            ))}
+          </ul>
+          <div />
+          <ul className='highlighter'>
+            {range(16).map(i => (
+              <li
+                className={playingIndex === i && isPlaying ? 'active' : ''}
+                key={i}
+              />
             ))}
           </ul>
           <div className='title'>notes</div>

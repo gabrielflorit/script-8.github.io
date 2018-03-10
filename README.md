@@ -9,6 +9,7 @@
   - during play, visualize
   - enable playing sfx in code and run
   - figure out the best oscillator settings etc 
+  - maybe save note name instead of number
 
 - saving an empty code screen errors out
 
