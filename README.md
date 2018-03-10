@@ -32,7 +32,7 @@ Here's a list of things SCRIPT-8 should do:
  - make sure readers don't "cheat" by writing js that loads in external assets
   - might need to parse code with acorn and only allow specific tokens
 
-## todo
+## immediate todo
 - modify canvas api:
   - don't allow rects like 1xN or Nx1
   - add a diagonal line call
