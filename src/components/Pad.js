@@ -62,7 +62,7 @@ class Pad extends Component {
 
   drawBlocks (blocks) {
     this.api.clear()
-    range(1, 4).forEach(i => {
+    range(1, 5).forEach(i => {
       this.api.lineH(0, this.y(1 + 12 * i), width, 6, true)
     })
     blocks.forEach((block, position) => {
@@ -109,16 +109,16 @@ class Pad extends Component {
     return normalizedOffset
   }
 
-  handleBlockEvent (e) {
-    const { blocks, updateBlocks, index } = this.props
+  handleBlockEvent (e, isWide) {
+    const { blocks, updateBlock } = this.props
     const offset = this.getOffset(e)
     const position = x.invert(offset[0])
     const positionModulus = position % 1
     if (
       offset[1] >= this.y.range()[0] - blocksPadding.top &&
       offset[1] <= this.y.range()[1] + blocksPadding.bottom &&
-      positionModulus > 0.15 &&
-      positionModulus < 0.85
+      positionModulus > (isWide ? 0 : 0.15) &&
+      positionModulus < (isWide ? 1 : 0.85)
     ) {
       const block = clamp(
         Math.ceil(this.y.invert(offset[1])),
@@ -127,17 +127,14 @@ class Pad extends Component {
       )
       const blockIndex = Math.floor(position) - 1
 
-      const newBlocks = [
-        ...blocks.slice(0, blockIndex),
-        block,
-        ...blocks.slice(blockIndex + 1)
-      ]
-      updateBlocks({ blocks: newBlocks, index })
+      if (blocks[blockIndex] !== block) {
+        updateBlock({ block, blockIndex })
+      }
     }
   }
 
   handleMouseDown (e) {
-    this.handleBlockEvent(e)
+    this.handleBlockEvent(e, true)
   }
 
   handleMouseMove (e) {
@@ -166,10 +163,9 @@ class Pad extends Component {
 Pad.propTypes = {
   drawLines: PropTypes.bool,
   enabled: PropTypes.bool.isRequired,
-  updateBlocks: PropTypes.func.isRequired,
+  updateBlock: PropTypes.func.isRequired,
   getColor: PropTypes.func,
   blocks: PropTypes.array.isRequired,
-  index: PropTypes.number.isRequired,
   totalBlocks: PropTypes.number.isRequired
 }
 

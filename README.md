@@ -6,11 +6,11 @@
   - add a diagonal line call
 
 - add sound
-  - during editing,
-    - clicking a note should play it
-    - when you let go, you should hear it once
-    - we need a way to play the sfx
-  - so... time for tone js!
+  - during play, visualize
+  - if a volume is not set, clicking a note should automatically give it max volume
+  - notes should not be "null"
+  - enable playing sfx in code and run
+  - figure out the best oscillator settings etc 
 
 - saving an empty code screen errors out
 

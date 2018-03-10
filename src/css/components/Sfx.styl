@@ -20,10 +20,19 @@
     padding 0.5rem
     display grid
     grid-template-columns auto auto
-    grid-template-rows auto auto auto
+    grid-template-rows auto auto auto auto
     grid-row-gap 1rem
     grid-column-gap 1rem
     justify-content center
+    
+    .controls
+      grid-column 1 / span 2
+      button
+        display block
+        border solid $palette-6 3px
+        width 100%
+        // padding 0 1rem
+      // border solid red 1px
 
     .title
       color $palette-6
@@ -36,6 +45,7 @@
     ul.sfx-buttons
       display flex
       justify-content space-between
+      margin 0
       padding 0
       list-style none
 
