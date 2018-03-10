@@ -63,7 +63,7 @@ class Sfx extends Component {
       sfxIndex: 0
     }
 
-    this.loop = new Tone.Sequence(
+    this.sequence = new Tone.Sequence(
       (time, noteIndex) => {
         const { sfxs } = this.props
         const { sfxIndex } = this.state
@@ -139,9 +139,9 @@ class Sfx extends Component {
   handlePlay () {
     const { isPlaying } = this.state
     if (isPlaying) {
-      this.loop.stop()
+      this.sequence.stop()
     } else {
-      this.loop.start()
+      this.sequence.start()
     }
     this.setState({
       isPlaying: !isPlaying
