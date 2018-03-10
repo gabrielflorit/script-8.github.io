@@ -7,8 +7,6 @@
 
 - add sound
   - during play, visualize
-  - if a volume is not set, clicking a note should automatically give it max volume
-  - notes should not be "null"
   - enable playing sfx in code and run
   - figure out the best oscillator settings etc 
 

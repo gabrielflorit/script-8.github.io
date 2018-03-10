@@ -3,19 +3,19 @@ import PropTypes from 'prop-types'
 
 const defaultFormatter = x => x
 
-const NotesInputs = ({ notes, formatter = defaultFormatter }) => (
-  <ul className='NotesInputs'>
+const BlocksLabels = ({ notes, formatter = defaultFormatter }) => (
+  <ul className='BlocksLabels'>
     {notes.map((note, i) => (
       <li key={i}>
-        <button>{note ? formatter(note) : '-'}</button>
+        <button>{formatter(note)}</button>
       </li>
     ))}
   </ul>
 )
 
-NotesInputs.propTypes = {
+BlocksLabels.propTypes = {
   formatter: PropTypes.func,
   notes: PropTypes.array.isRequired
 }
 
-export default NotesInputs
+export default BlocksLabels

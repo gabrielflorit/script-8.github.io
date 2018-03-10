@@ -63,7 +63,7 @@ class Pad extends Component {
   drawBlocks (blocks) {
     this.api.clear()
     range(1, 5).forEach(i => {
-      this.api.lineH(0, this.y(1 + 12 * i), width, 6, true)
+      this.api.lineH(0, this.y(12 * i), width, 6, true)
     })
     blocks.forEach((block, position) => {
       this.drawBlock({ block, position: position + 1 })
@@ -90,7 +90,7 @@ class Pad extends Component {
 
   getColor (block) {
     const { colorFormatter } = this.props
-    return colorFormatter ? colorFormatter(block) : block > 0 ? 0 : 6
+    return colorFormatter ? colorFormatter(block) : 0
   }
 
   getOffset (e) {
@@ -164,6 +164,7 @@ Pad.propTypes = {
   drawLines: PropTypes.bool,
   enabled: PropTypes.bool.isRequired,
   updateBlock: PropTypes.func.isRequired,
+  colorFormatter: PropTypes.func,
   getColor: PropTypes.func,
   blocks: PropTypes.array.isRequired,
   totalBlocks: PropTypes.number.isRequired

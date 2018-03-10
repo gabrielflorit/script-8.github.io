@@ -8,11 +8,12 @@ import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import Pad from '../components/Pad.js'
-import NotesInputs from '../components/NotesInputs.js'
+import BlocksLabels from '../components/BlocksLabels.js'
 import { numberToNote, numberToOctave } from '../utils/numberToNote.js'
 import settings from '../utils/settings.js'
 
 const normalizeVolume = vol => vol / settings.volumes
+const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
 const pulseOptions = {
   oscillator: {
@@ -170,7 +171,7 @@ class Sfx extends Component {
     let sfx = sfxs[sfxIndex] || {}
     sfx = {
       notes: sfx.notes || range(16).map(d => 0),
-      volumes: sfx.volumes || range(16).map(d => 0)
+      volumes: sfx.volumes || range(16).map(d => settings.volumes)
     }
     return sfx
   }
@@ -179,8 +180,6 @@ class Sfx extends Component {
     const { sfxs } = this.props
     const { sfxIndex, isPlaying } = this.state
     const sfx = this.getSfx({ sfxIndex, sfxs })
-
-    const volumeColorFormatter = block => (block > 0 ? 4 - block / 2 : 6)
 
     return (
       <div className='Sfx' onMouseUp={this.handleMouseUp}>
@@ -214,9 +213,9 @@ class Sfx extends Component {
               enabled={this.state.isNotesDown}
               updateBlock={this.updateNotes}
               blocks={sfx.notes}
-              totalBlocks={1 + settings.octaves * 12}
+              totalBlocks={settings.octaves * 12}
             />
-            <NotesInputs formatter={numberToNote} notes={sfx.notes} />
+            <BlocksLabels formatter={numberToNote} notes={sfx.notes} />
           </div>
           <div className='title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
@@ -227,7 +226,7 @@ class Sfx extends Component {
               totalBlocks={settings.volumes}
               colorFormatter={volumeColorFormatter}
             />
-            <NotesInputs notes={sfx.volumes} />
+            <BlocksLabels notes={sfx.volumes} />
           </div>
         </div>
       </div>
