@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import range from 'lodash/range'
 import { connect } from 'react-redux'
 import * as Tone from 'tone'
+import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
@@ -9,25 +10,14 @@ import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import Pad from '../components/Pad.js'
 import BlocksLabels from '../components/BlocksLabels.js'
-import { numberToNote, numberToOctave } from '../utils/numberToNote.js'
+import toLetter from '../utils/toLetter.js'
+import normalizeVolume from '../utils/normalizeVolume.js'
 import settings from '../utils/settings.js'
+import defaultSfx from '../utils/defaultSfx.js'
 
-const normalizeVolume = vol => vol / settings.volumes
 const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
-const pulseOptions = {
-  oscillator: {
-    type: 'triangle'
-  },
-  envelope: {
-    attack: 0.1,
-    decay: 0.1,
-    sustain: 0.1,
-    release: 0.1
-  }
-}
-
-const synth = new Tone.Synth(pulseOptions).toMaster()
+const synth = createSynth()
 Tone.Transport.start()
 
 const mapStateToProps = ({ sfxs }) => ({ sfxs })
@@ -48,8 +38,7 @@ class Sfx extends Component {
 
     this.updateNotes = this.updateNotes.bind(this)
     this.updateVolumes = this.updateVolumes.bind(this)
-    // TODO refactor this so it's not functional
-    this.getSfx = this.getSfx.bind(this)
+    this.getCurrentSfx = this.getCurrentSfx.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
     this.handleSfxClick = this.handleSfxClick.bind(this)
     this.handleNotesDown = this.handleNotesDown.bind(this)
@@ -64,36 +53,36 @@ class Sfx extends Component {
     }
 
     this.sequence = new Tone.Sequence(
-      (time, noteIndex) => {
-        const { sfxs } = this.props
-        const { sfxIndex } = this.state
-        const sfx = this.getSfx({ sfxIndex, sfxs })
-        const noteNumber = sfx.notes[noteIndex]
-        const volume = sfx.volumes[noteIndex]
-        const note = numberToNote(noteNumber)
-        const octave = numberToOctave(noteNumber)
-        synth.triggerAttackRelease(
-          `${note}${octave}`,
-          '16n',
-          time,
-          normalizeVolume(volume)
-        )
-        this.setState({
-          playingIndex: noteIndex
+      (time, index) => {
+        const sfx = this.getCurrentSfx()
+        const note = sfx.notes[index]
+        const volume = sfx.volumes[index]
+        const letter = toLetter(note, true)
+        synth.triggerAttackRelease(letter, '16n', time, normalizeVolume(volume))
+
+        Tone.Draw.schedule(() => {
+          this.setState({
+            playingIndex: index
+          })
         })
       },
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      range(16),
       '16n'
     )
   }
 
-  updateNotes ({ block, blockIndex }) {
-    const { sfxs, updateSfx } = this.props
-    const { sfxIndex, isPlaying } = this.state
-    const sfx = this.getSfx({ sfxIndex, sfxs })
-    const { notes } = sfx
+  getCurrentSfx () {
+    const { sfxs } = this.props
+    const { sfxIndex } = this.state
+    const sfx = {
+      ...defaultSfx,
+      ...sfxs[sfxIndex]
+    }
+    return sfx
+  }
 
-    const note = numberToNote(block)
+  updateNotes ({ block, blockIndex }) {
+    const { notes } = this.getCurrentSfx()
 
     const newNotes = [
       ...notes.slice(0, blockIndex),
@@ -101,21 +90,19 @@ class Sfx extends Component {
       ...notes.slice(blockIndex + 1)
     ]
 
+    const { updateSfx } = this.props
+    const { sfxIndex, isPlaying } = this.state
+
     if (!isPlaying) {
-      const octave = numberToOctave(block)
-      synth.triggerAttackRelease(`${note}${octave}`, '16n')
+      const letter = toLetter(block, true)
+      synth.triggerAttackRelease(letter, '16n')
     }
 
     updateSfx({ sfx: { notes: newNotes }, index: sfxIndex })
   }
 
   updateVolumes ({ block, blockIndex }) {
-    const { sfxs, updateSfx } = this.props
-    const { sfxIndex, isPlaying } = this.state
-    const sfx = this.getSfx({ sfxIndex, sfxs })
-    const { notes, volumes } = sfx
-
-    const noteNumber = notes[blockIndex]
+    const { notes, volumes } = this.getCurrentSfx()
 
     const newNotes = [
       ...volumes.slice(0, blockIndex),
@@ -123,10 +110,14 @@ class Sfx extends Component {
       ...volumes.slice(blockIndex + 1)
     ]
 
+    const { updateSfx } = this.props
+    const { sfxIndex, isPlaying } = this.state
+
     if (!isPlaying) {
-      const octave = numberToOctave(noteNumber)
+      const note = notes[blockIndex]
+      const letter = toLetter(note, true)
       synth.triggerAttackRelease(
-        `${numberToNote(noteNumber)}${octave}`,
+        letter,
         '16n',
         window.AudioContext.currentTime,
         normalizeVolume(block)
@@ -169,19 +160,9 @@ class Sfx extends Component {
     })
   }
 
-  getSfx ({ sfxs, sfxIndex }) {
-    let sfx = sfxs[sfxIndex] || {}
-    sfx = {
-      notes: sfx.notes || range(16).map(d => 0),
-      volumes: sfx.volumes || range(16).map(d => settings.volumes)
-    }
-    return sfx
-  }
-
   render () {
-    const { sfxs } = this.props
     const { playingIndex, sfxIndex, isPlaying } = this.state
-    const sfx = this.getSfx({ sfxIndex, sfxs })
+    const sfx = this.getCurrentSfx()
 
     return (
       <div className='Sfx' onMouseUp={this.handleMouseUp}>
@@ -226,7 +207,7 @@ class Sfx extends Component {
               blocks={sfx.notes}
               totalBlocks={settings.octaves * 12}
             />
-            <BlocksLabels formatter={numberToNote} notes={sfx.notes} />
+            <BlocksLabels formatter={toLetter} notes={sfx.notes} />
           </div>
           <div className='title'>vol</div>
           <div className='pad-wrapper' onMouseDown={this.handleVolumesDown}>
