@@ -1,9 +1,9 @@
 import * as Tone from 'tone'
-import range from 'lodash/range'
-import settings from './settings.js'
-const normalizeVolume = vol => vol / settings.volumes
+import toLetter from '../toLetter.js'
+import normalizeVolume from '../normalizeVolume.js'
+import defaultSfx from '../defaultSfx.js'
 
-const pulseOptions = {
+const triangle = {
   oscillator: {
     type: 'triangle'
   },
@@ -15,25 +15,64 @@ const pulseOptions = {
   }
 }
 
-const soundAPI = ({ sfxs }) => {
-  const synth = new Tone.Synth(pulseOptions).toMaster()
+const createSynth = () => {
+  const synth = new Tone.Synth(triangle).toMaster()
+  return synth
+}
+
+const soundAPI = () => {
+  const synth = createSynth()
   Tone.Transport.start()
 
-  return {
-    playSfx (number) {
-      let sequence = new Tone.Sequence(
-        (time, index) => {
-          const note = sfxs[number].notes[index]
-          const volume = sfxs[number].volumes[index]
-          synth.triggerAttackRelease(note, '16n', time, normalizeVolume(volume))
+  const sequencePool = []
+
+  const playSfx = sfxs => number => {
+    // Find the correct sfx.
+    const sfx = sfxs[number]
+
+    if (sfx) {
+      const { notes, volumes } = {
+        ...defaultSfx,
+        ...sfx
+      }
+
+      // Stop all sequences.
+      sequencePool.forEach(sequence => {
+        sequence.stop()
+      })
+
+      // Create new sequence.
+      const sequence = new Tone.Sequence(
+        (time, event) => {
+          const { note, volume } = event
+          const letter = toLetter(note, true)
+          synth.triggerAttackRelease(
+            letter,
+            '16n',
+            time,
+            normalizeVolume(volume)
+          )
         },
-        range(16),
+        notes.map((note, index) => ({ note, volume: volumes[index] })),
         '16n'
       )
-      sequence.loop = 0
+
+      // Make sure it doesn't loop.
+      sequence.loop = false
+
+      // Start it,
       sequence.start()
+
+      // and add it to the pool.
+      sequencePool.push(sequence)
     }
   }
+
+  return {
+    playSfx
+  }
 }
+
+export { createSynth }
 
 export default soundAPI

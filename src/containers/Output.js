@@ -5,7 +5,8 @@ import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
 
-const mapStateToProps = ({ screen, game }) => ({
+const mapStateToProps = ({ screen, game, sfxs }) => ({
+  sfxs,
   game: screen === screenTypes.BOOT ? bios : game,
   focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
@@ -45,7 +46,7 @@ class Output extends Component {
     }
   }
 
-  evaluate ({ game, finishBoot, run }) {
+  evaluate ({ game, finishBoot, run, sfxs }) {
     // Validate code before drawing.
     let isValid = true
     try {
@@ -59,7 +60,7 @@ class Output extends Component {
       const iframe = window.frames[0]
 
       // Send iframe the game code.
-      iframe.script8.callCode(game, run, finishBoot)
+      iframe.script8.callCode({ game, sfxs, run, endCallback: finishBoot })
     }
   }
 

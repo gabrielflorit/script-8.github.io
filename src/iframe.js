@@ -1,13 +1,13 @@
 import { interval } from 'd3-timer'
-import * as d3 from 'd3'
 
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
 import random from 'lodash/random'
 import clamp from 'lodash/clamp'
-
 import once from 'lodash/once'
+
 import canvasAPI from './utils/canvasAPI/index.js'
+import soundAPI from './utils/soundAPI/index.js'
 import blank from './utils/blank.js'
 
 window.script8 = {}
@@ -33,6 +33,8 @@ const {
   height: size
 })
 
+const { playSfx } = soundAPI()
+
 // Export them to global scope for eval's use later.
 window.print = print
 window.rectStroke = rectStroke
@@ -42,8 +44,6 @@ window.circFill = circFill
 window.lineH = lineH
 window.lineV = lineV
 window.clear = clear
-window.__ctx = ctx
-window.d3 = d3
 
 window.range = range
 window.flatten = flatten
@@ -91,10 +91,7 @@ function getOffset (event) {
     } else {
       offset = [event.clientX - rect.left, event.clientY - rect.top]
     }
-    normalizedOffset = [
-      offset[0] * size / width,
-      offset[1] * size / height
-    ]
+    normalizedOffset = [offset[0] * size / width, offset[1] * size / height]
   }
   return normalizedOffset
 }
@@ -109,7 +106,8 @@ const geval = eval
 
 let timer
 
-window.script8.callCode = (game, run, endCallback = noop) => {
+window.script8.callCode = ({ game, sfxs, run, endCallback = noop }) => {
+  window.playSfx = playSfx(sfxs)
   window.script8.end = once(endCallback)
   if (!game || !game.length) {
     game = blank

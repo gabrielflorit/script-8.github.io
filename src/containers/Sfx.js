@@ -13,6 +13,7 @@ import BlocksLabels from '../components/BlocksLabels.js'
 import toLetter from '../utils/toLetter.js'
 import normalizeVolume from '../utils/normalizeVolume.js'
 import settings from '../utils/settings.js'
+import defaultSfx from '../utils/defaultSfx.js'
 
 const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
@@ -73,10 +74,9 @@ class Sfx extends Component {
   getCurrentSfx () {
     const { sfxs } = this.props
     const { sfxIndex } = this.state
-    let sfx = sfxs[sfxIndex] || {}
-    sfx = {
-      notes: sfx.notes || range(16).map(d => 0),
-      volumes: sfx.volumes || range(16).map(d => settings.volumes)
+    const sfx = {
+      ...defaultSfx,
+      ...sfxs[sfxIndex]
     }
     return sfx
   }
