@@ -15,6 +15,8 @@ import normalizeVolume from '../utils/normalizeVolume.js'
 import settings from '../utils/settings.js'
 import defaultSfx from '../utils/defaultSfx.js'
 
+// todo on unmount stop all playing
+
 const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
 const synth = createSynth()
