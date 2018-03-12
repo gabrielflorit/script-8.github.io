@@ -46,12 +46,11 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
   },
 
-  polyStroke (points, c, w) {
+  polyStroke (points, c) {
     if (!points.length) {
       return
     }
     ctx.strokeStyle = colors.one(c)
-    ctx.lineWidth = w
     ctx.beginPath()
     ctx.moveTo(Math.floor(points[0][0]) + 0.5, Math.floor(points[0][1]))
     for (let i = 0; i < points.length; i++) {
