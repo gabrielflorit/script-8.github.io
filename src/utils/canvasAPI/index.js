@@ -52,9 +52,9 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     }
     ctx.strokeStyle = colors.one(c)
     ctx.beginPath()
-    ctx.moveTo(Math.floor(points[0][0]) + 0.5, Math.floor(points[0][1]))
+    ctx.moveTo(Math.floor(points[0][0]) + 0.5, Math.floor(points[0][1]) - 1)
     for (let i = 0; i < points.length; i++) {
-      ctx.lineTo(Math.floor(points[i][0]) + 0.5, Math.floor(points[i][1]))
+      ctx.lineTo(Math.floor(points[i][0]) + 0.5, Math.floor(points[i][1]) - 1)
     }
     ctx.closePath()
     ctx.stroke()
@@ -66,9 +66,9 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     }
     ctx.fillStyle = colors.one(c)
     ctx.beginPath()
-    ctx.moveTo(Math.floor(points[0][0]) + 0.5, Math.floor(points[0][1]))
+    ctx.moveTo(Math.floor(points[0][0]), Math.floor(points[0][1]))
     for (let i = 0; i < points.length; i++) {
-      ctx.lineTo(Math.floor(points[i][0]) + 0.5, Math.floor(points[i][1]))
+      ctx.lineTo(Math.floor(points[i][0]), Math.floor(points[i][1]))
     }
     ctx.closePath()
     ctx.fill()
