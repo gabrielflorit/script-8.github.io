@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import Boot from './Boot.js'
-import Sfx from './Sfx.js'
+import Phrase from './Phrase.js'
 import Run from './Run.js'
 import Code from './Code.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -20,7 +20,7 @@ const mapDispatchToProps = () => ({})
 const App = ({ screen }) => {
   const options = {
     [screenTypes.BOOT]: () => <Boot />,
-    [screenTypes.SFX]: () => <Sfx />,
+    [screenTypes.PHRASE]: () => <Phrase />,
     [screenTypes.RUN]: () => <Run />,
     [screenTypes.CODE]: () => <Code />
   }
@@ -30,7 +30,7 @@ const App = ({ screen }) => {
   return (
     <div
       className={classNames('App', {
-        'full-height': screen !== screenTypes.SFX
+        'full-height': screen !== screenTypes.PHRASE
       })}
     >
       {component}
