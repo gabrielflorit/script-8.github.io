@@ -9,7 +9,8 @@ const initialState = {
   game: demo,
   token: {},
   nextAction: null,
-  sfxs: []
+  sfxs: [],
+  phrases: []
 }
 
 export default initialState

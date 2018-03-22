@@ -16,7 +16,8 @@ const actions = createActions({
   [actionTypes.CLEAR_NEXT_ACTION]: () => {},
   [actionTypes.SAVE_GIST_REQUEST]: () => {},
   [actionTypes.SAVE_GIST_SUCCESS]: data => data,
-  [actionTypes.UPDATE_SFX]: sfx => sfx
+  [actionTypes.UPDATE_SFX]: sfx => sfx,
+  [actionTypes.UPDATE_PHRASE]: phrase => phrase
 })
 
 export default actions
