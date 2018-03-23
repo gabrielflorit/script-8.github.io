@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
+import includes from 'lodash/includes'
 // import * as Tone from 'tone'
 // import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
@@ -41,6 +42,7 @@ class Phrase extends Component {
 
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
+    this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
     this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
 
     // this.updateNotes = this.updateNotes.bind(this)
@@ -56,7 +58,8 @@ class Phrase extends Component {
       //   isVolumesDown: false,
       //   isPlaying: false,
       //   playingIndex: 0,
-      phraseIndex: 0
+      phraseIndex: 0,
+      octave: 0
     }
 
     // this.sequence = new Tone.Sequence(
@@ -155,12 +158,35 @@ class Phrase extends Component {
     }
   }
 
-  handleNoteClick (row, col) {
+  handleNoteKeyPress (row, col, e) {
     const { updatePhrase } = this.props
     const { phraseIndex } = this.state
     const { notes } = this.getCurrentPhrase()
+    const { key } = e
+    if (includes(['0', '1', '2', '3'], key)) {
+      const newNotes = [
+        ...notes.slice(0, col),
+        row + +key * 12,
+        ...notes.slice(col + 1)
+      ]
 
-    const newNotes = [...notes.slice(0, col), row, ...notes.slice(col + 1)]
+      updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
+      this.setState({
+        octave: +key
+      })
+    }
+  }
+
+  handleNoteClick (row, col) {
+    const { updatePhrase } = this.props
+    const { phraseIndex, octave } = this.state
+    const { notes } = this.getCurrentPhrase()
+
+    const newNotes = [
+      ...notes.slice(0, col),
+      row + octave * 12,
+      ...notes.slice(col + 1)
+    ]
 
     updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
   }
@@ -183,7 +209,6 @@ class Phrase extends Component {
     const { phraseIndex } = this.state
     // const { playingIndex, sfxIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
-    console.log(phrase)
 
     return (
       <div className='Phrase'>
@@ -211,12 +236,14 @@ class Phrase extends Component {
                     {phrase.notes.map((col, i) => {
                       const isMatch = col % 12 === row
                       return (
-                        <td
-                          onClick={() => this.handleNoteClick(row, i)}
-                          className={isMatch ? 'match' : ''}
-                          key={i}
-                        >
-                          {isMatch ? numberToOctave(col) : ''}
+                        <td key={i}>
+                          <button
+                            className={isMatch ? 'match' : ''}
+                            onKeyPress={e => this.handleNoteKeyPress(row, i, e)}
+                            onClick={() => this.handleNoteClick(row, i)}
+                          >
+                            {isMatch ? numberToOctave(col) : ' '}
+                          </button>
                         </td>
                       )
                     })}

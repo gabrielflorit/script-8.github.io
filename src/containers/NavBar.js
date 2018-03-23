@@ -22,7 +22,7 @@ const NavBar = ({ screen, setScreen }) => {
         onClick={() => {
           setScreen(d)
         }}
-        className={classNames({ active: screen === d })}
+        className={classNames({ active: screen === d }, 'button')}
       >
         {d}
       </button>

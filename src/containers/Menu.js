@@ -84,7 +84,9 @@ class Menu extends Component {
 
     const newLi = showNew ? (
       <li>
-        <button onClick={this.onNewClick}>New</button>
+        <button className='button' onClick={this.onNewClick}>
+          New
+        </button>
       </li>
     ) : null
 
@@ -92,7 +94,9 @@ class Menu extends Component {
       <ul className='Menu'>
         {newLi}
         <li>
-          <button onClick={this.onSaveClick}>Save{dirty ? ' *' : ''}</button>
+          <button className='button' onClick={this.onSaveClick}>
+            Save{dirty ? ' *' : ''}
+          </button>
         </li>
       </ul>
     )
