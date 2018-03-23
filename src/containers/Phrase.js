@@ -36,44 +36,46 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Phrase extends Component {
-  // constructor (props) {
-  //   super(props)
+  constructor (props) {
+    super(props)
 
-  // this.updateNotes = this.updateNotes.bind(this)
-  // this.updateVolumes = this.updateVolumes.bind(this)
-  // this.getCurrentSfx = this.getCurrentSfx.bind(this)
-  // this.handlePlay = this.handlePlay.bind(this)
-  // this.handleSfxClick = this.handleSfxClick.bind(this)
-  // this.handleNotesDown = this.handleNotesDown.bind(this)
-  // this.handleVolumesDown = this.handleVolumesDown.bind(this)
-  // this.handleMouseUp = this.handleMouseUp.bind(this)
-  // this.state = {
-  //   isNotesDown: false,
-  //   isVolumesDown: false,
-  //   isPlaying: false,
-  //   playingIndex: 0,
-  //   sfxIndex: 0
-  // }
+    this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
 
-  // this.sequence = new Tone.Sequence(
-  //   (time, index) => {
-  //     const sfx = this.getCurrentSfx()
-  //     const note = sfx.notes[index]
-  //     const volume = sfx.volumes[index]
-  //     const letter = toLetter(note, true)
-  //     synth.triggerAttackRelease(letter, '16n', time, normalizeVolume(volume))
+    // this.updateNotes = this.updateNotes.bind(this)
+    // this.updateVolumes = this.updateVolumes.bind(this)
+    // this.getCurrentSfx = this.getCurrentSfx.bind(this)
+    // this.handlePlay = this.handlePlay.bind(this)
+    // this.handleSfxClick = this.handleSfxClick.bind(this)
+    // this.handleNotesDown = this.handleNotesDown.bind(this)
+    // this.handleVolumesDown = this.handleVolumesDown.bind(this)
+    // this.handleMouseUp = this.handleMouseUp.bind(this)
 
-  //     Tone.Draw.schedule(() => {
-  //       this.setState({
-  //         playingIndex: index
-  //       })
-  //     })
-  //   },
-  //   range(16),
-  //   '16n'
-  // )
+    this.state = {
+      //   isNotesDown: false,
+      //   isVolumesDown: false,
+      //   isPlaying: false,
+      //   playingIndex: 0,
+      phraseIndex: 0
+    }
 
-  // }
+    // this.sequence = new Tone.Sequence(
+    //   (time, index) => {
+    //     const sfx = this.getCurrentSfx()
+    //     const note = sfx.notes[index]
+    //     const volume = sfx.volumes[index]
+    //     const letter = toLetter(note, true)
+    //     synth.triggerAttackRelease(letter, '16n', time, normalizeVolume(volume))
+
+    //     Tone.Draw.schedule(() => {
+    //       this.setState({
+    //         playingIndex: index
+    //       })
+    //     })
+    //   },
+    //   range(16),
+    //   '16n'
+    // )
+  }
 
   // getCurrentSfx () {
   //   const { sfxs } = this.props
@@ -143,11 +145,14 @@ class Phrase extends Component {
   //   })
   // }
 
-  // handleSfxClick (e) {
-  //   this.setState({
-  //     sfxIndex: +e.target.textContent - 1
-  //   })
-  // }
+  handlePhraseIndexChange (e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      this.setState({
+        phraseIndex: value
+      })
+    }
+  }
 
   // handleVolumesDown () {
   //   this.setState({ isVolumesDown: true })
@@ -165,10 +170,9 @@ class Phrase extends Component {
   // }
 
   render () {
+    const { phraseIndex } = this.state
     // const { playingIndex, sfxIndex, isPlaying } = this.state
     // const sfx = this.getCurrentSfx()
-
-    console.log(this.props.phrases)
 
     return (
       <div className='Phrase'>
@@ -179,8 +183,13 @@ class Phrase extends Component {
         <div className='main'>
           <div className='settings'>
             <div className='title'>Phrase</div>
-            <TextInput label='#' />
-            <TextInput label='T' />
+            <TextInput
+              label='#'
+              value={phraseIndex.toString()}
+              handleChange={this.handlePhraseIndexChange}
+              type='number'
+              options={{ min: 0, max: 255 }}
+            />
           </div>
           <div className='matrix'>matrix</div>
           <div className='instruments'>instr</div>
