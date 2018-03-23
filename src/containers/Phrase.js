@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import range from 'lodash/range'
+import range from 'lodash/range'
 // import * as Tone from 'tone'
 // import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
@@ -11,10 +11,10 @@ import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
 // import Pad from '../components/Pad.js'
 // import BlocksLabels from '../components/BlocksLabels.js'
-// import toLetter from '../utils/toLetter.js'
+import toLetter, { numberToOctave } from '../utils/toLetter.js'
 // import normalizeVolume from '../utils/normalizeVolume.js'
 // import settings from '../utils/settings.js'
-// import defaultSfx from '../utils/defaultSfx.js'
+import defaults from '../utils/defaults.js'
 
 // todo on unmount stop all playing
 
@@ -43,7 +43,7 @@ class Phrase extends Component {
 
     // this.updateNotes = this.updateNotes.bind(this)
     // this.updateVolumes = this.updateVolumes.bind(this)
-    // this.getCurrentSfx = this.getCurrentSfx.bind(this)
+    // this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     // this.handlePlay = this.handlePlay.bind(this)
     // this.handleSfxClick = this.handleSfxClick.bind(this)
     // this.handleNotesDown = this.handleNotesDown.bind(this)
@@ -77,15 +77,15 @@ class Phrase extends Component {
     // )
   }
 
-  // getCurrentSfx () {
-  //   const { sfxs } = this.props
-  //   const { sfxIndex } = this.state
-  //   const sfx = {
-  //     ...defaultSfx,
-  //     ...sfxs[sfxIndex]
-  //   }
-  //   return sfx
-  // }
+  getCurrentPhrase () {
+    const { phrases } = this.props
+    const { phraseIndex } = this.state
+    const phrase = {
+      ...defaults.phrase,
+      ...phrases[phraseIndex]
+    }
+    return phrase
+  }
 
   // updateNotes ({ block, blockIndex }) {
   //   const { notes } = this.getCurrentSfx()
@@ -172,7 +172,8 @@ class Phrase extends Component {
   render () {
     const { phraseIndex } = this.state
     // const { playingIndex, sfxIndex, isPlaying } = this.state
-    // const sfx = this.getCurrentSfx()
+    const phrase = this.getCurrentPhrase()
+    console.log(phrase)
 
     return (
       <div className='Phrase'>
@@ -191,7 +192,25 @@ class Phrase extends Component {
               options={{ min: 0, max: 255 }}
             />
           </div>
-          <div className='matrix'>matrix</div>
+          <div className='matrix'>
+            <table className='notes'>
+              <tbody>
+                {range(11, -1).map(row => (
+                  <tr key={row}>
+                    <td>{toLetter(row)}</td>
+                    {phrase.notes.map((col, i) => {
+                      const isMatch = col % 12 === row
+                      return (
+                        <td className={isMatch ? 'match' : ''} key={i}>
+                          {isMatch ? numberToOctave(col) : ''}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className='instruments'>instr</div>
         </div>
       </div>

@@ -28,6 +28,25 @@
       text-transform uppercase
       color $palette-4
       margin-bottom 1rem
+
+    table
+      border-collapse collapse
+      table-layout fixed
+      width 32*1.5rem
+
+      td
+        text-transform uppercase
+        border solid $palette-6 1px
+        width 1.5rem
+        text-align center
+        &:first-child
+          background none
+          color $palette-4
+          text-align left
+        &.match
+          color $palette-7
+          background $palette-0
+
     // justify-content center
 
     // .controls
