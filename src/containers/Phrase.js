@@ -40,10 +40,11 @@ class Phrase extends Component {
     super(props)
 
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
+    this.handleNoteClick = this.handleNoteClick.bind(this)
+    this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
 
     // this.updateNotes = this.updateNotes.bind(this)
     // this.updateVolumes = this.updateVolumes.bind(this)
-    // this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     // this.handlePlay = this.handlePlay.bind(this)
     // this.handleSfxClick = this.handleSfxClick.bind(this)
     // this.handleNotesDown = this.handleNotesDown.bind(this)
@@ -154,6 +155,15 @@ class Phrase extends Component {
     }
   }
 
+  handleNoteClick (row, col) {
+    const { updatePhrase } = this.props
+    const { phraseIndex } = this.state
+    const { notes } = this.getCurrentPhrase()
+
+    const newNotes = [...notes.slice(0, col), row, ...notes.slice(col + 1)]
+
+    updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
+  }
   // handleVolumesDown () {
   //   this.setState({ isVolumesDown: true })
   // }
@@ -201,7 +211,11 @@ class Phrase extends Component {
                     {phrase.notes.map((col, i) => {
                       const isMatch = col % 12 === row
                       return (
-                        <td className={isMatch ? 'match' : ''} key={i}>
+                        <td
+                          onClick={() => this.handleNoteClick(row, i)}
+                          className={isMatch ? 'match' : ''}
+                          key={i}
+                        >
                           {isMatch ? numberToOctave(col) : ''}
                         </td>
                       )
