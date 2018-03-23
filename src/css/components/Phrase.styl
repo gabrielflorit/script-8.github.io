@@ -33,6 +33,11 @@
       border-collapse collapse
       table-layout fixed
       width 32*1.5rem
+      margin-bottom 1.5rem
+
+      &.volumes
+        button
+          color $palette-7
 
       td
         text-transform uppercase
@@ -54,8 +59,27 @@
           top 0
           left 0
           background none
+          &:focus
+            z-index 10
           &.match
             color $palette-7
+            background $palette-0
+          &.volume-0
+            background $palette-7
+            color $palette-6
+          &.volume-1
+            background $palette-6
+          &.volume-2
+            background $palette-5
+          &.volume-3
+            background $palette-4
+          &.volume-4
+            background $palette-3
+          &.volume-5
+            background $palette-2
+          &.volume-6
+            background $palette-1
+          &.volume-7
             background $palette-0
 
         &:first-child
