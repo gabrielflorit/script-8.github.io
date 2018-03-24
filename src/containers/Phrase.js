@@ -277,10 +277,13 @@ class Phrase extends Component {
                       return (
                         <td
                           key={col}
-                          className={classNames({
-                            match: isMatch,
-                            highlight: col === playingIndex && isPlaying
-                          })}
+                          className={classNames(
+                            {
+                              match: isMatch,
+                              highlight: col === playingIndex && isPlaying
+                            },
+                            `octave-${numberToOctave(note)}`
+                          )}
                           onClick={e =>
                             this.handleNoteClick({ note: row, col, e })
                           }
