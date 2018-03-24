@@ -12,7 +12,8 @@ import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-// import normalize from '../utils/normalize.js'
+import toLetter from '../utils/toLetter.js'
+import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
@@ -53,31 +54,31 @@ class Chain extends Component {
         const phrasePosition = Math.floor(index / settings.matrixLength)
         const notePosition = index % settings.matrixLength
 
-        // const phrase = get(chain, '[phrasePosition]', [])
-        // const note = get(chain, '[phrasePosition]', [])
-
         console.log({ phrasePosition })
-        const phraseIndex = get(chain, `[${phrasePosition}]`)
-        console.log({ phraseIndex })
 
-        // const phrase = phrases[phraseIndex]
-        // const note = phrase.notes[notePosition]
-        // const volume = phrase.volumes[notePosition]
+        // e.g. [000, 001, 003, null] - the phrase indices for this position
+        const phrasesIndices = get(chain, [phrasePosition])
+        console.log({ phrasesIndices })
 
-        // console.log(chain)
-        // console.log(phrases)
+        // for now we'll only deal with ONE channel
+        // get the channel 0 phrase for this position
+        const phrase = get(phrases, [phrasesIndices[0]])
+        console.log({ phrase })
 
-        // const note = chain.notes[index]
-        // const volume = chain.volumes[index]
-        // if (note !== null && volume > 0) {
-        //   const letter = toLetter(note, true, true)
-        //   synth.triggerAttackRelease(
-        //     letter,
-        //     '32n',
-        //     time,
-        //     normalize.volume(volume)
-        //   )
-        // }
+        const note = get(phrase, ['notes', notePosition])
+        const volume = get(phrase, ['volumes', notePosition])
+
+        console.log([note, volume])
+
+        if (note !== null && volume > 0) {
+          const letter = toLetter(note, true, true)
+          synth.triggerAttackRelease(
+            letter,
+            '32n',
+            time,
+            normalize.volume(volume)
+          )
+        }
         // Tone.Draw.schedule(() => {
         //   this.setState({
         //     playingIndex: index
@@ -183,7 +184,7 @@ class Chain extends Component {
             </button>
             <table className='phrases'>
               <tbody>
-                {range(4).map(row => (
+                {range(chain[0].length).map(row => (
                   <tr key={row}>
                     <td>{row}</td>
                     {chain.map((phrases, col) => {

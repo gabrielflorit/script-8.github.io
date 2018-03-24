@@ -6,7 +6,9 @@ const defaults = {
     notes: range(settings.matrixLength).map(d => null),
     volumes: range(settings.matrixLength).map(d => 0)
   },
-  chain: range(settings.matrixLength).map(() => range(4).map(() => null))
+  chain: range(settings.matrixLength).map(() =>
+    range(settings.chainChannels).map(() => null)
+  )
 }
 
 export default defaults
