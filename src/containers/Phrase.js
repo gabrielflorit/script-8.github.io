@@ -14,7 +14,7 @@ import TextInput from '../components/TextInput.js'
 // import BlocksLabels from '../components/BlocksLabels.js'
 import toLetter, { numberToOctave } from '../utils/toLetter.js'
 // import normalizeVolume from '../utils/normalizeVolume.js'
-// import settings from '../utils/settings.js'
+import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 // todo on unmount stop all playing
@@ -163,7 +163,7 @@ class Phrase extends Component {
     const { updatePhrase } = this.props
     const { phraseIndex } = this.state
     const { key } = e
-    if (includes(range(8).map(d => d.toString()), key)) {
+    if (includes(range(settings.volumes).map(d => d.toString()), key)) {
       const { volumes } = this.getCurrentPhrase()
       const newVolumes = [
         ...volumes.slice(0, col),
@@ -188,7 +188,7 @@ class Phrase extends Component {
     const { phraseIndex } = this.state
     const { notes } = this.getCurrentPhrase()
     const { key } = e
-    if (includes(['0', '1', '2', '3'], key)) {
+    if (includes(range(settings.octaves).map(d => d.toString()), key)) {
       const newNotes = [
         ...notes.slice(0, col),
         note + +key * 12,
@@ -235,8 +235,6 @@ class Phrase extends Component {
     // const { playingIndex, sfxIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
 
-    console.log(phrase)
-
     return (
       <div className='Phrase'>
         <Updater />
@@ -251,7 +249,7 @@ class Phrase extends Component {
               value={phraseIndex.toString()}
               handleChange={this.handlePhraseIndexChange}
               type='number'
-              options={{ min: 0, max: 255 }}
+              options={{ min: 0, max: settings.phrases - 1 }}
             />
           </div>
           <div className='matrix'>
