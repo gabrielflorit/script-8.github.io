@@ -24,14 +24,7 @@ const chains = handleActions(
           ? [...state]
           : state.concat([...Array(index + 1 - state.length)].map(d => null))
 
-      return [
-        ...chains.slice(0, index),
-        {
-          ...chains[index],
-          ...chain
-        },
-        ...chains.slice(index + 1)
-      ]
+      return [...chains.slice(0, index), chain, ...chains.slice(index + 1)]
     }
   },
   initialState.chains

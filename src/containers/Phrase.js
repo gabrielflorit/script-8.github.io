@@ -79,7 +79,7 @@ class Phrase extends Component {
     const { phraseIndex } = this.state
     const phrase = {
       ...defaults.phrase,
-      ...phrases[phraseIndex]
+      ...phrases[+phraseIndex]
     }
     return phrase
   }

@@ -6,9 +6,7 @@ const defaults = {
     notes: range(settings.matrixLength).map(d => null),
     volumes: range(settings.matrixLength).map(d => 0)
   },
-  chain: range(settings.matrixLength).map(e =>
-    range(4).map(d => [e, d, e, d].join('').slice(0, 3))
-  )
+  chain: range(settings.matrixLength).map(() => range(4).map(() => null))
 }
 
 export default defaults

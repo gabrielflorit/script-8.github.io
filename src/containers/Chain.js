@@ -1,23 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
-import includes from 'lodash/includes'
-import * as Tone from 'tone'
+// import includes from 'lodash/includes'
+// import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth } from '../utils/soundAPI/index.js'
+// import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-import toLetter, { numberToOctave } from '../utils/toLetter.js'
-import normalize from '../utils/normalize.js'
+// import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
-const synth = createSynth()
-Tone.Transport.start()
+// const synth = createSynth()
+// Tone.Transport.start()
 
 const mapStateToProps = ({ chains }) => ({ chains })
 
@@ -38,7 +37,7 @@ class Chain extends Component {
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
     // this.handleNoteClick = this.handleNoteClick.bind(this)
     // this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
-    // this.handleVolumeKeyPress = this.handleVolumeKeyPress.bind(this)
+    this.handlePhraseKeyPress = this.handlePhraseKeyPress.bind(this)
     this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
 
@@ -77,7 +76,7 @@ class Chain extends Component {
   getCurrentChain () {
     const { chains } = this.props
     const { chainIndex } = this.state
-    const chain = chains[chainIndex]
+    const chain = chains[+chainIndex]
     return chain && chain.length ? chain : defaults.chain
   }
 
@@ -120,62 +119,36 @@ class Chain extends Component {
     }
   }
 
-  // handleVolumeKeyPress ({ col, e }) {
-  //   const { updateChain } = this.props
-  //   const { chainIndex } = this.state
-  //   const { key } = e
-  //   if (includes(range(settings.volumes).map(d => d.toString()), key)) {
-  //     const { volumes } = this.getCurrentChain()
-  //     const newVolumes = [
-  //       ...volumes.slice(0, col),
-  //       +key,
-  //       ...volumes.slice(col + 1)
-  //     ]
-
-  // const newNotes =
-  //   +key === 0
-  //     ? [...notes.slice(0, col), null, ...notes.slice(col + 1)]
-  //     : [...notes]
-
-  // updateChain({
-  //   phrase: { volumes: newVolumes },
-  //   index: chainIndex
-  // })
-  // }
-  // }
-
-  // handleNoteKeyPress ({ note, col, e }) {
-  //   const { updateChain } = this.props
-  //   const { chainIndex } = this.state
-  //   const { notes } = this.getCurrentChain()
-  //   const { key } = e
-  //   if (includes(range(settings.octaves).map(d => d.toString()), key)) {
-  //     const newNotes = [
-  //       ...notes.slice(0, col),
-  //       note + +key * 12,
-  //       ...notes.slice(col + 1)
-  //     ]
-
-  // updateChain({ phrase: { notes: newNotes }, index: chainIndex })
-  // this.setState({
-  //   octave: +key
-  // })
-  // }
-  // }
-
-  // handleNoteClick ({ note, col, e }) {
-  //   const { updateChain } = this.props
-  //   const { chainIndex, octave } = this.state
-  //   const { notes } = this.getCurrentChain()
-
-  //   const newNotes = [
-  //     ...notes.slice(0, col),
-  //     e.currentTarget.classList.contains('match') ? null : note + octave * 12,
-  //     ...notes.slice(col + 1)
-  //   ]
-
-  //   updateChain({ phrase: { notes: newNotes }, index: chainIndex })
-  // }
+  handlePhraseKeyPress ({ row, col, e }) {
+    const { updateChain } = this.props
+    const { chainIndex } = this.state
+    const { key } = e
+    if (!isNaN(key)) {
+      const newPhraseIndex = +[e.target.innerText, key].join('').slice(-3)
+      if (newPhraseIndex >= 0 && newPhraseIndex < settings.chains) {
+        const chain = this.getCurrentChain()
+        const newChain = [
+          ...chain.slice(0, col),
+          [
+            ...chain[col].slice(0, row),
+            newPhraseIndex,
+            ...chain[col].slice(row + 1)
+          ],
+          ...chain.slice(col + 1)
+        ]
+        updateChain({ chain: newChain, index: chainIndex })
+      }
+    }
+    if (key === 'x') {
+      const chain = this.getCurrentChain()
+      const newChain = [
+        ...chain.slice(0, col),
+        [...chain[col].slice(0, row), null, ...chain[col].slice(row + 1)],
+        ...chain.slice(col + 1)
+      ]
+      updateChain({ chain: newChain, index: chainIndex })
+    }
+  }
 
   // componentWillUnmount () {
   //   this.sequence.stop()
@@ -186,7 +159,6 @@ class Chain extends Component {
     // const { chainIndex, isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
 
-    console.log(chain)
     return (
       <div className='Chain'>
         <Updater />
@@ -217,10 +189,19 @@ class Chain extends Component {
                   <tr key={row}>
                     <td>{row}</td>
                     {chain.map((phrases, col) => {
+                      const display =
+                        phrases[row] !== null
+                          ? ['00', +phrases[row]].join('').slice(-3)
+                          : ''
                       return (
-                        <td key={col}>
+                        <td
+                          onKeyPress={e =>
+                            this.handlePhraseKeyPress({ row, col, e })
+                          }
+                          key={col}
+                        >
                           <button>
-                            <span>{phrases[row]}</span>
+                            <span>{display}</span>
                           </button>
                         </td>
                       )
