@@ -48,6 +48,9 @@
         &:hover
           border-style double
           border-color $palette-0
+        &.match
+          color $palette-7
+          background $palette-0
         button
           cursor pointer
           @extend .VT323
@@ -61,9 +64,6 @@
           background none
           &:focus
             z-index 10
-          &.match
-            color $palette-7
-            background $palette-0
           &.volume-0
             background $palette-7
             color $palette-6

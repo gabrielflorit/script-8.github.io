@@ -202,14 +202,14 @@ class Phrase extends Component {
     }
   }
 
-  handleNoteClick ({ note, col }) {
+  handleNoteClick ({ note, col, e }) {
     const { updatePhrase } = this.props
     const { phraseIndex, octave } = this.state
     const { notes } = this.getCurrentPhrase()
 
     const newNotes = [
       ...notes.slice(0, col),
-      note + octave * 12,
+      e.currentTarget.className === 'match' ? null : note + octave * 12,
       ...notes.slice(col + 1)
     ]
 
@@ -265,14 +265,15 @@ class Phrase extends Component {
                       return (
                         <td
                           key={col}
-                          onClick={() =>
-                            this.handleNoteClick({ note: row, col })
+                          className={isMatch ? 'match' : ''}
+                          onClick={e =>
+                            this.handleNoteClick({ note: row, col, e })
                           }
                           onKeyPress={e =>
                             this.handleNoteKeyPress({ note: row, col, e })
                           }
                         >
-                          <button className={isMatch ? 'match' : ''}>
+                          <button>
                             {isMatch ? numberToOctave(note) : ' '}
                           </button>
                         </td>
