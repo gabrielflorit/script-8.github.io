@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
 import includes from 'lodash/includes'
-// import * as Tone from 'tone'
-// import { createSynth } from '../utils/soundAPI/index.js'
+import * as Tone from 'tone'
+import classNames from 'classnames'
+import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
@@ -13,7 +14,7 @@ import TextInput from '../components/TextInput.js'
 // import Pad from '../components/Pad.js'
 // import BlocksLabels from '../components/BlocksLabels.js'
 import toLetter, { numberToOctave } from '../utils/toLetter.js'
-// import normalizeVolume from '../utils/normalizeVolume.js'
+import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
@@ -21,8 +22,8 @@ import defaults from '../utils/defaults.js'
 
 // const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
-// const synth = createSynth()
-// Tone.Transport.start()
+const synth = createSynth()
+Tone.Transport.start()
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
 
@@ -48,7 +49,7 @@ class Phrase extends Component {
 
     // this.updateNotes = this.updateNotes.bind(this)
     // this.updateVolumes = this.updateVolumes.bind(this)
-    // this.handlePlay = this.handlePlay.bind(this)
+    this.handlePlay = this.handlePlay.bind(this)
     // this.handleSfxClick = this.handleSfxClick.bind(this)
     // this.handleNotesDown = this.handleNotesDown.bind(this)
     // this.handleVolumesDown = this.handleVolumesDown.bind(this)
@@ -57,29 +58,35 @@ class Phrase extends Component {
     this.state = {
       //   isNotesDown: false,
       //   isVolumesDown: false,
-      //   isPlaying: false,
-      //   playingIndex: 0,
+      isPlaying: false,
+      playingIndex: 0,
       phraseIndex: 0,
       octave: 0
     }
 
-    // this.sequence = new Tone.Sequence(
-    //   (time, index) => {
-    //     const sfx = this.getCurrentSfx()
-    //     const note = sfx.notes[index]
-    //     const volume = sfx.volumes[index]
-    //     const letter = toLetter(note, true)
-    //     synth.triggerAttackRelease(letter, '16n', time, normalizeVolume(volume))
-
-    //     Tone.Draw.schedule(() => {
-    //       this.setState({
-    //         playingIndex: index
-    //       })
-    //     })
-    //   },
-    //   range(16),
-    //   '16n'
-    // )
+    this.sequence = new Tone.Sequence(
+      (time, index) => {
+        const phrase = this.getCurrentPhrase()
+        const note = phrase.notes[index]
+        const volume = phrase.volumes[index]
+        if (note !== null && volume > 0) {
+          const letter = toLetter(note, true, true)
+          synth.triggerAttackRelease(
+            letter,
+            '32n',
+            time,
+            normalize.volume(volume)
+          )
+        }
+        Tone.Draw.schedule(() => {
+          this.setState({
+            playingIndex: index
+          })
+        })
+      },
+      range(settings.phraseLength),
+      '32n'
+    )
   }
 
   getCurrentPhrase () {
@@ -138,17 +145,18 @@ class Phrase extends Component {
   //   updateSfx({ sfx: { volumes: newNotes }, index: sfxIndex })
   // }
 
-  // handlePlay () {
-  //   const { isPlaying } = this.state
-  //   if (isPlaying) {
-  //     this.sequence.stop()
-  //   } else {
-  //     this.sequence.start()
-  //   }
-  //   this.setState({
-  //     isPlaying: !isPlaying
-  //   })
-  // }
+  handlePlay () {
+    const { isPlaying } = this.state
+    if (isPlaying) {
+      this.sequence.stop()
+    } else {
+      this.sequence.start()
+    }
+    this.setState({
+      isPlaying: !isPlaying,
+      playingIndex: 0
+    })
+  }
 
   handlePhraseIndexChange (e) {
     const { validity, value } = e.target
@@ -231,7 +239,7 @@ class Phrase extends Component {
   // }
 
   render () {
-    const { phraseIndex } = this.state
+    const { phraseIndex, isPlaying, playingIndex } = this.state
     // const { playingIndex, sfxIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
 
@@ -253,6 +261,12 @@ class Phrase extends Component {
             />
           </div>
           <div className='matrix'>
+            <button
+              className={classNames('play button', { active: isPlaying })}
+              onClick={this.handlePlay}
+            >
+              {isPlaying ? 'stop' : 'play'}
+            </button>
             <table className='notes'>
               <tbody>
                 {range(11, -1).map(row => (
@@ -263,7 +277,10 @@ class Phrase extends Component {
                       return (
                         <td
                           key={col}
-                          className={isMatch ? 'match' : ''}
+                          className={classNames({
+                            match: isMatch,
+                            highlight: col === playingIndex && isPlaying
+                          })}
                           onClick={e =>
                             this.handleNoteClick({ note: row, col, e })
                           }
@@ -290,9 +307,15 @@ class Phrase extends Component {
                     return (
                       <td
                         key={col}
+                        className={classNames(
+                          {
+                            highlight: col === playingIndex && isPlaying
+                          },
+                          `volume-${vol}`
+                        )}
                         onKeyPress={e => this.handleVolumeKeyPress({ col, e })}
                       >
-                        <button className={`volume-${vol}`}>{vol}</button>
+                        <button>{vol}</button>
                       </td>
                     )
                   })}

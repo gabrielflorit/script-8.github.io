@@ -18,7 +18,7 @@
     @extend .VT323
     font-size $font-large
     display grid
-    grid-template-columns auto auto auto
+    grid-template-columns auto 32*1.5rem auto
     grid-template-rows auto
     grid-row-gap 1rem
     grid-column-gap 1rem
@@ -27,46 +27,40 @@
     .title
       text-transform uppercase
       color $palette-4
-      margin-bottom 1rem
+      margin-bottom 1.5rem
+      height 1.5rem
+
+    button.play
+      display block
+      width 100%
+      border solid $palette-6 1px
+      height 1.5rem
+      margin-bottom 1.5rem
 
     table
       border-collapse collapse
       table-layout fixed
-      width 32*1.5rem
       margin-bottom 1.5rem
 
-      &.volumes
-        button
-          color $palette-7
+      &.notes
+        td
+          &.match
+            background $palette-0
+            button
+              color $palette-7
+            &.highlight
+              background $palette-7
+              button
+                color $palette-0
 
-      td
-        text-transform uppercase
-        border solid $palette-6 1px
-        width 1.5rem
-        text-align center
-        position relative
-        &:hover
-          border-style double
-          border-color $palette-0
-        &.match
-          color $palette-7
-          background $palette-0
-        button
-          cursor pointer
-          @extend .VT323
-          font-size $font-large
-          border none
-          position absolute
-          width 100%
-          height 100%
-          top 0
-          left 0
-          background none
-          &:focus
-            z-index 10
+      &.volumes
+        td
+          button
+            color $palette-7
           &.volume-0
             background $palette-7
-            color $palette-6
+            button
+              color $palette-6
           &.volume-1
             background $palette-6
           &.volume-2
@@ -81,11 +75,37 @@
             background $palette-1
           &.volume-7
             background $palette-0
+          &.highlight
+            background $palette-7
+            button
+              color $palette-0
 
+      td
+        text-transform uppercase
+        border solid $palette-6 1px
+        width 1.5rem
+        text-align center
+        position relative
+        &:hover
+          border-style double
+          border-color $palette-0
         &:first-child
           background none
           color $palette-4
           text-align left
+        button
+          cursor pointer
+          @extend .VT323
+          font-size $font-large
+          border none
+          position absolute
+          width 100%
+          height 100%
+          top 0
+          left 0
+          background none
+          &:focus
+            z-index 10
 
     // justify-content center
 
