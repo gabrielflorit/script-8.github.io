@@ -7,6 +7,8 @@ import token from './token.js'
 import nextAction from './nextAction.js'
 import sfxs from './sfxs.js'
 import phrases from './phrases.js'
+import chains from './chains.js'
+import songs from './songs.js'
 
 const reducer = combineReducers({
   screen,
@@ -16,7 +18,9 @@ const reducer = combineReducers({
   game,
   nextAction,
   sfxs,
-  phrases
+  phrases,
+  chains,
+  songs
 })
 
 export default reducer

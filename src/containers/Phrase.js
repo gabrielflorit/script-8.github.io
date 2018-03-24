@@ -69,7 +69,7 @@ class Phrase extends Component {
           })
         })
       },
-      range(settings.phraseLength),
+      range(settings.matrixLength),
       '32n'
     )
   }

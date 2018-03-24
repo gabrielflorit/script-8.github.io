@@ -2,15 +2,17 @@ import screenTypes from '../utils/screenTypes.js'
 import demo from '../utils/demo.js'
 
 const initialState = {
-  // screen: screenTypes.PHRASE,
-  screen: screenTypes.BOOT,
+  screen: screenTypes.CHAIN,
+  // screen: screenTypes.BOOT,
   booted: false,
   gist: {},
   game: demo,
   token: {},
   nextAction: null,
   sfxs: [],
-  phrases: []
+  phrases: [],
+  chains: [],
+  songs: []
 }
 
 export default initialState

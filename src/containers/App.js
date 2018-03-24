@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import includes from 'lodash/includes'
 import classNames from 'classnames'
 import Boot from './Boot.js'
 import Phrase from './Phrase.js'
+import Chain from './Chain.js'
 import Run from './Run.js'
 import Code from './Code.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -21,6 +23,7 @@ const App = ({ screen }) => {
   const options = {
     [screenTypes.BOOT]: () => <Boot />,
     [screenTypes.PHRASE]: () => <Phrase />,
+    [screenTypes.CHAIN]: () => <Chain />,
     [screenTypes.RUN]: () => <Run />,
     [screenTypes.CODE]: () => <Code />
   }
@@ -30,7 +33,10 @@ const App = ({ screen }) => {
   return (
     <div
       className={classNames('App', {
-        'full-height': screen !== screenTypes.PHRASE
+        'full-height': includes(
+          [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
+          screen
+        )
       })}
     >
       {component}

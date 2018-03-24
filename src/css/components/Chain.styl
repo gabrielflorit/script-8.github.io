@@ -1,4 +1,4 @@
-.Phrase
+.Chain
   height 100%
   display grid
   grid-template-columns minmax(auto, 51.5rem) auto
@@ -18,7 +18,7 @@
     @extend .VT323
     font-size $font-large
     display grid
-    grid-template-columns auto 32*1.5rem auto
+    grid-template-columns auto 32*1.5rem
     grid-template-rows auto
     grid-row-gap 1.5rem
     grid-column-gap 3rem
@@ -43,57 +43,11 @@
       table-layout fixed
       margin-bottom 1.5rem
 
-      &.notes
-        td
-          &.match
-            button
-              color $palette-7
-            &.octave-3
-              background $palette-0
-            &.octave-2
-              background $palette-1
-            &.octave-1
-              background $palette-2
-            &.octave-0
-              background $palette-3
-            &.highlight
-              background $palette-7
-              button
-                color $palette-0
-
-      &.volumes
-        td
-          &:first-child
-            text-align center
-          button
-            color $palette-7
-          &.volume-0
-            background $palette-7
-            button
-              color $palette-6
-          &.volume-1
-            background $palette-6
-          &.volume-2
-            background $palette-5
-          &.volume-3
-            background $palette-4
-          &.volume-4
-            background $palette-3
-          &.volume-5
-            background $palette-2
-          &.volume-6
-            background $palette-1
-          &.volume-7
-            background $palette-0
-          &.highlight
-            background $palette-7
-            button
-              color $palette-0
-
       td
         text-transform uppercase
         border solid $palette-6 1px
         width 1.5rem
+        height 4.5rem
         text-align center
         position relative
         &:not(:first-child)
@@ -103,10 +57,8 @@
         &:first-child
           background none
           color $palette-4
-          text-align left
         button
           overflow hidden
-          padding 0
           cursor pointer
           @extend .VT323
           font-size $font-large
@@ -117,5 +69,12 @@
           top 0
           left 0
           background none
+          color $palette-1
+          padding 0
           &:focus
             z-index 10
+          span
+            writing-mode vertical-lr
+            text-orientation upright
+            text-align center
+            justify-self center
