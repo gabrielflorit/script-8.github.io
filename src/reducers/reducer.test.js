@@ -2,6 +2,57 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+describe('updatePhrase', () => {
+  test('complete', () => {
+    const before = initialState
+    const action = actions.updatePhrase({
+      phrase: {
+        notes: ['c', 'c', 'c'],
+        volumes: [1, 2, 3]
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      phrases: [
+        null,
+        {
+          notes: ['c', 'c', 'c'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    })
+  })
+  test('partial', () => {
+    const before = {
+      ...initialState,
+      phrases: [
+        null,
+        {
+          notes: ['c', 'c', 'b'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    }
+    const action = actions.updatePhrase({
+      phrase: {
+        notes: ['c', 'c', 'c']
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      phrases: [
+        null,
+        {
+          notes: ['c', 'c', 'c'],
+          volumes: [1, 2, 3]
+        }
+      ]
+    })
+  })
+})
+
 describe('updateSfx', () => {
   test('complete', () => {
     const before = initialState
@@ -165,7 +216,7 @@ test('fetchGistSuccess good data', () => {
       'code.js': {
         content: 'my game'
       },
-      'sfxs.json': {
+      'phrases.json': {
         content: JSON.stringify(
           ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
           null,
@@ -178,7 +229,7 @@ test('fetchGistSuccess good data', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     game: 'my game',
-    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    phrases: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
     gist: {
       isFetching: false,
       data
@@ -189,7 +240,7 @@ test('fetchGistSuccess good data', () => {
 test('fetchGistSuccess bad data', () => {
   const before = {
     ...initialState,
-    sfxs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    phrases: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
     gist: {
       isFetching: true
     }
@@ -202,7 +253,7 @@ test('fetchGistSuccess bad data', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     game: null,
-    sfxs: [],
+    phrases: [],
     gist: {
       isFetching: false,
       data

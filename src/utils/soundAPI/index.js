@@ -1,7 +1,7 @@
 import * as Tone from 'tone'
+import defaults from '../defaults.js'
 import toLetter from '../toLetter.js'
-import normalizeVolume from '../normalizeVolume.js'
-import defaultSfx from '../defaultSfx.js'
+import normalize from '../normalize.js'
 
 const pulse = {
   oscillator: {
@@ -19,55 +19,47 @@ const soundAPI = () => {
   Tone.Transport.start()
 
   const sequencePool = []
-
-  const playSfx = sfxs => number => {
-    // Find the correct sfx.
-    const sfx = sfxs[number]
-
-    if (sfx) {
+  const playPhrase = phrases => number => {
+    // Find the correct phrase.
+    const phrase = phrases[number]
+    if (phrase) {
       const { notes, volumes } = {
-        ...defaultSfx,
-        ...sfx
+        ...defaults.phrase,
+        ...phrase
       }
-
       // Stop all sequences.
       // TODO: pop and dispose sequence, so we don't end up with an array
       // of unused sequences.
       sequencePool.forEach(sequence => {
         sequence.stop()
       })
-
       // Create new sequence.
       const sequence = new Tone.Sequence(
         (time, event) => {
           const { note, volume } = event
-          if (volume) {
-            const letter = toLetter(note, true)
+          if (note !== null && volume > 0) {
+            const letter = toLetter(note, true, true)
             synth.triggerAttackRelease(
               letter,
-              '16n',
+              '32n',
               time,
-              normalizeVolume(volume)
+              normalize.volume(volume)
             )
           }
         },
         notes.map((note, index) => ({ note, volume: volumes[index] })),
-        '16n'
+        '32n'
       )
-
       // Make sure it doesn't loop.
       sequence.loop = false
-
       // Start it,
       sequence.start()
-
       // and add it to the pool.
       sequencePool.push(sequence)
     }
   }
-
   return {
-    playSfx
+    playPhrase
   }
 }
 

@@ -33,7 +33,7 @@ const {
   height: size
 })
 
-const { playSfx } = soundAPI()
+const { playPhrase } = soundAPI()
 
 // Export them to global scope for eval's use later.
 window.print = print
@@ -106,8 +106,8 @@ const geval = eval
 
 let timer
 
-window.script8.callCode = ({ game, sfxs, run, endCallback = noop }) => {
-  window.playSfx = playSfx(sfxs)
+window.script8.callCode = ({ game, phrases, run, endCallback = noop }) => {
+  window.playPhrase = playPhrase(phrases)
   window.script8.end = once(endCallback)
   if (!game || !game.length) {
     game = blank
