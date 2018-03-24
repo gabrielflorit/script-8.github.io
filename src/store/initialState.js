@@ -2,8 +2,8 @@ import screenTypes from '../utils/screenTypes.js'
 import demo from '../utils/demo.js'
 
 const initialState = {
-  screen: screenTypes.PHRASE,
-  // screen: screenTypes.BOOT,
+  // screen: screenTypes.PHRASE,
+  screen: screenTypes.BOOT,
   booted: false,
   gist: {},
   game: demo,
