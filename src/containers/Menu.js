@@ -11,6 +11,8 @@ const mapStateToProps = ({
   game,
   sfxs,
   phrases,
+  chains,
+  songs,
   token,
   screen,
   nextAction
@@ -20,6 +22,8 @@ const mapStateToProps = ({
   game,
   sfxs,
   phrases,
+  chains,
+  songs,
   token,
   nextAction
 })

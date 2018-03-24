@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
+import get from 'lodash/get'
 // import includes from 'lodash/includes'
-// import * as Tone from 'tone'
+import * as Tone from 'tone'
 import classNames from 'classnames'
-// import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
@@ -15,10 +16,10 @@ import TextInput from '../components/TextInput.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
-// const synth = createSynth()
-// Tone.Transport.start()
+const synth = createSynth()
+Tone.Transport.start()
 
-const mapStateToProps = ({ chains }) => ({ chains })
+const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
 
 const mapDispatchToProps = dispatch => ({
   updateChain: ({ chain, index }) =>
@@ -35,42 +36,57 @@ class Chain extends Component {
     super(props)
 
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
-    // this.handleNoteClick = this.handleNoteClick.bind(this)
-    // this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
     this.handlePhraseKeyPress = this.handlePhraseKeyPress.bind(this)
     this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
+    const { phrases } = this.props
 
     this.state = {
-      // isPlaying: false,
+      isPlaying: false,
       playingIndex: 0,
       chainIndex: 0
-      // octave: 0
     }
 
-    // this.sequence = new Tone.Sequence(
-    //   (time, index) => {
-    //     const chain = this.getCurrentChain()
-    //     const note = chain.notes[index]
-    //     const volume = chain.volumes[index]
-    //     if (note !== null && volume > 0) {
-    //       const letter = toLetter(note, true, true)
-    //       synth.triggerAttackRelease(
-    //         letter,
-    //         '32n',
-    //         time,
-    //         normalize.volume(volume)
-    //       )
-    //     }
-    //     Tone.Draw.schedule(() => {
-    //       this.setState({
-    //         playingIndex: index
-    //       })
-    //     })
-    //   },
-    //   range(settings.matrixLength),
-    //   '32n'
-    // )
+    this.sequence = new Tone.Sequence(
+      (time, index) => {
+        const chain = this.getCurrentChain()
+        const phrasePosition = Math.floor(index / settings.matrixLength)
+        const notePosition = index % settings.matrixLength
+
+        // const phrase = get(chain, '[phrasePosition]', [])
+        // const note = get(chain, '[phrasePosition]', [])
+
+        console.log({ phrasePosition })
+        const phraseIndex = get(chain, `[${phrasePosition}]`)
+        console.log({ phraseIndex })
+
+        // const phrase = phrases[phraseIndex]
+        // const note = phrase.notes[notePosition]
+        // const volume = phrase.volumes[notePosition]
+
+        // console.log(chain)
+        // console.log(phrases)
+
+        // const note = chain.notes[index]
+        // const volume = chain.volumes[index]
+        // if (note !== null && volume > 0) {
+        //   const letter = toLetter(note, true, true)
+        //   synth.triggerAttackRelease(
+        //     letter,
+        //     '32n',
+        //     time,
+        //     normalize.volume(volume)
+        //   )
+        // }
+        // Tone.Draw.schedule(() => {
+        //   this.setState({
+        //     playingIndex: index
+        //   })
+        // })
+      },
+      range(Math.pow(settings.matrixLength, 2)),
+      '32n'
+    )
   }
 
   getCurrentChain () {
@@ -80,30 +96,13 @@ class Chain extends Component {
     return chain && chain.length ? chain : defaults.chain
   }
 
-  // updateNotes ({ block, blockIndex }) {
-  //   if (!isPlaying) {
-  //     const letter = toLetter(block, true)
-  //     synth.triggerAttackRelease(letter, '16n')
-  //   }
-  // }
-  //   if (!isPlaying) {
-  //     const note = notes[blockIndex]
-  //     const letter = toLetter(note, true)
-  //     synth.triggerAttackRelease(
-  //       letter,
-  //       '16n',
-  //       window.AudioContext.currentTime,
-  //       normalizeVolume(block)
-  //     )
-  //   }
-
   handlePlay () {
     const { isPlaying } = this.state
-    // if (isPlaying) {
-    //   this.sequence.stop()
-    // } else {
-    //   this.sequence.start()
-    // }
+    if (isPlaying) {
+      this.sequence.stop()
+    } else {
+      this.sequence.start()
+    }
     this.setState({
       isPlaying: !isPlaying,
       playingIndex: 0
@@ -150,13 +149,12 @@ class Chain extends Component {
     }
   }
 
-  // componentWillUnmount () {
-  //   this.sequence.stop()
-  // }
+  componentWillUnmount () {
+    this.sequence.stop()
+  }
 
   render () {
     const { chainIndex, isPlaying } = this.state
-    // const { chainIndex, isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
 
     return (
