@@ -238,6 +238,10 @@ class Phrase extends Component {
   //   })
   // }
 
+  componentWillUnmount () {
+    this.sequence.stop()
+  }
+
   render () {
     const { phraseIndex, isPlaying, playingIndex } = this.state
     // const { playingIndex, sfxIndex, isPlaying } = this.state
