@@ -173,7 +173,7 @@ class Phrase extends Component {
 
     const newNotes = [
       ...notes.slice(0, col),
-      e.currentTarget.className === 'match' ? null : note + octave * 12,
+      e.currentTarget.classList.contains('match') ? null : note + octave * 12,
       ...notes.slice(col + 1)
     ]
 
