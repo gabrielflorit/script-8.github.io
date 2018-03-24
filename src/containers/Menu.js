@@ -6,11 +6,20 @@ import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import { parseGistSfxs } from '../reducers/sfxs.js'
 
-const mapStateToProps = ({ gist, game, sfxs, token, screen, nextAction }) => ({
+const mapStateToProps = ({
+  gist,
+  game,
+  sfxs,
+  phrases,
+  token,
+  screen,
+  nextAction
+}) => ({
   showNew: screen === screenTypes.CODE,
   gist,
   game,
   sfxs,
+  phrases,
   token,
   nextAction
 })
@@ -19,8 +28,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: () => dispatch(actions.newGame()),
-  saveGist: ({ game, sfxs, token, gist }) =>
-    dispatch(saveGist({ game, sfxs, token, gist })),
+  saveGist: ({ game, sfxs, token, gist, phrases }) =>
+    dispatch(saveGist({ game, sfxs, token, gist, phrases })),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction))
 })
 
@@ -43,8 +52,8 @@ class Menu extends Component {
   }
 
   save () {
-    const { token, game, saveGist, gist, sfxs } = this.props
-    saveGist({ token, game, sfxs, gist })
+    const { token, game, saveGist, gist, sfxs, phrases } = this.props
+    saveGist({ token, game, sfxs, phrases, gist })
   }
 
   onNewClick () {

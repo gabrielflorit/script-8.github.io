@@ -60,7 +60,7 @@ export const fetchToken = code => dispatch => {
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
-export const saveGist = ({ game, token, gist, sfxs }) => dispatch => {
+export const saveGist = ({ game, token, gist, sfxs, phrases }) => dispatch => {
   dispatch(actions.saveGistRequest())
 
   const gh = new GitHub({
@@ -79,6 +79,9 @@ export const saveGist = ({ game, token, gist, sfxs }) => dispatch => {
       files: {
         'code.js': {
           content: game
+        },
+        'phrases.json': {
+          content: JSON.stringify(phrases, null, 2)
         },
         'sfxs.json': {
           content: JSON.stringify(sfxs, null, 2)
