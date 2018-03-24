@@ -162,16 +162,24 @@ class Phrase extends Component {
   handleVolumeKeyPress ({ col, e }) {
     const { updatePhrase } = this.props
     const { phraseIndex } = this.state
-    const { volumes } = this.getCurrentPhrase()
     const { key } = e
     if (includes(range(8).map(d => d.toString()), key)) {
+      const { volumes } = this.getCurrentPhrase()
       const newVolumes = [
         ...volumes.slice(0, col),
         +key,
         ...volumes.slice(col + 1)
       ]
 
-      updatePhrase({ phrase: { volumes: newVolumes }, index: phraseIndex })
+      // const newNotes =
+      //   +key === 0
+      //     ? [...notes.slice(0, col), null, ...notes.slice(col + 1)]
+      //     : [...notes]
+
+      updatePhrase({
+        phrase: { volumes: newVolumes },
+        index: phraseIndex
+      })
     }
   }
 
@@ -227,6 +235,8 @@ class Phrase extends Component {
     // const { playingIndex, sfxIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
 
+    console.log(phrase)
+
     return (
       <div className='Phrase'>
         <Updater />
@@ -251,18 +261,18 @@ class Phrase extends Component {
                   <tr key={row}>
                     <td>{toLetter(row)}</td>
                     {phrase.notes.map((note, col) => {
-                      const isMatch = note % 12 === row
+                      const isMatch = note !== null && note % 12 === row
                       return (
-                        <td key={col}>
-                          <button
-                            className={isMatch ? 'match' : ''}
-                            onKeyPress={e =>
-                              this.handleNoteKeyPress({ note: row, col, e })
-                            }
-                            onClick={() =>
-                              this.handleNoteClick({ note: row, col })
-                            }
-                          >
+                        <td
+                          key={col}
+                          onClick={() =>
+                            this.handleNoteClick({ note: row, col })
+                          }
+                          onKeyPress={e =>
+                            this.handleNoteKeyPress({ note: row, col, e })
+                          }
+                        >
+                          <button className={isMatch ? 'match' : ''}>
                             {isMatch ? numberToOctave(note) : ' '}
                           </button>
                         </td>
@@ -279,15 +289,11 @@ class Phrase extends Component {
                   <td>v</td>
                   {phrase.volumes.map((vol, col) => {
                     return (
-                      <td key={col}>
-                        <button
-                          onKeyPress={e =>
-                            this.handleVolumeKeyPress({ col, e })
-                          }
-                          className={`volume-${vol}`}
-                        >
-                          {vol}
-                        </button>
+                      <td
+                        key={col}
+                        onKeyPress={e => this.handleVolumeKeyPress({ col, e })}
+                      >
+                        <button className={`volume-${vol}`}>{vol}</button>
                       </td>
                     )
                   })}
