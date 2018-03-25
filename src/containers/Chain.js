@@ -66,8 +66,7 @@ class Chain extends Component {
         // e.g. [000, 001, 003, null] - the phrase indices for this position
         const phrasesIndices = get(chain, [phrasePosition], [])
 
-        // for now we'll only deal with ONE channel
-        // get the channel 0 phrase for this position
+        // for each channel,
         range(settings.chainChannels).forEach(channel => {
           const phrase = get(phrases, [phrasesIndices[channel]], [])
 
