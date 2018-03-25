@@ -16,8 +16,8 @@ import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
-const synth = createSynth()
-Tone.Transport.bpm.value = 120
+const synths = range(settings.chainChannels).map(() => createSynth())
+Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
 const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
@@ -66,20 +66,22 @@ class Chain extends Component {
 
         // for now we'll only deal with ONE channel
         // get the channel 0 phrase for this position
-        const phrase = get(phrases, [phrasesIndices[0]], [])
+        range(settings.chainChannels).forEach(channel => {
+          const phrase = get(phrases, [phrasesIndices[channel]], [])
 
-        const note = get(phrase, ['notes', notePosition], null)
-        const volume = get(phrase, ['volumes', notePosition], null)
+          const note = get(phrase, ['notes', notePosition], null)
+          const volume = get(phrase, ['volumes', notePosition], null)
 
-        if (note !== null && volume > 0) {
-          const letter = toLetter(note, true, true)
-          synth.triggerAttackRelease(
-            letter,
-            '32n',
-            time,
-            normalize.volume(volume)
-          )
-        }
+          if (note !== null && volume > 0) {
+            const letter = toLetter(note, true, true)
+            synths[channel].triggerAttackRelease(
+              letter,
+              '32n',
+              time,
+              normalize.volume(volume)
+            )
+          }
+        })
         Tone.Draw.schedule(() => {
           this.setState({
             playingIndex: phrasePosition

@@ -5,7 +5,8 @@ const settings = {
   chains: 8 * 8,
   songs: 8,
   matrixLength: 16,
-  chainChannels: 4
+  chainChannels: 4,
+  bpm: 60
 }
 
 export default settings

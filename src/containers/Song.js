@@ -17,7 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
-Tone.Transport.bpm.value = 120
+Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
 const mapStateToProps = ({ songs, chains, phrases }) => ({
