@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
 import get from 'lodash/get'
-// import includes from 'lodash/includes'
 import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth } from '../utils/soundAPI/index.js'
@@ -18,6 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
+Tone.Transport.bpm.value = 60
 Tone.Transport.start()
 
 const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
@@ -54,21 +54,15 @@ class Chain extends Component {
         const phrasePosition = Math.floor(index / settings.matrixLength)
         const notePosition = index % settings.matrixLength
 
-        console.log({ phrasePosition })
-
         // e.g. [000, 001, 003, null] - the phrase indices for this position
-        const phrasesIndices = get(chain, [phrasePosition])
-        console.log({ phrasesIndices })
+        const phrasesIndices = get(chain, [phrasePosition], [])
 
         // for now we'll only deal with ONE channel
         // get the channel 0 phrase for this position
-        const phrase = get(phrases, [phrasesIndices[0]])
-        console.log({ phrase })
+        const phrase = get(phrases, [phrasesIndices[0]], [])
 
-        const note = get(phrase, ['notes', notePosition])
-        const volume = get(phrase, ['volumes', notePosition])
-
-        console.log([note, volume])
+        const note = get(phrase, ['notes', notePosition], null)
+        const volume = get(phrase, ['volumes', notePosition], null)
 
         if (note !== null && volume > 0) {
           const letter = toLetter(note, true, true)
@@ -79,11 +73,11 @@ class Chain extends Component {
             normalize.volume(volume)
           )
         }
-        // Tone.Draw.schedule(() => {
-        //   this.setState({
-        //     playingIndex: index
-        //   })
-        // })
+        Tone.Draw.schedule(() => {
+          this.setState({
+            playingIndex: phrasePosition
+          })
+        }, time)
       },
       range(Math.pow(settings.matrixLength, 2)),
       '32n'
@@ -155,7 +149,7 @@ class Chain extends Component {
   }
 
   render () {
-    const { chainIndex, isPlaying } = this.state
+    const { chainIndex, isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
 
     return (
@@ -194,10 +188,16 @@ class Chain extends Component {
                           : ''
                       return (
                         <td
+                          key={col}
+                          className={classNames({
+                            highlight:
+                              col === playingIndex &&
+                              isPlaying &&
+                              display.length
+                          })}
                           onKeyPress={e =>
                             this.handlePhraseKeyPress({ row, col, e })
                           }
-                          key={col}
                         >
                           <button>
                             <span>{display}</span>

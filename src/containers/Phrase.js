@@ -17,6 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
+Tone.Transport.bpm.value = 60
 Tone.Transport.start()
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
@@ -67,7 +68,7 @@ class Phrase extends Component {
           this.setState({
             playingIndex: index
           })
-        })
+        }, time)
       },
       range(settings.matrixLength),
       '32n'

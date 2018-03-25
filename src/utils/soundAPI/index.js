@@ -16,6 +16,7 @@ const createSynth = () => {
 
 const soundAPI = () => {
   const synth = createSynth()
+  Tone.Transport.bpm.value = 60
   Tone.Transport.start()
 
   const sequencePool = []
