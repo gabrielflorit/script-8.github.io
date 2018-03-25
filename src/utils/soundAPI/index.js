@@ -1,4 +1,5 @@
 import * as Tone from 'tone'
+import dropRightWhile from 'lodash/dropRightWhile'
 import range from 'lodash/range'
 import get from 'lodash/get'
 import toLetter from '../toLetter.js'
@@ -23,8 +24,8 @@ const soundAPI = () => {
 
   const songSequencePool = []
 
-  const playSong = ({ songs, chains, phrases }) => number => {
-    const song = songs[number]
+  const playSong = ({ songs, chains, phrases }) => (number, loop = false) => {
+    const song = dropRightWhile(songs[number], d => d === null)
     if (song) {
       // Stop all sequences.
       // TODO: pop and dispose sequence, so we don't end up with an array
@@ -69,11 +70,10 @@ const soundAPI = () => {
             }
           })
         },
-        range(Math.pow(settings.matrixLength, 3)),
+        range(Math.pow(settings.matrixLength, 2) * song.length),
         '32n'
       )
-      // Make sure it doesn't loop.
-      sequence.loop = false
+      sequence.loop = loop
       // Start it,
       sequence.start()
       // and add it to the pool.
