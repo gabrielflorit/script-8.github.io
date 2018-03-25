@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import range from 'lodash/range'
-import get from 'lodash/get'
+import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth } from '../utils/soundAPI/index.js'
@@ -16,7 +15,7 @@ import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
-const synths = range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
@@ -54,6 +53,7 @@ class Song extends Component {
 
   componentDidMount () {
     const { chains, phrases } = this.props
+
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const song = this.getCurrentSong()
@@ -67,19 +67,19 @@ class Song extends Component {
           .map(d => parseInt(d, settings.matrixLength))
 
         // e.g 01 - the chain index for this position
-        const chainIndex = get(song, [chainPosition], [])
+        const chainIndex = _.get(song, [chainPosition], [])
 
         // e.g. the chain for this position,
         // an array of an array of phrase indices
-        const chain = get(chains, [chainIndex], [])
-        const phrasesIndices = get(chain, [phrasePosition], [])
+        const chain = _.get(chains, [chainIndex], [])
+        const phrasesIndices = _.get(chain, [phrasePosition], [])
 
         // for each channel,
-        range(settings.chainChannels).forEach(channel => {
-          const phrase = get(phrases, [phrasesIndices[channel]], [])
+        _.range(settings.chainChannels).forEach(channel => {
+          const phrase = _.get(phrases, [phrasesIndices[channel]], [])
 
-          const note = get(phrase, ['notes', notePosition], null)
-          const volume = get(phrase, ['volumes', notePosition], null)
+          const note = _.get(phrase, ['notes', notePosition], null)
+          const volume = _.get(phrase, ['volumes', notePosition], null)
 
           if (note !== null && volume > 0) {
             const letter = toLetter(note, true, true)
@@ -97,7 +97,7 @@ class Song extends Component {
           })
         }, time)
       },
-      range(Math.pow(settings.matrixLength, 3)),
+      _.range(Math.pow(settings.matrixLength, 3)),
       '32n'
     )
   }
