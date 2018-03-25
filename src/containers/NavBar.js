@@ -15,6 +15,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 const NavBar = ({ screen, setScreen }) => {
   const items = [
     screenTypes.CODE,
+    screenTypes.SONG,
     screenTypes.CHAIN,
     screenTypes.PHRASE,
     screenTypes.RUN

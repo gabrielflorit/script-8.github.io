@@ -1,9 +1,10 @@
 const settings = {
   octaves: 4,
   volumes: 8,
-  phrases: 256,
-  chains: 256,
-  matrixLength: 32,
+  phrases: 8 * 8,
+  chains: 8 * 8,
+  songs: 8,
+  matrixLength: 16,
   chainChannels: 4
 }
 

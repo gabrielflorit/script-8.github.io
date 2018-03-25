@@ -3,7 +3,8 @@ const screenTypes = {
   RUN: 'RUN',
   CODE: 'CODE',
   CHAIN: 'CHAIN',
-  PHRASE: 'PHRASE'
+  PHRASE: 'PHRASE',
+  SONG: 'SONG'
 }
 
 export default screenTypes

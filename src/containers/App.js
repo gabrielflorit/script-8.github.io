@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import Boot from './Boot.js'
 import Phrase from './Phrase.js'
 import Chain from './Chain.js'
+import Song from './Song.js'
 import Run from './Run.js'
 import Code from './Code.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -24,6 +25,7 @@ const App = ({ screen }) => {
     [screenTypes.BOOT]: () => <Boot />,
     [screenTypes.PHRASE]: () => <Phrase />,
     [screenTypes.CHAIN]: () => <Chain />,
+    [screenTypes.SONG]: () => <Song />,
     [screenTypes.RUN]: () => <Run />,
     [screenTypes.CODE]: () => <Code />
   }

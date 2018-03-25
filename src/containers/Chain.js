@@ -17,7 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
-Tone.Transport.bpm.value = 60
+Tone.Transport.bpm.value = 120
 Tone.Transport.start()
 
 const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
@@ -51,8 +51,15 @@ class Chain extends Component {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const chain = this.getCurrentChain()
-        const phrasePosition = Math.floor(index / settings.matrixLength)
-        const notePosition = index % settings.matrixLength
+
+        const [phrasePosition, notePosition] = [
+          '0',
+          index.toString(settings.matrixLength)
+        ]
+          .join('')
+          .slice(-2)
+          .split('')
+          .map(d => parseInt(d, settings.matrixLength))
 
         // e.g. [000, 001, 003, null] - the phrase indices for this position
         const phrasesIndices = get(chain, [phrasePosition], [])
@@ -118,8 +125,8 @@ class Chain extends Component {
     const { chainIndex } = this.state
     const { key } = e
     if (!isNaN(key)) {
-      const newPhraseIndex = +[e.target.innerText, key].join('').slice(-3)
-      if (newPhraseIndex >= 0 && newPhraseIndex < settings.chains) {
+      const newPhraseIndex = +[e.target.innerText, key].join('').slice(-2)
+      if (newPhraseIndex >= 0 && newPhraseIndex < settings.phrases) {
         const chain = this.getCurrentChain()
         const newChain = [
           ...chain.slice(0, col),
@@ -178,13 +185,13 @@ class Chain extends Component {
             </button>
             <table className='phrases'>
               <tbody>
-                {range(chain[0].length).map(row => (
+                {range(settings.chainChannels).map(row => (
                   <tr key={row}>
                     <td>{row}</td>
                     {chain.map((phrases, col) => {
                       const display =
                         phrases[row] !== null
-                          ? ['00', +phrases[row]].join('').slice(-3)
+                          ? ['00', +phrases[row]].join('').slice(-2)
                           : ''
                       return (
                         <td

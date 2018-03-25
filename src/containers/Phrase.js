@@ -17,7 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
-Tone.Transport.bpm.value = 60
+Tone.Transport.bpm.value = 120
 Tone.Transport.start()
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
@@ -135,11 +135,6 @@ class Phrase extends Component {
         +key,
         ...volumes.slice(col + 1)
       ]
-
-      // const newNotes =
-      //   +key === 0
-      //     ? [...notes.slice(0, col), null, ...notes.slice(col + 1)]
-      //     : [...notes]
 
       updatePhrase({
         phrase: { volumes: newVolumes },

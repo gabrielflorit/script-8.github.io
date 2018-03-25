@@ -24,14 +24,7 @@ const songs = handleActions(
           ? [...state]
           : state.concat([...Array(index + 1 - state.length)].map(d => null))
 
-      return [
-        ...songs.slice(0, index),
-        {
-          ...songs[index],
-          ...song
-        },
-        ...songs.slice(index + 1)
-      ]
+      return [...songs.slice(0, index), song, ...songs.slice(index + 1)]
     }
   },
   initialState.songs
