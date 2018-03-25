@@ -49,7 +49,9 @@ class Phrase extends Component {
       phraseIndex: 0,
       octave: 0
     }
+  }
 
+  componentDidMount () {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()

@@ -44,14 +44,16 @@ class Song extends Component {
     this.handleChainKeyPress = this.handleChainKeyPress.bind(this)
     this.getCurrentSong = this.getCurrentSong.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
-    const { chains, phrases } = this.props
 
     this.state = {
       isPlaying: false,
       playingIndex: 0,
       songIndex: 0
     }
+  }
 
+  componentDidMount () {
+    const { chains, phrases } = this.props
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const song = this.getCurrentSong()

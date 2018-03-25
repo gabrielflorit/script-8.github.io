@@ -40,14 +40,16 @@ class Chain extends Component {
     this.handlePhraseKeyPress = this.handlePhraseKeyPress.bind(this)
     this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
-    const { phrases } = this.props
 
     this.state = {
       isPlaying: false,
       playingIndex: 0,
       chainIndex: 0
     }
+  }
 
+  componentDidMount () {
+    const { phrases } = this.props
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const chain = this.getCurrentChain()
