@@ -4,20 +4,22 @@ import _ from 'lodash'
 import actionTypes from './actionTypes.js'
 
 const actions = createActions({
-  [actionTypes.SET_SCREEN]: screen => screen,
+  [actionTypes.SET_SCREEN]: d => d,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},
-  [actionTypes.FETCH_GIST_SUCCESS]: data => data,
+  [actionTypes.FETCH_GIST_SUCCESS]: d => d,
   [actionTypes.FINISH_BOOT]: () => {},
-  [actionTypes.UPDATE_GAME]: game => game,
+  [actionTypes.UPDATE_GAME]: d => d,
   [actionTypes.NEW_GAME]: () => {},
   [actionTypes.TOKEN_REQUEST]: () => {},
-  [actionTypes.TOKEN_SUCCESS]: data => data,
-  [actionTypes.SET_NEXT_ACTION]: action => action,
+  [actionTypes.TOKEN_SUCCESS]: d => d,
+  [actionTypes.SET_NEXT_ACTION]: d => d,
   [actionTypes.CLEAR_NEXT_ACTION]: () => {},
   [actionTypes.SAVE_GIST_REQUEST]: () => {},
-  [actionTypes.SAVE_GIST_SUCCESS]: data => data,
-  [actionTypes.UPDATE_SFX]: sfx => sfx,
-  [actionTypes.UPDATE_PHRASE]: phrase => phrase
+  [actionTypes.SAVE_GIST_SUCCESS]: d => d,
+  [actionTypes.UPDATE_SFX]: d => d,
+  [actionTypes.UPDATE_PHRASE]: d => d,
+  [actionTypes.UPDATE_CHAIN]: d => d,
+  [actionTypes.UPDATE_SONG]: d => d
 })
 
 export default actions
@@ -60,7 +62,15 @@ export const fetchToken = code => dispatch => {
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
-export const saveGist = ({ game, token, gist, sfxs, phrases }) => dispatch => {
+export const saveGist = ({
+  game,
+  token,
+  gist,
+  sfxs,
+  phrases,
+  chains,
+  songs
+}) => dispatch => {
   dispatch(actions.saveGistRequest())
 
   const gh = new GitHub({
@@ -82,6 +92,12 @@ export const saveGist = ({ game, token, gist, sfxs, phrases }) => dispatch => {
         },
         'phrases.json': {
           content: JSON.stringify(phrases, null, 2)
+        },
+        'chains.json': {
+          content: JSON.stringify(chains, null, 2)
+        },
+        'songs.json': {
+          content: JSON.stringify(songs, null, 2)
         },
         'sfxs.json': {
           content: JSON.stringify(sfxs, null, 2)

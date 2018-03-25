@@ -13,8 +13,13 @@ const mapDispatchToProps = (dispatch, props) => ({
 })
 
 const NavBar = ({ screen, setScreen }) => {
-  const items = [screenTypes.CODE, screenTypes.PHRASE, screenTypes.RUN]
-  // const items = [screenTypes.CODE, screenTypes.RUN]
+  const items = [
+    screenTypes.CODE,
+    screenTypes.SONG,
+    screenTypes.CHAIN,
+    screenTypes.PHRASE,
+    screenTypes.RUN
+  ]
 
   const lis = items.map((d, i) => (
     <li key={i}>

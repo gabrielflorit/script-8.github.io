@@ -11,6 +11,8 @@ const mapStateToProps = ({
   game,
   sfxs,
   phrases,
+  chains,
+  songs,
   token,
   screen,
   nextAction
@@ -20,6 +22,8 @@ const mapStateToProps = ({
   game,
   sfxs,
   phrases,
+  chains,
+  songs,
   token,
   nextAction
 })
@@ -28,8 +32,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: () => dispatch(actions.newGame()),
-  saveGist: ({ game, sfxs, token, gist, phrases }) =>
-    dispatch(saveGist({ game, sfxs, token, gist, phrases })),
+  saveGist: ({ game, sfxs, token, gist, phrases, chains, songs }) =>
+    dispatch(saveGist({ game, sfxs, token, gist, phrases, chains, songs })),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction))
 })
 
@@ -52,8 +56,17 @@ class Menu extends Component {
   }
 
   save () {
-    const { token, game, saveGist, gist, sfxs, phrases } = this.props
-    saveGist({ token, game, sfxs, phrases, gist })
+    const {
+      token,
+      game,
+      saveGist,
+      gist,
+      sfxs,
+      phrases,
+      chains,
+      songs
+    } = this.props
+    saveGist({ token, game, sfxs, phrases, chains, songs, gist })
   }
 
   onNewClick () {

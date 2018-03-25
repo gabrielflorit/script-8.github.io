@@ -1,7 +1,9 @@
 import * as Tone from 'tone'
-import defaults from '../defaults.js'
+import range from 'lodash/range'
+import get from 'lodash/get'
 import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
+import settings from '../settings.js'
 
 const pulse = {
   oscillator: {
@@ -15,39 +17,59 @@ const createSynth = () => {
 }
 
 const soundAPI = () => {
-  const synth = createSynth()
+  const synths = range(settings.chainChannels).map(() => createSynth())
+  Tone.Transport.bpm.value = 60
   Tone.Transport.start()
 
-  const sequencePool = []
-  const playPhrase = phrases => number => {
-    // Find the correct phrase.
-    const phrase = phrases[number]
-    if (phrase) {
-      const { notes, volumes } = {
-        ...defaults.phrase,
-        ...phrase
-      }
+  const songSequencePool = []
+
+  const playSong = ({ songs, chains, phrases }) => number => {
+    const song = songs[number]
+    if (song) {
       // Stop all sequences.
       // TODO: pop and dispose sequence, so we don't end up with an array
       // of unused sequences.
-      sequencePool.forEach(sequence => {
+      songSequencePool.forEach(sequence => {
         sequence.stop()
       })
-      // Create new sequence.
       const sequence = new Tone.Sequence(
-        (time, event) => {
-          const { note, volume } = event
-          if (note !== null && volume > 0) {
-            const letter = toLetter(note, true, true)
-            synth.triggerAttackRelease(
-              letter,
-              '32n',
-              time,
-              normalize.volume(volume)
-            )
-          }
+        (time, index) => {
+          const [chainPosition, phrasePosition, notePosition] = [
+            '00',
+            index.toString(settings.matrixLength)
+          ]
+            .join('')
+            .slice(-3)
+            .split('')
+            .map(d => parseInt(d, settings.matrixLength))
+
+          // e.g 01 - the chain index for this position
+          const chainIndex = get(song, [chainPosition], [])
+
+          // e.g. the chain for this position,
+          // an array of an array of phrase indices
+          const chain = get(chains, [chainIndex], [])
+          const phrasesIndices = get(chain, [phrasePosition], [])
+
+          // for each channel,
+          range(settings.chainChannels).forEach(channel => {
+            const phrase = get(phrases, [phrasesIndices[channel]], [])
+
+            const note = get(phrase, ['notes', notePosition], null)
+            const volume = get(phrase, ['volumes', notePosition], null)
+
+            if (note !== null && volume > 0) {
+              const letter = toLetter(note, true, true)
+              synths[channel].triggerAttackRelease(
+                letter,
+                '32n',
+                time,
+                normalize.volume(volume)
+              )
+            }
+          })
         },
-        notes.map((note, index) => ({ note, volume: volumes[index] })),
+        range(Math.pow(settings.matrixLength, 3)),
         '32n'
       )
       // Make sure it doesn't loop.
@@ -55,11 +77,51 @@ const soundAPI = () => {
       // Start it,
       sequence.start()
       // and add it to the pool.
-      sequencePool.push(sequence)
+      songSequencePool.push(sequence)
     }
   }
+
+  // const playPhrase = phrases => number => {
+  //   // Find the correct phrase.
+  //   const phrase = phrases[number]
+  //   if (phrase) {
+  //     const { notes, volumes } = {
+  //       ...defaults.phrase,
+  //       ...phrase
+  //     }
+  //     // Stop all sequences.
+  //     // TODO: pop and dispose sequence, so we don't end up with an array
+  //     // of unused sequences.
+  //     sfxSequencePool.forEach(sequence => {
+  //       sequence.stop()
+  //     })
+  //     // Create new sequence.
+  //     const sequence = new Tone.Sequence(
+  //       (time, event) => {
+  //         const { note, volume } = event
+  //         if (note !== null && volume > 0) {
+  //           const letter = toLetter(note, true, true)
+  //           synth.triggerAttackRelease(
+  //             letter,
+  //             '32n',
+  //             time,
+  //             normalize.volume(volume)
+  //           )
+  //         }
+  //       },
+  //       notes.map((note, index) => ({ note, volume: volumes[index] })),
+  //       '32n'
+  //     )
+  //     // Make sure it doesn't loop.
+  //     sequence.loop = false
+  //     // Start it,
+  //     sequence.start()
+  //     // and add it to the pool.
+  //     sfxSequencePool.push(sequence)
+  //   }
+  // }
   return {
-    playPhrase
+    playSong
   }
 }
 

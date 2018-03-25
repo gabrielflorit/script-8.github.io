@@ -17,6 +17,7 @@ import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
+Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
@@ -48,7 +49,9 @@ class Phrase extends Component {
       phraseIndex: 0,
       octave: 0
     }
+  }
 
+  componentDidMount () {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
@@ -67,9 +70,9 @@ class Phrase extends Component {
           this.setState({
             playingIndex: index
           })
-        })
+        }, time)
       },
-      range(settings.phraseLength),
+      range(settings.matrixLength),
       '32n'
     )
   }
@@ -79,7 +82,7 @@ class Phrase extends Component {
     const { phraseIndex } = this.state
     const phrase = {
       ...defaults.phrase,
-      ...phrases[phraseIndex]
+      ...phrases[+phraseIndex]
     }
     return phrase
   }
@@ -134,11 +137,6 @@ class Phrase extends Component {
         +key,
         ...volumes.slice(col + 1)
       ]
-
-      // const newNotes =
-      //   +key === 0
-      //     ? [...notes.slice(0, col), null, ...notes.slice(col + 1)]
-      //     : [...notes]
 
       updatePhrase({
         phrase: { volumes: newVolumes },

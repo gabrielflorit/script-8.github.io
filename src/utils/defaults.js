@@ -3,9 +3,13 @@ import settings from './settings.js'
 
 const defaults = {
   phrase: {
-    notes: range(settings.phraseLength).map(d => null),
-    volumes: range(settings.phraseLength).map(d => 0)
-  }
+    notes: range(settings.matrixLength).map(() => null),
+    volumes: range(settings.matrixLength).map(() => 0)
+  },
+  chain: range(settings.matrixLength).map(() =>
+    range(settings.chainChannels).map(() => null)
+  ),
+  song: range(settings.matrixLength).map(() => null)
 }
 
 export default defaults
