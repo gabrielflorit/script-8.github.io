@@ -19,6 +19,16 @@ const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
+const playNote = ({ note, octave, volume }) => {
+  const letter = toLetter(note + octave * 12, true, true)
+  synth.triggerAttackRelease(
+    letter,
+    '32n',
+    window.AudioContext.currentTime,
+    normalize.volume(volume)
+  )
+}
+
 const mapStateToProps = ({ phrases }) => ({ phrases })
 
 const mapDispatchToProps = dispatch => ({
@@ -119,6 +129,7 @@ class Phrase extends Component {
       }
     } else {
       const { volume } = position
+
       // If we do have a note on this column, and we're not at 0,
       // decrease it.
       if (volume > 0) {
@@ -133,14 +144,7 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      const { note, octave, volume } = newPosition
-      const letter = toLetter(note + octave * 12, true, true)
-      synth.triggerAttackRelease(
-        letter,
-        '32n',
-        window.AudioContext.currentTime,
-        normalize.volume(volume)
-      )
+      playNote(newPosition)
     }
 
     const newPhrase = {
@@ -190,14 +194,7 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      const { note, octave, volume } = newPosition
-      const letter = toLetter(note + octave * 12, true, true)
-      synth.triggerAttackRelease(
-        letter,
-        '32n',
-        window.AudioContext.currentTime,
-        normalize.volume(volume)
-      )
+      playNote(newPosition)
     }
 
     const newPhrase = {
@@ -289,7 +286,6 @@ class Phrase extends Component {
               </tbody>
             </table>
           </div>
-          <div className='instruments' />
         </div>
       </div>
     )
