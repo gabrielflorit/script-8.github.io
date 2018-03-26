@@ -37,8 +37,9 @@ class Phrase extends Component {
 
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
-    this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
-    this.handleVolumeKeyPress = this.handleVolumeKeyPress.bind(this)
+    this.handleVolumeClick = this.handleVolumeClick.bind(this)
+    // this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
+    // this.handleVolumeKeyPress = this.handleVolumeKeyPress.bind(this)
     this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
 
@@ -121,41 +122,83 @@ class Phrase extends Component {
     }
   }
 
-  handleVolumeKeyPress ({ col, e }) {
-    // const { updatePhrase } = this.props
-    // const { phraseIndex } = this.state
-    // const { key } = e
-    // if (_.includes(_.range(settings.volumes).map(d => d.toString()), key)) {
-    //   const { volumes } = this.getCurrentPhrase()
-    //   const newVolumes = [
-    //     ...volumes.slice(0, col),
-    //     +key,
-    //     ...volumes.slice(col + 1)
-    //   ]
-    //   updatePhrase({
-    //     phrase: { volumes: newVolumes },
-    //     index: phraseIndex
-    //   })
-    // }
+  handleVolumeClick (col) {
+    const { updatePhrase } = this.props
+    const { phraseIndex } = this.state
+    const phrase = this.getCurrentPhrase()
+    const position = phrase[col]
+    let newPhrase
+
+    // If we do not have a note on this column,
+    // add one at note 0.
+    if (!position) {
+      newPhrase = {
+        ...phrase,
+        [col]: {
+          note: 11,
+          octave: settings.octaves - 1,
+          volume: settings.volumes - 1
+        }
+      }
+    } else {
+      const { volume } = position
+      // If we do have a note on this column, and we're not at 0,
+      // decrease it.
+      if (volume > 0) {
+        newPhrase = {
+          ...phrase,
+          [col]: {
+            ...position,
+            volume: volume - 1
+          }
+        }
+      } else {
+        // If we are at the max volume, remove the note.
+        newPhrase = {
+          ...phrase,
+          [col]: null
+        }
+      }
+    }
+
+    updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  handleNoteKeyPress ({ row, col, e }) {
-    // const { updatePhrase } = this.props
-    // const { phraseIndex } = this.state
-    // const { notes } = this.getCurrentPhrase()
-    // const { key } = e
-    // if (_.includes(_.range(settings.octaves).map(d => d.toString()), key)) {
-    //   const newNotes = [
-    //     ...notes.slice(0, col),
-    //     note + +key * 12,
-    //     ...notes.slice(col + 1)
-    //   ]
-    //   updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
-    //   this.setState({
-    //     octave: +key
-    //   })
-    // }
-  }
+  // handleVolumeKeyPress ({ col, e }) {
+  // const { updatePhrase } = this.props
+  // const { phraseIndex } = this.state
+  // const { key } = e
+  // if (_.includes(_.range(settings.volumes).map(d => d.toString()), key)) {
+  //   const { volumes } = this.getCurrentPhrase()
+  //   const newVolumes = [
+  //     ...volumes.slice(0, col),
+  //     +key,
+  //     ...volumes.slice(col + 1)
+  //   ]
+  //   updatePhrase({
+  //     phrase: { volumes: newVolumes },
+  //     index: phraseIndex
+  //   })
+  // }
+  // }
+
+  // handleNoteKeyPress ({ row, col, e }) {
+  // const { updatePhrase } = this.props
+  // const { phraseIndex } = this.state
+  // const { notes } = this.getCurrentPhrase()
+  // const { key } = e
+  // if (_.includes(_.range(settings.octaves).map(d => d.toString()), key)) {
+  //   const newNotes = [
+  //     ...notes.slice(0, col),
+  //     note + +key * 12,
+  //     ...notes.slice(col + 1)
+  //   ]
+  //   updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
+  //   this.setState({
+  //     octave: +key
+  //   })
+  // }
+  // }
 
   handleNoteClick ({ row, col }) {
     const { updatePhrase } = this.props
@@ -170,7 +213,7 @@ class Phrase extends Component {
         ...phrase,
         [col]: {
           note: row,
-          octave: 0,
+          octave: settings.octaves - 1,
           volume: settings.volumes - 1
         }
       }
@@ -189,13 +232,13 @@ class Phrase extends Component {
         }
       } else {
         // If we have a note on this very column and row,
-        // and we're not at the max octave, increase it.
-        if (octave < settings.octaves - 1) {
+        // and we're not at 0, decrease it.
+        if (octave > 0) {
           newPhrase = {
             ...phrase,
             [col]: {
               ...position,
-              octave: octave + 1
+              octave: octave - 1
             }
           }
         } else {
@@ -248,24 +291,20 @@ class Phrase extends Component {
                 {_.range(11, -1).map(row => (
                   <tr key={row}>
                     <td>{toLetter(row)}</td>
-
                     {_.range(settings.matrixLength).map(col => {
                       const value = phrase[col]
-                      const isMatch = value && value.note === row
+                      const match = value && value.note === row
                       return (
                         <td
-                          onClick={e => this.handleNoteClick({ row, col })}
-                          onKeyPress={e =>
-                            this.handleNoteKeyPress({ row, col, e })
-                          }
-                          className={classNames({
-                            match: isMatch,
-                            highlight: col === playingIndex && isPlaying,
-                            [`octave-${value && value.octave}`]: isMatch
-                          })}
                           key={col}
+                          onClick={e => this.handleNoteClick({ row, col })}
+                          className={classNames({
+                            match,
+                            highlight: col === playingIndex && isPlaying,
+                            [`octave-${value && value.octave}`]: match
+                          })}
                         >
-                          <button>{isMatch ? value.octave : ' '}</button>
+                          <button>{match ? value.octave : ' '}</button>
                         </td>
                       )
                     })}
@@ -286,7 +325,7 @@ class Phrase extends Component {
                           highlight: col === playingIndex && isPlaying,
                           [`volume-${value && value.volume}`]: value
                         })}
-                        onKeyPress={e => this.handleVolumeKeyPress({ col, e })}
+                        onClick={e => this.handleVolumeClick(col)}
                       >
                         <button>{value && value.volume}</button>
                       </td>
