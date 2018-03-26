@@ -17,6 +17,16 @@ const createSynth = () => {
   return synth
 }
 
+const playNote = ({ note, octave, volume, time, synth }) => {
+  const letter = toLetter(note + octave * 12, true, true)
+  synth.triggerAttackRelease(
+    letter,
+    '32n',
+    time || window.AudioContext.currentTime,
+    normalize.volume(volume)
+  )
+}
+
 const soundAPI = () => {
   const synths = range(settings.chainChannels).map(() => createSynth())
   Tone.Transport.bpm.value = 60
@@ -125,6 +135,6 @@ const soundAPI = () => {
   }
 }
 
-export { createSynth }
+export { createSynth, playNote }
 
 export default soundAPI

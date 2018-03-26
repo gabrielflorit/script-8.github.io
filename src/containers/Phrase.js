@@ -1,20 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import range from 'lodash/range'
-import includes from 'lodash/includes'
+import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-import toLetter, { numberToOctave } from '../utils/toLetter.js'
-import normalize from '../utils/normalize.js'
+import toLetter from '../utils/toLetter.js'
 import settings from '../utils/settings.js'
-import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
@@ -38,41 +35,37 @@ class Phrase extends Component {
 
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
-    this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
-    this.handleVolumeKeyPress = this.handleVolumeKeyPress.bind(this)
+    this.handleVolumeClick = this.handleVolumeClick.bind(this)
     this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
+    this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
       playingIndex: 0,
-      phraseIndex: 0,
-      octave: 0
+      phraseIndex: 0
     }
+  }
+
+  drawCallback (playingIndex) {
+    this.setState({
+      playingIndex
+    })
   }
 
   componentDidMount () {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
-        const note = phrase.notes[index]
-        const volume = phrase.volumes[index]
-        if (note !== null && volume > 0) {
-          const letter = toLetter(note, true, true)
-          synth.triggerAttackRelease(
-            letter,
-            '32n',
-            time,
-            normalize.volume(volume)
-          )
+        const value = phrase[index]
+        if (value) {
+          playNote({ ...value, time, synth })
         }
         Tone.Draw.schedule(() => {
-          this.setState({
-            playingIndex: index
-          })
+          this.drawCallback(index)
         }, time)
       },
-      range(settings.matrixLength),
+      _.range(settings.matrixLength),
       '32n'
     )
   }
@@ -80,29 +73,8 @@ class Phrase extends Component {
   getCurrentPhrase () {
     const { phrases } = this.props
     const { phraseIndex } = this.state
-    const phrase = {
-      ...defaults.phrase,
-      ...phrases[+phraseIndex]
-    }
-    return phrase
+    return _.get(phrases, phraseIndex, {})
   }
-
-  // updateNotes ({ block, blockIndex }) {
-  //   if (!isPlaying) {
-  //     const letter = toLetter(block, true)
-  //     synth.triggerAttackRelease(letter, '16n')
-  //   }
-  // }
-  //   if (!isPlaying) {
-  //     const note = notes[blockIndex]
-  //     const letter = toLetter(note, true)
-  //     synth.triggerAttackRelease(
-  //       letter,
-  //       '16n',
-  //       window.AudioContext.currentTime,
-  //       normalizeVolume(block)
-  //     )
-  //   }
 
   handlePlay () {
     const { isPlaying } = this.state
@@ -126,59 +98,104 @@ class Phrase extends Component {
     }
   }
 
-  handleVolumeKeyPress ({ col, e }) {
+  handleVolumeClick (col) {
     const { updatePhrase } = this.props
-    const { phraseIndex } = this.state
-    const { key } = e
-    if (includes(range(settings.volumes).map(d => d.toString()), key)) {
-      const { volumes } = this.getCurrentPhrase()
-      const newVolumes = [
-        ...volumes.slice(0, col),
-        +key,
-        ...volumes.slice(col + 1)
-      ]
+    const { phraseIndex, isPlaying } = this.state
+    const phrase = this.getCurrentPhrase()
+    const position = phrase[col]
+    let newPosition
 
-      updatePhrase({
-        phrase: { volumes: newVolumes },
-        index: phraseIndex
-      })
+    // If we do not have a note on this column,
+    if (!position) {
+      // add one at note 0.
+      newPosition = {
+        note: 11,
+        octave: settings.octaves - 1,
+        volume: settings.volumes - 1
+      }
+    } else {
+      const { volume } = position
+
+      // If we do have a note on this column, and we're not at 0,
+      if (volume > 0) {
+        // decrease it.
+        newPosition = {
+          ...position,
+          volume: volume - 1
+        }
+      } else {
+        // If we are at the max volume,
+        // remove the note.
+        newPosition = null
+      }
     }
+
+    if (newPosition && !isPlaying) {
+      playNote({ ...newPosition, synth })
+    }
+
+    const newPhrase = {
+      ...phrase,
+      [col]: newPosition
+    }
+
+    updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  handleNoteKeyPress ({ note, col, e }) {
+  handleNoteClick ({ row, col }) {
     const { updatePhrase } = this.props
-    const { phraseIndex } = this.state
-    const { notes } = this.getCurrentPhrase()
-    const { key } = e
-    if (includes(range(settings.octaves).map(d => d.toString()), key)) {
-      const newNotes = [
-        ...notes.slice(0, col),
-        note + +key * 12,
-        ...notes.slice(col + 1)
-      ]
+    const { phraseIndex, isPlaying } = this.state
+    const phrase = this.getCurrentPhrase()
+    const position = phrase[col]
+    let newNote
 
-      updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
-      this.setState({
-        octave: +key
-      })
+    // If we do not have a note on this column,
+    if (!position) {
+      // add one at the highest octave.
+      newNote = {
+        note: row,
+        octave: settings.octaves - 1,
+        volume: settings.volumes - 1
+      }
+    } else {
+      const { note, octave } = position
+
+      // If we do have a note on this column, but not on this row,
+      if (note !== row) {
+        // update the note to this row, and use the same octave.
+        newNote = {
+          ...position,
+          note: row
+        }
+      } else {
+        // If we have a note on this very column and row,
+        // and we're not at 0,
+        if (octave > 0) {
+          // decrease it.
+          newNote = {
+            ...position,
+            octave: octave - 1
+          }
+        } else {
+          newNote = null
+        }
+      }
     }
-  }
 
-  handleNoteClick ({ note, col, e }) {
-    const { updatePhrase } = this.props
-    const { phraseIndex, octave } = this.state
-    const { notes } = this.getCurrentPhrase()
+    if (newNote && !isPlaying) {
+      playNote({ ...newNote, synth })
+    }
 
-    const newNotes = [
-      ...notes.slice(0, col),
-      e.currentTarget.classList.contains('match') ? null : note + octave * 12,
-      ...notes.slice(col + 1)
-    ]
+    const newPhrase = {
+      ...phrase,
+      [col]: newNote
+    }
 
-    updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
+    updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
   componentWillUnmount () {
+    this.drawCallback = () => {}
     this.sequence.stop()
   }
 
@@ -212,31 +229,23 @@ class Phrase extends Component {
             </button>
             <table className='notes'>
               <tbody>
-                {range(11, -1).map(row => (
+                {_.range(11, -1).map(row => (
                   <tr key={row}>
                     <td>{toLetter(row)}</td>
-                    {phrase.notes.map((note, col) => {
-                      const isMatch = note !== null && note % 12 === row
+                    {_.range(settings.matrixLength).map(col => {
+                      const value = phrase[col]
+                      const match = value && value.note === row
                       return (
                         <td
                           key={col}
-                          className={classNames(
-                            {
-                              match: isMatch,
-                              highlight: col === playingIndex && isPlaying
-                            },
-                            `octave-${numberToOctave(note)}`
-                          )}
-                          onClick={e =>
-                            this.handleNoteClick({ note: row, col, e })
-                          }
-                          onKeyPress={e =>
-                            this.handleNoteKeyPress({ note: row, col, e })
-                          }
+                          onClick={e => this.handleNoteClick({ row, col })}
+                          className={classNames({
+                            match,
+                            highlight: col === playingIndex && isPlaying,
+                            [`octave-${value && value.octave}`]: match
+                          })}
                         >
-                          <button>
-                            {isMatch ? numberToOctave(note) : ' '}
-                          </button>
+                          <button>{match ? value.octave : ' '}</button>
                         </td>
                       )
                     })}
@@ -244,24 +253,22 @@ class Phrase extends Component {
                 ))}
               </tbody>
             </table>
-
             <table className='volumes'>
               <tbody>
                 <tr>
                   <td>v</td>
-                  {phrase.volumes.map((vol, col) => {
+                  {_.range(settings.matrixLength).map(col => {
+                    const value = phrase[col]
                     return (
                       <td
                         key={col}
-                        className={classNames(
-                          {
-                            highlight: col === playingIndex && isPlaying
-                          },
-                          `volume-${vol}`
-                        )}
-                        onKeyPress={e => this.handleVolumeKeyPress({ col, e })}
+                        className={classNames({
+                          highlight: col === playingIndex && isPlaying,
+                          [`volume-${value && value.volume}`]: value
+                        })}
+                        onClick={e => this.handleVolumeClick(col)}
                       >
-                        <button>{vol}</button>
+                        <button>{value && value.volume}</button>
                       </td>
                     )
                   })}
@@ -269,7 +276,6 @@ class Phrase extends Component {
               </tbody>
             </table>
           </div>
-          <div className='instruments' />
         </div>
       </div>
     )

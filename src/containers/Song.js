@@ -3,19 +3,16 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-import toLetter from '../utils/toLetter.js'
-import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
-import defaults from '../utils/defaults.js'
 
-const synths = _.range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(createSynth)
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
@@ -40,9 +37,10 @@ class Song extends Component {
     super(props)
 
     this.handleSongIndexChange = this.handleSongIndexChange.bind(this)
-    this.handleChainKeyPress = this.handleChainKeyPress.bind(this)
+    this.handleChainClick = this.handleChainClick.bind(this)
     this.getCurrentSong = this.getCurrentSong.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
+    this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
@@ -53,48 +51,45 @@ class Song extends Component {
 
   componentDidMount () {
     const { chains, phrases } = this.props
-
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const song = this.getCurrentSong()
-        const [chainPosition, phrasePosition, notePosition] = [
-          '00',
-          index.toString(settings.matrixLength)
-        ]
-          .join('')
-          .slice(-3)
+
+        // Get the chain, phrase and note positions by using base math.
+        const [chainPosition, phrasePosition, notePosition] = _.padStart(
+          index.toString(settings.matrixLength),
+          3,
+          0
+        )
           .split('')
           .map(d => parseInt(d, settings.matrixLength))
 
-        // e.g 01 - the chain index for this position
-        const chainIndex = _.get(song, [chainPosition], [])
+        // Get the chain index for this position.
+        const chainIndex = _.get(song, chainPosition)
 
-        // e.g. the chain for this position,
-        // an array of an array of phrase indices
-        const chain = _.get(chains, [chainIndex], [])
-        const phrasesIndices = _.get(chain, [phrasePosition], [])
+        // Get the chain.
+        const chain = _.get(chains, chainIndex)
 
-        // for each channel,
+        // Get the phrase indices for this position, e.g. { 0: 0, 1: 11, 2: 2 }
+        const phrasesIndices = _.get(chain, phrasePosition)
+
+        // For each channel,
         _.range(settings.chainChannels).forEach(channel => {
-          const phrase = _.get(phrases, [phrasesIndices[channel]], [])
-
-          const note = _.get(phrase, ['notes', notePosition], null)
-          const volume = _.get(phrase, ['volumes', notePosition], null)
-
-          if (note !== null && volume > 0) {
-            const letter = toLetter(note, true, true)
-            synths[channel].triggerAttackRelease(
-              letter,
-              '32n',
-              time,
-              normalize.volume(volume)
-            )
+          const phraseIndex = _.get(phrasesIndices, channel)
+          if (!_.isNil(phraseIndex)) {
+            // get the phrase assigned to this channel.
+            const phrase = _.get(phrases, phraseIndex)
+            // Get the note element for this position.
+            const noteElement = _.get(phrase, notePosition)
+            // If we have a note,
+            if (!_.isNil(noteElement)) {
+              playNote({ ...noteElement, time, synth: synths[channel] })
+            }
           }
         })
+
         Tone.Draw.schedule(() => {
-          this.setState({
-            playingIndex: chainPosition
-          })
+          this.drawCallback(chainPosition)
         }, time)
       },
       _.range(Math.pow(settings.matrixLength, 3)),
@@ -105,8 +100,7 @@ class Song extends Component {
   getCurrentSong () {
     const { songs } = this.props
     const { songIndex } = this.state
-    const song = songs[+songIndex]
-    return song && song.length ? song : defaults.song
+    return _.get(songs, songIndex, {})
   }
 
   handlePlay () {
@@ -131,36 +125,59 @@ class Song extends Component {
     }
   }
 
-  handleChainKeyPress ({ col, e }) {
-    const { updateSong } = this.props
+  handleChainClick ({ col }) {
+    const { chains, updateSong } = this.props
     const { songIndex } = this.state
-    const { key } = e
-    if (!isNaN(key)) {
-      const newChainIndex = +[e.target.innerText, key].join('').slice(-2)
-      if (newChainIndex >= 0 && newChainIndex < settings.chains) {
-        const song = this.getCurrentSong()
-        const newSong = [
-          ...song.slice(0, col),
-          newChainIndex,
-          ...song.slice(col + 1)
-        ]
-        updateSong({ song: newSong, index: songIndex })
+    const song = this.getCurrentSong()
+    let newChain = _.get(song, col)
+
+    // Get chains, in order.
+    const sortedChains = _(Object.keys(chains))
+      .sortBy()
+      .uniq()
+      .map(d => +d)
+      .value()
+
+    // If the cell is empty,
+    if (_.isNil(newChain)) {
+      // set the last chain.
+      newChain = _.last(sortedChains)
+    } else {
+      // If the cell is not empty,
+      // and if it shows the first chain,
+      const newChainIndex = _.indexOf(sortedChains, newChain)
+      if (newChainIndex === 0) {
+        // clear.
+        newChain = null
+      } else {
+        // Otherwise decrease chain.
+        newChain = sortedChains[newChainIndex - 1]
       }
     }
-    if (key === 'x') {
-      const song = this.getCurrentSong()
-      const newSong = [...song.slice(0, col), null, ...song.slice(col + 1)]
-      updateSong({ song: newSong, index: songIndex })
+
+    const newSong = {
+      ...song,
+      [col]: newChain
     }
+
+    updateSong({ song: newSong, index: songIndex })
+  }
+
+  drawCallback (playingIndex) {
+    this.setState({
+      playingIndex
+    })
   }
 
   componentWillUnmount () {
+    this.drawCallback = () => {}
     this.sequence.stop()
   }
 
   render () {
     const { songIndex, isPlaying, playingIndex } = this.state
     const song = this.getCurrentSong()
+    const { chains } = this.props
 
     return (
       <div className='Song'>
@@ -169,7 +186,10 @@ class Song extends Component {
         <Menu />
         <NavBar />
         <div className='main'>
-          <div className='settings'>
+          <div className={classNames('warning', { hide: !_.isEmpty(chains) })}>
+            error: no chains found
+          </div>
+          <div className={classNames('settings', { hide: _.isEmpty(chains) })}>
             <div className='title'>Song</div>
             <TextInput
               label='#'
@@ -179,7 +199,7 @@ class Song extends Component {
               options={{ min: 0, max: settings.songs - 1 }}
             />
           </div>
-          <div className='matrix'>
+          <div className={classNames('matrix', { hide: _.isEmpty(chains) })}>
             <button
               className={classNames('play button', { active: isPlaying })}
               onClick={this.handlePlay}
@@ -190,20 +210,21 @@ class Song extends Component {
               <tbody>
                 <tr>
                   <td>c</td>
-                  {song.map((chain, col) => {
-                    const display =
-                      chain !== null ? ['00', +chain].join('').slice(-2) : ''
+                  {_.range(settings.matrixLength).map(col => {
+                    const chain = _.get(song, col)
                     return (
                       <td
                         key={col}
                         className={classNames({
                           highlight:
-                            col === playingIndex && isPlaying && display.length
+                            col === playingIndex && isPlaying && !_.isNil(chain)
                         })}
-                        onKeyPress={e => this.handleChainKeyPress({ col, e })}
+                        onClick={() => this.handleChainClick({ col })}
                       >
                         <button>
-                          <span>{display}</span>
+                          <span>
+                            {_.isNil(chain) ? '' : _.padStart(chain, 2, 0)}
+                          </span>
                         </button>
                       </td>
                     )

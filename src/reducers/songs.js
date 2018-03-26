@@ -19,12 +19,13 @@ const songs = handleActions(
       parseGistSongs(action.payload),
     [actionTypes.UPDATE_SONG]: (state, { payload }) => {
       const { song, index } = payload
-      const songs =
-        state.length > index
-          ? [...state]
-          : state.concat([...Array(index + 1 - state.length)].map(d => null))
-
-      return [...songs.slice(0, index), song, ...songs.slice(index + 1)]
+      return _.omitBy(
+        {
+          ...state,
+          [index]: _.omitBy(song, _.isNull)
+        },
+        _.isEmpty
+      )
     }
   },
   initialState.songs

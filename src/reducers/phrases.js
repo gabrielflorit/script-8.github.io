@@ -19,19 +19,13 @@ const phrases = handleActions(
       parseGistPhrases(action.payload),
     [actionTypes.UPDATE_PHRASE]: (state, { payload }) => {
       const { phrase, index } = payload
-      const phrases =
-        state.length > index
-          ? [...state]
-          : state.concat([...Array(index + 1 - state.length)].map(d => null))
-
-      return [
-        ...phrases.slice(0, index),
+      return _.omitBy(
         {
-          ...phrases[index],
-          ...phrase
+          ...state,
+          [index]: _.omitBy(phrase, _.isNull)
         },
-        ...phrases.slice(index + 1)
-      ]
+        _.isEmpty
+      )
     }
   },
   initialState.phrases
