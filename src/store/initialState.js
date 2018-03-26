@@ -11,7 +11,7 @@ const initialState = {
   token: {},
   nextAction: null,
   sfxs: [],
-  phrases: [],
+  phrases: {},
   chains: [],
   songs: []
 }

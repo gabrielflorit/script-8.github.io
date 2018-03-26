@@ -80,7 +80,7 @@ class Phrase extends Component {
   getCurrentPhrase () {
     const { phrases } = this.props
     const { phraseIndex } = this.state
-    return _.get(phrases, [+phraseIndex], defaults.phrase)
+    return phrases[+phraseIndex] || defaults.phrase
   }
 
   handlePlay () {
