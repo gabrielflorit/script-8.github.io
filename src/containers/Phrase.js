@@ -19,12 +19,12 @@ const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
-const playNote = ({ note, octave, volume }) => {
+const playNote = ({ note, octave, volume, time }) => {
   const letter = toLetter(note + octave * 12, true, true)
   synth.triggerAttackRelease(
     letter,
     '32n',
-    window.AudioContext.currentTime,
+    time || window.AudioContext.currentTime,
     normalize.volume(volume)
   )
 }
@@ -64,14 +64,7 @@ class Phrase extends Component {
         const phrase = this.getCurrentPhrase()
         const value = phrase[index]
         if (value) {
-          const { note, octave, volume } = value
-          const letter = toLetter(note + octave * 12, true, true)
-          synth.triggerAttackRelease(
-            letter,
-            '32n',
-            time,
-            normalize.volume(volume)
-          )
+          playNote({ ...value, time })
         }
         Tone.Draw.schedule(() => {
           this.setState({
