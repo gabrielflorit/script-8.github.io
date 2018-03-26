@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
@@ -11,23 +11,12 @@ import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../utils/toLetter.js'
-import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
-
-const playNote = ({ note, octave, volume, time }) => {
-  const letter = toLetter(note + octave * 12, true, true)
-  synth.triggerAttackRelease(
-    letter,
-    '32n',
-    time || window.AudioContext.currentTime,
-    normalize.volume(volume)
-  )
-}
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
 
@@ -50,6 +39,7 @@ class Phrase extends Component {
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
     this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
+    this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
@@ -58,18 +48,22 @@ class Phrase extends Component {
     }
   }
 
+  drawCallback (playingIndex) {
+    this.setState({
+      playingIndex
+    })
+  }
+
   componentDidMount () {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
         const value = phrase[index]
         if (value) {
-          playNote({ ...value, time })
+          playNote({ ...value, time, synth })
         }
         Tone.Draw.schedule(() => {
-          this.setState({
-            playingIndex: index
-          })
+          this.drawCallback(index)
         }, time)
       },
       _.range(settings.matrixLength),
@@ -138,7 +132,7 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      playNote(newPosition)
+      playNote({ ...newPosition, synth })
     }
 
     const newPhrase = {
@@ -190,7 +184,7 @@ class Phrase extends Component {
     }
 
     if (newNote && !isPlaying) {
-      playNote(newNote)
+      playNote({ ...newNote, synth })
     }
 
     const newPhrase = {
@@ -202,6 +196,7 @@ class Phrase extends Component {
   }
 
   componentWillUnmount () {
+    this.drawCallback = () => {}
     this.sequence.stop()
   }
 

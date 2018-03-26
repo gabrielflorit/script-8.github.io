@@ -3,15 +3,13 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-import toLetter from '../utils/toLetter.js'
-import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
@@ -39,6 +37,7 @@ class Chain extends Component {
     this.handlePhraseClick = this.handlePhraseClick.bind(this)
     this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
+    this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
@@ -47,41 +46,47 @@ class Chain extends Component {
     }
   }
 
+  drawCallback (playingIndex) {
+    this.setState({
+      playingIndex
+    })
+  }
+
   componentDidMount () {
     const { phrases } = this.props
     this.sequence = new Tone.Sequence(
       (time, index) => {
-        // const chain = this.getCurrentChain()
-        // const [phrasePosition, notePosition] = [
-        //   '0',
-        //   index.toString(settings.matrixLength)
-        // ]
-        //   .join('')
-        //   .slice(-2)
-        //   .split('')
-        //   .map(d => parseInt(d, settings.matrixLength))
-        // // e.g. [000, 001, 003, null] - the phrase indices for this position
-        // const phrasesIndices = _.get(chain, [phrasePosition], [])
-        // // for each channel,
-        // _.range(settings.chainChannels).forEach(channel => {
-        //   const phrase = _.get(phrases, [phrasesIndices[channel]], [])
-        //   const note = _.get(phrase, ['notes', notePosition], null)
-        //   const volume = _.get(phrase, ['volumes', notePosition], null)
-        //   if (note !== null && volume > 0) {
-        //     const letter = toLetter(note, true, true)
-        //     synths[channel].triggerAttackRelease(
-        //       letter,
-        //       '32n',
-        //       time,
-        //       normalize.volume(volume)
-        //     )
-        //   }
-        // })
-        // Tone.Draw.schedule(() => {
-        //   this.setState({
-        //     playingIndex: phrasePosition
-        //   })
-        // }, time)
+        const chain = this.getCurrentChain()
+
+        // Get the phrase and note positions by using base math.
+        const [phrasePosition, notePosition] = _.padStart(
+          index.toString(settings.matrixLength),
+          2,
+          0
+        )
+          .split('')
+          .map(d => parseInt(d, settings.matrixLength))
+
+        // Get the phrase indices for this position, e.g. { 0: 0, 1: 11, 2: 2 }
+        const phrasesIndices = _.get(chain, phrasePosition)
+
+        // For each channel,
+        _.range(settings.chainChannels).forEach(channel => {
+          const phraseIndex = _.get(phrasesIndices, channel)
+          if (!_.isNil(phraseIndex)) {
+            // get the phrase assigned to this channel.
+            const phrase = _.get(phrases, phraseIndex)
+            // Get the note element for this position.
+            const noteElement = _.get(phrase, notePosition)
+            // If we have a note,
+            if (!_.isNil(noteElement)) {
+              playNote({ ...noteElement, time, synth: synths[channel] })
+            }
+          }
+        })
+        Tone.Draw.schedule(() => {
+          this.drawCallback(phrasePosition)
+        }, time)
       },
       _.range(Math.pow(settings.matrixLength, 2)),
       '32n'
@@ -154,6 +159,7 @@ class Chain extends Component {
   }
 
   componentWillUnmount () {
+    this.drawCallback = () => {}
     this.sequence.stop()
   }
 
