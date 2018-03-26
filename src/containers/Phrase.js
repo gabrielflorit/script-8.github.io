@@ -202,53 +202,56 @@ class Phrase extends Component {
 
   handleNoteClick ({ row, col }) {
     const { updatePhrase } = this.props
-    const { phraseIndex } = this.state
+    const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
     const position = phrase[col]
-    let newPhrase
+    let newPosition
 
     // If we do not have a note on this column, add one at octave 0.
     if (!position) {
-      newPhrase = {
-        ...phrase,
-        [col]: {
-          note: row,
-          octave: settings.octaves - 1,
-          volume: settings.volumes - 1
-        }
+      newPosition = {
+        note: row,
+        octave: settings.octaves - 1,
+        volume: settings.volumes - 1
       }
     } else {
       const { note, octave } = position
 
       // If we do have a note on this column, but not on this row,
+      // update the note to this row, and use the same octave.
       if (note !== row) {
-        // update the note to this row, and use the same octave.
-        newPhrase = {
-          ...phrase,
-          [col]: {
-            ...position,
-            note: row
-          }
+        newPosition = {
+          ...position,
+          note: row
         }
       } else {
         // If we have a note on this very column and row,
         // and we're not at 0, decrease it.
         if (octave > 0) {
-          newPhrase = {
-            ...phrase,
-            [col]: {
-              ...position,
-              octave: octave - 1
-            }
+          newPosition = {
+            ...position,
+            octave: octave - 1
           }
         } else {
-          // If we are at the max octave, blank out this note.
-          newPhrase = {
-            ...phrase,
-            [col]: null
-          }
+          newPosition = null
         }
       }
+    }
+
+    if (newPosition && !isPlaying) {
+      const { note, octave, volume } = newPosition
+      const letter = toLetter(note + octave * 12, true, true)
+      synth.triggerAttackRelease(
+        letter,
+        '32n',
+        window.AudioContext.currentTime,
+        normalize.volume(volume)
+      )
+    }
+
+    const newPhrase = {
+      ...phrase,
+      [col]: newPosition
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
