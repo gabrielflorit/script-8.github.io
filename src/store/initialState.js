@@ -3,7 +3,8 @@ import demo from '../utils/demo.js'
 
 const initialState = {
   // screen: screenTypes.CHAIN,
-  screen: screenTypes.BOOT,
+  // screen: screenTypes.BOOT,
+  screen: screenTypes.PHRASE,
   booted: false,
   gist: {},
   game: demo,

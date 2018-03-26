@@ -24,14 +24,7 @@ const phrases = handleActions(
           ? [...state]
           : state.concat([...Array(index + 1 - state.length)].map(d => null))
 
-      return [
-        ...phrases.slice(0, index),
-        {
-          ...phrases[index],
-          ...phrase
-        },
-        ...phrases.slice(index + 1)
-      ]
+      return [...phrases.slice(0, index), phrase, ...phrases.slice(index + 1)]
     }
   },
   initialState.phrases
