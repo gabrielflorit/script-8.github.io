@@ -38,8 +38,6 @@ class Phrase extends Component {
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
-    // this.handleNoteKeyPress = this.handleNoteKeyPress.bind(this)
-    // this.handleVolumeKeyPress = this.handleVolumeKeyPress.bind(this)
     this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
 
@@ -47,7 +45,6 @@ class Phrase extends Component {
       isPlaying: false,
       playingIndex: 0,
       phraseIndex: 0
-      // octave: 0
     }
   }
 
@@ -83,23 +80,6 @@ class Phrase extends Component {
     return _.get(phrases, [+phraseIndex], defaults.phrase)
   }
 
-  // updateNotes ({ block, blockIndex }) {
-  //   if (!isPlaying) {
-  //     const letter = toLetter(block, true)
-  //     synth.triggerAttackRelease(letter, '16n')
-  //   }
-  // }
-  //   if (!isPlaying) {
-  //     const note = notes[blockIndex]
-  //     const letter = toLetter(note, true)
-  //     synth.triggerAttackRelease(
-  //       letter,
-  //       '16n',
-  //       window.AudioContext.currentTime,
-  //       normalizeVolume(block)
-  //     )
-  //   }
-
   handlePlay () {
     const { isPlaying } = this.state
     if (isPlaying) {
@@ -124,81 +104,52 @@ class Phrase extends Component {
 
   handleVolumeClick (col) {
     const { updatePhrase } = this.props
-    const { phraseIndex } = this.state
+    const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
     const position = phrase[col]
-    let newPhrase
+    let newPosition
 
     // If we do not have a note on this column,
     // add one at note 0.
     if (!position) {
-      newPhrase = {
-        ...phrase,
-        [col]: {
-          note: 11,
-          octave: settings.octaves - 1,
-          volume: settings.volumes - 1
-        }
+      newPosition = {
+        note: 11,
+        octave: settings.octaves - 1,
+        volume: settings.volumes - 1
       }
     } else {
       const { volume } = position
       // If we do have a note on this column, and we're not at 0,
       // decrease it.
       if (volume > 0) {
-        newPhrase = {
-          ...phrase,
-          [col]: {
-            ...position,
-            volume: volume - 1
-          }
+        newPosition = {
+          ...position,
+          volume: volume - 1
         }
       } else {
         // If we are at the max volume, remove the note.
-        newPhrase = {
-          ...phrase,
-          [col]: null
-        }
+        newPosition = null
       }
+    }
+
+    if (newPosition && !isPlaying) {
+      const { note, octave, volume } = newPosition
+      const letter = toLetter(note + octave * 12, true, true)
+      synth.triggerAttackRelease(
+        letter,
+        '32n',
+        window.AudioContext.currentTime,
+        normalize.volume(volume)
+      )
+    }
+
+    const newPhrase = {
+      ...phrase,
+      [col]: newPosition
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
-
-  // handleVolumeKeyPress ({ col, e }) {
-  // const { updatePhrase } = this.props
-  // const { phraseIndex } = this.state
-  // const { key } = e
-  // if (_.includes(_.range(settings.volumes).map(d => d.toString()), key)) {
-  //   const { volumes } = this.getCurrentPhrase()
-  //   const newVolumes = [
-  //     ...volumes.slice(0, col),
-  //     +key,
-  //     ...volumes.slice(col + 1)
-  //   ]
-  //   updatePhrase({
-  //     phrase: { volumes: newVolumes },
-  //     index: phraseIndex
-  //   })
-  // }
-  // }
-
-  // handleNoteKeyPress ({ row, col, e }) {
-  // const { updatePhrase } = this.props
-  // const { phraseIndex } = this.state
-  // const { notes } = this.getCurrentPhrase()
-  // const { key } = e
-  // if (_.includes(_.range(settings.octaves).map(d => d.toString()), key)) {
-  //   const newNotes = [
-  //     ...notes.slice(0, col),
-  //     note + +key * 12,
-  //     ...notes.slice(col + 1)
-  //   ]
-  //   updatePhrase({ phrase: { notes: newNotes }, index: phraseIndex })
-  //   this.setState({
-  //     octave: +key
-  //   })
-  // }
-  // }
 
   handleNoteClick ({ row, col }) {
     const { updatePhrase } = this.props
