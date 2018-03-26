@@ -55,10 +55,10 @@ class Phrase extends Component {
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
-        const note = phrase.notes[index]
-        const volume = phrase.volumes[index]
-        if (note !== null && volume > 0) {
-          const letter = toLetter(note, true, true)
+        const value = phrase[index]
+        if (value) {
+          const { note, octave, volume } = value
+          const letter = toLetter(note + octave * 12, true, true)
           synth.triggerAttackRelease(
             letter,
             '32n',
