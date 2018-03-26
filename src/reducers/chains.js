@@ -19,12 +19,13 @@ const chains = handleActions(
       parseGistChains(action.payload),
     [actionTypes.UPDATE_CHAIN]: (state, { payload }) => {
       const { chain, index } = payload
-      const chains =
-        state.length > index
-          ? [...state]
-          : state.concat([...Array(index + 1 - state.length)].map(d => null))
-
-      return [...chains.slice(0, index), chain, ...chains.slice(index + 1)]
+      return _.omitBy(
+        {
+          ...state,
+          [index]: _.omitBy(chain, _.isNull)
+        },
+        _.isEmpty
+      )
     }
   },
   initialState.chains

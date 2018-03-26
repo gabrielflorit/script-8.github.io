@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import range from 'lodash/range'
-import get from 'lodash/get'
+import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth } from '../utils/soundAPI/index.js'
@@ -16,7 +15,7 @@ import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
 import defaults from '../utils/defaults.js'
 
-const synths = range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
@@ -37,7 +36,7 @@ class Chain extends Component {
     super(props)
 
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
-    this.handlePhraseKeyPress = this.handlePhraseKeyPress.bind(this)
+    this.handlePhraseClick = this.handlePhraseClick.bind(this)
     this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
 
@@ -52,44 +51,39 @@ class Chain extends Component {
     const { phrases } = this.props
     this.sequence = new Tone.Sequence(
       (time, index) => {
-        const chain = this.getCurrentChain()
-
-        const [phrasePosition, notePosition] = [
-          '0',
-          index.toString(settings.matrixLength)
-        ]
-          .join('')
-          .slice(-2)
-          .split('')
-          .map(d => parseInt(d, settings.matrixLength))
-
-        // e.g. [000, 001, 003, null] - the phrase indices for this position
-        const phrasesIndices = get(chain, [phrasePosition], [])
-
-        // for each channel,
-        range(settings.chainChannels).forEach(channel => {
-          const phrase = get(phrases, [phrasesIndices[channel]], [])
-
-          const note = get(phrase, ['notes', notePosition], null)
-          const volume = get(phrase, ['volumes', notePosition], null)
-
-          if (note !== null && volume > 0) {
-            const letter = toLetter(note, true, true)
-            synths[channel].triggerAttackRelease(
-              letter,
-              '32n',
-              time,
-              normalize.volume(volume)
-            )
-          }
-        })
-        Tone.Draw.schedule(() => {
-          this.setState({
-            playingIndex: phrasePosition
-          })
-        }, time)
+        // const chain = this.getCurrentChain()
+        // const [phrasePosition, notePosition] = [
+        //   '0',
+        //   index.toString(settings.matrixLength)
+        // ]
+        //   .join('')
+        //   .slice(-2)
+        //   .split('')
+        //   .map(d => parseInt(d, settings.matrixLength))
+        // // e.g. [000, 001, 003, null] - the phrase indices for this position
+        // const phrasesIndices = _.get(chain, [phrasePosition], [])
+        // // for each channel,
+        // _.range(settings.chainChannels).forEach(channel => {
+        //   const phrase = _.get(phrases, [phrasesIndices[channel]], [])
+        //   const note = _.get(phrase, ['notes', notePosition], null)
+        //   const volume = _.get(phrase, ['volumes', notePosition], null)
+        //   if (note !== null && volume > 0) {
+        //     const letter = toLetter(note, true, true)
+        //     synths[channel].triggerAttackRelease(
+        //       letter,
+        //       '32n',
+        //       time,
+        //       normalize.volume(volume)
+        //     )
+        //   }
+        // })
+        // Tone.Draw.schedule(() => {
+        //   this.setState({
+        //     playingIndex: phrasePosition
+        //   })
+        // }, time)
       },
-      range(Math.pow(settings.matrixLength, 2)),
+      _.range(Math.pow(settings.matrixLength, 2)),
       '32n'
     )
   }
@@ -97,8 +91,7 @@ class Chain extends Component {
   getCurrentChain () {
     const { chains } = this.props
     const { chainIndex } = this.state
-    const chain = chains[+chainIndex]
-    return chain && chain.length ? chain : defaults.chain
+    return _.get(chains, chainIndex, defaults.chain)
   }
 
   handlePlay () {
@@ -123,35 +116,41 @@ class Chain extends Component {
     }
   }
 
-  handlePhraseKeyPress ({ row, col, e }) {
-    const { updateChain } = this.props
+  handlePhraseClick ({ channel, col }) {
+    const { phrases, updateChain } = this.props
     const { chainIndex } = this.state
-    const { key } = e
-    if (!isNaN(key)) {
-      const newPhraseIndex = +[e.target.innerText, key].join('').slice(-2)
-      if (newPhraseIndex >= 0 && newPhraseIndex < settings.phrases) {
-        const chain = this.getCurrentChain()
-        const newChain = [
-          ...chain.slice(0, col),
-          [
-            ...chain[col].slice(0, row),
-            newPhraseIndex,
-            ...chain[col].slice(row + 1)
-          ],
-          ...chain.slice(col + 1)
-        ]
-        updateChain({ chain: newChain, index: chainIndex })
+    const chain = this.getCurrentChain()
+    const newChain = _.cloneDeep(chain)
+    let newPhrase = _.get(newChain, [col, channel])
+
+    // Get all phrases, in order.
+    const allPhrases = _(Object.keys(phrases))
+      .sortBy()
+      .uniq()
+      .map(d => +d)
+      .value()
+
+    // If the cell is empty,
+    if (_.isNil(newPhrase)) {
+      // add the last overall phrase.
+      newPhrase = _.last(allPhrases)
+    } else {
+      // If the cell is not empty,
+
+      const newPhraseIndex = _.indexOf(allPhrases, newPhrase)
+      // If it shows the first overall phrase,
+      if (newPhraseIndex === 0) {
+        // clear the cell.
+        newPhrase = null
+      } else {
+        // Else decrease phrase.
+        newPhrase = allPhrases[newPhraseIndex - 1]
       }
     }
-    if (key === 'x') {
-      const chain = this.getCurrentChain()
-      const newChain = [
-        ...chain.slice(0, col),
-        [...chain[col].slice(0, row), null, ...chain[col].slice(row + 1)],
-        ...chain.slice(col + 1)
-      ]
-      updateChain({ chain: newChain, index: chainIndex })
-    }
+
+    _.setWith(newChain, [col, channel], newPhrase, Object)
+
+    updateChain({ chain: newChain, index: chainIndex })
   }
 
   componentWillUnmount () {
@@ -161,6 +160,7 @@ class Chain extends Component {
   render () {
     const { chainIndex, isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
+    const { phrases } = this.props
 
     return (
       <div className='Chain'>
@@ -169,7 +169,10 @@ class Chain extends Component {
         <Menu />
         <NavBar />
         <div className='main'>
-          <div className='settings'>
+          <div className={classNames('warning', { hide: !_.isEmpty(phrases) })}>
+            error: no phrases found
+          </div>
+          <div className={classNames('settings', { hide: _.isEmpty(phrases) })}>
             <div className='title'>Chain</div>
             <TextInput
               label='#'
@@ -179,7 +182,7 @@ class Chain extends Component {
               options={{ min: 0, max: settings.chains - 1 }}
             />
           </div>
-          <div className='matrix'>
+          <div className={classNames('matrix', { hide: _.isEmpty(phrases) })}>
             <button
               className={classNames('play button', { active: isPlaying })}
               onClick={this.handlePlay}
@@ -188,14 +191,11 @@ class Chain extends Component {
             </button>
             <table className='phrases'>
               <tbody>
-                {range(settings.chainChannels).map(row => (
-                  <tr key={row}>
-                    <td>{row}</td>
-                    {chain.map((phrases, col) => {
-                      const display =
-                        phrases[row] !== null
-                          ? ['00', +phrases[row]].join('').slice(-2)
-                          : ''
+                {_.range(settings.chainChannels).map(channel => (
+                  <tr key={channel}>
+                    <td>{channel}</td>
+                    {_.range(settings.matrixLength).map(col => {
+                      const phrase = _.get(chain, [col, channel], null)
                       return (
                         <td
                           key={col}
@@ -203,14 +203,18 @@ class Chain extends Component {
                             highlight:
                               col === playingIndex &&
                               isPlaying &&
-                              display.length
+                              phrase !== null
                           })}
-                          onKeyPress={e =>
-                            this.handlePhraseKeyPress({ row, col, e })
+                          onClick={() =>
+                            this.handlePhraseClick({ channel, col })
                           }
                         >
                           <button>
-                            <span>{display}</span>
+                            <span>
+                              {phrase !== null
+                                ? ['00', phrase].join('').slice(-2)
+                                : ''}
+                            </span>
                           </button>
                         </td>
                       )

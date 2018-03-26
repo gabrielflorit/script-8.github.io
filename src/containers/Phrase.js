@@ -80,7 +80,7 @@ class Phrase extends Component {
   getCurrentPhrase () {
     const { phrases } = this.props
     const { phraseIndex } = this.state
-    return phrases[+phraseIndex] || defaults.phrase
+    return _.get(phrases, phraseIndex, defaults.phrase)
   }
 
   handlePlay () {
@@ -113,8 +113,8 @@ class Phrase extends Component {
     let newPosition
 
     // If we do not have a note on this column,
-    // add one at note 0.
     if (!position) {
+      // add one at note 0.
       newPosition = {
         note: 11,
         octave: settings.octaves - 1,
@@ -124,14 +124,15 @@ class Phrase extends Component {
       const { volume } = position
 
       // If we do have a note on this column, and we're not at 0,
-      // decrease it.
       if (volume > 0) {
+        // decrease it.
         newPosition = {
           ...position,
           volume: volume - 1
         }
       } else {
-        // If we are at the max volume, remove the note.
+        // If we are at the max volume,
+        // remove the note.
         newPosition = null
       }
     }
@@ -153,11 +154,12 @@ class Phrase extends Component {
     const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
     const position = phrase[col]
-    let newPosition
+    let newNote
 
-    // If we do not have a note on this column, add one at octave 0.
+    // If we do not have a note on this column,
     if (!position) {
-      newPosition = {
+      // add one at the highest octave.
+      newNote = {
         note: row,
         octave: settings.octaves - 1,
         volume: settings.volumes - 1
@@ -166,33 +168,34 @@ class Phrase extends Component {
       const { note, octave } = position
 
       // If we do have a note on this column, but not on this row,
-      // update the note to this row, and use the same octave.
       if (note !== row) {
-        newPosition = {
+        // update the note to this row, and use the same octave.
+        newNote = {
           ...position,
           note: row
         }
       } else {
         // If we have a note on this very column and row,
-        // and we're not at 0, decrease it.
+        // and we're not at 0,
         if (octave > 0) {
-          newPosition = {
+          // decrease it.
+          newNote = {
             ...position,
             octave: octave - 1
           }
         } else {
-          newPosition = null
+          newNote = null
         }
       }
     }
 
-    if (newPosition && !isPlaying) {
-      playNote(newPosition)
+    if (newNote && !isPlaying) {
+      playNote(newNote)
     }
 
     const newPhrase = {
       ...phrase,
-      [col]: newPosition
+      [col]: newNote
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
