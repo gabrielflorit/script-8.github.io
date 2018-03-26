@@ -3,8 +3,9 @@ import demo from '../utils/demo.js'
 
 const initialState = {
   // screen: screenTypes.CHAIN,
-  // screen: screenTypes.BOOT,
-  screen: screenTypes.PHRASE,
+  // screen: screenTypes.PHRASE,
+  // screen: screenTypes.SONG,
+  screen: screenTypes.BOOT,
   booted: false,
   gist: {},
   game: demo,
@@ -12,8 +13,8 @@ const initialState = {
   nextAction: null,
   sfxs: [],
   phrases: {},
-  chains: [],
-  songs: []
+  chains: {},
+  songs: {}
 }
 
 export default initialState

@@ -3,19 +3,16 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-// import { createSynth } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import Updater from './Updater.js'
 import Title from './Title.js'
 import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
-// import toLetter from '../utils/toLetter.js'
-// import normalize from '../utils/normalize.js'
 import settings from '../utils/settings.js'
-import defaults from '../utils/defaults.js'
 
-// const synths = _.range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(createSynth)
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
@@ -53,44 +50,47 @@ class Song extends Component {
   }
 
   componentDidMount () {
-    // const { chains, phrases } = this.props
+    const { chains, phrases } = this.props
     this.sequence = new Tone.Sequence(
       (time, index) => {
-        //     const song = this.getCurrentSong()
-        //     const [chainPosition, phrasePosition, notePosition] = [
-        //       '00',
-        //       index.toString(settings.matrixLength)
-        //     ]
-        //       .join('')
-        //       .slice(-3)
-        //       .split('')
-        //       .map(d => parseInt(d, settings.matrixLength))
-        //     // e.g 01 - the chain index for this position
-        //     const chainIndex = _.get(song, [chainPosition], [])
-        //     // e.g. the chain for this position,
-        //     // an array of an array of phrase indices
-        //     const chain = _.get(chains, [chainIndex], [])
-        //     const phrasesIndices = _.get(chain, [phrasePosition], [])
-        //     // for each channel,
-        //     _.range(settings.chainChannels).forEach(channel => {
-        //       const phrase = _.get(phrases, [phrasesIndices[channel]], [])
-        //       const note = _.get(phrase, ['notes', notePosition], null)
-        //       const volume = _.get(phrase, ['volumes', notePosition], null)
-        //       if (note !== null && volume > 0) {
-        //         const letter = toLetter(note, true, true)
-        //         synths[channel].triggerAttackRelease(
-        //           letter,
-        //           '32n',
-        //           time,
-        //           normalize.volume(volume)
-        //         )
-        //       }
-        //     })
-        //     Tone.Draw.schedule(() => {
-        //       this.setState({
-        //         playingIndex: chainPosition
-        //       })
-        //     }, time)
+        const song = this.getCurrentSong()
+
+        // Get the chain, phrase and note positions by using base math.
+        const [chainPosition, phrasePosition, notePosition] = _.padStart(
+          index.toString(settings.matrixLength),
+          3,
+          0
+        )
+          .split('')
+          .map(d => parseInt(d, settings.matrixLength))
+
+        // Get the chain index for this position.
+        const chainIndex = _.get(song, chainPosition)
+
+        // Get the chain.
+        const chain = _.get(chains, chainIndex)
+
+        // Get the phrase indices for this position, e.g. { 0: 0, 1: 11, 2: 2 }
+        const phrasesIndices = _.get(chain, phrasePosition)
+
+        // For each channel,
+        _.range(settings.chainChannels).forEach(channel => {
+          const phraseIndex = _.get(phrasesIndices, channel)
+          if (!_.isNil(phraseIndex)) {
+            // get the phrase assigned to this channel.
+            const phrase = _.get(phrases, phraseIndex)
+            // Get the note element for this position.
+            const noteElement = _.get(phrase, notePosition)
+            // If we have a note,
+            if (!_.isNil(noteElement)) {
+              playNote({ ...noteElement, time, synth: synths[channel] })
+            }
+          }
+        })
+
+        Tone.Draw.schedule(() => {
+          this.drawCallback(chainPosition)
+        }, time)
       },
       _.range(Math.pow(settings.matrixLength, 3)),
       '32n'
@@ -100,7 +100,7 @@ class Song extends Component {
   getCurrentSong () {
     const { songs } = this.props
     const { songIndex } = this.state
-    return _.get(songs, songIndex, defaults.song)
+    return _.get(songs, songIndex, {})
   }
 
   handlePlay () {

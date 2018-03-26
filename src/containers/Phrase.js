@@ -12,7 +12,6 @@ import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../utils/toLetter.js'
 import settings from '../utils/settings.js'
-import defaults from '../utils/defaults.js'
 
 const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
@@ -74,7 +73,7 @@ class Phrase extends Component {
   getCurrentPhrase () {
     const { phrases } = this.props
     const { phraseIndex } = this.state
-    return _.get(phrases, phraseIndex, defaults.phrase)
+    return _.get(phrases, phraseIndex, {})
   }
 
   handlePlay () {

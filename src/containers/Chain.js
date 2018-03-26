@@ -11,9 +11,8 @@ import Menu from './Menu.js'
 import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../utils/settings.js'
-import defaults from '../utils/defaults.js'
 
-const synths = _.range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(createSynth)
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start()
 
@@ -96,7 +95,7 @@ class Chain extends Component {
   getCurrentChain () {
     const { chains } = this.props
     const { chainIndex } = this.state
-    return _.get(chains, chainIndex, defaults.chain)
+    return _.get(chains, chainIndex, {})
   }
 
   handlePlay () {
