@@ -51,6 +51,7 @@ class Song extends Component {
 
   componentDidMount () {
     const { chains, phrases } = this.props
+
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const song = this.getCurrentSong()
@@ -75,14 +76,20 @@ class Song extends Component {
 
         // For each channel,
         _.range(settings.chainChannels).forEach(channel => {
+          // get the phrase index.
           const phraseIndex = _.get(phrasesIndices, channel)
+
+          // If the phrase index exists,
           if (!_.isNil(phraseIndex)) {
             // get the phrase assigned to this channel.
             const phrase = _.get(phrases, phraseIndex)
+
             // Get the note element for this position.
             const noteElement = _.get(phrase, notePosition)
+
             // If we have a note,
             if (!_.isNil(noteElement)) {
+              // play it!
               playNote({ ...noteElement, time, synth: synths[channel] })
             }
           }

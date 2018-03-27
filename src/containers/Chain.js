@@ -71,14 +71,20 @@ class Chain extends Component {
 
         // For each channel,
         _.range(settings.chainChannels).forEach(channel => {
+          // get the phrase index.
           const phraseIndex = _.get(phrasesIndices, channel)
+
+          // If the phrase index exists,
           if (!_.isNil(phraseIndex)) {
             // get the phrase assigned to this channel.
             const phrase = _.get(phrases, phraseIndex)
+
             // Get the note element for this position.
             const noteElement = _.get(phrase, notePosition)
+
             // If we have a note,
             if (!_.isNil(noteElement)) {
+              // play it!
               playNote({ ...noteElement, time, synth: synths[channel] })
             }
           }
@@ -140,8 +146,9 @@ class Chain extends Component {
       newPhrase = _.last(allPhrases)
     } else {
       // If the cell is not empty,
-
+      // get the phrase index.
       const newPhraseIndex = _.indexOf(allPhrases, newPhrase)
+
       // If it shows the first overall phrase,
       if (newPhraseIndex === 0) {
         // clear the cell.
