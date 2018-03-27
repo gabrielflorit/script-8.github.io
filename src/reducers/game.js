@@ -5,10 +5,11 @@ import initialState from '../store/initialState.js'
 
 const game = handleActions(
   {
-    [actionTypes.NEW_GAME]: (state, action) => 'SCRIPT-8 NEW',
+    [actionTypes.NEW_GAME]: (state, action) =>
+      state === '' ? state : 'SCRIPT-8 NEW',
     [actionTypes.UPDATE_GAME]: (state, action) => action.payload,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      _.get(action.payload, 'files["code.js"].content', null)
+      _.get(action.payload, 'files["code.js"].content', '')
   },
   initialState.game
 )

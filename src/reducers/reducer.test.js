@@ -7,48 +7,15 @@ describe('updatePhrase', () => {
     const before = initialState
     const action = actions.updatePhrase({
       phrase: {
-        notes: ['c', 'c', 'c'],
-        volumes: [1, 2, 3]
+        0: { note: 0 }
       },
       index: 1
     })
     expect(reducer(before, action)).toEqual({
       ...before,
-      phrases: [
-        null,
-        {
-          notes: ['c', 'c', 'c'],
-          volumes: [1, 2, 3]
-        }
-      ]
-    })
-  })
-  test('partial', () => {
-    const before = {
-      ...initialState,
-      phrases: [
-        null,
-        {
-          notes: ['c', 'c', 'b'],
-          volumes: [1, 2, 3]
-        }
-      ]
-    }
-    const action = actions.updatePhrase({
-      phrase: {
-        notes: ['c', 'c', 'c']
-      },
-      index: 1
-    })
-    expect(reducer(before, action)).toEqual({
-      ...before,
-      phrases: [
-        null,
-        {
-          notes: ['c', 'c', 'c'],
-          volumes: [1, 2, 3]
-        }
-      ]
+      phrases: {
+        1: { 0: { note: 0 } }
+      }
     })
   })
 })
@@ -240,7 +207,7 @@ test('fetchGistSuccess good data', () => {
 test('fetchGistSuccess bad data', () => {
   const before = {
     ...initialState,
-    phrases: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    phrases: {},
     gist: {
       isFetching: true
     }
@@ -252,8 +219,8 @@ test('fetchGistSuccess bad data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: null,
-    phrases: [],
+    game: '',
+    phrases: {},
     gist: {
       isFetching: false,
       data
