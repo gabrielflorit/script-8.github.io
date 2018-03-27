@@ -21,7 +21,7 @@ const playNote = ({ note, octave, volume, time, synth }) => {
     letter,
     '32n',
     time || window.AudioContext.currentTime,
-    normalize.volume(volume)
+    normalize.volume(volume) / 10
   )
 }
 
