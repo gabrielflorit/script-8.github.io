@@ -34,8 +34,17 @@ const soundAPI = () => {
   const songSequencePool = []
 
   const playSong = ({ songs, chains, phrases }) => (number, loop = false) => {
+    // Get this song.
     const song = _.get(songs, number)
+
+    // If the song exists,
     if (!_.isNil(song)) {
+      // create an array of note positions. There's a lot going on here,
+      // but the gist: create an array of all the notes, but remove nulls from the end,
+      // so that we can make a Tone Sequence that is the right length and no more.
+      // This is good for performance.
+
+      // For matrixLength cubed (chains * phrases * notes),
       const notePositions = _(_.range(Math.pow(settings.matrixLength, 3)))
         .map(index => {
           // Get the chain, phrase and note positions by using base math.
@@ -46,36 +55,48 @@ const soundAPI = () => {
           )
             .split('')
             .map(d => parseInt(d, settings.matrixLength))
+
           // Get the chain index for this position.
           const chainIndex = _.get(song, chainPosition)
+
           // Get the chain.
           const chain = _.get(chains, chainIndex)
+
           // Get the phrase indices for this position, e.g. { 0: 0, 1: 11, 2: 2 }
           const phrasesIndices = _.get(chain, phrasePosition)
-          // For each channel,
-          return _.range(settings.chainChannels)
-            .map(channel => {
-              const phraseIndex = _.get(phrasesIndices, channel)
-              let result
 
-              if (!_.isNil(phraseIndex)) {
-                // get the phrase assigned to this channel.
-                const phrase = _.get(phrases, phraseIndex)
-                // Get the note element for this position.
-                const noteElement = _.get(phrase, notePosition)
-                // If we have a note,
-                if (!_.isNil(noteElement)) {
-                  // add it to the result.
-                  result = {
-                    channel,
-                    noteElement
+          // For each channel,
+          return (
+            _.range(settings.chainChannels)
+              .map(channel => {
+                // Get the phrase index for this channel.
+                const phraseIndex = _.get(phrasesIndices, channel)
+                let result
+
+                // If the phrase index exists,
+                if (!_.isNil(phraseIndex)) {
+                  // get the phrase assigned to this channel.
+                  const phrase = _.get(phrases, phraseIndex)
+
+                  // Get the note element for this position.
+                  const noteElement = _.get(phrase, notePosition)
+
+                  // If we have a note,
+                  if (!_.isNil(noteElement)) {
+                    // add it to the result.
+                    result = {
+                      channel,
+                      noteElement
+                    }
                   }
                 }
-              }
-              return result
-            })
-            .filter(d => d)
+                return result
+              })
+              // Only keep non-null elements.
+              .filter(d => d)
+          )
         })
+        // NOW we can drop from right.
         .dropRightWhile(_.isEmpty)
         .value()
 
