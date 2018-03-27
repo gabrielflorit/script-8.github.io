@@ -9,6 +9,9 @@ import once from 'lodash/once'
 import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
 import blank from './utils/blank.js'
+import { version } from '../package.json'
+
+console.log(JSON.stringify(`SCRIPT-8 client v ${version}`, null, 2))
 
 window.script8 = {}
 
