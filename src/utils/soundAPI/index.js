@@ -119,8 +119,10 @@ const soundAPI = () => {
       )
 
       sequence.loop = loop
+
       // Start it,
       sequence.start()
+
       // and add it to the pool.
       songSequencePool.push(sequence)
     }
