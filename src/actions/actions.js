@@ -86,26 +86,31 @@ export const saveGist = ({
     const payload = {
       public: true,
       description: 'SCRIPT-8',
-      files: {
-        'code.js': {
-          content: game
+      files: _.omitBy(
+        {
+          'code.js': {
+            content: game
+          },
+          'phrases.json': {
+            content: _.isEmpty(phrases)
+              ? null
+              : JSON.stringify(phrases, null, 2)
+          },
+          'chains.json': {
+            content: _.isEmpty(chains) ? null : JSON.stringify(chains, null, 2)
+          },
+          'songs.json': {
+            content: _.isEmpty(songs) ? null : JSON.stringify(songs, null, 2)
+          },
+          'sfxs.json': {
+            content: _.isEmpty(sfxs) ? null : JSON.stringify(sfxs, null, 2)
+          },
+          'README.md': {
+            content
+          }
         },
-        'phrases.json': {
-          content: JSON.stringify(phrases, null, 2)
-        },
-        'chains.json': {
-          content: JSON.stringify(chains, null, 2)
-        },
-        'songs.json': {
-          content: JSON.stringify(songs, null, 2)
-        },
-        'sfxs.json': {
-          content: JSON.stringify(sfxs, null, 2)
-        },
-        'README.md': {
-          content
-        }
-      }
+        d => _.isNil(d.content) || _.isEmpty(d.content)
+      )
     }
 
     return payload
