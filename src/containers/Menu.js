@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import _ from 'lodash'
 import equal from 'deep-equal'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
-import { parseGistSfxs } from '../reducers/sfxs.js'
+import { parseGistGame } from '../reducers/game.js'
+import { parseGistPhrases } from '../reducers/phrases.js'
+import { parseGistChains } from '../reducers/chains.js'
+import { parseGistSongs } from '../reducers/songs.js'
 
 const mapStateToProps = ({
   gist,
@@ -96,13 +98,20 @@ class Menu extends Component {
   }
 
   render () {
-    const { sfxs, gist, game, showNew } = this.props
+    const { gist, game, phrases, chains, songs, showNew } = this.props
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
-    const gistSfxs = parseGistSfxs(gist.data)
-    const gistGame = _.get(gist, 'data.files["code.js"].content', null)
-    const dirty = !(equal(gistGame, game) && equal(gistSfxs, sfxs))
+    const gistGame = parseGistGame(gist.data)
+    const gistPhrases = parseGistPhrases(gist.data)
+    const gistChains = parseGistChains(gist.data)
+    const gistSongs = parseGistSongs(gist.data)
+    const dirty = !(
+      equal(gistGame, game) &&
+      equal(gistPhrases, phrases) &&
+      equal(gistChains, chains) &&
+      equal(gistSongs, songs)
+    )
 
     const newLi = showNew ? (
       <li>
