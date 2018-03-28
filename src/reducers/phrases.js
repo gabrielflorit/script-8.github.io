@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
@@ -17,16 +18,11 @@ const phrases = handleActions(
     [actionTypes.NEW_GAME]: () => initialState.phrases,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistPhrases(action.payload),
-    [actionTypes.UPDATE_PHRASE]: (state, { payload }) => {
-      const { phrase, index } = payload
-      return _.omitBy(
-        {
-          ...state,
-          [index]: _.omitBy(phrase, _.isNull)
-        },
-        _.isEmpty
-      )
-    }
+    [actionTypes.UPDATE_PHRASE]: (state, { payload }) =>
+      omitEmpty({
+        ...state,
+        [payload.index]: payload.phrase
+      })
   },
   initialState.phrases
 )

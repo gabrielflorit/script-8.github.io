@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
@@ -17,16 +18,11 @@ const songs = handleActions(
     [actionTypes.NEW_GAME]: () => initialState.songs,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistSongs(action.payload),
-    [actionTypes.UPDATE_SONG]: (state, { payload }) => {
-      const { song, index } = payload
-      return _.omitBy(
-        {
-          ...state,
-          [index]: _.omitBy(song, _.isNull)
-        },
-        _.isEmpty
-      )
-    }
+    [actionTypes.UPDATE_SONG]: (state, { payload }) =>
+      omitEmpty({
+        ...state,
+        [payload.index]: payload.song
+      })
   },
   initialState.songs
 )

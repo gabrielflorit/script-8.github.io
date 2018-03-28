@@ -2,12 +2,32 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 
+describe('updateChain', () => {
+  test('complete', () => {
+    const before = initialState
+    const action = actions.updateChain({
+      chain: {
+        0: { 0: 0, 1: null },
+        1: { 0: null, 1: null }
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      chains: {
+        1: { 0: { 0: 0 } }
+      }
+    })
+  })
+})
+
 describe('updatePhrase', () => {
   test('complete', () => {
     const before = initialState
     const action = actions.updatePhrase({
       phrase: {
-        0: { note: 0 }
+        0: { note: 0 },
+        1: {}
       },
       index: 1
     })
