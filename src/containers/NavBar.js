@@ -13,23 +13,21 @@ const mapDispatchToProps = (dispatch, props) => ({
 })
 
 const NavBar = ({ screen, setScreen }) => {
-  const items = [
-    screenTypes.CODE,
-    screenTypes.SONG,
-    screenTypes.CHAIN,
-    screenTypes.PHRASE,
-    screenTypes.RUN
-  ]
+  let items = [screenTypes.CODE, screenTypes.RUN]
+
+  if (screen !== screenTypes.RUN) {
+    items.splice(1, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE)
+  }
 
   const lis = items.map((d, i) => (
     <li key={i}>
       <button
         onClick={() => {
-          setScreen(d)
+          setScreen(d === 'edit' ? screenTypes.CODE : d)
         }}
         className={classNames({ active: screen === d }, 'button')}
       >
-        {d}
+        {screen === screenTypes.RUN && d === screenTypes.CODE ? 'edit' : d}
       </button>
     </li>
   ))
