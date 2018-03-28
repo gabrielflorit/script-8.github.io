@@ -4,9 +4,9 @@ import equal from 'deep-equal'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import { parseGistGame } from '../reducers/game.js'
-import { parseGistPhrases } from '../reducers/phrases.js'
-import { parseGistChains } from '../reducers/chains.js'
-import { parseGistSongs } from '../reducers/songs.js'
+import { extractGistPhrases } from '../reducers/phrases.js'
+import { extractGistChains } from '../reducers/chains.js'
+import { extractGistSongs } from '../reducers/songs.js'
 
 const mapStateToProps = ({
   gist,
@@ -103,9 +103,9 @@ class Menu extends Component {
     // If the game isn't equal to the gist,
     // set flag to dirty.
     const gistGame = parseGistGame(gist.data)
-    const gistPhrases = parseGistPhrases(gist.data)
-    const gistChains = parseGistChains(gist.data)
-    const gistSongs = parseGistSongs(gist.data)
+    const gistPhrases = extractGistPhrases(gist.data)
+    const gistChains = extractGistChains(gist.data)
+    const gistSongs = extractGistSongs(gist.data)
     const dirty = !(
       equal(gistGame, game) &&
       equal(gistPhrases, phrases) &&

@@ -4,7 +4,7 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
-const parseGistChains = data =>
+const extractGistChains = data =>
   JSON.parse(
     _.get(
       data,
@@ -17,7 +17,7 @@ const chains = handleActions(
   {
     [actionTypes.NEW_GAME]: () => initialState.chains,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      parseGistChains(action.payload),
+      extractGistChains(action.payload),
     [actionTypes.UPDATE_CHAIN]: (state, { payload }) =>
       omitEmpty({
         ...state,
@@ -29,4 +29,4 @@ const chains = handleActions(
 
 export default chains
 
-export { parseGistChains }
+export { extractGistChains }

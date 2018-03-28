@@ -4,7 +4,7 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
-const parseGistSongs = data =>
+const extractGistSongs = data =>
   JSON.parse(
     _.get(
       data,
@@ -17,7 +17,7 @@ const songs = handleActions(
   {
     [actionTypes.NEW_GAME]: () => initialState.songs,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      parseGistSongs(action.payload),
+      extractGistSongs(action.payload),
     [actionTypes.UPDATE_SONG]: (state, { payload }) =>
       omitEmpty({
         ...state,
@@ -29,4 +29,4 @@ const songs = handleActions(
 
 export default songs
 
-export { parseGistSongs }
+export { extractGistSongs }

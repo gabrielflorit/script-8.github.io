@@ -2,6 +2,7 @@ import { createActions } from 'redux-actions'
 import GitHub from 'github-api'
 import _ from 'lodash'
 import actionTypes from './actionTypes.js'
+import { compressPhrases } from '../reducers/phrases.js'
 
 const actions = createActions({
   [actionTypes.SET_SCREEN]: d => d,
@@ -94,7 +95,7 @@ export const saveGist = ({
           'phrases.json': {
             content: _.isEmpty(phrases)
               ? null
-              : JSON.stringify(phrases, null, 2)
+              : JSON.stringify(compressPhrases(phrases), null, 2)
           },
           'chains.json': {
             content: _.isEmpty(chains) ? null : JSON.stringify(chains, null, 2)
