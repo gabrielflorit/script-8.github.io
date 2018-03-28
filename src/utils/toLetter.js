@@ -10,6 +10,8 @@ const toLetter = (number, includeOctave, normalize) => {
   return !includeOctave ? letter : `${letter}${octave}`
 }
 
-export { numberToOctave }
+const letterToNumber = letter => notes.indexOf(letter)
+
+export { numberToOctave, letterToNumber }
 
 export default toLetter
