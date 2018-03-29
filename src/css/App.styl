@@ -47,3 +47,17 @@ a
   &.active
     color $palette-1
     background $palette-6
+
+.two-rows
+  height 100%
+  display grid
+  grid-template-rows $font-large auto
+  grid-row-gap 2px
+  background $palette-6
+
+  &-and-grid
+    .main
+      background $palette-7
+      @extend .VT323
+      font-size $font-large
+      display grid

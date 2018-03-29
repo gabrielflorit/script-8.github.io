@@ -5,10 +5,7 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
-import Updater from './Updater.js'
-import Title from './Title.js'
-import Menu from './Menu.js'
-import NavBar from './NavBar.js'
+import TopBar from '../components/TopBar.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../utils/settings.js'
 
@@ -175,11 +172,8 @@ class Chain extends Component {
     const { phrases } = this.props
 
     return (
-      <div className='Chain'>
-        <Updater />
-        <Title />
-        <Menu />
-        <NavBar />
+      <div className='Chain two-rows two-rows-and-grid'>
+        <TopBar />
         <div className='main'>
           <div className={classNames('warning', { hide: !_.isEmpty(phrases) })}>
             error: no phrases found

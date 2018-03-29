@@ -1,14 +1,10 @@
 import React from 'react'
 import Output from './Output.js'
-import NavBar from './NavBar.js'
-import Title from './Title.js'
-import Updater from './Updater.js'
+import TopBar from '../components/TopBar.js'
 
 const Run = () => (
-  <div className='Run'>
-    <Updater />
-    <Title />
-    <NavBar />
+  <div className='Run two-rows'>
+    <TopBar hideMenu />
     <Output />
   </div>
 )

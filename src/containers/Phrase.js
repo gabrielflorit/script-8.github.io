@@ -5,10 +5,7 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
-import Updater from './Updater.js'
-import Title from './Title.js'
-import Menu from './Menu.js'
-import NavBar from './NavBar.js'
+import TopBar from '../components/TopBar.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../utils/toLetter.js'
 import settings from '../utils/settings.js'
@@ -204,11 +201,8 @@ class Phrase extends Component {
     const phrase = this.getCurrentPhrase()
 
     return (
-      <div className='Phrase'>
-        <Updater />
-        <Title />
-        <Menu />
-        <NavBar />
+      <div className='Phrase two-rows two-rows-and-grid'>
+        <TopBar />
         <div className='main'>
           <div className='settings'>
             <div className='title'>Phrase</div>

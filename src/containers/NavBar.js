@@ -19,18 +19,23 @@ const NavBar = ({ screen, setScreen }) => {
     items.splice(1, 0, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE)
   }
 
-  const lis = items.map((d, i) => (
-    <li key={i}>
-      <button
-        onClick={() => {
-          setScreen(d === 'edit' ? screenTypes.CODE : d)
-        }}
-        className={classNames({ active: screen === d }, 'button')}
-      >
-        {screen === screenTypes.RUN && d === screenTypes.CODE ? 'edit' : d}
-      </button>
-    </li>
-  ))
+  const lis = items.map((d, i) => {
+    const label =
+      screen === screenTypes.RUN && d === screenTypes.CODE ? 'edit' : d
+    return (
+      <li key={i}>
+        <button
+          onClick={() => {
+            setScreen(d === 'edit' ? screenTypes.CODE : d)
+          }}
+          className={classNames({ active: screen === d }, 'button')}
+        >
+          <span className='normal'>{label}</span>
+          <abbr>{label.slice(0, 1)}</abbr>
+        </button>
+      </li>
+    )
+  })
 
   return <ul className='NavBar'>{lis}</ul>
 }
