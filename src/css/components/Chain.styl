@@ -8,6 +8,18 @@
     padding 1.5rem
     justify-content start
 
+    @media screen and (max-width: 40rem)
+      grid-template-columns auto
+      grid-template-rows auto
+      padding 0.35rem
+      .settings
+        display flex
+        .title
+          padding-right 1.5rem
+          margin-bottom 0
+        .TextInput
+          margin-bottom 0
+
     .hide
       display none
 
