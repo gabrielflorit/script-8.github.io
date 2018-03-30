@@ -1,18 +1,20 @@
 .Run
-  height 100%
-  display grid
-  grid-template-rows $font-large auto
-  grid-row-gap 2px
-  background $palette-6
+
+  .TopBar
+    grid-template-columns auto auto
 
   .Output
     iframe
       width 100%
       height @width
 
-  @media screen and (max-width: 400px)
+  .NavBar li button
+    padding 0 0.75rem
+    span
+      display inline
+    abbr
+      display none
+
+  @media screen and (max-width: 60rem)
     .Title
       text-align left
-      right auto
-      width 50%
-      padding 0 0.5rem

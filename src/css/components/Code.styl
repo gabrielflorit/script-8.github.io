@@ -1,22 +1,16 @@
 .Code
-  height 100%
-  display grid
-  grid-template-columns minmax(auto, 51.5rem) auto
-  grid-template-rows $font-large auto
-  grid-row-gap 2px
-  background $palette-6
 
-  .Menu
-    grid-column 1 / span 1
+  .main
+    grid-template-columns minmax(auto, 51.5rem) auto
+    grid-template-rows auto
+    grid-row-gap 2px
 
-  .NavBar
-    grid-column 2 / span 1
-
-  .CodeEditor
-    border-right solid $palette-6 2px
-
-  @media screen and (max-width: 800px)
     .CodeEditor
-      grid-column 1 / span 2
-    .Output
-      display none
+      border-right solid $palette-6 2px
+
+    @media screen and (max-width: 800px)
+      .CodeEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none

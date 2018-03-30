@@ -5,11 +5,8 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth, playNote } from '../utils/soundAPI/index.js'
 import actions from '../actions/actions.js'
-import Updater from './Updater.js'
-import Title from './Title.js'
-import Menu from './Menu.js'
-import NavBar from './NavBar.js'
 import TextInput from '../components/TextInput.js'
+import TopBar from '../components/TopBar.js'
 import settings from '../utils/settings.js'
 
 const synths = _.range(settings.chainChannels).map(createSynth)
@@ -187,11 +184,8 @@ class Song extends Component {
     const { chains } = this.props
 
     return (
-      <div className='Song'>
-        <Updater />
-        <Title />
-        <Menu />
-        <NavBar />
+      <div className='Song two-rows two-rows-and-grid'>
+        <TopBar />
         <div className='main'>
           <div className={classNames('warning', { hide: !_.isEmpty(chains) })}>
             error: no chains found
