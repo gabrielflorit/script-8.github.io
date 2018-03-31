@@ -20,30 +20,26 @@ const mapStateToProps = ({ screen }) => ({
 
 const mapDispatchToProps = () => ({})
 
-const App = ({ screen }) => {
-  const options = {
-    [screenTypes.BOOT]: () => <Boot />,
-    [screenTypes.PHRASE]: () => <Phrase />,
-    [screenTypes.CHAIN]: () => <Chain />,
-    [screenTypes.SONG]: () => <Song />,
-    [screenTypes.RUN]: () => <Run />,
-    [screenTypes.CODE]: () => <Code />
-  }
-
-  const component = options[screen]()
-
-  return (
-    <div
-      className={classNames('App', {
-        'full-height': includes(
-          [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
-          screen
-        )
-      })}
-    >
-      {component}
-    </div>
-  )
+const options = {
+  [screenTypes.BOOT]: () => <Boot />,
+  [screenTypes.PHRASE]: () => <Phrase />,
+  [screenTypes.CHAIN]: () => <Chain />,
+  [screenTypes.SONG]: () => <Song />,
+  [screenTypes.RUN]: () => <Run />,
+  [screenTypes.CODE]: () => <Code />
 }
+
+const App = ({ screen }) => (
+  <div
+    className={classNames('App', {
+      'full-height': includes(
+        [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
+        screen
+      )
+    })}
+  >
+    {options[screen]()}
+  </div>
+)
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
