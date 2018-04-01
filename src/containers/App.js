@@ -8,6 +8,7 @@ import Chain from './Chain.js'
 import Song from './Song.js'
 import Run from './Run.js'
 import Code from './Code.js'
+import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
 import { version } from '../../package.json'
 import '../css/App.css'
@@ -30,16 +31,18 @@ const options = {
 }
 
 const App = ({ screen }) => (
-  <div
-    className={classNames('App', {
-      'full-height': includes(
-        [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
-        screen
-      )
-    })}
-  >
-    {options[screen]()}
-  </div>
+  <ErrorBoundary>
+    <div
+      className={classNames('App', {
+        'full-height': includes(
+          [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
+          screen
+        )
+      })}
+    >
+      {options[screen]()}
+    </div>
+  </ErrorBoundary>
 )
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

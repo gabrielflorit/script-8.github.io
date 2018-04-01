@@ -25,6 +25,11 @@ const actions = createActions({
 
 export default actions
 
+const throwError = ({ error, message }) => {
+  error.message = [error.message, message].join('. ')
+  throw new Error(error)
+}
+
 export const fetchGist = id => dispatch => {
   dispatch(actions.fetchGistRequest())
 
@@ -32,7 +37,11 @@ export const fetchGist = id => dispatch => {
     .fetch(`https://my-service-pyccaoirrn.now.sh/${id}`)
     .then(
       response => response.json(),
-      error => console.log('An error occurred.', error)
+      error =>
+        throwError({
+          error,
+          message: `Could not fetch gist ${id} via now.sh service.`
+        })
     )
     .then(json => dispatch(actions.fetchGistSuccess(json)))
 }
@@ -44,7 +53,7 @@ export const fetchToken = code => dispatch => {
     .fetch(`${process.env.REACT_APP_AUTHENTICATOR}/authenticate/${code}`)
     .then(
       response => response.json(),
-      error => console.log('An error occurred.', error)
+      error => throwError({ error, message: 'Could not fetch oauth token.' })
     )
     .then(({ token }) => {
       const gh = new GitHub({ token })
@@ -57,7 +66,11 @@ export const fetchToken = code => dispatch => {
             token,
             user: response.data
           }),
-          error => console.log('An error occurred.', error)
+          error =>
+            throwError({
+              error,
+              message: 'Could not fetch GitHub user despite valid oauth token.'
+            })
         )
     })
     .then(json => dispatch(actions.tokenSuccess(json)))
@@ -123,7 +136,7 @@ export const saveGist = ({
       .create(preparePayload())
       .then(
         response => response.data,
-        error => console.log('An error occurred.', error)
+        error => throwError({ error, message: 'Could not create gist.' })
       )
       .then(data => dispatch(actions.saveGistSuccess(data)))
 
@@ -133,7 +146,7 @@ export const saveGist = ({
       .update(preparePayload(gist.data.id))
       .then(
         response => response.data,
-        error => console.log('An error occurred.', error)
+        error => throwError({ error, message: 'Could not update gist.' })
       )
       .then(data => dispatch(actions.saveGistSuccess(data)))
 
