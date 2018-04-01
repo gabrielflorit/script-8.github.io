@@ -11,8 +11,10 @@ import soundAPI from './utils/soundAPI/index.js'
 import blank from './utils/blank.js'
 import { version } from '../package.json'
 
+// Print version.
 console.log(JSON.stringify(`SCRIPT-8 client v ${version}`, null, 2))
 
+// Create namespaced object.
 window.script8 = {}
 
 // Initialize canvas.
@@ -36,9 +38,10 @@ const {
   height: size
 })
 
+// Setup sound API functions.
 const { playSong } = soundAPI()
 
-// Export them to global scope for eval's use later.
+// Export api functions to global scope for eval's use later.
 window.print = print
 window.rectStroke = rectStroke
 window.rectFill = rectFill
@@ -48,6 +51,7 @@ window.lineH = lineH
 window.lineV = lineV
 window.clear = clear
 
+// Export lodash helpers for eval's use.
 window.range = range
 window.flatten = flatten
 window.random = random
@@ -56,6 +60,7 @@ window.clamp = clamp
 // Define arrow key helpers.
 let keys = new Set()
 
+// Export arrow booleans for convenience.
 const updateKeys = () => {
   window.arrowUp = keys.has('ArrowUp')
   window.arrowRight = keys.has('ArrowRight')
@@ -74,33 +79,6 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
-let isMouseDown = false
-document.addEventListener('mousedown', e => {
-  isMouseDown = true
-})
-
-document.addEventListener('mouseup', e => {
-  isMouseDown = false
-})
-
-function getOffset (event) {
-  let normalizedOffset
-  if (isMouseDown) {
-    const rect = event.target.getBoundingClientRect()
-    const { width, height } = rect
-    let offset
-    if ('offsetX' in event) {
-      offset = [event.offsetX, event.offsetY]
-    } else {
-      offset = [event.clientX - rect.left, event.clientY - rect.top]
-    }
-    normalizedOffset = [offset[0] * size / width, offset[1] * size / height]
-  }
-  return normalizedOffset
-}
-
-window.getOffset = getOffset
-
 const noop = () => {}
 
 // Force eval to run in global mode.
@@ -117,34 +95,45 @@ window.script8.callCode = ({
   run,
   endCallback = noop
 }) => {
-  window.playSong = playSong({ songs, chains, phrases })
+  // If we're in `run` mode, create playSong function from music data.
+  window.playSong = run ? playSong({ songs, chains, phrases }) : noop
+
+  // Make available an end function, and call the callback once.
   window.script8.end = once(endCallback)
-  if (!game || !game.length) {
-    game = blank
-  }
+
+  // If the game is empty,
+  // if (!game || !game.length) {
+  //   game = blank
+  // }
   try {
+    // Try evaling blank first, always.
+    geval(blank + ';')
+
+    // Now eval the supplied game.
     geval(game + ';')
-    geval(`
-      document.querySelector('canvas').onmousemove = e => {
-        if (window.onMouseMove) {
-          const offset = window.getOffset(e)
-          if (offset) {
-            window.onMouseMove(offset)
-          }
-        }
-      };
-    `)
+
+    // If the timer exists, stop it.
     if (timer) timer.stop()
+
+    // Start a new timer, and:
     timer = interval(() => {
       try {
+        // update the key information (i.e. what's pressed),
         updateKeys()
+
+        // and run the game.
         geval('update && update(); draw && draw();')
       } catch (e) {
+        // If there is an error, print it as a warning - no red!
         console.warn(e.message)
       }
+
+      // If we're not operating in `run` mode, stop the timer.
+      // In other words, only run this once.
       if (!run) timer.stop()
     }, 1000 / 30)
   } catch (e) {
-    console.error(e.message)
+    // If any part of this resulted in an error, print it.
+    console.warn(e.message)
   }
 }
