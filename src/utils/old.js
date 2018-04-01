@@ -24,7 +24,7 @@ document.addEventListener('mouseup', e => {
 })
 
 window.getOffset = getOffset
-    geval(`
+geval(`
       document.querySelector('canvas').onmousemove = e => {
         if (window.onMouseMove) {
           const offset = window.getOffset(e)

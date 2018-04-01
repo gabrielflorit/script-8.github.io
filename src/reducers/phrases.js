@@ -24,7 +24,7 @@ const compressPhrases = phrases =>
 const expandPhrases = phrases =>
   _.mapValues(phrases, notes =>
     _(notes)
-      .map(note => note.match(/^(\d)(.*)(\d)(\d)/).slice(1, 5))
+      .map(note => note.match(/^(\d+)(.*)(\d)(\d)/).slice(1, 5))
       .map(match => ({
         index: match[0],
         note: letterToNumber(match[1]),
