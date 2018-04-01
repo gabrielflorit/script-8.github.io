@@ -129,7 +129,7 @@ const soundAPI = () => {
             const { channel, noteElement } = d
             playNote({
               ...noteElement,
-              time,
+              time: time + 0.1,
               synth: synths[channel]
             })
           })
