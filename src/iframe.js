@@ -39,7 +39,8 @@ const {
 })
 
 // Setup sound API functions.
-const { playSong } = soundAPI()
+const { playSong, stopSong } = soundAPI()
+window.stopSong = stopSong
 
 // Export api functions to global scope for eval's use later.
 window.print = print

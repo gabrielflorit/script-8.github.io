@@ -33,6 +33,13 @@ const soundAPI = () => {
 
   const songSequencePool = []
 
+  const stopSong = () => {
+    _.range(songSequencePool.length).forEach(() => {
+      const s = songSequencePool.pop()
+      s.dispose()
+    })
+  }
+
   const playSong = ({ songs, chains, phrases }) => (number, loop = false) => {
     // Get this song.
     const song = _.get(songs, number)
@@ -101,17 +108,17 @@ const soundAPI = () => {
         .value()
 
       // Stop all sequences.
-      // TODO: pop and dispose sequence, so we don't end up with an array
-      // of unused sequences.
-      songSequencePool.forEach(sequence => {
-        sequence.stop()
-      })
+      stopSong()
 
       const sequence = new Tone.Sequence(
         (time, position) => {
           notePositions[position].forEach(d => {
             const { channel, noteElement } = d
-            playNote({ ...noteElement, time, synth: synths[channel] })
+            playNote({
+              ...noteElement,
+              time,
+              synth: synths[channel]
+            })
           })
         },
         _.range(notePositions.length),
@@ -129,7 +136,8 @@ const soundAPI = () => {
   }
 
   return {
-    playSong
+    playSong,
+    stopSong
   }
 }
 
