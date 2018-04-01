@@ -15,14 +15,27 @@ const createSynth = () => {
   return synth
 }
 
-const playNote = ({ note, octave, volume, time, synth }) => {
-  const letter = toLetter(note + octave * 12, true, true)
-  synth.triggerAttackRelease(
-    letter,
-    settings.subdivision,
-    time || window.AudioContext.currentTime,
-    normalize.volume(volume) / 10
-  )
+const playNote = ({
+  note,
+  octave,
+  volume,
+  time = Tone.context.currentTime,
+  synth
+}) => {
+  // If time is not provided, we want to play the note right now - use currentTime.
+  // If time is provided,
+  // if it is in the past (smaller than currentTime),
+  // don't play the note.
+  // Otherwise play the note.
+  if (time >= Tone.context.currentTime) {
+    const letter = toLetter(note + octave * 12, true, true)
+    synth.triggerAttackRelease(
+      letter,
+      settings.subdivision,
+      time,
+      normalize.volume(volume) / 10
+    )
+  }
 }
 
 const soundAPI = () => {
