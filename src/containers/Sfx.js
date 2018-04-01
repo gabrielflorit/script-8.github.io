@@ -20,7 +20,7 @@ import defaultSfx from '../utils/defaultSfx.js'
 const volumeColorFormatter = block => (block > 0 ? 4 - Math.ceil(block / 2) : 6)
 
 const synth = createSynth()
-Tone.Transport.start()
+Tone.Transport.start(settings.startOffset)
 
 const mapStateToProps = ({ sfxs }) => ({ sfxs })
 

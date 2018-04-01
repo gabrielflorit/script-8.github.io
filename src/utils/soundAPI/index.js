@@ -19,7 +19,7 @@ const playNote = ({ note, octave, volume, time, synth }) => {
   const letter = toLetter(note + octave * 12, true, true)
   synth.triggerAttackRelease(
     letter,
-    '32n',
+    settings.subdivision,
     time || window.AudioContext.currentTime,
     normalize.volume(volume) / 10
   )
@@ -29,7 +29,7 @@ const soundAPI = () => {
   const synths = _.range(settings.chainChannels).map(createSynth)
 
   Tone.Transport.bpm.value = settings.bpm
-  Tone.Transport.start()
+  Tone.Transport.start(settings.startOffset)
 
   const songSequencePool = []
 
@@ -122,7 +122,7 @@ const soundAPI = () => {
           })
         },
         _.range(notePositions.length),
-        '32n'
+        settings.subdivision
       )
 
       sequence.loop = loop

@@ -12,7 +12,7 @@ import settings from '../utils/settings.js'
 
 const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
-Tone.Transport.start()
+Tone.Transport.start(settings.startOffset)
 
 const mapStateToProps = ({ phrases }) => ({ phrases })
 
@@ -63,7 +63,7 @@ class Phrase extends Component {
         }, time)
       },
       _.range(settings.matrixLength),
-      '32n'
+      settings.subdivision
     )
   }
 
