@@ -6,7 +6,7 @@ const settings = {
   songs: 8,
   matrixLength: 16,
   chainChannels: 4,
-  bpm: 30
+  bpm: 60
 }
 
 export default settings
