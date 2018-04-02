@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import equal from 'deep-equal'
+import _ from 'lodash'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import { parseGistGame } from '../reducers/game.js'
@@ -19,7 +20,10 @@ const mapStateToProps = ({
   screen,
   nextAction
 }) => ({
-  showNew: screen === screenTypes.CODE,
+  showNew: _.includes(
+    [screenTypes.CODE, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE],
+    screen
+  ),
   gist,
   game,
   sfxs,
