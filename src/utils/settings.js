@@ -6,7 +6,9 @@ const settings = {
   songs: 8,
   matrixLength: 16,
   chainChannels: 4,
-  bpm: 60
+  startOffset: '+0.1',
+  bpm: 240,
+  subdivision: '8n'
 }
 
 export default settings

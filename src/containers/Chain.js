@@ -11,7 +11,7 @@ import settings from '../utils/settings.js'
 
 const synths = _.range(settings.chainChannels).map(createSynth)
 Tone.Transport.bpm.value = settings.bpm
-Tone.Transport.start()
+Tone.Transport.start(settings.startOffset)
 
 const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
 
@@ -91,7 +91,7 @@ class Chain extends Component {
         }, time)
       },
       _.range(Math.pow(settings.matrixLength, 2)),
-      '32n'
+      settings.subdivision
     )
   }
 
