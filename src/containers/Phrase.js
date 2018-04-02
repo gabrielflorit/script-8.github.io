@@ -229,16 +229,21 @@ class Phrase extends Component {
                     {_.range(settings.matrixLength).map(col => {
                       const value = phrase[col]
                       const match = value && value.note === row
+                      const highlighter =
+                        row === 11 && col === playingIndex && isPlaying ? (
+                          <span className='highlight' />
+                        ) : null
                       return (
                         <td
                           key={col}
                           onClick={e => this.handleNoteClick({ row, col })}
                           className={classNames({
                             match,
-                            highlight: col === playingIndex && isPlaying,
+                            highlight: col === playingIndex,
                             [`octave-${value && value.octave}`]: match
                           })}
                         >
+                          {highlighter}
                           <button>{match ? value.octave : ' '}</button>
                         </td>
                       )
@@ -253,6 +258,10 @@ class Phrase extends Component {
                   <td>v</td>
                   {_.range(settings.matrixLength).map(col => {
                     const value = phrase[col]
+                    const highlighter =
+                      col === playingIndex && isPlaying ? (
+                        <span className='highlight' />
+                      ) : null
                     return (
                       <td
                         key={col}
@@ -262,6 +271,7 @@ class Phrase extends Component {
                         })}
                         onClick={e => this.handleVolumeClick(col)}
                       >
+                        {highlighter}
                         <button>{value && value.volume}</button>
                       </td>
                     )
