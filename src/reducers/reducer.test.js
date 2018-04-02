@@ -1,6 +1,7 @@
 import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
+import screenTypes from '../utils/screenTypes.js'
 
 describe('updateChain', () => {
   test('complete', () => {
@@ -91,7 +92,7 @@ describe('updateSfx', () => {
   })
 })
 
-test('newGame', () => {
+test('newGame from CODE', () => {
   const before = {
     ...initialState,
     gist: {
@@ -99,11 +100,27 @@ test('newGame', () => {
     },
     game: 'something here'
   }
-  const action = actions.newGame()
+  const action = actions.newGame(screenTypes.CODE)
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
     game: 'SCRIPT-8 NEW'
+  })
+})
+
+test('newGame from SONG', () => {
+  const before = {
+    ...initialState,
+    gist: {
+      something: 'here'
+    },
+    game: 'something here'
+  }
+  const action = actions.newGame(screenTypes.SONG)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    gist: {},
+    game: ''
   })
 })
 

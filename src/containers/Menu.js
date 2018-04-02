@@ -76,7 +76,7 @@ class Menu extends Component {
   }
 
   onNewClick () {
-    this.props.newGame()
+    this.props.newGame(this.props.screen)
   }
 
   onSaveClick () {
