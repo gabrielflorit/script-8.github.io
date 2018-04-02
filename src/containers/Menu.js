@@ -106,12 +106,11 @@ class Menu extends Component {
     const gistPhrases = extractGistPhrases(gist.data)
     const gistChains = extractGistChains(gist.data)
     const gistSongs = extractGistSongs(gist.data)
-    const dirty = !(
-      equal(gistGame, game) &&
-      equal(gistPhrases, phrases) &&
-      equal(gistChains, chains) &&
-      equal(gistSongs, songs)
-    )
+    const dirtyGame = !equal(gistGame, game)
+    const dirtyPhrases = !equal(gistPhrases, phrases)
+    const dirtyChains = !equal(gistChains, chains)
+    const dirtySongs = !equal(gistSongs, songs)
+    const dirty = dirtyGame || dirtyPhrases || dirtyChains || dirtySongs
 
     const newLi = showNew ? (
       <li>

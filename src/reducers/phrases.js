@@ -5,15 +5,6 @@ import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 import toLetter, { letterToNumber } from './../utils/toLetter.js'
 
-const extractGistPhrases = data =>
-  JSON.parse(
-    _.get(
-      data,
-      'files["phrases.json"].content',
-      JSON.stringify(initialState.phrases, null, 2)
-    )
-  )
-
 const compressPhrases = phrases =>
   _.mapValues(phrases, phrase =>
     _.map(phrase, (note, noteIndex) =>
@@ -36,11 +27,22 @@ const expandPhrases = phrases =>
       .value()
   )
 
+const extractGistPhrases = data =>
+  expandPhrases(
+    JSON.parse(
+      _.get(
+        data,
+        'files["phrases.json"].content',
+        JSON.stringify(initialState.phrases, null, 2)
+      )
+    )
+  )
+
 const phrases = handleActions(
   {
     [actionTypes.NEW_GAME]: () => initialState.phrases,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      expandPhrases(extractGistPhrases(action.payload)),
+      extractGistPhrases(action.payload),
     [actionTypes.UPDATE_PHRASE]: (state, { payload }) =>
       omitEmpty({
         ...state,
