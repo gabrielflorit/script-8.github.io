@@ -132,7 +132,7 @@ class Chain extends Component {
 
     // Get all phrases, in order.
     const allPhrases = _(Object.keys(phrases))
-      .sortBy()
+      .sortBy(d => +d)
       .uniq()
       .map(d => +d)
       .value()

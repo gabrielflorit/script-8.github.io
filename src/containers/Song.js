@@ -137,7 +137,7 @@ class Song extends Component {
 
     // Get chains, in order.
     const sortedChains = _(Object.keys(chains))
-      .sortBy()
+      .sortBy(d => +d)
       .uniq()
       .map(d => +d)
       .value()
