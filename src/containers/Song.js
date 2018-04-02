@@ -213,6 +213,10 @@ class Song extends Component {
                   <td>c</td>
                   {_.range(settings.matrixLength).map(col => {
                     const chain = _.get(song, col)
+                      const highlighter =
+                        col === playingIndex && isPlaying ? (
+                          <span className='highlight' />
+                        ) : null
                     return (
                       <td
                         key={col}
@@ -222,6 +226,7 @@ class Song extends Component {
                         })}
                         onClick={() => this.handleChainClick({ col })}
                       >
+                      {highlighter}
                         <button>
                           <span>
                             {_.isNil(chain) ? '' : _.padStart(chain, 2, 0)}

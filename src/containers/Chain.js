@@ -202,6 +202,10 @@ class Chain extends Component {
                     <td>{channel}</td>
                     {_.range(settings.matrixLength).map(col => {
                       const phrase = _.get(chain, [col, channel])
+                      const highlighter =
+                        channel === 0 && col === playingIndex && isPlaying ? (
+                          <span className='highlight' />
+                        ) : null
                       return (
                         <td
                           key={col}
@@ -215,6 +219,7 @@ class Chain extends Component {
                             this.handlePhraseClick({ channel, col })
                           }
                         >
+                          {highlighter}
                           <button>
                             <span>
                               {_.isNil(phrase) ? '' : _.padStart(phrase, 2, 0)}
