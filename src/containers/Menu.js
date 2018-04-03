@@ -34,7 +34,7 @@ const mapStateToProps = ({
   nextAction
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: () => dispatch(actions.newGame()),

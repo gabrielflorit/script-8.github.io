@@ -9,7 +9,7 @@ const mapStateToProps = ({ game }) => ({
   game
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = dispatch => ({
   updateGame: game => dispatch(actions.updateGame(game))
 })
 

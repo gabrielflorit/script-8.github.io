@@ -14,7 +14,7 @@ const mapStateToProps = ({ screen, game, songs, chains, phrases }) => ({
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = dispatch => ({
   finishBoot: () => dispatch(actions.finishBoot())
 })
 

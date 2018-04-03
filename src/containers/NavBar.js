@@ -8,7 +8,7 @@ const mapStateToProps = ({ screen }) => ({
   screen
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen))
 })
 
