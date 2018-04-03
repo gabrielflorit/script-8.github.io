@@ -5,31 +5,32 @@ import Output from './Output.js'
 import screenTypes from '../utils/screenTypes.js'
 import actions, { fetchGist } from '../actions/actions.js'
 
-const mapStateToProps = ({ gist, booted }) => ({
+const mapStateToProps = ({ gist, booted, token }) => ({
   gist,
-  booted
+  booted,
+  token
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
-  fetchGist: id => dispatch(fetchGist(id))
+  fetchGist: ({ id, token }) => dispatch(fetchGist({ id, token }))
 })
 
 class Boot extends Component {
   componentDidMount () {
-    const { fetchGist } = this.props
+    const { fetchGist, token } = this.props
     const { search } = window.location
     const params = new window.URLSearchParams(search)
     const id = params.get('id')
     // If there's an id in the query string,
     if (id) {
       // try fetching the gist.
-      fetchGist(id)
+      fetchGist({ id, token })
     } else {
       // If there is no id,
       // load the default one,
       // and set the id on the query string.
-      fetchGist('2e0e10cfeaa108f1662e61a69609c8c1')
+      fetchGist({ id: '2e0e10cfeaa108f1662e61a69609c8c1', token })
     }
   }
 

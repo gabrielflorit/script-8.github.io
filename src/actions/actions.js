@@ -30,20 +30,36 @@ const throwError = ({ error, message }) => {
   throw new Error(error)
 }
 
-export const fetchGist = id => dispatch => {
+export const fetchGist = ({ id, token }) => dispatch => {
   dispatch(actions.fetchGistRequest())
 
-  return window
-    .fetch(`https://my-service-pyccaoirrn.now.sh/${id}`)
-    .then(
-      response => response.json(),
-      error =>
-        throwError({
-          error,
-          message: `Could not fetch gist ${id} via now.sh service.`
-        })
-    )
-    .then(json => dispatch(actions.fetchGistSuccess(json)))
+  if (token && token.value) {
+    const gh = new GitHub({ token: token.value })
+    return gh
+      .getGist(id)
+      .read()
+      .then(
+        response => response.data,
+        error =>
+          throwError({
+            error,
+            message: `Could not fetch gist ${id} from GitHub.`
+          })
+      )
+      .then(json => dispatch(actions.fetchGistSuccess(json)))
+  } else {
+    return window
+      .fetch(`https://my-service-pyccaoirrn.now.sh/${id}`)
+      .then(
+        response => response.json(),
+        error =>
+          throwError({
+            error,
+            message: `Could not fetch gist ${id} via now.sh service.`
+          })
+      )
+      .then(json => dispatch(actions.fetchGistSuccess(json)))
+  }
 }
 
 export const fetchToken = code => dispatch => {
