@@ -102,7 +102,7 @@ class Menu extends Component {
   }
 
   render () {
-    const { gist, game, phrases, chains, songs, showNew } = this.props
+    const { gist, token, game, phrases, chains, songs, showNew } = this.props
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
@@ -124,12 +124,23 @@ class Menu extends Component {
       </li>
     ) : null
 
+    const gistLogin = _.get(gist, 'data.owner.login', null)
+    const currentLogin = _.get(token, 'user.login', null)
+
+    // If the gistLogin is null (gist was created anonymously),
+    // or the gistLogin does not match currentLogin (gist wasn't created by us),
+    // show CLONE.
+    // Otherwise show SAVE.
+    const saveText =
+      gistLogin !== null && gistLogin === currentLogin ? 'save' : 'clone'
+
     return (
       <ul className='Menu'>
         {newLi}
         <li>
           <button className='button' onClick={this.onSaveClick}>
-            Save{dirty ? ' *' : ''}
+            {saveText}
+            {dirty ? ' *' : ''}
           </button>
         </li>
       </ul>
