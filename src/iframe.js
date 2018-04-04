@@ -92,9 +92,13 @@ let timer
 // Assign all the globals to window.
 Object.keys(globals).forEach(key => (window[key] = globals[key]))
 
-// Create a validate function - this will test if the provided token is
-// defined in this iframe's global scope. If it is, it's an invalid token.
-window.script8.validateToken = token => window.hasOwnProperty(token)
+// A user can only type tokens that are either:
+// - explicitly defined (e.g. in globals or updatedGlobals)
+// - not defined in the global context
+window.script8.validateToken = token =>
+  Object.keys(globals).indexOf(token) > -1 ||
+  Object.keys(updatedGlobals).indexOf(token) > -1 ||
+  !window.hasOwnProperty(token)
 
 // This is the function the parent will call every time game code is modified.
 window.script8.callCode = ({

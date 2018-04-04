@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import * as acorn from 'acorn'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
+import { getLintErrors } from '../utils/setupLinter.js'
 
 const mapStateToProps = ({ screen, game, songs, chains, phrases }) => ({
   songs,
@@ -49,18 +49,21 @@ class Output extends Component {
   }
 
   evaluate ({ game, finishBoot, run, songs, chains, phrases }) {
-    // Validate code before drawing.
-    let isValid = true
-    try {
-      acorn.parse(game)
-    } catch (e) {
-      isValid = false
-    }
+    // Get the iframe.
+    const iframe = window.frames[0]
+
+    // Validate code before drawing:
+
+    // get the iframe's validateToken function,
+    const validateToken = iframe.script8.validateToken
+
+    // and use it to get any linting errors.
+    const errors = getLintErrors({ text: game, validateToken })
+
+    // No errors = we're good!
+    const isValid = !errors.length
 
     if (isValid) {
-      // Get the iframe.
-      const iframe = window.frames[0]
-
       // Send iframe the game code.
       iframe.script8.callCode({
         game,
