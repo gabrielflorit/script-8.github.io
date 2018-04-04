@@ -86,6 +86,7 @@ class Output extends Component {
       <div className='Output'>
         <iframe
           src='iframe.html'
+          sandbox='allow-scripts allow-same-origin'
           title='SCRIPT-8'
           onBlur={this.handleBlur}
           ref={_iframe => {

@@ -8,13 +8,7 @@ import once from 'lodash/once'
 
 import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
-import { version } from '../package.json'
-
-// TODO:
-// prevent popups
-
-// Print version.
-console.log(JSON.stringify(`SCRIPT-8 client v ${version}`, null, 2))
+import utilsAPI from './utils/utilsAPI.js'
 
 // Create a noop for convenience.
 const noop = () => {}
@@ -54,7 +48,8 @@ globals = {
     width: size,
     height: size
   }),
-  ...soundAPI()
+  ...soundAPI(),
+  ...utilsAPI()
 }
 
 // Export lodash helpers.
