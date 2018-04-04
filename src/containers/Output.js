@@ -11,7 +11,8 @@ const mapStateToProps = ({ screen, game, songs, chains, phrases }) => ({
   phrases,
   game: screen === screenTypes.BOOT ? bios : game,
   focus: screen === screenTypes.RUN,
-  run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
+  run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
+  screen
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -48,14 +49,15 @@ class Output extends Component {
     }
   }
 
-  evaluate ({ game, finishBoot, run, songs, chains, phrases }) {
+  evaluate ({ game, finishBoot, run, songs, chains, phrases, screen }) {
     // Get the iframe.
     const iframe = window.frames[0]
 
     // Validate code before drawing:
 
     // get the iframe's validateToken function,
-    const validateToken = iframe.script8.validateToken
+    const validateToken =
+      screen === screenTypes.BOOT ? () => true : iframe.__script8.validateToken
 
     // and use it to get any linting errors.
     const errors = getLintErrors({ text: game, validateToken })
@@ -65,7 +67,7 @@ class Output extends Component {
 
     if (isValid) {
       // Send iframe the game code.
-      iframe.script8.callCode({
+      iframe._script8.callCode({
         game,
         songs,
         chains,
@@ -73,6 +75,9 @@ class Output extends Component {
         run,
         endCallback: finishBoot
       })
+    } else {
+      // If we had errors, print them to console.
+      console.warn(errors[0].message)
     }
   }
 

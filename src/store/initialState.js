@@ -6,6 +6,7 @@ const initialState = {
   // screen: screenTypes.PHRASE,
   // screen: screenTypes.SONG,
   screen: screenTypes.BOOT,
+  // screen: screenTypes.CODE,
   booted: false,
   gist: {},
   game: demo,

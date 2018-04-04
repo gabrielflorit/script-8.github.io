@@ -8,36 +8,52 @@ import once from 'lodash/once'
 
 import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
-import blank from './utils/blank.js'
 import { version } from '../package.json'
+
+// TODO:
+// prevent popups
 
 // Print version.
 console.log(JSON.stringify(`SCRIPT-8 client v ${version}`, null, 2))
 
-// Create namespaced object so the parent can call it.
-window.script8 = {}
+// Create a noop for convenience.
+const noop = () => {}
 
-// Create a globals object. We'll move all these to window a bit further down.
-let globals = {}
+const shadows = new Set(['document'])
+const blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
+
+// Declare a timer.
+let timer
+
+// Declare script8 namespace for the user's convenience,
+const script8 = {}
+window.script8 = script8
+
+// and a 'hidden' one (don't worry, we'll actually enforce its visibility).
+window._script8 = {}
+// and a super hidden one.
+window.__script8 = {}
 
 // Initialize canvas.
 const canvas = document.querySelector('canvas')
 const size = 128
 const ctx = canvas.getContext('2d')
 
-// Setup canvas API functions.
+// Create a globals object. We'll move all these to window a bit further down.
+let globals = {
+  Math,
+  Date,
+  console
+}
+
+// Setup API functions.
 globals = {
   ...globals,
   ...canvasAPI({
     ctx,
     width: size,
     height: size
-  })
-}
-
-// Setup sound API functions.
-globals = {
-  ...globals,
+  }),
   ...soundAPI()
 }
 
@@ -50,21 +66,25 @@ globals = {
   clamp
 }
 
+// Assign all the globals to window.
+Object.keys(globals).forEach(key => (window[key] = globals[key]))
+
 // Define arrow key helpers.
 let keys = new Set()
 
 // Export arrow booleans for convenience.
-let updatedGlobals = {}
+let updateableGlobals = {}
 const updateGlobals = () => {
-  updatedGlobals = {
-    ...updatedGlobals,
+  updateableGlobals = {
+    ...updateableGlobals,
     arrowUp: keys.has('ArrowUp'),
     arrowRight: keys.has('ArrowRight'),
     arrowDown: keys.has('ArrowDown'),
     arrowLeft: keys.has('ArrowLeft')
   }
-  Object.keys(updatedGlobals).forEach(
-    key => (window[key] = updatedGlobals[key])
+  // Copy updateableGlobals to window.
+  Object.keys(updateableGlobals).forEach(
+    key => (window[key] = updateableGlobals[key])
   )
 }
 
@@ -79,29 +99,8 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
-// Create a noop for convenience.
-const noop = () => {}
-
-// Force eval to run in global mode.
-// eslint-disable-next-line no-eval
-const geval = eval
-
-// Declare a timer.
-let timer
-
-// Assign all the globals to window.
-Object.keys(globals).forEach(key => (window[key] = globals[key]))
-
-// A user can only type tokens that are either:
-// - explicitly defined (e.g. in globals or updatedGlobals)
-// - not defined in the global context
-window.script8.validateToken = token =>
-  Object.keys(globals).indexOf(token) > -1 ||
-  Object.keys(updatedGlobals).indexOf(token) > -1 ||
-  !window.hasOwnProperty(token)
-
-// This is the function the parent will call every time game code is modified.
-window.script8.callCode = ({
+// Output.js will call this every time the code is modified.
+window._script8.callCode = ({
   game,
   songs,
   chains,
@@ -110,17 +109,28 @@ window.script8.callCode = ({
   endCallback = noop
 }) => {
   // If we're in `run` mode, create playSong function from music data.
+  // Otherwise ignore - we don't want to hear music while we code!
   window.playSong = run ? globals.playSong({ songs, chains, phrases }) : noop
 
   // Make available an end function, and call the callback once.
-  window.script8.end = once(endCallback)
+  window.__script8.end = once(endCallback)
 
   try {
-    // Try evaling blank first, always.
-    geval(blank + ';')
+    // Clear the screen.
+    script8.update = () => {}
+    script8.draw = () => {
+      window.clear()
+    }
 
-    // Now eval the supplied game.
-    geval(game + ';')
+    // Eval the supplied game.
+    const shadowString = `var ${[...shadows].join(',')}`
+    // eslint-disable-next-line no-eval
+    eval(`
+      // Shadow variables we don't want available.
+      ${shadowString}
+      // The inception eval allows the user to declare vars (e.g. screen).
+      eval(game)
+    `)
 
     // If the timer exists, stop it.
     if (timer) timer.stop()
@@ -132,7 +142,8 @@ window.script8.callCode = ({
         updateGlobals()
 
         // and run the game.
-        geval('update && update(); draw && draw();')
+        script8.update && script8.update()
+        script8.draw && script8.draw()
       } catch (e) {
         // If there is an error, print it as a warning.
         console.warn(e.message)
@@ -146,4 +157,34 @@ window.script8.callCode = ({
     // If any part of this resulted in an error, print it.
     console.warn(e.message)
   }
+}
+
+// Let's sandbox JS!
+// This always returns true. Refactor.
+window.__script8.validateToken = token => {
+  let isValid
+
+  // If user types a token in blacklist,
+  // it's most definitely invalid.
+  if (blacklist.has(token)) {
+    isValid = false
+  } else if (
+    // If user types a token defined in globals or updateableGlobals,
+    // it's valid.
+    Object.keys(globals).indexOf(token) > -1 ||
+    Object.keys(updateableGlobals).indexOf(token) > -1 ||
+    token === 'script8'
+  ) {
+    isValid = true
+  } else if (window.hasOwnProperty(token)) {
+    // If user types a token on window scope (e.g. `screen`),
+    // add it to the list of shadows, and make it valid.
+    shadows.add(token)
+    isValid = true
+  } else {
+    // Otherwise, return valid.
+    isValid = true
+  }
+
+  return isValid
 }

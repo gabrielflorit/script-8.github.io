@@ -19,7 +19,7 @@ class InvalidTokenError extends Error {
 
 const getLintErrors = ({
   text,
-  validateToken = _.get(window, 'frames[0].script8.validateToken', null)
+  validateToken = _.get(window, 'frames[0].__script8.validateToken', null)
 }) => {
   const errors = []
   try {

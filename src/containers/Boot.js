@@ -30,7 +30,7 @@ class Boot extends Component {
       // If there is no id,
       // load the default one,
       // and set the id on the query string.
-      fetchGist({ id: '2e0e10cfeaa108f1662e61a69609c8c1', token })
+      fetchGist({ id: 'bc89aef1ab257def52475c9c452c1dda', token })
     }
   }
 

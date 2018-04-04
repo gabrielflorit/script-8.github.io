@@ -28,7 +28,7 @@ const biosLines = range(18).map(() => {
   return '  ' + range(4).map(() => random(1000, 9999)).join('      ')
 })
 
-function update() {
+script8.update = () => {
 
   const elapsed = Date.now() - before
   const screen = screens[screenIndex]
@@ -58,7 +58,7 @@ function update() {
   }
 
   if (screen === 'end' && elapsed > 600) {
-    script8.end()
+    __script8.end()
     // console.log(before - beforeTotal)
   }
 }
@@ -70,7 +70,7 @@ const rects = flatten(
   size.map(x => size.map(y => [x, y, d, d]))
 )
 
-function draw() {
+script8.draw = () => {
 
   const screen = screens[screenIndex]
 
