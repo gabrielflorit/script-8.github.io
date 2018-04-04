@@ -14,8 +14,11 @@ import { version } from '../package.json'
 // Print version.
 console.log(JSON.stringify(`SCRIPT-8 client v ${version}`, null, 2))
 
-// Create namespaced object.
+// Create namespaced object so the parent can call it.
 window.script8 = {}
+
+// Create a globals object. We'll move all these to window a bit further down.
+let globals = {}
 
 // Initialize canvas.
 const canvas = document.querySelector('canvas')
@@ -23,50 +26,46 @@ const size = 128
 const ctx = canvas.getContext('2d')
 
 // Setup canvas API functions.
-const {
-  print,
-  rectStroke,
-  rectFill,
-  circStroke,
-  circFill,
-  clear,
-  lineH,
-  lineV
-} = canvasAPI({
-  ctx,
-  width: size,
-  height: size
-})
+globals = {
+  ...globals,
+  ...canvasAPI({
+    ctx,
+    width: size,
+    height: size
+  })
+}
 
 // Setup sound API functions.
-const { playSong, stopSong } = soundAPI()
-window.stopSong = stopSong
+globals = {
+  ...globals,
+  ...soundAPI()
+}
 
-// Export api functions to global scope for eval's use later.
-window.print = print
-window.rectStroke = rectStroke
-window.rectFill = rectFill
-window.circStroke = circStroke
-window.circFill = circFill
-window.lineH = lineH
-window.lineV = lineV
-window.clear = clear
-
-// Export lodash helpers for eval's use.
-window.range = range
-window.flatten = flatten
-window.random = random
-window.clamp = clamp
+// Export lodash helpers.
+globals = {
+  ...globals,
+  range,
+  flatten,
+  random,
+  clamp
+}
 
 // Define arrow key helpers.
 let keys = new Set()
 
 // Export arrow booleans for convenience.
-const updateKeys = () => {
-  window.arrowUp = keys.has('ArrowUp')
-  window.arrowRight = keys.has('ArrowRight')
-  window.arrowDown = keys.has('ArrowDown')
-  window.arrowLeft = keys.has('ArrowLeft')
+let updatedGlobals = {}
+const updateGlobals = () => {
+  updatedGlobals = {
+    ...updatedGlobals,
+    arrowUp: keys.has('ArrowUp'),
+    arrowRight: keys.has('ArrowRight'),
+    arrowDown: keys.has('ArrowDown'),
+    arrowLeft: keys.has('ArrowLeft')
+  }
+  Object.keys(updatedGlobals).forEach(
+    key => (window[key] = updatedGlobals[key])
+  )
 }
 
 // Keep track of what keys we're pressing.
@@ -80,14 +79,24 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
+// Create a noop for convenience.
 const noop = () => {}
 
 // Force eval to run in global mode.
 // eslint-disable-next-line no-eval
 const geval = eval
 
+// Declare a timer.
 let timer
 
+// Assign all the globals to window.
+Object.keys(globals).forEach(key => (window[key] = globals[key]))
+
+// Create a validate function - this will test if the provided token is
+// defined in this iframe's global scope. If it is, it's an invalid token.
+window.script8.validateToken = token => window.hasOwnProperty(token)
+
+// This is the function the parent will call every time game code is modified.
 window.script8.callCode = ({
   game,
   songs,
@@ -97,15 +106,11 @@ window.script8.callCode = ({
   endCallback = noop
 }) => {
   // If we're in `run` mode, create playSong function from music data.
-  window.playSong = run ? playSong({ songs, chains, phrases }) : noop
+  window.playSong = run ? globals.playSong({ songs, chains, phrases }) : noop
 
   // Make available an end function, and call the callback once.
   window.script8.end = once(endCallback)
 
-  // If the game is empty,
-  // if (!game || !game.length) {
-  //   game = blank
-  // }
   try {
     // Try evaling blank first, always.
     geval(blank + ';')
@@ -119,13 +124,13 @@ window.script8.callCode = ({
     // Start a new timer, and:
     timer = interval(() => {
       try {
-        // update the key information (i.e. what's pressed),
-        updateKeys()
+        // update globals (e.g. what's pressed),
+        updateGlobals()
 
         // and run the game.
         geval('update && update(); draw && draw();')
       } catch (e) {
-        // If there is an error, print it as a warning - no red!
+        // If there is an error, print it as a warning.
         console.warn(e.message)
       }
 
