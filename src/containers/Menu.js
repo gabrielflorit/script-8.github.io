@@ -24,6 +24,7 @@ const mapStateToProps = ({
     [screenTypes.CODE, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE],
     screen
   ),
+  screen,
   gist,
   game,
   sfxs,
@@ -102,7 +103,16 @@ class Menu extends Component {
   }
 
   render () {
-    const { gist, token, game, phrases, chains, songs, showNew } = this.props
+    const {
+      screen,
+      gist,
+      token,
+      game,
+      phrases,
+      chains,
+      songs,
+      showNew
+    } = this.props
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
@@ -134,7 +144,9 @@ class Menu extends Component {
     const saveText =
       gistLogin !== null && gistLogin === currentLogin ? 'save' : 'clone'
 
-    return (
+    return screen === screenTypes.HELP ? (
+      <ul className='Menu' />
+    ) : (
       <ul className='Menu'>
         {newLi}
         <li>

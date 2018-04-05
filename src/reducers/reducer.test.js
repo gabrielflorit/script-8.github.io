@@ -3,6 +3,22 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 
+test('showTutorial', () => {
+  const before = initialState
+
+  let newState = reducer(before, actions.showTutorial(true))
+
+  expect(newState).toEqual({
+    ...before,
+    showTutorial: true
+  })
+
+  expect(reducer(newState, actions.showTutorial(false))).toEqual({
+    ...before,
+    showTutorial: false
+  })
+})
+
 describe('updateChain', () => {
   test('complete', () => {
     const before = initialState

@@ -20,7 +20,8 @@ const actions = createActions({
   [actionTypes.UPDATE_SFX]: d => d,
   [actionTypes.UPDATE_PHRASE]: d => d,
   [actionTypes.UPDATE_CHAIN]: d => d,
-  [actionTypes.UPDATE_SONG]: d => d
+  [actionTypes.UPDATE_SONG]: d => d,
+  [actionTypes.SHOW_TUTORIAL]: d => d
 })
 
 export default actions

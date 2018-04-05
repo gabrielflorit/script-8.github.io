@@ -13,14 +13,17 @@ const mapDispatchToProps = dispatch => ({
   updateGame: game => dispatch(actions.updateGame(game))
 })
 
-const Code = ({ game, updateGame }) => (
-  <div className='Code two-rows two-rows-and-grid'>
-    <TopBar />
-    <div className='main'>
-      <CodeEditor game={game} updateGame={updateGame} />
-      <Output />
+const Code = ({ game, updateGame }) => {
+  // console.log(JSON.stringify(actions.updateGame('hey'), null, 2))
+  return (
+    <div className='Code two-rows two-rows-and-grid'>
+      <TopBar />
+      <div className='main'>
+        <CodeEditor game={game} updateGame={updateGame} />
+        <Output />
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Code)

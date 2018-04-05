@@ -16,7 +16,8 @@ const NavBar = ({ screen, setScreen }) => {
   let items = [screenTypes.CODE, screenTypes.RUN]
 
   if (screen !== screenTypes.RUN) {
-    items.splice(1, 0, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE)
+    items.splice(0, 0, screenTypes.HELP)
+    items.splice(2, 0, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE)
   }
 
   const lis = items.map((d, i) => {

@@ -36,8 +36,7 @@ const ctx = canvas.getContext('2d')
 // Create a globals object. We'll move all these to window a bit further down.
 let globals = {
   Math,
-  Date,
-  console
+  Date
 }
 
 // Setup API functions.

@@ -239,7 +239,7 @@ class Phrase extends Component {
                           onClick={e => this.handleNoteClick({ row, col })}
                           className={classNames({
                             match,
-                            highlight: col === playingIndex,
+                            highlight: col === playingIndex && isPlaying,
                             [`octave-${value && value.octave}`]: match
                           })}
                         >

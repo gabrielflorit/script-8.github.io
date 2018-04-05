@@ -9,6 +9,7 @@ import sfxs from './sfxs.js'
 import phrases from './phrases.js'
 import chains from './chains.js'
 import songs from './songs.js'
+import showTutorial from './showTutorial.js'
 
 const reducer = combineReducers({
   screen,
@@ -20,7 +21,8 @@ const reducer = combineReducers({
   sfxs,
   phrases,
   chains,
-  songs
+  songs,
+  showTutorial
 })
 
 export default reducer

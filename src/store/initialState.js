@@ -5,8 +5,9 @@ const initialState = {
   // screen: screenTypes.CHAIN,
   // screen: screenTypes.PHRASE,
   // screen: screenTypes.SONG,
-  screen: screenTypes.BOOT,
+  // screen: screenTypes.BOOT,
   // screen: screenTypes.CODE,
+  screen: screenTypes.HELP,
   booted: false,
   gist: {},
   game: demo,
@@ -15,7 +16,8 @@ const initialState = {
   sfxs: [],
   phrases: {},
   chains: {},
-  songs: {}
+  songs: {},
+  showTutorial: false
 }
 
 export default initialState
