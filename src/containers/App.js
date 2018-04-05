@@ -8,6 +8,8 @@ import Chain from './Chain.js'
 import Song from './Song.js'
 import Run from './Run.js'
 import Code from './Code.js'
+import Tutorial from './Tutorial.js'
+import Help from './Help.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
 import { version } from '../../package.json'
@@ -27,7 +29,8 @@ const options = {
   [screenTypes.CHAIN]: () => <Chain />,
   [screenTypes.SONG]: () => <Song />,
   [screenTypes.RUN]: () => <Run />,
-  [screenTypes.CODE]: () => <Code />
+  [screenTypes.CODE]: () => <Code />,
+  [screenTypes.HELP]: () => <Help />
 }
 
 const App = ({ screen }) => (
@@ -41,6 +44,7 @@ const App = ({ screen }) => (
       })}
     >
       {options[screen]()}
+      <Tutorial />
     </div>
   </ErrorBoundary>
 )

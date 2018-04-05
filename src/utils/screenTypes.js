@@ -4,7 +4,8 @@ const screenTypes = {
   CODE: 'CODE',
   CHAIN: 'CHAIN',
   PHRASE: 'PHRASE',
-  SONG: 'SONG'
+  SONG: 'SONG',
+  HELP: 'HELP'
 }
 
 export default screenTypes
