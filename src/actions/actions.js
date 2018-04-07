@@ -22,7 +22,7 @@ const actions = createActions({
   [actionTypes.UPDATE_CHAIN]: d => d,
   [actionTypes.UPDATE_SONG]: d => d,
   [actionTypes.IS_NEW_USER]: () => {},
-  [actionTypes.NEXT_TUTORIAL_SLIDE]: () => {},
+  [actionTypes.SET_TUTORIAL_SLIDE]: d => d,
   [actionTypes.CLOSE_TUTORIAL]: () => {}
 })
 

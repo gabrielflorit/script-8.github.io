@@ -38,43 +38,21 @@ describe('tutorial and new user', () => {
   })
 
   // or they can advance to next slide
-  // NEXT_TUTORIAL_SLIDE()
+  // SET_TUTORIAL_SLIDE()
   // tutorial: 1
-  test('nextTutorialSlide', () => {
+  test('setTutorialSlide', () => {
     const before = {
       ...initialState,
       tutorial: 2
     }
-    let newState = reducer(before, actions.nextTutorialSlide())
+    let newState = reducer(before, actions.setTutorialSlide(10))
     expect(newState).toEqual({
       ...before,
-      tutorial: 3
+      tutorial: 10,
+      screen: screenTypes.SONG
     })
   })
 })
-
-// describe('isNewUser', () => {
-//   test('true', () => {
-//     const before = initialState
-//     const action = actions.isNewUser(true)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       newUser: true,
-//       tutorial: 0
-//     })
-//   })
-//   test('false', () => {
-//     const before = {
-//       ...initialState,
-//       newUser: true
-//     }
-//     const action = actions.isNewUser(false)
-//     expect(reducer(before, action)).toEqual({
-//       ...before,
-//       newUser: false
-//     })
-//   })
-// })
 
 describe('updateChain', () => {
   test('complete', () => {
