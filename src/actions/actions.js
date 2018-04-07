@@ -21,7 +21,9 @@ const actions = createActions({
   [actionTypes.UPDATE_PHRASE]: d => d,
   [actionTypes.UPDATE_CHAIN]: d => d,
   [actionTypes.UPDATE_SONG]: d => d,
-  [actionTypes.SET_TUTORIAL]: d => d
+  [actionTypes.IS_NEW_USER]: () => {},
+  [actionTypes.NEXT_TUTORIAL_SLIDE]: () => {},
+  [actionTypes.CLOSE_TUTORIAL]: () => {}
 })
 
 export default actions

@@ -3,21 +3,78 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 
-test('tutorial', () => {
-  const before = initialState
-
-  let newState = reducer(before, actions.setTutorial(true))
-
-  expect(newState).toEqual({
-    ...before,
-    tutorial: true
+describe('tutorial and new user', () => {
+  // if we have a new user, they will be shown the first slide
+  // IS_NEW_USER()
+  // newUser: true
+  // tutorial: 0
+  test('isNewUser', () => {
+    const before = initialState
+    let newState = reducer(before, actions.isNewUser())
+    expect(newState).toEqual({
+      ...before,
+      newUser: true,
+      tutorial: 0
+    })
   })
 
-  expect(reducer(newState, actions.setTutorial(false))).toEqual({
-    ...before,
-    tutorial: false
+  // they can then choose to say no,
+  // which will close the tutorial
+  // NEW_USER_NO_TUTORIAL()
+  // newUser: false
+  // tutorial: false
+  test('closeTutorial', () => {
+    const before = {
+      ...initialState,
+      newUser: true,
+      tutorial: 2
+    }
+    let newState = reducer(before, actions.closeTutorial())
+    expect(newState).toEqual({
+      ...before,
+      newUser: false,
+      tutorial: false
+    })
+  })
+
+  // or they can advance to next slide
+  // NEXT_TUTORIAL_SLIDE()
+  // tutorial: 1
+  test('nextTutorialSlide', () => {
+    const before = {
+      ...initialState,
+      tutorial: 2
+    }
+    let newState = reducer(before, actions.nextTutorialSlide())
+    expect(newState).toEqual({
+      ...before,
+      tutorial: 3
+    })
   })
 })
+
+// describe('isNewUser', () => {
+//   test('true', () => {
+//     const before = initialState
+//     const action = actions.isNewUser(true)
+//     expect(reducer(before, action)).toEqual({
+//       ...before,
+//       newUser: true,
+//       tutorial: 0
+//     })
+//   })
+//   test('false', () => {
+//     const before = {
+//       ...initialState,
+//       newUser: true
+//     }
+//     const action = actions.isNewUser(false)
+//     expect(reducer(before, action)).toEqual({
+//       ...before,
+//       newUser: false
+//     })
+//   })
+// })
 
 describe('updateChain', () => {
   test('complete', () => {

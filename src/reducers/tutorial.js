@@ -4,7 +4,9 @@ import initialState from '../store/initialState.js'
 
 const tutorial = handleActions(
   {
-    [actionTypes.SET_TUTORIAL]: (state, action) => action.payload
+    [actionTypes.IS_NEW_USER]: () => 0,
+    [actionTypes.CLOSE_TUTORIAL]: () => false,
+    [actionTypes.NEXT_TUTORIAL_SLIDE]: state => state + 1
   },
   initialState.tutorial
 )

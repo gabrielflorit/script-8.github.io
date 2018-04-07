@@ -10,6 +10,7 @@ import phrases from './phrases.js'
 import chains from './chains.js'
 import songs from './songs.js'
 import tutorial from './tutorial.js'
+import newUser from './newUser.js'
 
 const reducer = combineReducers({
   screen,
@@ -22,7 +23,8 @@ const reducer = combineReducers({
   phrases,
   chains,
   songs,
-  tutorial
+  tutorial,
+  newUser
 })
 
 export default reducer
