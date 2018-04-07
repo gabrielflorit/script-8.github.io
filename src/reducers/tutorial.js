@@ -4,7 +4,7 @@ import initialState from '../store/initialState.js'
 
 const tutorial = handleActions(
   {
-    [actionTypes.TUTORIAL]: (state, action) => action.payload
+    [actionTypes.SET_TUTORIAL]: (state, action) => action.payload
   },
   initialState.tutorial
 )

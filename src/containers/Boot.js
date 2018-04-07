@@ -12,6 +12,7 @@ const mapStateToProps = ({ gist, booted, token }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setTutorial: step => dispatch(actions.setTutorial(step)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   fetchGist: ({ id, token }) => dispatch(fetchGist({ id, token }))
 })
@@ -32,6 +33,7 @@ class Boot extends Component {
       // and set the id on the query string.
       fetchGist({ id: 'bc89aef1ab257def52475c9c452c1dda', token })
     }
+    setTutorial(0)
   }
 
   componentDidUpdate () {

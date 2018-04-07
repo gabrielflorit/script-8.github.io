@@ -6,14 +6,14 @@ import screenTypes from '../utils/screenTypes.js'
 test('tutorial', () => {
   const before = initialState
 
-  let newState = reducer(before, actions.tutorial(true))
+  let newState = reducer(before, actions.setTutorial(true))
 
   expect(newState).toEqual({
     ...before,
     tutorial: true
   })
 
-  expect(reducer(newState, actions.tutorial(false))).toEqual({
+  expect(reducer(newState, actions.setTutorial(false))).toEqual({
     ...before,
     tutorial: false
   })

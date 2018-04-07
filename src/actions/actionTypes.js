@@ -15,7 +15,7 @@ const actionTypes = {
   UPDATE_PHRASE: 'UPDATE_PHRASE',
   UPDATE_CHAIN: 'UPDATE_CHAIN',
   UPDATE_SONG: 'UPDATE_SONG',
-  TUTORIAL: 'TUTORIAL'
+  SET_TUTORIAL: 'SET_TUTORIAL'
 }
 
 export default actionTypes
