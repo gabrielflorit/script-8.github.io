@@ -3,19 +3,19 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 
-test('showTutorial', () => {
+test('tutorial', () => {
   const before = initialState
 
-  let newState = reducer(before, actions.showTutorial(true))
+  let newState = reducer(before, actions.tutorial(true))
 
   expect(newState).toEqual({
     ...before,
-    showTutorial: true
+    tutorial: true
   })
 
-  expect(reducer(newState, actions.showTutorial(false))).toEqual({
+  expect(reducer(newState, actions.tutorial(false))).toEqual({
     ...before,
-    showTutorial: false
+    tutorial: false
   })
 })
 

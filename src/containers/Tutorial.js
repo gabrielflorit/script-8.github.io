@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({ showTutorial }) => ({ showTutorial })
+const mapStateToProps = ({ tutorial }) => ({ tutorial })
 
 const mapDispatchToProps = dispatch => ({})
 

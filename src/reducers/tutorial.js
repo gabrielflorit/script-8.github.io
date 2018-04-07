@@ -2,11 +2,11 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 
-const showTutorial = handleActions(
+const tutorial = handleActions(
   {
-    [actionTypes.SHOW_TUTORIAL]: (state, action) => action.payload
+    [actionTypes.TUTORIAL]: (state, action) => action.payload
   },
-  initialState.showTutorial
+  initialState.tutorial
 )
 
-export default showTutorial
+export default tutorial
