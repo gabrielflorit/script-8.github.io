@@ -28,8 +28,8 @@ class Help extends Component {
                   Draw
                   <ul className='third-list'>
                     <li>func print(x, y, letters, color)</li>
-                    <li>func lineH(x, y, length, color, [isDotted])</li>
-                    <li>func lineV(x, y, length, color, [isDotted])</li>
+                    <li>func lineH(x, y, length, color, [isDotted=false])</li>
+                    <li>func lineV(x, y, length, color, [isDotted=false])</li>
                     <li>func rectStroke(x, y, width, height, color)</li>
                     <li>func rectFill(x, y, width, height, color)</li>
                     <li>func circStroke(x, y, radius, color)</li>
