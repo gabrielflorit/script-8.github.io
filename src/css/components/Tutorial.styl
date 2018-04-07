@@ -1,7 +1,7 @@
 .Tutorial
-  display none
   border-top solid $palette-5 2px
-  // background $palette-6
+  background $palette-6
+  color $palette-3
   position absolute
   bottom 0
   left 0
@@ -9,5 +9,9 @@
   @extend .VT323
   font-size $font-large
   z-index 10
-  color $palette-3
   padding 1.5rem
+  &.slide-0
+    top 1.5rem
+    border-top none
+    border-bottom solid $palette-5 2px
+    bottom auto
