@@ -5,8 +5,8 @@ const initialState = {
   // screen: screenTypes.CHAIN,
   // screen: screenTypes.PHRASE,
   // screen: screenTypes.SONG,
-  // screen: screenTypes.BOOT,
-  screen: screenTypes.CODE,
+  screen: screenTypes.BOOT,
+  // screen: screenTypes.CODE,
   // screen: screenTypes.HELP,
   booted: false,
   gist: {},
@@ -17,8 +17,8 @@ const initialState = {
   phrases: {},
   chains: {},
   songs: {},
-  tutorial: 0,
-  newUser: true
+  tutorial: false,
+  newUser: false
 }
 
 export default initialState

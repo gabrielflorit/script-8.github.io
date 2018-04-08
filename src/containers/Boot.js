@@ -13,15 +13,12 @@ const mapStateToProps = ({ gist, booted, token }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
-  isNewUser: () => dispatch(actions.isNewUser()),
   fetchGist: ({ id, token }) => dispatch(fetchGist({ id, token }))
 })
 
 class Boot extends Component {
   componentDidMount () {
     const { fetchGist, token } = this.props
-
-    // If this is a new user, fire NEW_USER
 
     const { search } = window.location
     const params = new window.URLSearchParams(search)

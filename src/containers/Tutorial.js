@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
-import _ from 'lodash'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
-import screenTypes from '../utils/screenTypes.js'
 
 const mapStateToProps = ({ tutorial, screen }) => ({ tutorial, screen })
 
@@ -37,7 +35,7 @@ class Tutorial extends Component {
   componentDidMount () {}
 
   render () {
-    const { tutorial, screen } = this.props
+    const { tutorial } = this.props
     const previous =
       tutorial > 1 ? (
         <button className='button' onClick={this.handlePreviousSlide}>
@@ -59,7 +57,7 @@ class Tutorial extends Component {
     return (
       <div
         className={classNames(`Tutorial slide-${tutorial}`, {
-          hide: _.includes([screenTypes.RUN, screenTypes.BOOT], screen)
+          hide: tutorial === false
         })}
       >
         <div className={classNames({ hide: tutorial !== 0 })}>
