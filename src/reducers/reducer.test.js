@@ -51,7 +51,7 @@ describe('tutorial and new user', () => {
     expect(newState).toEqual({
       ...before,
       tutorial: 10,
-      screen: screenTypes.SONG,
+      // screen: screenTypes.SONG,
       newUser: false
     })
   })
