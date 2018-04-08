@@ -7,6 +7,9 @@ const tutorialSlides = {
   3: {
     screen: screenTypes.RUN
   },
+  4: {
+    screen: screenTypes.CODE
+  },
   10: {
     screen: screenTypes.SONG
   }

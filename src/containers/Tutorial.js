@@ -3,7 +3,10 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ tutorial, screen }) => ({ tutorial, screen })
+const mapStateToProps = ({ tutorial, screen }) => ({
+  tutorial,
+  screen
+})
 
 const mapDispatchToProps = dispatch => ({
   closeTutorial: () => dispatch(actions.closeTutorial()),
@@ -36,12 +39,14 @@ class Tutorial extends Component {
 
   render () {
     const { tutorial } = this.props
+
     const previous =
       tutorial > 1 ? (
         <button className='button' onClick={this.handlePreviousSlide}>
           previous
         </button>
       ) : null
+
     const buttons = (
       <div className='buttons'>
         >
@@ -54,13 +59,10 @@ class Tutorial extends Component {
         </button>
       </div>
     )
-    return (
-      <div
-        className={classNames(`Tutorial slide-${tutorial}`, {
-          hide: tutorial === false
-        })}
-      >
-        <div className={classNames({ hide: tutorial !== 0 })}>
+
+    const slides = {
+      0: (
+        <div>
           <div>?NEW_USER</div>
           <div>Load tutorial:</div>
           <div className='buttons'>
@@ -73,8 +75,10 @@ class Tutorial extends Component {
             </button>
           </div>
         </div>
+      ),
 
-        <div className={classNames({ hide: tutorial !== 1 })}>
+      1: (
+        <div>
           <p>
             The SCRIPT-8 is a state-of-the-art machine with advanced computing
             capability. It has 32K RAM, high-resolution 8-color graphics, and 4
@@ -90,8 +94,10 @@ class Tutorial extends Component {
           </p>
           {buttons}
         </div>
+      ),
 
-        <div className={classNames({ hide: tutorial !== 2 })}>
+      2: (
+        <div>
           <p>
             This is the CODE mode. Commands entered in the text editor on the
             left are instantly evaluated and rendered in the display on the
@@ -103,8 +109,10 @@ class Tutorial extends Component {
           </p>
           {buttons}
         </div>
+      ),
 
-        <div className={classNames({ hide: tutorial !== 3 })}>
+      3: (
+        <div>
           <p>
             This is the RUN mode. It renders your game for you and your friends
             to enjoy.
@@ -112,13 +120,26 @@ class Tutorial extends Component {
           <p>
             This is the mode SCRIPT-8 displays after a successful boot sequence.
           </p>
+          <p>Let's go back to CODE. We'll start writing our game now.</p>
           {buttons}
         </div>
+      ),
 
-        <div className={classNames({ hide: tutorial !== 4 })}>
-          <p>4</p>
+      4: (
+        <div>
+          <p>here we fire new</p>
           {buttons}
         </div>
+      )
+    }
+
+    return (
+      <div
+        className={classNames(`Tutorial slide-${tutorial}`, {
+          hide: tutorial === false
+        })}
+      >
+        {slides[tutorial]}
       </div>
     )
   }

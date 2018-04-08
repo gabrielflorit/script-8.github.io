@@ -5,7 +5,8 @@ import initialState from '../store/initialState.js'
 const newUser = handleActions(
   {
     [actionTypes.IS_NEW_USER]: () => true,
-    [actionTypes.CLOSE_TUTORIAL]: () => false
+    [actionTypes.CLOSE_TUTORIAL]: () => false,
+    [actionTypes.SET_TUTORIAL_SLIDE]: () => false
   },
   initialState.newUser
 )
