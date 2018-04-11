@@ -45,37 +45,22 @@ class Tutorial extends Component {
   fireActions (slide) {
     const { setScreen, updateGame } = this.props
     const actions = {
-      '2': () => {
-        setScreen(screenTypes.CODE)
-      },
-      '3': () => {
-        setScreen(screenTypes.CODE)
-      },
-      '4': () => {
-        setScreen(screenTypes.CODE)
-      },
-      '5': () => {
-        setScreen(screenTypes.CODE)
-        updateGame(`SCRIPT-8 TUTORIAL${tutorial0}`)
-      },
-      '6': () => {
-        setScreen(screenTypes.CODE)
-        updateGame(`SCRIPT-8 TUTORIAL${tutorial1}`)
-      },
-      '7': () => {
-        setScreen(screenTypes.CODE)
-        updateGame(`SCRIPT-8 TUTORIAL${tutorial2}`)
-      },
-      '8': () => {
-        setScreen(screenTypes.CODE)
-        updateGame(`SCRIPT-8 TUTORIAL${tutorial3}`)
-      },
-      '9': () => {
-        setScreen(screenTypes.CODE)
-        updateGame(`SCRIPT-8 TUTORIAL${tutorial4}`)
-      }
+      2: [screenTypes.CODE],
+      3: [screenTypes.CODE],
+      4: [screenTypes.CODE],
+      5: [screenTypes.CODE, tutorial0],
+      6: [screenTypes.CODE, tutorial1],
+      7: [screenTypes.CODE, tutorial2],
+      8: [screenTypes.CODE, tutorial3],
+      9: [screenTypes.CODE, tutorial4]
     }[slide]
-    actions && actions()
+
+    if (actions) {
+      setScreen(actions[0])
+      if (actions[1]) {
+        updateGame(`SCRIPT-8 TUTORIAL${actions[1]}`)
+      }
+    }
   }
 
   handleSlide (slide) {
@@ -142,91 +127,51 @@ class Tutorial extends Component {
       )
     }
 
-    const slides = {
-      0: (
-        <div>
-          <div>?NEW_USER</div>
-          <div>Load tutorial:</div>
-        </div>
-      ),
+    const slides = [
+      ['?NEW_USER', 'Load tutorial:'],
 
-      1: (
-        <div>
-          <p>
-            SCRIPT-8 is a state-of-the-art machine with advanced computing
-            capability. It has 32K RAM, high-resolution 8-color graphics, 4
-            audio channels, and a built-in powerful programming environment.
-          </p>
-        </div>
-      ),
+      [
+        'SCRIPT-8 is a state-of-the-art machine with advanced computing capability. It has 32K RAM, high-resolution 8-color graphics, 4 audio channels, and a built-in powerful programming environment.'
+      ],
 
-      2: (
-        <div>
-          <p>
-            We will demonstrate SCRIPT-8's superior capabilities by making a
-            basic pong game.
-          </p>
-          <p>Click the NEW button on the top menu to the left.</p>
-        </div>
-      ),
+      [
+        "We will demonstrate SCRIPT-8's superior capabilities by making a basic pong game.",
+        'Click the NEW button on the top menu to the left.'
+      ],
 
-      3: (
-        <div>
-          <p>Good.</p>
-          <p>All SCRIPT-8 games have update and draw subroutines.</p>
-          <p>
-            Every 30th of a second, the update subroutine is called, followed by
-            the draw subroutine.
-          </p>
-        </div>
-      ),
+      [
+        'Good.',
+        'All SCRIPT-8 games have update and draw subroutines.',
+        'Every 30th of a second, the update subroutine is called, followed by the draw subroutine.'
+      ],
 
-      4: (
-        <div>
-          <p>Our game will have two shapes: a paddle and a ball.</p>
-          <p>Let's draw the paddle first.</p>
-        </div>
-      ),
+      [
+        'Our game will have two shapes: a paddle and a ball.',
+        "Let's draw the paddle first."
+      ],
 
-      5: (
-        <div>
-          <p>The rectFill subroutine draws a filled rectangle.</p>
-          <p>It takes 5 parameters: (x, y, width, height, color).</p>
-          <p>Let's draw the ball next.</p>
-        </div>
-      ),
+      [
+        'The rectFill subroutine draws a filled rectangle.',
+        'It takes 5 parameters: (x, y, width, height, color,).',
+        "Let's draw the ball next."
+      ],
 
-      6: (
-        <div>
-          <p>The circFill subroutine draws a filled circle.</p>
-          <p>It takes 4 parameters: (x, y, radius, color).</p>
-          <p>
-            We should probably use a different color for the game background.
-            Let's do that.
-          </p>
-        </div>
-      ),
+      [
+        'The circFill subroutine draws a filled circle.',
+        'It takes 4 parameters: (x, y, radius, color).',
+        "We should probably use a different color for the game background. Let's do that."
+      ],
 
-      7: (
-        <div>
-          <p>Not bad.</p>
-          <p>Before we move on, let's do a bit of organizing.</p>
-          <p>We'll create a paddle object.</p>
-        </div>
-      ),
+      [
+        'Not bad.',
+        "Before we move on, let's do a bit of organizing.",
+        "We'll create a paddle object."
+      ],
 
-      8: (
-        <div>
-          <p>Let's also create a ball object.</p>
-        </div>
-      ),
+      ["Let's also create a ball object."]
+    ]
 
-      9: (
-        <div>
-          <p>Let's also create a ball object.</p>
-        </div>
-      )
-    }
+    const ps = slides[tutorial] || []
 
     return (
       <div
@@ -235,7 +180,7 @@ class Tutorial extends Component {
         })}
       >
         {tutorial}
-        {slides[tutorial]}
+        {ps.map((d, i) => <p key={i}>{d}</p>)}
         {buttons}
       </div>
     )
