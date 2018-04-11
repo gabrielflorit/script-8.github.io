@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
+import blank from '../utils/blank.js'
 
 class CodeEditor extends Component {
   constructor (props) {
@@ -48,7 +49,7 @@ class CodeEditor extends Component {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
     if (nextProps.game === 'SCRIPT-8 NEW') {
-      this.setContents('')
+      this.setContents(blank)
     }
     if (nextProps.game.startsWith('SCRIPT-8 TUTORIAL')) {
       this.setContents(nextProps.game.replace('SCRIPT-8 TUTORIAL', ''))

@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
-import { interval } from 'd3-timer'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
+import tutorial0 from '../utils/tutorial/0.js'
+import tutorial1 from '../utils/tutorial/1.js'
+import tutorial2 from '../utils/tutorial/2.js'
+import tutorial3 from '../utils/tutorial/3.js'
+import tutorial4 from '../utils/tutorial/4.js'
+
+// TUTORIAL data is:
+// - this file
+// - the tutorial reducer
 
 const mapStateToProps = ({ tutorial, screen }) => ({
   tutorial,
@@ -41,81 +49,30 @@ class Tutorial extends Component {
         setScreen(screenTypes.CODE)
       },
       '3': () => {
-        setScreen(screenTypes.RUN)
+        setScreen(screenTypes.CODE)
       },
       '4': () => {
         setScreen(screenTypes.CODE)
       },
+      '5': () => {
+        setScreen(screenTypes.CODE)
+        updateGame(`SCRIPT-8 TUTORIAL${tutorial0}`)
+      },
       '6': () => {
         setScreen(screenTypes.CODE)
-        const code = `script8.update = function () {
-
-}
-
-script8.draw = function () {
-
-}`
-        let i = 1
-        timer = interval(() => {
-          const segment = code.slice(0, i)
-          updateGame(`SCRIPT-8 TUTORIAL${segment}`)
-          if (i < code.length) {
-            i++
-          } else {
-            timer.stop()
-            this.handleNextSlide()
-          }
-        })
+        updateGame(`SCRIPT-8 TUTORIAL${tutorial1}`)
+      },
+      '7': () => {
+        setScreen(screenTypes.CODE)
+        updateGame(`SCRIPT-8 TUTORIAL${tutorial2}`)
       },
       '8': () => {
         setScreen(screenTypes.CODE)
-        const pre = `script8.update = function () {
-
-}
-
-script8.draw = function () {
-`
-        const post = `
-}`
-        const code = '  rectFill(0, 0, 10, 30, 0)'
-
-        let i = 1
-        timer = interval(() => {
-          const segment = code.slice(0, i)
-          updateGame(`SCRIPT-8 TUTORIAL${pre}${segment}${post}`)
-          if (i < code.length) {
-            i++
-          } else {
-            timer.stop()
-            this.handleNextSlide()
-          }
-        })
+        updateGame(`SCRIPT-8 TUTORIAL${tutorial3}`)
       },
-      '10': () => {
+      '9': () => {
         setScreen(screenTypes.CODE)
-        const pre = `script8.update = function () {
-
-}
-
-script8.draw = function () {
-  rectFill(0, 0, 10, 30, 0)
-`
-        const post = `
-}`
-
-        const code = '  rectStroke(20, 0, 10, 30, 0)'
-
-        let i = 1
-        timer = interval(() => {
-          const segment = code.slice(0, i)
-          updateGame(`SCRIPT-8 TUTORIAL${pre}${segment}${post}`)
-          if (i < code.length) {
-            i++
-          } else {
-            timer.stop()
-            this.handleNextSlide()
-          }
-        })
+        updateGame(`SCRIPT-8 TUTORIAL${tutorial4}`)
       }
     }[slide]
     actions && actions()
@@ -135,10 +92,7 @@ script8.draw = function () {
   }
 
   componentWillUnmount () {
-    console.log('stopping timer')
-    console.log(timer)
     timer && timer.stop()
-    console.log(timer)
   }
 
   render () {
@@ -162,16 +116,37 @@ script8.draw = function () {
       </button>
     )
 
+    let buttons
+    if (tutorial === 0 || tutorial === 1) {
+      buttons = (
+        <div className='buttons'>
+          {next}
+          {close}
+        </div>
+      )
+    } else if (tutorial === 2) {
+      buttons = (
+        <div className='buttons'>
+          {previous}
+          {close}
+        </div>
+      )
+    } else {
+      buttons = (
+        <div className='buttons'>
+          >
+          {previous}
+          {next}
+          {close}
+        </div>
+      )
+    }
+
     const slides = {
       0: (
         <div>
           <div>?NEW_USER</div>
           <div>Load tutorial:</div>
-          <div className='buttons'>
-            >
-            {next}
-            {close}
-          </div>
         </div>
       ),
 
@@ -179,158 +154,76 @@ script8.draw = function () {
         <div>
           <p>
             SCRIPT-8 is a state-of-the-art machine with advanced computing
-            capability. It has 32K RAM, high-resolution 8-color graphics, and 4
-            audio channels.
+            capability. It has 32K RAM, high-resolution 8-color graphics, 4
+            audio channels, and a built-in powerful programming environment.
           </p>
-          <p>
-            But SCRIPT-8 is more than just a sophisticated computer. It is also
-            a powerful programming environment.
-          </p>
-          <p>
-            We will demonstrate SCRIPT-8's superior capabilities by making a
-            game.
-          </p>
-          <div className='buttons'>
-            >
-            {next}
-            {close}
-          </div>
         </div>
       ),
 
       2: (
         <div>
           <p>
-            This is the CODE mode. Commands entered in the text editor on the
-            left are instantly evaluated and rendered in the display on the
-            right.
+            We will demonstrate SCRIPT-8's superior capabilities by making a
+            basic pong game.
           </p>
-          <p>
-            If your screen is narrower than 800 pixels, the display is hidden.
-            In that case, switch to RUN to preview your work.
-          </p>
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
+          <p>Click the NEW button on the top menu to the left.</p>
         </div>
       ),
 
       3: (
         <div>
+          <p>Good.</p>
+          <p>All SCRIPT-8 games have update and draw subroutines.</p>
           <p>
-            This is the RUN mode. It renders your game for you and your friends
-            to enjoy.
+            Every 30th of a second, the update subroutine is called, followed by
+            the draw subroutine.
           </p>
-          <p>
-            This is the mode SCRIPT-8 displays after a successful boot sequence.
-          </p>
-          <p>Let's go back to CODE. We'll start writing our game now.</p>
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
         </div>
       ),
 
       4: (
         <div>
-          <p>Let's start a new game.</p>
-          <p>Click the NEW button on the top menu to the left.</p>
-          <div className='buttons'>
-            >
-            {previous}
-            {close}
-          </div>
+          <p>Our game will have two shapes: a paddle and a ball.</p>
+          <p>Let's draw the paddle first.</p>
         </div>
       ),
 
       5: (
         <div>
-          <p>Good.</p>
-          <p>All SCRIPT-8 games have update and draw subroutines.</p>
-          <p>
-            Every 30th of a second, the update subroutine is called, followed by
-            the draw subroutine.
-          </p>
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
+          <p>The rectFill subroutine draws a filled rectangle.</p>
+          <p>It takes 5 parameters: (x, y, width, height, color).</p>
+          <p>Let's draw the ball next.</p>
         </div>
       ),
 
       6: (
         <div>
-          <p>Good.</p>
-          <p>All SCRIPT-8 games have update and draw subroutines.</p>
+          <p>The circFill subroutine draws a filled circle.</p>
+          <p>It takes 4 parameters: (x, y, radius, color).</p>
           <p>
-            Every 30th of a second, the update subroutine is called, followed by
-            the draw subroutine.
+            We should probably use a different color for the game background.
+            Let's do that.
           </p>
-          <div className='buttons invisible'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
         </div>
       ),
 
       7: (
         <div>
-          <p>Now we're ready to draw our first shape.</p>
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
+          <p>Not bad.</p>
+          <p>Before we move on, let's do a bit of organizing.</p>
+          <p>We'll create a paddle object.</p>
         </div>
       ),
 
       8: (
         <div>
-          <p>The rectFill subroutine draws a rectangle.</p>
-          <p>It takes 5 parameters: (x, y, width, height, color)</p>
-          <p>Let's try the rectStroke subroutine next.</p>
-          <div className='buttons invisible'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
+          <p>Let's also create a ball object.</p>
         </div>
       ),
 
       9: (
         <div>
-          <p>The rectFill subroutine draws a rectangle.</p>
-          <p>It takes 5 parameters: (x, y, width, height, color)</p>
-          <p>Let's try the rectStroke subroutine next.</p>
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
-        </div>
-      ),
-      10: (
-        <div>
-          <p />
-          <div className='buttons'>
-            >
-            {previous}
-            {next}
-            {close}
-          </div>
+          <p>Let's also create a ball object.</p>
         </div>
       )
     }
@@ -341,7 +234,9 @@ script8.draw = function () {
           hide: tutorial === false
         })}
       >
+        {tutorial}
         {slides[tutorial]}
+        {buttons}
       </div>
     )
   }

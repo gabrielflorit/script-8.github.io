@@ -74,7 +74,11 @@ const updateGlobals = () => {
     arrowUp: keys.has('ArrowUp'),
     arrowRight: keys.has('ArrowRight'),
     arrowDown: keys.has('ArrowDown'),
-    arrowLeft: keys.has('ArrowLeft')
+    arrowLeft: keys.has('ArrowLeft'),
+    buttonA: keys.has('a'),
+    buttonB: keys.has('b'),
+    buttonStart: keys.has('Enter'),
+    buttonSelect: keys.has(' ')
   }
   // Copy updateableGlobals to window.
   Object.keys(updateableGlobals).forEach(

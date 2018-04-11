@@ -2,6 +2,7 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
+import blank from '../utils/blank.js'
 
 describe('tutorial and new user', () => {
   // if we have a new user, they will be shown the first slide
@@ -174,7 +175,7 @@ test('newGame from SONG', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: ''
+    game: blank
   })
 })
 
