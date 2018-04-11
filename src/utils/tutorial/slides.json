@@ -1,0 +1,75 @@
+[
+  {
+    "text": [
+      "The rectFill subroutine draws a filled rectangle.",
+      "It takes 5 parameters: (x, y, width, height, color,).",
+      "Let's draw the ball next."
+    ],
+    "code": [
+      "",
+      "script8.update = function() {",
+      "",
+      "}",
+      "",
+      "script8.draw = function() {",
+      "  clear()",
+      "",
+      "  // draw paddle",
+      "  rectFill(52, 122, 24, 4, 3)",
+      "}",
+      ""
+    ]
+  },
+  {
+    "text": [
+      "The circFill subroutine draws a filled circle.",
+      "It takes 4 parameters: (x, y, radius, color).",
+      "We should probably use a different color for the game background. Let's do that."
+    ],
+    "code": [
+      "",
+      "script8.update = function() {",
+      "",
+      "}",
+      "",
+      "script8.draw = function() {",
+      "  clear()",
+      "",
+      "  // draw paddle",
+      "  rectFill(52, 122, 24, 4, 3)",
+      "",
+      "  // draw ball",
+      "  circFill(64, 64, 4, 1)",
+      "",
+      "}",
+      ""
+    ]
+  },
+  {
+    "text": [
+      "back ground here",
+      "",
+      ""
+    ],
+    "code": [
+      "",
+      "script8.update = function() {",
+      "",
+      "}",
+      "",
+      "script8.draw = function() {",
+      "",
+      "  // draw background",
+      "  rectFill(0, 0, 128, 128, 6)",
+      "",
+      "  // draw paddle",
+      "  rectFill(52, 122, 24, 4, 3)",
+      "",
+      "  // draw ball",
+      "  circFill(64, 64, 4, 1)",
+      "",
+      "}",
+      ""
+    ]
+  }
+]

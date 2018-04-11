@@ -1,9 +1,13 @@
-export default `
-script8.update = function () {
+Not bad.
+Before we go any further, let's do a bit of organizing.
+
+---
+
+script8.update = function() {
 
 }
 
-script8.draw = function () {
+script8.draw = function() {
 
   // draw background
   rectFill(0, 0, 128, 128, 6)
@@ -14,4 +18,4 @@ script8.draw = function () {
   // draw ball
   circFill(64, 64, 4, 1)
 
-}`
+}
