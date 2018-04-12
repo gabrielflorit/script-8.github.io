@@ -1,11 +1,27 @@
 [
   {
+    "text": "SCRIPT-8 is a state-of-the-art machine with advanced computing capability.\nIt has 32K RAM, high-resolution 8-color graphics, a rendering surface of 128 by 128 pixels, 4 audio channels, and a built-in powerful programming environment.\n",
+    "code": "\n\n"
+  },
+  {
+    "text": "We will demonstrate SCRIPT-8's superior capabilities by making a basic pong game.\nLet's begin.\n",
+    "code": "\n\n"
+  },
+  {
+    "text": "All SCRIPT-8 games have update and draw subroutines.\nEvery 30th of a second, the update subroutine is called, followed by the draw subroutine.\n",
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n}\n"
+  },
+  {
+    "text": "Our game will have two shapes: a paddle and a ball.\nLet's draw the paddle first.\n",
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n}\n"
+  },
+  {
     "text": "The rectFill subroutine draws a filled rectangle.\nIt takes 5 parameters: (x, y, width, height, color).\nLet's draw the ball next.\n",
-    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  clear()\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n}\n"
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n}\n"
   },
   {
     "text": "The circFill subroutine draws a filled circle.\nIt takes 4 parameters: (x, y, radius, color).\nWe should probably use a different color for the game background. Let's do that.\n",
-    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  clear()\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
   },
   {
     "text": "Not bad.\nBefore we go any further, let's do a bit of organizing.\nWe'll create an object to hold the paddle data.\n",
@@ -14,5 +30,17 @@
   {
     "text": "Let's also create a ball object.\n",
     "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
+  },
+  {
+    "text": "Let's review our progress so far.\nWe drew the paddle and the background with the rectFill subroutine.\nWe drew the ball with the circFill subroutine.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "Play around with the code.\nSee if you can change the color of the ball.\nYou could also try drawing multiple balls.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "Alright, let's continue.\nOur game needs movement.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
   }
 ]

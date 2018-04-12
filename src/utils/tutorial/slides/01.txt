@@ -1,0 +1,4 @@
+We will demonstrate SCRIPT-8's superior capabilities by making a basic pong game.
+Let's begin.
+---
+

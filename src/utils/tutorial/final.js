@@ -1,5 +1,5 @@
 const pad = { x: 64 - 24 / 2, y: 128 - 4 - 2, width: 24, height: 4 }
-const ball = { x: 64, y: 64, size: 4, xDir: 4, yDir: -3 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
 let score = 0
 let lives = 3
 
@@ -15,11 +15,11 @@ function moveBall () {
 
 function bounceBall () {
   // bounce left
-  if (ball.x < ball.size) ball.xDir *= -1
+  if (ball.x < ball.radius) ball.xDir *= -1
   // bounce right
-  if (ball.x > 128 - ball.size) ball.xDir *= -1
+  if (ball.x > 128 - ball.radius) ball.xDir *= -1
   // bounce top
-  if (ball.y < ball.size) ball.yDir *= -1
+  if (ball.y < ball.radius) ball.yDir *= -1
 }
 
 function bouncePaddle () {
@@ -34,7 +34,7 @@ function bouncePaddle () {
 }
 
 function loseDeadBall () {
-  if (ball.y > 128 - ball.size) {
+  if (ball.y > 128 - ball.radius) {
     lives -= 1
     if (lives > 0) {
       ball.y = 24
@@ -95,6 +95,6 @@ script8.draw = function () {
   rectStroke(pad.x, pad.y, pad.width, pad.height, 2)
 
   // draw ball
-  circFill(ball.x, ball.y, ball.size, 1)
-  circStroke(ball.x, ball.y, ball.size, 0)
+  circFill(ball.x, ball.y, ball.radius, 1)
+  circStroke(ball.x, ball.y, ball.radius, 0)
 }

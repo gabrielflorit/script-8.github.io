@@ -6,33 +6,8 @@ import screenTypes from '../utils/screenTypes.js'
 import slidesJson from '../utils/tutorial/slides.json'
 
 // TUTORIAL data is in:
-// - this file
 // - the tutorial reducer
 // - the tutorial folder
-
-const intro = [
-  ['?NEW_USER', 'Load tutorial:'],
-
-  [
-    'SCRIPT-8 is a state-of-the-art machine with advanced computing capability. It has 32K RAM, high-resolution 8-color graphics, 4 audio channels, and a built-in powerful programming environment.'
-  ],
-
-  [
-    "We will demonstrate SCRIPT-8's superior capabilities by making a basic pong game.",
-    'Click the NEW button on the top menu to the left.'
-  ],
-
-  [
-    'Good.',
-    'All SCRIPT-8 games have update and draw subroutines.',
-    'Every 30th of a second, the update subroutine is called, followed by the draw subroutine.'
-  ],
-
-  [
-    'Our game will have two shapes: a paddle and a ball.',
-    "Let's draw the paddle first."
-  ]
-]
 
 const mapStateToProps = ({ tutorial, screen }) => ({
   tutorial,
@@ -62,12 +37,13 @@ class Tutorial extends Component {
   }
 
   fireActions (slide) {
-    const { setScreen, updateGame } = this.props
+    const { newGame, updateGame } = this.props
 
-    setScreen(screenTypes.CODE)
-    if (slide >= intro.length) {
-      updateGame(`SCRIPT-8 TUTORIAL${slidesJson[slide - intro.length].code}`)
+    if (slide === 1) {
+      newGame(screenTypes.CODE)
     }
+
+    updateGame(`SCRIPT-8 TUTORIAL${slidesJson[slide - 1].code}`)
   }
 
   handleSlide (slide) {
@@ -94,64 +70,28 @@ class Tutorial extends Component {
 
     const next = (
       <button className='button' onClick={this.handleNextSlide}>
-        next
+        {tutorial === 0 ? 'yes' : 'next'}
       </button>
     )
 
     const close = (
       <button className='button' onClick={this.handleClose}>
-        close
+        {tutorial === 0 ? 'no' : 'close'}
       </button>
     )
 
-    let buttons
-    if (tutorial === 0 || tutorial === 1) {
-      buttons = (
-        <div className='buttons'>
-          {next}
-          {close}
-        </div>
-      )
-    } else if (tutorial === 2) {
-      buttons = (
-        <div className='buttons'>
-          {previous}
-          {close}
-        </div>
-      )
-    } else {
-      buttons = (
-        <div className='buttons'>
-          {previous}
-          {next}
-          {close}
-        </div>
-      )
-    }
+    const texts =
+      tutorial > 0
+        ? slidesJson[tutorial - 1].text.split('\n')
+        : ['HELLO NEW_USER', 'Load tutorial?']
 
-    // If tutorial is false, set slides to blank.
-    // If tutorial is not false, and it's less than intro.length,
-    // use that intro slide.
-    // Otherwise, use the tutorial slide.
-    let texts
-    if (tutorial === false) {
-      texts = []
-    } else {
-      if (tutorial < intro.length) {
-        texts = intro[tutorial]
-      } else {
-        const slide = slidesJson[tutorial - intro.length]
-        texts = slide.text.split('\n')
-        if (tutorial === intro.length + slidesJson.length - 1) {
-          buttons = (
-            <div className='buttons'>
-              {previous}
-              {close}
-            </div>
-          )
-        }
-      }
-    }
+    const buttons = (
+      <div className='buttons'>
+        {tutorial > 1 ? previous : null}
+        {next}
+        {close}
+      </div>
+    )
 
     return (
       <div
@@ -159,7 +99,6 @@ class Tutorial extends Component {
           hide: tutorial === false
         })}
       >
-        {tutorial}
         {texts.map((d, i) => <p key={i}>{d}</p>)}
         {buttons}
       </div>
