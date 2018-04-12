@@ -1,7 +1,7 @@
-Not bad.
-Before we go any further, let's do a bit of organizing.
-We'll create an object to hold the paddle data.
+Let's also create a ball object.
 ---
+const paddle = { x: 52, y: 122, width: 24, height: 4 }
+
 script8.update = function() {
 
 }
@@ -12,7 +12,7 @@ script8.draw = function() {
   rectFill(0, 0, 128, 128, 6)
 
   // draw paddle
-  rectFill(52, 122, 24, 4, 3)
+  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)
 
   // draw ball
   circFill(64, 64, 4, 1)

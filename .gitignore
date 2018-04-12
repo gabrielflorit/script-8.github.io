@@ -2,6 +2,7 @@ node_modules
 build
 public/iframe-build.js
 src/css/App.css
+src/utils/tutorial/slides.json
 
 .DS_Store
 

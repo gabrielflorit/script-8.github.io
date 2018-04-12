@@ -67,7 +67,7 @@ class Tutorial extends Component {
     setScreen(screenTypes.CODE)
     if (slide >= intro.length) {
       updateGame(
-        `SCRIPT-8 TUTORIAL${slidesJson[slide - intro.length].code.join('\n')}`
+        `SCRIPT-8 TUTORIAL${slidesJson[slide - intro.length].code}`
       )
     }
   }
@@ -144,7 +144,7 @@ class Tutorial extends Component {
         texts = intro[tutorial]
       } else {
         const slide = slidesJson[tutorial - intro.length]
-        texts = slide.text
+        texts = slide.text.split('\n')
         if (tutorial === intro.length + slidesJson.length - 1) {
           buttons = (
             <div className='buttons'>

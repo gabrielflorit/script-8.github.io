@@ -2,7 +2,6 @@ The rectFill subroutine draws a filled rectangle.
 It takes 5 parameters: (x, y, width, height, color).
 Let's draw the ball next.
 ---
-
 script8.update = function() {
 
 }

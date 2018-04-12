@@ -39,7 +39,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p start-js watch-css",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js",
+    "build": "npm-run-all build-tutorial build-css build-js",
     "serve": "serve -s build",
     "build-dev": "npm-run-all -s build serve",
     "test": "react-scripts test --env=jsdom",

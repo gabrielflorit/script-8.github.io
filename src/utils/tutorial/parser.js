@@ -5,10 +5,10 @@ const fs = require('fs')
 // put all of this in a big json file
 
 const parse = s => {
-  const lines = s.split('\n')
+  const lines = s.split('---')
   return {
-    text: lines.slice(0, 3),
-    code: lines.slice(4)
+    text: lines[0],
+    code: lines[1]
   }
 }
 

@@ -2,7 +2,6 @@ The circFill subroutine draws a filled circle.
 It takes 4 parameters: (x, y, radius, color).
 We should probably use a different color for the game background. Let's do that.
 ---
-
 script8.update = function() {
 
 }

@@ -1,75 +1,18 @@
 [
   {
-    "text": [
-      "The rectFill subroutine draws a filled rectangle.",
-      "It takes 5 parameters: (x, y, width, height, color,).",
-      "Let's draw the ball next."
-    ],
-    "code": [
-      "",
-      "script8.update = function() {",
-      "",
-      "}",
-      "",
-      "script8.draw = function() {",
-      "  clear()",
-      "",
-      "  // draw paddle",
-      "  rectFill(52, 122, 24, 4, 3)",
-      "}",
-      ""
-    ]
+    "text": "The rectFill subroutine draws a filled rectangle.\nIt takes 5 parameters: (x, y, width, height, color).\nLet's draw the ball next.\n",
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  clear()\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n}\n"
   },
   {
-    "text": [
-      "The circFill subroutine draws a filled circle.",
-      "It takes 4 parameters: (x, y, radius, color).",
-      "We should probably use a different color for the game background. Let's do that."
-    ],
-    "code": [
-      "",
-      "script8.update = function() {",
-      "",
-      "}",
-      "",
-      "script8.draw = function() {",
-      "  clear()",
-      "",
-      "  // draw paddle",
-      "  rectFill(52, 122, 24, 4, 3)",
-      "",
-      "  // draw ball",
-      "  circFill(64, 64, 4, 1)",
-      "",
-      "}",
-      ""
-    ]
+    "text": "The circFill subroutine draws a filled circle.\nIt takes 4 parameters: (x, y, radius, color).\nWe should probably use a different color for the game background. Let's do that.\n",
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  clear()\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
   },
   {
-    "text": [
-      "back ground here",
-      "",
-      ""
-    ],
-    "code": [
-      "",
-      "script8.update = function() {",
-      "",
-      "}",
-      "",
-      "script8.draw = function() {",
-      "",
-      "  // draw background",
-      "  rectFill(0, 0, 128, 128, 6)",
-      "",
-      "  // draw paddle",
-      "  rectFill(52, 122, 24, 4, 3)",
-      "",
-      "  // draw ball",
-      "  circFill(64, 64, 4, 1)",
-      "",
-      "}",
-      ""
-    ]
+    "text": "Not bad.\nBefore we go any further, let's do a bit of organizing.\nWe'll create an object to hold the paddle data.\n",
+    "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
+  },
+  {
+    "text": "Let's also create a ball object.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
   }
 ]
