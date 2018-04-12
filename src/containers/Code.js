@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
 import TopBar from '../components/TopBar.js'
 import Output from './Output.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ game, newUser }) => ({
+const mapStateToProps = ({ game, newUser, tutorial }) => ({
   game,
-  newUser
+  newUser,
+  tutorial
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -24,10 +26,14 @@ class Code extends Component {
   }
 
   render () {
-    const { game, updateGame } = this.props
+    const { game, updateGame, tutorial } = this.props
 
     return (
-      <div className='Code two-rows two-rows-and-grid'>
+      <div
+        className={classNames('Code two-rows two-rows-and-grid', {
+          tutorial: tutorial !== false
+        })}
+      >
         <TopBar />
         <div className='main'>
           <CodeEditor game={game} updateGame={updateGame} />

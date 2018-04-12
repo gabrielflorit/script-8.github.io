@@ -66,9 +66,7 @@ class Tutorial extends Component {
 
     setScreen(screenTypes.CODE)
     if (slide >= intro.length) {
-      updateGame(
-        `SCRIPT-8 TUTORIAL${slidesJson[slide - intro.length].code}`
-      )
+      updateGame(`SCRIPT-8 TUTORIAL${slidesJson[slide - intro.length].code}`)
     }
   }
 
