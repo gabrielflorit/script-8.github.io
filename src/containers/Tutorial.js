@@ -124,7 +124,6 @@ class Tutorial extends Component {
     } else {
       buttons = (
         <div className='buttons'>
-          >
           {previous}
           {next}
           {close}

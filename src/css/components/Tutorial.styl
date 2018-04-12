@@ -2,23 +2,17 @@
   border-top solid $palette-5 2px
   background $palette-6
   color $palette-3
-  position absolute
-  bottom 0
-  left 0
-  width 100%
   @extend .VT323
   font-size $font-large
-  z-index 10
   padding 1.5rem
   p
     margin 0 0 1.5rem 0
     padding 0
   button
     text-decoration underline
-  &.slide-0
-    top 1.5rem
-    border-top none
-    border-bottom solid $palette-5 2px
-    bottom auto
+
+  .buttons:before
+    content '>'
+
   .buttons
     margin-top 1.5rem
