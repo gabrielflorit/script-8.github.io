@@ -1,6 +1,6 @@
 [
   {
-    "text": "SCRIPT-8 is a state-of-the-art machine with advanced computing capability.\nIt has 32K RAM, high-resolution 8-color graphics, a rendering surface of 128 by 128 pixels, 4 audio channels, and a built-in powerful programming environment.\n",
+    "text": "SCRIPT-8 is a state-of-the-art machine with advanced computing capability.\nIt has 32K RAM, high-resolution 8-color graphics, 4 audio channels, and a built-in powerful programming environment.\n",
     "code": "\n\n"
   },
   {
@@ -8,7 +8,7 @@
     "code": "\n\n"
   },
   {
-    "text": "All SCRIPT-8 games have update and draw subroutines.\nEvery 30th of a second, the update subroutine is called, followed by the draw subroutine.\n",
+    "text": "All SCRIPT-8 games have update and draw subroutines.\nEvery 60th of a second, the update subroutine is called, followed by the draw subroutine.\n",
     "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n}\n"
   },
   {
@@ -24,7 +24,7 @@
     "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
   },
   {
-    "text": "Not bad.\nBefore we go any further, let's do a bit of organizing.\nWe'll create an object to hold the paddle data.\n",
+    "text": "As the background shows, the SCRIPT-8 display is 128 by 128 pixels.\nBefore we go any further, let's do a bit of organizing.\nWe'll create an object to hold the paddle data.\n",
     "code": "\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(52, 122, 24, 4, 3)\n\n  // draw ball\n  circFill(64, 64, 4, 1)\n\n}\n"
   },
   {
@@ -40,7 +40,23 @@
     "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
   },
   {
-    "text": "Alright, let's continue.\nOur game needs movement.\n",
+    "text": "Alright, let's continue.\nOur game needs movement.\nWe'll make the arrow keys move the paddle.\n",
     "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nscript8.update = function() {\n\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "Click RUN (menu top right) and try pressing the left and right arrow keys.\nYou should see the paddle move.\nLet's also make the ball move. We'll update its position every cycle (which happens every 60th of a second).\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4 }\n\nfunction movePaddle () {\n  if (arrowLeft) paddle.x -= 3\n  if (arrowRight) paddle.x += 3\n}\n\nscript8.update = function() {\n  movePaddle()\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "Now the ball has movement - but it flies off the screen, instead of bouncing back.\nAs with the previous screen, you'll have to click RUN to see the ball move. This underscores an important point: during editing, SCRIPT-8 only executes the update and draw subroutines once.\nLet's make the ball bounce.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }\n\nfunction moveBall () {\n  ball.x += ball.xDir\n  ball.y += ball.yDir\n}\n\nfunction movePaddle () {\n  if (arrowLeft) paddle.x -= 3\n  if (arrowRight) paddle.x += 3\n}\n\nscript8.update = function() {\n  movePaddle()\n  moveBall()\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "That's better - the ball bounces off the side and top walls.\nRemember to click RUN to see changes over time. This will be the last time we mention this.\nWe should probably make the ball bounce off the paddle, too.\nLet's do that.\n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }\n\nfunction bounceBall () {\n  // bounce left\n  if (ball.x < ball.radius) ball.xDir *= -1\n  // bounce right\n  if (ball.x > 128 - ball.radius) ball.xDir *= -1\n  // bounce top\n  if (ball.y < ball.radius) ball.yDir *= -1\n}\n\nfunction moveBall () {\n  ball.x += ball.xDir\n  ball.y += ball.yDir\n}\n\nfunction movePaddle () {\n  if (arrowLeft) paddle.x -= 3\n  if (arrowRight) paddle.x += 3\n}\n\nscript8.update = function() {\n  movePaddle()\n  bounceBall()\n  moveBall()\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
+  },
+  {
+    "text": "Good.\nWe now have the basic mechanics of a pong game.\nBut there is no \n",
+    "code": "\nconst paddle = { x: 52, y: 122, width: 24, height: 4 }\nconst ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }\n\nfunction bouncePaddle () {\n  if (\n    ball.x >= paddle.x &&\n    ball.x <= paddle.x + paddle.width &&\n    ball.y > paddle.y - paddle.height\n  ) {\n    ball.yDir *= -1\n  }\n}\n\nfunction bounceBall () {\n  // bounce left\n  if (ball.x < ball.radius) ball.xDir *= -1\n  // bounce right\n  if (ball.x > 128 - ball.radius) ball.xDir *= -1\n  // bounce top\n  if (ball.y < ball.radius) ball.yDir *= -1\n}\n\nfunction moveBall () {\n  ball.x += ball.xDir\n  ball.y += ball.yDir\n}\n\nfunction movePaddle () {\n  if (arrowLeft) paddle.x -= 3\n  if (arrowRight) paddle.x += 3\n}\n\nscript8.update = function() {\n  movePaddle()\n  bounceBall()\n  bouncePaddle()\n  moveBall()\n}\n\nscript8.draw = function() {\n\n  // draw background\n  rectFill(0, 0, 128, 128, 6)\n\n  // draw paddle\n  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)\n\n  // draw ball\n  circFill(ball.x, ball.y, ball.radius, 1)\n\n}\n"
   }
 ]

@@ -37,13 +37,25 @@ class Tutorial extends Component {
   }
 
   fireActions (slide) {
-    const { newGame, updateGame } = this.props
+    const { newGame, updateGame, setScreen, screen } = this.props
+
+    const { code } = slidesJson[slide - 1]
 
     if (slide === 1) {
-      newGame(screenTypes.CODE)
+      newGame(screen)
     }
 
-    updateGame(`SCRIPT-8 TUTORIAL${slidesJson[slide - 1].code}`)
+    // If we're not on the CODE screen,
+    // set the game, and then switch.
+    if (screen !== screenTypes.CODE) {
+      updateGame(code)
+      setScreen(screenTypes.CODE)
+    } else {
+      // If we are on the CODE screen,
+      // set the game.
+      updateGame(`SCRIPT-8 TUTORIAL${code}`)
+    }
+
   }
 
   handleSlide (slide) {
@@ -99,6 +111,7 @@ class Tutorial extends Component {
           hide: tutorial === false
         })}
       >
+        {tutorial}
         {texts.map((d, i) => <p key={i}>{d}</p>)}
         {buttons}
       </div>

@@ -49,7 +49,7 @@ script8.update = () => {
     before = Date.now()
     screenIndex++
     i = 0
-    delta = 1
+    delta = 0.5
   }
 
   if (screen === 'ram' && i >= 32) {
@@ -99,7 +99,7 @@ script8.draw = () => {
     print(7, 7 * 1, 'script-8', 0)
     print(7, 7 * 3, 'bios (c) 1980 pantron inc.', 3)
     print(7, 7 * 4, 'version ${version}', 3)
-    print(7, 7 * 6, 'RAM: ' + (i) + ' kb', 3)
+    print(7, 7 * 6, 'RAM: ' + (Math.floor(i)) + ' kb', 3)
 
     print(7, 7 * 9, 'booting cassette ' + (Math.floor(i / 20) % 2 === 0 ? '' : '+'), 3)
 

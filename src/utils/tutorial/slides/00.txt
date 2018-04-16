@@ -1,4 +1,4 @@
 SCRIPT-8 is a state-of-the-art machine with advanced computing capability.
-It has 32K RAM, high-resolution 8-color graphics, a rendering surface of 128 by 128 pixels, 4 audio channels, and a built-in powerful programming environment.
+It has 32K RAM, high-resolution 8-color graphics, 4 audio channels, and a built-in powerful programming environment.
 ---
 

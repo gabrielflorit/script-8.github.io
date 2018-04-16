@@ -1,5 +1,5 @@
 All SCRIPT-8 games have update and draw subroutines.
-Every 30th of a second, the update subroutine is called, followed by the draw subroutine.
+Every 60th of a second, the update subroutine is called, followed by the draw subroutine.
 ---
 script8.update = function() {
 

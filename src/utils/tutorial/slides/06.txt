@@ -1,4 +1,4 @@
-Not bad.
+As the background shows, the SCRIPT-8 display is 128 by 128 pixels.
 Before we go any further, let's do a bit of organizing.
 We'll create an object to hold the paddle data.
 ---
