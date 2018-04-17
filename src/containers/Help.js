@@ -18,7 +18,7 @@ class Help extends Component {
     this.loadTutorial = this.loadTutorial.bind(this)
   }
 
-  loadTutorial() {
+  loadTutorial () {
     const { newGame, screen, setTutorialSlide, setScreen } = this.props
     newGame(screen)
     setTutorialSlide(1)
@@ -32,7 +32,10 @@ class Help extends Component {
         <div className='main'>
           <ul className='top-list'>
             <li>
-              <button className='button' onClick={this.loadTutorial}>LOAD</button> tutorial.
+              <button className='button' onClick={this.loadTutorial}>
+                LOAD
+              </button>{' '}
+              tutorial.
             </li>
             <li>
               Subroutines

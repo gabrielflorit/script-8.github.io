@@ -55,7 +55,6 @@ class Tutorial extends Component {
       // set the game.
       updateGame(`SCRIPT-8 TUTORIAL${code}`)
     }
-
   }
 
   handleSlide (slide) {
@@ -111,7 +110,9 @@ class Tutorial extends Component {
           hide: tutorial === false
         })}
       >
-        {texts.map((d, i) => <p key={i} dangerouslySetInnerHTML={{__html:d}} />)}
+        {texts.map((d, i) => (
+          <p key={i} dangerouslySetInnerHTML={{ __html: d }} />
+        ))}
         {buttons}
       </div>
     )
