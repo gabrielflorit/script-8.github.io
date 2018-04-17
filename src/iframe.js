@@ -74,7 +74,11 @@ const updateGlobals = () => {
     arrowUp: keys.has('ArrowUp'),
     arrowRight: keys.has('ArrowRight'),
     arrowDown: keys.has('ArrowDown'),
-    arrowLeft: keys.has('ArrowLeft')
+    arrowLeft: keys.has('ArrowLeft'),
+    buttonA: keys.has('a'),
+    buttonB: keys.has('b'),
+    buttonStart: keys.has('Enter'),
+    buttonSelect: keys.has(' ')
   }
   // Copy updateableGlobals to window.
   Object.keys(updateableGlobals).forEach(
@@ -146,7 +150,7 @@ window._script8.callCode = ({
       // If we're not operating in `run` mode, stop the timer.
       // In other words, only run this once.
       if (!run) timer.stop()
-    }, 1000 / 30)
+    }, 1000 / 60)
   } catch (e) {
     // If any part of this resulted in an error, print it.
     console.warn(e.message)

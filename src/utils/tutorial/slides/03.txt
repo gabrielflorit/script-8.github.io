@@ -1,0 +1,10 @@
+Our game will have two shapes: a paddle and a ball.
+Let's draw the paddle first.
+---
+script8.update = function() {
+
+}
+
+script8.draw = function() {
+
+}

@@ -1,0 +1,28 @@
+Click RUN (menu top right) and try pressing the left and right arrow keys.
+You should see the paddle move.
+Let's also make the ball move. We'll update its position every cycle (which happens every 60th of a second).
+---
+const paddle = { x: 52, y: 122, width: 24, height: 4 }
+const ball = { x: 64, y: 64, radius: 4 }
+
+function movePaddle () {
+  if (arrowLeft) paddle.x -= 3
+  if (arrowRight) paddle.x += 3
+}
+
+script8.update = function() {
+  movePaddle()
+}
+
+script8.draw = function() {
+
+  // draw background
+  rectFill(0, 0, 128, 128, 6)
+
+  // draw paddle
+  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)
+
+  // draw ball
+  circFill(ball.x, ball.y, ball.radius, 1)
+
+}

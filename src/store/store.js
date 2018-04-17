@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 store.subscribe(() => {
   saveState({
-    // game: store.getState().game,
+    newUser: store.getState().newUser,
     token: store.getState().token
   })
 })

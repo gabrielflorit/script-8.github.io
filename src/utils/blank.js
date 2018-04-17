@@ -1,8 +1,10 @@
-const blank = `
-script8.update = function () {}
-script8.draw = function () {
-  clear()
-}
-`
+export default `
+script8.update = function () {
 
-export default blank
+}
+
+script8.draw = function () {
+
+  clear()
+
+}`

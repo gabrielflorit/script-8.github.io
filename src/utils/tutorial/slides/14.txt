@@ -1,0 +1,62 @@
+We now have the mechanics of a basic game.
+Next let's add a scoring mechanism.
+We'll award points for every paddle bounce.
+---
+const paddle = { x: 52, y: 122, width: 24, height: 4 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+
+function loseDeadBall () {
+  if (ball.y > 128 - ball.radius) {
+    ball.y = 24
+  }
+}
+
+function bouncePaddle () {
+  if (
+    ball.x >= paddle.x &&
+    ball.x <= paddle.x + paddle.width &&
+    ball.y > paddle.y - paddle.height
+  ) {
+    ball.yDir *= -1
+  }
+}
+
+function bounceBall () {
+  // bounce left
+  if (ball.x < ball.radius) ball.xDir *= -1
+  // bounce right
+  if (ball.x > 128 - ball.radius) ball.xDir *= -1
+  // bounce top
+  if (ball.y < ball.radius) ball.yDir *= -1
+}
+
+function moveBall () {
+  ball.x += ball.xDir
+  ball.y += ball.yDir
+}
+
+function movePaddle () {
+  if (arrowLeft) paddle.x -= 3
+  if (arrowRight) paddle.x += 3
+}
+
+script8.update = function() {
+  movePaddle()
+  bounceBall()
+  bouncePaddle()
+  moveBall()
+  loseDeadBall()
+}
+
+script8.draw = function() {
+
+  // draw background
+  rectFill(0, 0, 128, 128, 6)
+
+  // draw paddle
+  rectFill(paddle.x, paddle.y, paddle.width, paddle.height, 3)
+
+  // draw ball
+  circFill(ball.x, ball.y, ball.radius, 1)
+
+}

@@ -1,13 +1,21 @@
 .Tutorial
-  display none
   border-top solid $palette-5 2px
-  // background $palette-6
-  position absolute
-  bottom 0
-  left 0
-  width 100%
+  background $palette-6
+  color $palette-3
   @extend .VT323
   font-size $font-large
-  z-index 10
-  color $palette-3
   padding 1.5rem
+  p
+    margin 0 0 1.5rem 0
+    padding 0
+    a
+      color $palette-2
+      text-decoration underline
+  button
+    text-decoration underline
+
+  .buttons:before
+    content '>'
+
+  .buttons
+    margin-top 1.5rem

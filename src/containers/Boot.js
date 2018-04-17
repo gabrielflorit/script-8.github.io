@@ -19,6 +19,7 @@ const mapDispatchToProps = dispatch => ({
 class Boot extends Component {
   componentDidMount () {
     const { fetchGist, token } = this.props
+
     const { search } = window.location
     const params = new window.URLSearchParams(search)
     const id = params.get('id')
