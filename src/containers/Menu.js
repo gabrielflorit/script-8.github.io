@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
 import equal from 'deep-equal'
 import _ from 'lodash'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
@@ -125,10 +126,15 @@ class Menu extends Component {
     const dirtyChains = !equal(gistChains, chains)
     const dirtySongs = !equal(gistSongs, songs)
     const dirty = dirtyGame || dirtyPhrases || dirtyChains || dirtySongs
+    const isFetching = gist.isFetching || token.isFetching
 
     const newLi = showNew ? (
       <li>
-        <button className='button' onClick={this.onNewClick}>
+        <button
+          disabled={isFetching}
+          className='button'
+          onClick={this.onNewClick}
+        >
           New
         </button>
       </li>
@@ -150,10 +156,14 @@ class Menu extends Component {
     return screen === screenTypes.HELP ? (
       <ul className='Menu' />
     ) : (
-      <ul className='Menu'>
+      <ul className={classNames('Menu', { 'is-fetching': isFetching })}>
         {newLi}
         <li>
-          <button className='button' onClick={this.onSaveClick}>
+          <button
+            disabled={isFetching}
+            className='button'
+            onClick={this.onSaveClick}
+          >
             {saveText}
             {dirty ? ' *' : ''}
           </button>
