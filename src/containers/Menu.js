@@ -137,12 +137,15 @@ class Menu extends Component {
     const gistLogin = _.get(gist, 'data.owner.login', null)
     const currentLogin = _.get(token, 'user.login', null)
 
-    // If the gistLogin is null (gist was created anonymously),
-    // or the gistLogin does not match currentLogin (gist wasn't created by us),
+    // If the gist is not empty, AND:
+    //  - the gistLogin is null (gist was created anonymously),
+    //  - or the gistLogin does not match currentLogin (gist wasn't created by us),
     // show CLONE.
     // Otherwise show SAVE.
     const saveText =
-      gistLogin !== null && gistLogin === currentLogin ? 'save' : 'clone'
+      !_.isEmpty(gist) && (gistLogin === null || gistLogin !== currentLogin)
+        ? 'clone'
+        : 'save'
 
     return screen === screenTypes.HELP ? (
       <ul className='Menu' />
