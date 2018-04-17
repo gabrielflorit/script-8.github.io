@@ -1,9 +1,15 @@
-Good.
-We now have the basic mechanics of a pong game.
-But there is no 
+We now have the mechanics of a basic game.
+Next let's add a scoring mechanism.
+We'll award points for every paddle bounce.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
 const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+
+function loseDeadBall () {
+  if (ball.y > 128 - ball.radius) {
+    ball.y = 24
+  }
+}
 
 function bouncePaddle () {
   if (
@@ -39,6 +45,7 @@ script8.update = function() {
   bounceBall()
   bouncePaddle()
   moveBall()
+  loseDeadBall()
 }
 
 script8.draw = function() {

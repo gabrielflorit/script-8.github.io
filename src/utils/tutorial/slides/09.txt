@@ -1,6 +1,5 @@
-Play around with the code.
-See if you can change the color of the ball.
-You could also try drawing multiple balls.
+Good.
+Now let's control the paddle with the cursor keys.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
 const ball = { x: 64, y: 64, radius: 4 }

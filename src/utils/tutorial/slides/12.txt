@@ -1,9 +1,18 @@
-Now the ball has movement - but it flies off the screen, instead of bouncing back.
-As with the previous screen, you'll have to click RUN to see the ball move. This underscores an important point: during editing, SCRIPT-8 only executes the update and draw subroutines once.
-Let's make the ball bounce.
+That's better - the ball bounces off the side and top walls.
+Remember to click RUN to see changes over time. This will be the last time we mention this.
+We should probably make the ball bounce off the paddle, too.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
 const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+
+function bounceBall () {
+  // bounce left
+  if (ball.x < ball.radius) ball.xDir *= -1
+  // bounce right
+  if (ball.x > 128 - ball.radius) ball.xDir *= -1
+  // bounce top
+  if (ball.y < ball.radius) ball.yDir *= -1
+}
 
 function moveBall () {
   ball.x += ball.xDir
@@ -17,6 +26,7 @@ function movePaddle () {
 
 script8.update = function() {
   movePaddle()
+  bounceBall()
   moveBall()
 }
 

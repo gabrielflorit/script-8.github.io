@@ -100,7 +100,7 @@ class Tutorial extends Component {
     const buttons = (
       <div className='buttons'>
         {tutorial > 1 ? previous : null}
-        {next}
+        {tutorial < slidesJson.length ? next : null}
         {close}
       </div>
     )
@@ -111,8 +111,7 @@ class Tutorial extends Component {
           hide: tutorial === false
         })}
       >
-        {tutorial}
-        {texts.map((d, i) => <p key={i}>{d}</p>)}
+        {texts.map((d, i) => <p key={i} dangerouslySetInnerHTML={{__html:d}} />)}
         {buttons}
       </div>
     )
