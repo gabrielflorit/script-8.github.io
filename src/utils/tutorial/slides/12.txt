@@ -3,7 +3,7 @@ Remember to click RUN to see changes over time. This will be the last time we me
 We should probably make the ball bounce off the paddle, too.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
-const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 3, yDir: -2 }
 
 function bounceBall () {
   // bounce left

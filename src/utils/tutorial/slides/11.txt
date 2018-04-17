@@ -3,7 +3,7 @@ As with the previous screen, you'll have to click RUN to see the ball move. This
 Let's make the ball bounce.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
-const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 3, yDir: -2 }
 
 function moveBall () {
   ball.x += ball.xDir

@@ -1,8 +1,8 @@
-What happens if the paddle misses? The ball disappears, never to return.
+What happens if the paddle misses? The ball disappears.
 Let's fix that. If the paddle misses, we'll place the ball back in the middle.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
-const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 3, yDir: -2 }
 
 function bouncePaddle () {
   if (

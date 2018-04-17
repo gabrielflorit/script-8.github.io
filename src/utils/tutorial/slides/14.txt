@@ -3,7 +3,7 @@ Next let's add a scoring mechanism.
 We'll award points for every paddle bounce.
 ---
 const paddle = { x: 52, y: 122, width: 24, height: 4 }
-const ball = { x: 64, y: 64, radius: 4, xDir: 4, yDir: -3 }
+const ball = { x: 64, y: 64, radius: 4, xDir: 3, yDir: -2 }
 
 function loseDeadBall () {
   if (ball.y > 128 - ball.radius) {
