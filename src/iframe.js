@@ -69,16 +69,20 @@ let keys = new Set()
 // Export arrow booleans for convenience.
 let updateableGlobals = {}
 const updateGlobals = () => {
+  const { buttons } = window.navigator.getGamepads()[0] || {}
+
   updateableGlobals = {
     ...updateableGlobals,
-    arrowUp: keys.has('ArrowUp'),
-    arrowRight: keys.has('ArrowRight'),
-    arrowDown: keys.has('ArrowDown'),
-    arrowLeft: keys.has('ArrowLeft'),
-    buttonA: keys.has('a'),
-    buttonB: keys.has('b'),
-    buttonStart: keys.has('Enter'),
-    buttonSelect: keys.has(' ')
+    arrowUp: keys.has('ArrowUp') || (buttons && buttons[12].pressed),
+    arrowRight: keys.has('ArrowRight') || (buttons && buttons[15].pressed),
+    arrowDown: keys.has('ArrowDown') || (buttons && buttons[13].pressed),
+    arrowLeft: keys.has('ArrowLeft') || (buttons && buttons[14].pressed),
+    buttonA:
+      keys.has('a') || (buttons && (buttons[1].pressed || buttons[2].pressed)),
+    buttonB:
+      keys.has('b') || (buttons && (buttons[0].pressed || buttons[3].pressed)),
+    buttonStart: keys.has('Enter') || (buttons && buttons[9].pressed),
+    buttonSelect: keys.has(' ') || (buttons && buttons[8].pressed)
   }
   // Copy updateableGlobals to window.
   Object.keys(updateableGlobals).forEach(
