@@ -17,7 +17,8 @@ const shadows = new Set(['document'])
 const blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
 
 // Declare a timer.
-let timer
+let timerCallback = () => {}
+let timer = interval(timerCallback, 60)
 
 // Declare script8 namespace for the user's convenience,
 const script8 = {}
@@ -101,6 +102,9 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
+// TODO: improve
+const didInit = false
+
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
   game,
@@ -119,6 +123,7 @@ window._script8.callCode = ({
 
   try {
     // Clear the screen.
+    script8.init = () => {}
     script8.update = () => {}
     script8.draw = () => {
       window.clear()
@@ -134,14 +139,18 @@ window._script8.callCode = ({
       eval(game)
     `)
 
-    // If the timer exists, stop it.
-    if (timer) timer.stop()
-
-    // Start a new timer, and:
-    timer = interval(() => {
+    // Reassign a timer callback. Every tick,
+    timerCallback = () => {
       try {
         // update globals (e.g. what's pressed),
         updateGlobals()
+
+        // TODO: run every time init has changed
+        // run init (only if we haven't yet),
+        if (!didInit) {
+          script8.init && script8.init()
+          didInit = true
+        }
 
         // and run the game.
         script8.update && script8.update()
@@ -151,10 +160,17 @@ window._script8.callCode = ({
         console.warn(e.message)
       }
 
-      // If we're not operating in `run` mode, stop the timer.
-      // In other words, only run this once.
-      if (!run) timer.stop()
-    }, 1000 / 60)
+      // // If we're not operating in `run` mode, stop the timer.
+      // // In other words, only run this once.
+      // if (!run) timer.stop()
+    }
+
+    // // If the timer exists, stop it.
+    // if (timer) timer.stop()
+
+    // // Start a new timer, and:
+    // timer = interval(() => {
+    // }, 1000 / 60)
   } catch (e) {
     // If any part of this resulted in an error, print it.
     console.warn(e.message)
