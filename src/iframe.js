@@ -1,5 +1,5 @@
 import { interval } from 'd3-timer'
-import { createStore, combineReducers } from 'redux'
+import { createStore } from 'redux'
 
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
@@ -136,11 +136,10 @@ window._script8.callCode = ({
     `)
 
     // Try getting the current state.
-    const currentState = (script8.store && script8.store.getState()) || {}
+    const currentState = script8.store && script8.store.getState()
 
     // Use the current state to (re)create the store.
-    const reducers = combineReducers(script8.reducers || {})
-    script8.store = createStore(reducers, currentState)
+    script8.store = createStore(script8.reducer, currentState || undefined)
 
     // Reassign a timer callback. Every tick,
     timerCallback = () => {

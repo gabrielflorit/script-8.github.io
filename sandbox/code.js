@@ -10,7 +10,7 @@ const actions = {
   tick
 }
 
-const actorsInitialState = {
+const initialState = {
   ball: {
     x: 64,
     y: 64,
@@ -57,7 +57,16 @@ const bounceOffPaddle = ({ ball, paddle }) => {
   return result
 }
 
-const actorsReducer = (state = actorsInitialState, action) => {
+const draw = {
+  ball ({ x, y, radius }) {
+    circFill(x, y, radius, 0)
+  },
+  paddle ({ x, y, width, height }) {
+    rectFill(x, y, width, height, 3)
+  }
+}
+
+script8.reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.TICK: {
       // Bounce ball off walls.
@@ -83,19 +92,6 @@ const actorsReducer = (state = actorsInitialState, action) => {
   }
 }
 
-const actorsDraw = {
-  ball ({ x, y, radius }) {
-    circFill(x, y, radius, 0)
-  },
-  paddle ({ x, y, width, height }) {
-    rectFill(x, y, width, height, 3)
-  }
-}
-
-script8.reducers = {
-  actors: actorsReducer
-}
-
 script8.update = () => {
   script8.store.dispatch(actions.tick())
 }
@@ -104,6 +100,6 @@ script8.draw = () => {
   clear()
   rectStroke(0, 0, 128, 128, 6)
   const state = script8.store.getState()
-  actorsDraw.ball(state.actors.ball)
-  actorsDraw.paddle(state.actors.paddle)
+  draw.ball(state.ball)
+  draw.paddle(state.paddle)
 }
