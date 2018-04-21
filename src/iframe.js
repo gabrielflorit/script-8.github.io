@@ -1,5 +1,5 @@
 import { interval } from 'd3-timer'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
@@ -103,6 +103,18 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
+let reduxHistory = []
+
+const reduxLogger = store => next => action => {
+  const result = next(action)
+  // TODO: limit to the latest N.
+  reduxHistory.push({
+    state: store.getState(),
+    action
+  })
+  return result
+}
+
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
   game,
@@ -139,7 +151,11 @@ window._script8.callCode = ({
     const currentState = script8.store && script8.store.getState()
 
     // Use the current state to (re)create the store.
-    script8.store = createStore(script8.reducer, currentState || undefined)
+    script8.store = createStore(
+      script8.reducer,
+      currentState || undefined,
+      applyMiddleware(reduxLogger)
+    )
 
     // Reassign a timer callback. Every tick,
     timerCallback = () => {
@@ -159,7 +175,7 @@ window._script8.callCode = ({
     // If we haven't created a timer yet,
     // do so now
     if (!timer) {
-      timer = interval(timerCallback, 1000 / 30)
+      timer = interval(timerCallback, 1000 / 1)
     }
   } catch (e) {
     // If any part of this resulted in an error, print it.

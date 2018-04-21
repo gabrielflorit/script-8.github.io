@@ -98,7 +98,7 @@ script8.update = () => {
 
 script8.draw = () => {
   clear()
-  rectStroke(0, 0, 128, 128, 6)
+  rectFill(0, 0, 128, 128, 6)
   const state = script8.store.getState()
   draw.ball(state.ball)
   draw.paddle(state.paddle)

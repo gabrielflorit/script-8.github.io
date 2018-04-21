@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
@@ -23,7 +24,12 @@ class Output extends Component {
   constructor (props) {
     super(props)
 
+    this.handlePlay = this.handlePlay.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
+
+    this.state = {
+      isPlaying: true
+    }
   }
 
   noop () {}
@@ -32,8 +38,17 @@ class Output extends Component {
     e.currentTarget.focus()
   }
 
-  shouldComponentUpdate () {
-    return false
+  handlePlay () {
+    const { isPlaying } = this.state
+    console.log(this.state)
+    this.setState({
+      isPlaying: !isPlaying
+    })
+    console.log(this.state)
+  }
+
+  shouldComponentUpdate (nextProps) {
+    return nextProps.game === this.props.game
   }
 
   componentDidMount () {
@@ -82,8 +97,15 @@ class Output extends Component {
   }
 
   render () {
+    const { isPlaying } = this.state
     return (
       <div className='Output'>
+        <button
+          className={classNames('play button', { active: !isPlaying })}
+          onClick={this.handlePlay}
+        >
+          {isPlaying ? 'pause' : 'play'}
+        </button>
         <iframe
           src='iframe.html'
           sandbox='allow-scripts allow-same-origin'
