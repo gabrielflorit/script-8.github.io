@@ -119,7 +119,7 @@ const __reduxLogger = store => next => action => {
       state: store.getState(),
       action
     }
-  ].slice(-3)
+  ].slice(-10)
 
   return result
 }
@@ -162,19 +162,44 @@ window._script8.callCode = ({
     `)
 
     // If it's paused,
-    // create the store with the first item in reduxHistory
-    // as the initial state.
-    // Save that state to alteredStates.
-    // Then, for each action in the history,
-    // dispatch it, and save the resulting state to alteredStates.
-    // Now we have all the alteredStates.
-    // Set the user state to the last one, and draw everything.
-    // Then set the user state to the first one,
-    // and for each altered state,
-    // draw the actors, with a bit of transparency.
-    // Make sure to draw the actors fully opaque if we're on the last state.
-
     if (isPaused) {
+      // stop and destroy the timer.
+      if (__timer) {
+        __timer.stop()
+        __timer = null
+      }
+
+      const alteredStates = []
+
+      // Create the store with the first item in reduxHistory
+      // as the initial state.
+      script8.store = createStore(script8.reducer, __reduxHistory[0].state)
+
+      // Save that state to alteredStates.
+      alteredStates.push(script8.store.getState())
+
+      // Then, for all next actions in the history,
+      // dispatch it,
+      // and save the resulting state to alteredStates.
+      __reduxHistory.slice(1).forEach(({ state, action }) => {
+        script8.store.dispatch(action)
+        alteredStates.push(script8.store.getState())
+      })
+
+      // Now we have all the alteredStates.
+
+      // Set the user state to the last one, and draw everything.
+      script8.state = alteredStates[alteredStates.length - 1]
+      script8.draw()
+
+      // Then set the user state to the first one,
+      // and for each altered state,
+      // draw the actors, with a bit of transparency.
+      // Make sure to draw the actors fully opaque if we're on the last state.
+      alteredStates.forEach(state => {
+        script8.state = state
+        script8.drawActors()
+      })
     } else {
       // If the user has changed script8.initialState, use that.
       let __storeState
@@ -184,9 +209,11 @@ window._script8.callCode = ({
         // If they haven't, try using the state from existing store.
         __storeState = script8.store && script8.store.getState()
       }
+      // Save the user's script8.initialState so we have it for later.
       __previousInitialState = script8.initialState
 
       // Use the current state to (re)create the store.
+      // TODO: do we have to expose store?
       script8.store = createStore(
         script8.reducer,
         __storeState || undefined,
@@ -217,7 +244,7 @@ window._script8.callCode = ({
       // If we haven't created a timer yet,
       // do so now.
       if (!__timer) {
-        __timer = interval(__timerCallback, 1000 / 1)
+        __timer = interval(__timerCallback, 1000 / 30)
       }
     }
   } catch (e) {

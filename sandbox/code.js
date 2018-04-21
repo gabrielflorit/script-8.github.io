@@ -96,12 +96,17 @@ script8.update = () => {
   script8.store.dispatch(actions.tick())
 }
 
+script8.actors = ['ball', 'paddle']
+
+script8.drawActors = () => {
+  const { state } = script8
+  script8.actors.forEach(actor => {
+    draw[actor](state[actor])
+  })
+}
+
 script8.draw = () => {
-  const game = 'gabriel'
   clear()
   rectFill(0, 0, 128, 128, 6)
-  const { state } = script8
-  draw.ball(state.ball)
-  draw.paddle(state.paddle)
-  print(0, 0, game, 0)
+  script8.drawActors()
 }
