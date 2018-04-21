@@ -1,5 +1,6 @@
 import { interval } from 'd3-timer'
 import { createStore, applyMiddleware } from 'redux'
+import equal from 'deep-equal'
 
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
@@ -123,6 +124,8 @@ const __reduxLogger = store => next => action => {
   return result
 }
 
+let __previousInitialState = {}
+
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
   game,
@@ -173,13 +176,20 @@ window._script8.callCode = ({
 
     if (isPaused) {
     } else {
-      // Try getting the current state from the existing store.
-      const currentState = script8.store && script8.store.getState()
+      // If the user has changed script8.initialState, use that.
+      let __storeState
+      if (!equal(script8.initialState, __previousInitialState)) {
+        __storeState = script8.initialState
+      } else {
+        // If they haven't, try using the state from existing store.
+        __storeState = script8.store && script8.store.getState()
+      }
+      __previousInitialState = script8.initialState
 
       // Use the current state to (re)create the store.
       script8.store = createStore(
         script8.reducer,
-        currentState || undefined,
+        __storeState || undefined,
         applyMiddleware(__reduxLogger)
       )
 

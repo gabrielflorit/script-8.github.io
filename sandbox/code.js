@@ -10,7 +10,7 @@ const actions = {
   tick
 }
 
-const initialState = {
+script8.initialState = {
   ball: {
     x: 64,
     y: 64,
@@ -66,7 +66,7 @@ const draw = {
   }
 }
 
-script8.reducer = (state = initialState, action) => {
+script8.reducer = (state = script8.initialState, action) => {
   switch (action.type) {
     case actionTypes.TICK: {
       // Bounce ball off walls.
@@ -97,9 +97,11 @@ script8.update = () => {
 }
 
 script8.draw = () => {
+  const game = 'gabriel'
   clear()
   rectFill(0, 0, 128, 128, 6)
   const { state } = script8
   draw.ball(state.ball)
   draw.paddle(state.paddle)
+  print(0, 0, game, 0)
 }

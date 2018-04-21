@@ -86,7 +86,7 @@ class Output extends Component {
         phrases,
         run,
         endCallback: finishBoot,
-        isPaused,
+        isPaused
       })
     } else {
       // If we had errors, print them to console.
