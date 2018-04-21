@@ -12,50 +12,50 @@ import soundAPI from './utils/soundAPI/index.js'
 import utilsAPI from './utils/utilsAPI.js'
 
 // Create a noop for convenience.
-const noop = () => {}
+const __noop = () => {}
 
-const shadows = new Set(['document'])
-const blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
+const __shadows = new Set(['document'])
+const __blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
 
 // Declare a timer and the function it will call.
-let timer
-let timerCallback
+let __timer
+let __timerCallback
 
 // Declare script8 namespace for the user's convenience,
 const script8 = {}
 window.script8 = script8
 
-// and a 'hidden' one (don't worry, we'll actually enforce its visibility).
+// a 'hidden' one,
 window._script8 = {}
-// and a super hidden one.
+// and a super 'hidden' one.
 window.__script8 = {}
 
 // Initialize canvas.
-const canvas = document.querySelector('canvas')
-const size = 128
-const ctx = canvas.getContext('2d')
+const __canvas = document.querySelector('canvas')
+const __size = 128
+const __ctx = __canvas.getContext('2d')
 
 // Create a globals object. We'll move all these to window a bit further down.
-let globals = {
+let __globals = {
   Math,
   Date
 }
 
 // Setup API functions.
-globals = {
-  ...globals,
+__globals = {
+  ...__globals,
   ...canvasAPI({
-    ctx,
-    width: size,
-    height: size
+    ctx: __ctx,
+    width: __size,
+    height: __size
   }),
   ...soundAPI(),
   ...utilsAPI()
 }
 
 // Export lodash helpers.
-globals = {
-  ...globals,
+__globals = {
+  ...__globals,
   range,
   flatten,
   random,
@@ -63,55 +63,63 @@ globals = {
 }
 
 // Assign all the globals to window.
-Object.keys(globals).forEach(key => (window[key] = globals[key]))
+Object.keys(__globals).forEach(key => (window[key] = __globals[key]))
 
 // Define arrow key helpers.
-let keys = new Set()
+let __keys = new Set()
 
 // Export arrow booleans for convenience.
-let updateableGlobals = {}
-const updateGlobals = () => {
+let __updateableGlobals = {}
+const __updateGlobals = () => {
   const { buttons } = window.navigator.getGamepads()[0] || {}
 
-  updateableGlobals = {
-    ...updateableGlobals,
-    arrowUp: keys.has('ArrowUp') || (buttons && buttons[12].pressed),
-    arrowRight: keys.has('ArrowRight') || (buttons && buttons[15].pressed),
-    arrowDown: keys.has('ArrowDown') || (buttons && buttons[13].pressed),
-    arrowLeft: keys.has('ArrowLeft') || (buttons && buttons[14].pressed),
+  __updateableGlobals = {
+    ...__updateableGlobals,
+    arrowUp: __keys.has('ArrowUp') || (buttons && buttons[12].pressed),
+    arrowRight: __keys.has('ArrowRight') || (buttons && buttons[15].pressed),
+    arrowDown: __keys.has('ArrowDown') || (buttons && buttons[13].pressed),
+    arrowLeft: __keys.has('ArrowLeft') || (buttons && buttons[14].pressed),
     buttonA:
-      keys.has('a') || (buttons && (buttons[1].pressed || buttons[2].pressed)),
+      __keys.has('a') ||
+      (buttons && (buttons[1].pressed || buttons[2].pressed)),
     buttonB:
-      keys.has('b') || (buttons && (buttons[0].pressed || buttons[3].pressed)),
-    buttonStart: keys.has('Enter') || (buttons && buttons[9].pressed),
-    buttonSelect: keys.has(' ') || (buttons && buttons[8].pressed)
+      __keys.has('b') ||
+      (buttons && (buttons[0].pressed || buttons[3].pressed)),
+    buttonStart: __keys.has('Enter') || (buttons && buttons[9].pressed),
+    buttonSelect: __keys.has(' ') || (buttons && buttons[8].pressed)
   }
   // Copy updateableGlobals to window.
-  Object.keys(updateableGlobals).forEach(
-    key => (window[key] = updateableGlobals[key])
+  Object.keys(__updateableGlobals).forEach(
+    key => (window[key] = __updateableGlobals[key])
   )
 }
 
 // Keep track of what keys we're pressing.
 document.addEventListener('keydown', e => {
   const keyName = e.key
-  keys.add(keyName)
+  __keys.add(keyName)
 })
 
 document.addEventListener('keyup', e => {
   const keyName = e.key
-  keys.delete(keyName)
+  __keys.delete(keyName)
 })
 
-let reduxHistory = []
+let __reduxHistory = []
 
-const reduxLogger = store => next => action => {
+const __reduxLogger = store => next => action => {
   const result = next(action)
-  // TODO: limit to the latest N.
-  reduxHistory.push({
-    state: store.getState(),
-    action
-  })
+
+  // Add this state and action to history,
+  // and limit it to the most recent N entries.
+  __reduxHistory = [
+    ...__reduxHistory,
+    {
+      state: store.getState(),
+      action
+    }
+  ].slice(-3)
+
   return result
 }
 
@@ -122,11 +130,14 @@ window._script8.callCode = ({
   chains,
   phrases,
   run,
-  endCallback = noop
+  isPaused,
+  endCallback = __noop
 }) => {
   // If we're in `run` mode, create playSong function from music data.
   // Otherwise ignore - we don't want to hear music while we code!
-  window.playSong = run ? globals.playSong({ songs, chains, phrases }) : noop
+  window.playSong = run
+    ? __globals.playSong({ songs, chains, phrases })
+    : __noop
 
   // Make available an end function, and call the callback once.
   window.__script8.end = once(endCallback)
@@ -138,7 +149,7 @@ window._script8.callCode = ({
     }
 
     // Eval the supplied game.
-    const shadowString = `var ${[...shadows].join(',')}`
+    const shadowString = `var ${[...__shadows].join(',')}`
     // eslint-disable-next-line no-eval
     eval(`
       // Shadow variables we don't want available.
@@ -147,24 +158,43 @@ window._script8.callCode = ({
       eval(game)
     `)
 
-    // Try getting the current state.
+    // If it's paused,
+    // create the store with the first item in reduxHistory
+    // as the initial state.
+    // Save that state to alteredStates.
+    // Then, for each action in the history,
+    // dispatch it, and save the resulting state to alteredStates.
+    // Now we have all the alteredStates.
+    // Set the user state to the last one, and draw everything.
+    // Then set the user state to the first one,
+    // and for each altered state,
+    // draw the actors, with a bit of transparency.
+    // Make sure to draw the actors fully opaque if we're on the last state.
+
+    // Try getting the current state from the existing store.
     const currentState = script8.store && script8.store.getState()
 
     // Use the current state to (re)create the store.
     script8.store = createStore(
       script8.reducer,
       currentState || undefined,
-      applyMiddleware(reduxLogger)
+      applyMiddleware(__reduxLogger)
     )
 
     // Reassign a timer callback. Every tick,
-    timerCallback = () => {
+    __timerCallback = () => {
       try {
         // update globals (e.g. what's pressed),
-        updateGlobals()
+        __updateGlobals()
 
         // TODO: is exposing update necessary?
+        // call update (this fires the tick action),
         script8.update && script8.update()
+
+        // expose the state,
+        script8.state = script8.store.getState()
+
+        // and call draw.
         script8.draw && script8.draw()
       } catch (e) {
         // If there is an error, print it as a warning.
@@ -173,9 +203,9 @@ window._script8.callCode = ({
     }
 
     // If we haven't created a timer yet,
-    // do so now
-    if (!timer) {
-      timer = interval(timerCallback, 1000 / 1)
+    // do so now.
+    if (!__timer) {
+      __timer = interval(__timerCallback, 1000 / 1)
     }
   } catch (e) {
     // If any part of this resulted in an error, print it.
@@ -190,20 +220,20 @@ window.__script8.validateToken = token => {
 
   // If user types a token in blacklist,
   // it's most definitely invalid.
-  if (blacklist.has(token)) {
+  if (__blacklist.has(token)) {
     isValid = false
   } else if (
     // If user types a token defined in globals or updateableGlobals,
     // it's valid.
-    Object.keys(globals).indexOf(token) > -1 ||
-    Object.keys(updateableGlobals).indexOf(token) > -1 ||
+    Object.keys(__globals).indexOf(token) > -1 ||
+    Object.keys(__updateableGlobals).indexOf(token) > -1 ||
     token === 'script8'
   ) {
     isValid = true
   } else if (window.hasOwnProperty(token)) {
     // If user types a token on window scope (e.g. `screen`),
-    // add it to the list of shadows, and make it valid.
-    shadows.add(token)
+    // add it to the list of __shadows, and make it valid.
+    __shadows.add(token)
     isValid = true
   } else {
     // Otherwise, return valid.
