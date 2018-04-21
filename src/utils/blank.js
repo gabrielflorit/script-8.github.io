@@ -1,4 +1,7 @@
 export default `
+script8.init = function () {
+}
+
 script8.update = function () {
 
 }

@@ -1,4 +1,5 @@
 import { interval } from 'd3-timer'
+import { createStore, combineReducers } from 'redux'
 
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
@@ -16,9 +17,9 @@ const noop = () => {}
 const shadows = new Set(['document'])
 const blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
 
-// Declare a timer.
-let timerCallback = () => {}
-let timer = interval(timerCallback, 60)
+// Declare a timer and the function it will call.
+let timer
+let timerCallback
 
 // Declare script8 namespace for the user's convenience,
 const script8 = {}
@@ -102,9 +103,6 @@ document.addEventListener('keyup', e => {
   keys.delete(keyName)
 })
 
-// TODO: improve
-const didInit = false
-
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
   game,
@@ -123,8 +121,6 @@ window._script8.callCode = ({
 
   try {
     // Clear the screen.
-    script8.init = () => {}
-    script8.update = () => {}
     script8.draw = () => {
       window.clear()
     }
@@ -139,38 +135,33 @@ window._script8.callCode = ({
       eval(game)
     `)
 
+    // Try getting the current state.
+    const currentState = (script8.store && script8.store.getState()) || {}
+
+    // Use the current state to (re)create the store.
+    const reducers = combineReducers(script8.reducers || {})
+    script8.store = createStore(reducers, currentState)
+
     // Reassign a timer callback. Every tick,
     timerCallback = () => {
       try {
         // update globals (e.g. what's pressed),
         updateGlobals()
 
-        // TODO: run every time init has changed
-        // run init (only if we haven't yet),
-        if (!didInit) {
-          script8.init && script8.init()
-          didInit = true
-        }
-
-        // and run the game.
+        // TODO: is exposing update necessary?
         script8.update && script8.update()
         script8.draw && script8.draw()
       } catch (e) {
         // If there is an error, print it as a warning.
         console.warn(e.message)
       }
-
-      // // If we're not operating in `run` mode, stop the timer.
-      // // In other words, only run this once.
-      // if (!run) timer.stop()
     }
 
-    // // If the timer exists, stop it.
-    // if (timer) timer.stop()
-
-    // // Start a new timer, and:
-    // timer = interval(() => {
-    // }, 1000 / 60)
+    // If we haven't created a timer yet,
+    // do so now
+    if (!timer) {
+      timer = interval(timerCallback, 1000)
+    }
   } catch (e) {
     // If any part of this resulted in an error, print it.
     console.warn(e.message)
