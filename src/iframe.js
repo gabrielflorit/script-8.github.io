@@ -160,7 +160,7 @@ window._script8.callCode = ({
     // If we haven't created a timer yet,
     // do so now
     if (!timer) {
-      timer = interval(timerCallback, 1000)
+      timer = interval(timerCallback, 1000 / 30)
     }
   } catch (e) {
     // If any part of this resulted in an error, print it.
