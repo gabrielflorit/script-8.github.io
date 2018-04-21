@@ -171,41 +171,44 @@ window._script8.callCode = ({
     // draw the actors, with a bit of transparency.
     // Make sure to draw the actors fully opaque if we're on the last state.
 
-    // Try getting the current state from the existing store.
-    const currentState = script8.store && script8.store.getState()
+    if (isPaused) {
+    } else {
+      // Try getting the current state from the existing store.
+      const currentState = script8.store && script8.store.getState()
 
-    // Use the current state to (re)create the store.
-    script8.store = createStore(
-      script8.reducer,
-      currentState || undefined,
-      applyMiddleware(__reduxLogger)
-    )
+      // Use the current state to (re)create the store.
+      script8.store = createStore(
+        script8.reducer,
+        currentState || undefined,
+        applyMiddleware(__reduxLogger)
+      )
 
-    // Reassign a timer callback. Every tick,
-    __timerCallback = () => {
-      try {
-        // update globals (e.g. what's pressed),
-        __updateGlobals()
+      // Reassign a timer callback. Every tick,
+      __timerCallback = () => {
+        try {
+          // update globals (e.g. what's pressed),
+          __updateGlobals()
 
-        // TODO: is exposing update necessary?
-        // call update (this fires the tick action),
-        script8.update && script8.update()
+          // TODO: is exposing update necessary?
+          // call update (this fires the tick action),
+          script8.update && script8.update()
 
-        // expose the state,
-        script8.state = script8.store.getState()
+          // expose the state,
+          script8.state = script8.store.getState()
 
-        // and call draw.
-        script8.draw && script8.draw()
-      } catch (e) {
-        // If there is an error, print it as a warning.
-        console.warn(e.message)
+          // and call draw.
+          script8.draw && script8.draw()
+        } catch (e) {
+          // If there is an error, print it as a warning.
+          console.warn(e.message)
+        }
       }
-    }
 
-    // If we haven't created a timer yet,
-    // do so now.
-    if (!__timer) {
-      __timer = interval(__timerCallback, 1000 / 1)
+      // If we haven't created a timer yet,
+      // do so now.
+      if (!__timer) {
+        __timer = interval(__timerCallback, 1000 / 1)
+      }
     }
   } catch (e) {
     // If any part of this resulted in an error, print it.

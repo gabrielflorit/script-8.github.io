@@ -25,6 +25,7 @@ class Output extends Component {
     super(props)
 
     this.handlePlay = this.handlePlay.bind(this)
+    this.evaluate = this.evaluate.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
 
     this.state = {
@@ -40,31 +41,26 @@ class Output extends Component {
 
   handlePlay () {
     const { isPlaying } = this.state
-    console.log(this.state)
     this.setState({
       isPlaying: !isPlaying
     })
-    console.log(this.state)
-  }
-
-  shouldComponentUpdate (nextProps) {
-    return nextProps.game === this.props.game
   }
 
   componentDidMount () {
     this._iframe.focus()
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     if (this.isLoaded) {
-      const { game } = nextProps
-      if (game !== this.props.game) {
-        this.evaluate(nextProps)
-      }
+      // if (this.props.game !== prevProps.game) {
+      this.evaluate()
+      // }
     }
   }
 
-  evaluate ({ game, finishBoot, run, songs, chains, phrases, screen }) {
+  evaluate () {
+    const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
+
     // Get the iframe.
     const iframe = window.frames[0]
 
@@ -82,13 +78,15 @@ class Output extends Component {
 
     if (isValid) {
       // Send iframe the game code.
+      const isPaused = !this.state.isPlaying
       iframe._script8.callCode({
         game,
         songs,
         chains,
         phrases,
         run,
-        endCallback: finishBoot
+        endCallback: finishBoot,
+        isPaused,
       })
     } else {
       // If we had errors, print them to console.
@@ -116,7 +114,7 @@ class Output extends Component {
           }}
           onLoad={() => {
             this.isLoaded = true
-            this.evaluate(this.props)
+            this.evaluate()
           }}
         />
       </div>

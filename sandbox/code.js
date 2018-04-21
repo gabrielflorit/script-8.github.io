@@ -99,7 +99,7 @@ script8.update = () => {
 script8.draw = () => {
   clear()
   rectFill(0, 0, 128, 128, 6)
-  const state = script8.store.getState()
+  const { state } = script8
   draw.ball(state.ball)
   draw.paddle(state.paddle)
 }
