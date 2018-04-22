@@ -3,6 +3,7 @@ const modes = {
   play: 'play',
   over: 'over'
 }
+
 script8.initialState = {
   ball: {
     x: 64,
