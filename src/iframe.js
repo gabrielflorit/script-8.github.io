@@ -41,7 +41,8 @@ const __ctx = __canvas.getContext('2d')
 // Create a globals object. We'll move all these to window a bit further down.
 let __globals = {
   Math,
-  Date
+  Date,
+  Object
 }
 
 // Setup API functions.

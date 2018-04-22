@@ -3,35 +3,20 @@ const modes = {
   play: 'play',
   over: 'over'
 }
+const ballTemplate = {
+  type: 'ball',
+  x: 64,
+  y: 64,
+  xDir: 3,
+  yDir: -1,
+  radius: 6,
+  color: 0
+}
 
 script8.initialState = {
   actors: [
     {
-      type: 'ball',
-      x: 64,
-      y: 64,
-      xDir: 3,
-      yDir: -1,
-      radius: 4,
-      color: 0
-    },
-    {
-      type: 'ball',
-      x: 64,
-      y: 64,
-      xDir: 2,
-      yDir: -1,
-      radius: 5,
-      color: 1
-    },
-    {
-      type: 'ball',
-      x: 64,
-      y: 64,
-      xDir: 1,
-      yDir: -1,
-      radius: 6,
-      color: 2
+      ...ballTemplate
     },
     {
       type: 'paddle',
@@ -57,10 +42,10 @@ const bounceOffWalls = state => {
 const loseDeadBall = state => {
   state.actors.filter(d => d.type === 'ball').forEach((ball, i) => {
     if (ball.y > 128 - ball.radius) {
-      ball.x = 64
-      ball.y = 64
-      ball.xDir = 3 - i
-      ball.yDir = -1
+      ball.x = ballTemplate.x
+      ball.y = ballTemplate.y
+      ball.xDir = ballTemplate.xDir
+      ball.yDir = ballTemplate.yDir
       state.lives -= 1
       if (state.lives < 1) {
         state.mode = modes.over
@@ -71,6 +56,7 @@ const loseDeadBall = state => {
 
 const bounceOffPaddle = state => {
   const paddle = state.actors.find(d => d.type === 'paddle')
+  const newBalls = []
   state.actors.filter(d => d.type === 'ball').forEach(ball => {
     if (
       ball.x >= paddle.x &&
@@ -80,7 +66,20 @@ const bounceOffPaddle = state => {
     ) {
       ball.yDir = -Math.abs(ball.yDir)
       state.score++
+      const jump = 3
+      if (state.score === jump || state.score === jump * 2) {
+        const newBall = {
+          ...ballTemplate
+        }
+        const delta = Math.floor(state.score / jump)
+        newBall.color += delta
+        newBall.radius -= delta
+        newBalls.push(newBall)
+      }
     }
+  })
+  newBalls.forEach(ball => {
+    state.actors.push(ball)
   })
 }
 
@@ -117,12 +116,9 @@ script8.update = (state, input) => {
         state.mode = modes.play
         state.lives = script8.initialState.lives
         state.score = script8.initialState.score
-        state.actors.filter(d => d.type === 'ball').forEach((ball, i) => {
-          ball.x = 64
-          ball.y = 64
-          ball.xDir = 3 - i
-          ball.yDir = -1
-        })
+        state.actors = script8.initialState.actors.map(d => ({
+          ...d
+        }))
       }
       break
     }
