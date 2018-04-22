@@ -1,4 +1,5 @@
-const all = [
+// TODO: consolidate - avoid duplication
+const rgbs = [
   'rgb(246,214,189)',
   'rgb(195,163,138)',
   'rgb(153,117,119)',
@@ -9,7 +10,7 @@ const all = [
   'rgb(8,20,30)'
 ]
 
-const rgbs = [
+const triplets = [
   [246, 214, 189],
   [195, 163, 138],
   [153, 117, 119],
@@ -20,7 +21,7 @@ const rgbs = [
   [8, 20, 30]
 ]
 
-// const all = [
+// const hexes = [
 //   '#f6d6bd',
 //   '#c3a38a',
 //   '#997577',
@@ -32,12 +33,11 @@ const rgbs = [
 // ]
 
 const colors = {
-  all,
-  one (i) {
-    return all[i % all.length]
-  },
   rgb (i) {
     return rgbs[i % rgbs.length]
+  },
+  triplet (i) {
+    return triplets[i % triplets.length]
   }
 }
 

@@ -2,7 +2,7 @@ import colors from '../colors.js'
 import alphabet from './alphabet.js'
 
 const print = ({ x, y, letters, c, ctx }) => {
-  const color = colors.rgb(c)
+  const color = colors.triplet(c)
 
   const grids = letters
     .toString()

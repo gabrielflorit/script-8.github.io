@@ -12,6 +12,8 @@ import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
 import utilsAPI from './utils/utilsAPI.js'
 
+const FPS = 1
+
 // Create a noop for convenience.
 const __noop = () => {}
 
@@ -69,13 +71,12 @@ Object.keys(__globals).forEach(key => (window[key] = __globals[key]))
 // Define arrow key helpers.
 let __keys = new Set()
 
-// Export arrow booleans for convenience.
-let __updateableGlobals = {}
-const __updateGlobals = () => {
+// Export user input for convenience.
+let __userInput = {}
+const __updateUserInput = () => {
   const { buttons } = window.navigator.getGamepads()[0] || {}
 
-  __updateableGlobals = {
-    ...__updateableGlobals,
+  __userInput = {
     arrowUp: __keys.has('ArrowUp') || (buttons && buttons[12].pressed),
     arrowRight: __keys.has('ArrowRight') || (buttons && buttons[15].pressed),
     arrowDown: __keys.has('ArrowDown') || (buttons && buttons[13].pressed),
@@ -89,10 +90,8 @@ const __updateGlobals = () => {
     buttonStart: __keys.has('Enter') || (buttons && buttons[9].pressed),
     buttonSelect: __keys.has(' ') || (buttons && buttons[8].pressed)
   }
-  // Copy updateableGlobals to window.
-  Object.keys(__updateableGlobals).forEach(
-    key => (window[key] = __updateableGlobals[key])
-  )
+  // Copy user input to window.
+  Object.keys(__userInput).forEach(key => (window[key] = __userInput[key]))
 }
 
 // Keep track of what keys we're pressing.
@@ -109,17 +108,18 @@ document.addEventListener('keyup', e => {
 let __reduxHistory = []
 
 const __reduxLogger = store => next => action => {
-  const result = next(action)
-
   // Add this state and action to history,
-  // and limit it to the most recent N entries.
+  // and limit it to the 3 seconds worth of entries.
+  // We calculate this by using fps.
   __reduxHistory = [
     ...__reduxHistory,
     {
       state: store.getState(),
       action
     }
-  ].slice(-10)
+  ].slice(-(FPS * 3))
+
+  const result = next(action)
 
   return result
 }
@@ -181,7 +181,7 @@ window._script8.callCode = ({
       // Then, for all next actions in the history,
       // dispatch it,
       // and save the resulting state to alteredStates.
-      __reduxHistory.slice(1).forEach(({ state, action }) => {
+      __reduxHistory.forEach(({ state, action }) => {
         script8.store.dispatch(action)
         alteredStates.push(script8.store.getState())
       })
@@ -194,11 +194,11 @@ window._script8.callCode = ({
 
       // Then set the user state to the first one,
       // and for each altered state,
-      // draw the actors, with a bit of transparency.
+      // draw the actors, faded.
       // Make sure to draw the actors fully opaque if we're on the last state.
-      alteredStates.forEach(state => {
+      alteredStates.forEach((state, i) => {
         script8.state = state
-        script8.drawActors()
+        script8.drawActors(i < alteredStates.length - 1)
       })
     } else {
       // If the user has changed script8.initialState, use that.
@@ -223,12 +223,17 @@ window._script8.callCode = ({
       // Reassign a timer callback. Every tick,
       __timerCallback = () => {
         try {
-          // update globals (e.g. what's pressed),
-          __updateGlobals()
+          // TODO: is this necessary?
+          // update user input (e.g. what's pressed),
+          __updateUserInput()
 
           // TODO: is exposing update necessary?
           // call update (this fires the tick action),
-          script8.update && script8.update()
+          // script8.update && script8.update()
+          script8.store.dispatch({
+            type: 'TICK',
+            input: __userInput
+          })
 
           // expose the state,
           script8.state = script8.store.getState()
@@ -244,7 +249,7 @@ window._script8.callCode = ({
       // If we haven't created a timer yet,
       // do so now.
       if (!__timer) {
-        __timer = interval(__timerCallback, 1000 / 30)
+        __timer = interval(__timerCallback, 1000 / FPS)
       }
     }
   } catch (e) {
@@ -266,7 +271,7 @@ window.__script8.validateToken = token => {
     // If user types a token defined in globals or updateableGlobals,
     // it's valid.
     Object.keys(__globals).indexOf(token) > -1 ||
-    Object.keys(__updateableGlobals).indexOf(token) > -1 ||
+    Object.keys(__userInput).indexOf(token) > -1 ||
     token === 'script8'
   ) {
     isValid = true
