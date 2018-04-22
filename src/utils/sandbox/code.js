@@ -5,66 +5,95 @@ const modes = {
 }
 
 script8.initialState = {
-  ball: {
-    x: 64,
-    y: 64,
-    xDir: 3,
-    yDir: -2,
-    radius: 4
-  },
-  paddle: {
-    x: 64,
-    y: 120,
-    width: 36,
-    height: 4
-  },
+  actors: [
+    {
+      type: 'ball',
+      x: 64,
+      y: 64,
+      xDir: 3,
+      yDir: -1,
+      radius: 4,
+      color: 0
+    },
+    {
+      type: 'ball',
+      x: 64,
+      y: 64,
+      xDir: 2,
+      yDir: -1,
+      radius: 5,
+      color: 1
+    },
+    {
+      type: 'ball',
+      x: 64,
+      y: 64,
+      xDir: 1,
+      yDir: -1,
+      radius: 6,
+      color: 2
+    },
+    {
+      type: 'paddle',
+      x: 64,
+      y: 120,
+      width: 36,
+      height: 4
+    }
+  ],
   score: 0,
   lives: 3,
   mode: modes.start
 }
 
 const bounceOffWalls = state => {
-  const { ball } = state
-  const { x, y, radius } = ball
-  ball.xDir *= x < radius || x > 127 - radius ? -1 : 1
-  ball.yDir *= y < radius ? -1 : 1
+  state.actors.filter(d => d.type === 'ball').forEach(ball => {
+    const { x, y, radius } = ball
+    ball.xDir *= x < radius || x > 127 - radius ? -1 : 1
+    ball.yDir *= y < radius ? -1 : 1
+  })
 }
 
 const loseDeadBall = state => {
-  const { ball } = state
-  if (ball.y > 128 - ball.radius) {
-    ball.x = script8.initialState.ball.x
-    ball.y = script8.initialState.ball.y
-    ball.yDir = script8.initialState.ball.yDir
-    ball.xDir = script8.initialState.ball.xDir
-    state.lives -= 1
-    if (state.lives < 1) {
-      state.mode = modes.over
+  state.actors.filter(d => d.type === 'ball').forEach((ball, i) => {
+    if (ball.y > 128 - ball.radius) {
+      ball.x = 64
+      ball.y = 64
+      ball.xDir = 3 - i
+      ball.yDir = -1
+      state.lives -= 1
+      if (state.lives < 1) {
+        state.mode = modes.over
+      }
     }
-  }
+  })
 }
 
 const bounceOffPaddle = state => {
-  const { ball, paddle } = state
-  if (
-    ball.x >= paddle.x &&
-    ball.x <= paddle.x + paddle.width &&
-    ball.y >= paddle.y - paddle.height &&
-    ball.y <= paddle.y
-  ) {
-    ball.yDir = -Math.abs(ball.yDir)
-    state.score++
-  }
+  const paddle = state.actors.find(d => d.type === 'paddle')
+  state.actors.filter(d => d.type === 'ball').forEach(ball => {
+    if (
+      ball.x >= paddle.x &&
+      ball.x <= paddle.x + paddle.width &&
+      ball.y >= paddle.y - paddle.height &&
+      ball.y <= paddle.y
+    ) {
+      ball.yDir = -Math.abs(ball.yDir)
+      state.score++
+    }
+  })
 }
 
 const movePaddle = (state, input) => {
-  state.paddle.x += input.left ? -3 : input.right ? 3 : 0
+  const paddle = state.actors.find(d => d.type === 'paddle')
+  paddle.x += input.left ? -3 : input.right ? 3 : 0
 }
 
 const moveBall = state => {
-  const { ball } = state
-  ball.x += ball.xDir
-  ball.y += ball.yDir
+  state.actors.filter(d => d.type === 'ball').forEach(ball => {
+    ball.x += ball.xDir
+    ball.y += ball.yDir
+  })
 }
 
 script8.update = (state, input) => {
@@ -88,17 +117,21 @@ script8.update = (state, input) => {
         state.mode = modes.play
         state.lives = script8.initialState.lives
         state.score = script8.initialState.score
+        state.actors.filter(d => d.type === 'ball').forEach((ball, i) => {
+          ball.x = 64
+          ball.y = 64
+          ball.xDir = 3 - i
+          ball.yDir = -1
+        })
       }
       break
     }
   }
 }
 
-script8.actors = ['paddle', 'ball']
-
 const draw = {
-  ball ({ x, y, radius, fade }) {
-    circFill(x, y, radius, fade ? 4 : 0)
+  ball ({ x, y, radius, color, fade }) {
+    circFill(x, y, radius, fade ? color : color)
   },
   paddle ({ x, y, width, height, fade }) {
     rectFill(x, y, width, height, fade ? 5 : 2)
@@ -106,8 +139,8 @@ const draw = {
 }
 
 script8.drawActors = (state, fade) => {
-  script8.actors.forEach(actor => {
-    draw[actor]({ ...state[actor], fade })
+  state.actors.forEach(actor => {
+    draw[actor.type]({ ...actor, fade })
   })
 }
 
