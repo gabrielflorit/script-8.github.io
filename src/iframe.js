@@ -12,7 +12,7 @@ import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
 import utilsAPI from './utils/utilsAPI.js'
 
-const FPS = 30
+const FPS = 60
 
 // Create a noop for convenience.
 const __noop = () => {}
@@ -160,9 +160,13 @@ window._script8.callCode = ({
     const __reducer = (state = script8.initialState, action) => {
       switch (action.type) {
         case 'TICK': {
-          return script8.updateState
-            ? script8.updateState(state, action.input)
-            : state
+          if (script8.updateState) {
+            const newState = JSON.parse(JSON.stringify(state))
+            script8.updateState(newState, action.input)
+            return newState
+          } else {
+            return state
+          }
         }
         default:
           return state

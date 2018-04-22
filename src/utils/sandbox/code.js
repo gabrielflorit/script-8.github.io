@@ -23,141 +23,75 @@ script8.initialState = {
   mode: modes.start
 }
 
-const bounceOffWalls = ({ state }) => {
+const bounceOffWalls = state => {
   const { ball } = state
-  const { x, y, radius, xDir, yDir } = ball
-  const newXDir = x < radius || x > 127 - radius ? xDir * -1 : xDir
-  const newYDir = y < radius ? yDir * -1 : yDir
-  return {
-    ...state,
-    ball: {
-      ...ball,
-      xDir: newXDir,
-      yDir: newYDir
-    }
-  }
+  const { x, y, radius } = ball
+  ball.xDir *= x < radius || x > 127 - radius ? -1 : 1
+  ball.yDir *= y < radius ? -1 : 1
 }
 
-const loseDeadBall = ({ state }) => {
-  const { ball, lives, mode } = state
-  let newX = ball.x
-  let newY = ball.y
-  let newYDir = ball.yDir
-  let newLives = lives
-  let newMode = mode
+const loseDeadBall = state => {
+  const { ball } = state
   if (ball.y > 128 - ball.radius) {
-    newX = script8.initialState.ball.x
-    newY = script8.initialState.ball.y
-    newYDir = script8.initialState.ball.yDir
-    newLives -= 1
-    if (newLives < 1) {
-      newMode = modes.over
+    ball.x = script8.initialState.ball.x
+    ball.y = script8.initialState.ball.y
+    ball.yDir = script8.initialState.ball.yDir
+    state.lives -= 1
+    if (state.lives < 1) {
+      state.mode = modes.over
     }
-  }
-  return {
-    ...state,
-    ball: {
-      ...ball,
-      x: newX,
-      y: newY,
-      yDir: newYDir
-    },
-    lives: newLives,
-    mode: newMode
   }
 }
 
-const bounceOffPaddle = ({ state }) => {
-  const { ball, paddle, score } = state
-  let newYDir = ball.yDir
-  let newScore = score
+const bounceOffPaddle = state => {
+  const { ball, paddle } = state
   if (
     ball.x >= paddle.x &&
     ball.x <= paddle.x + paddle.width &&
     ball.y >= paddle.y - paddle.height &&
     ball.y <= paddle.y
   ) {
-    newYDir = -Math.abs(newYDir)
-    newScore++
-  }
-  return {
-    ...state,
-    ball: {
-      ...ball,
-      yDir: newYDir
-    },
-    score: newScore
+    ball.yDir = -Math.abs(ball.yDir)
+    state.score++
   }
 }
 
-const movePaddle = ({ state, input }) => ({
-  ...state,
-  paddle: {
-    ...state.paddle,
-    x: state.paddle.x + (input.left ? -3 : input.right ? 3 : 0)
-  }
-})
+const movePaddle = (state, input) => {
+  state.paddle.x += input.left ? -3 : input.right ? 3 : 0
+}
 
-const moveBall = ({ state }) => ({
-  ...state,
-  ball: {
-    ...state.ball,
-    x: state.ball.x + state.ball.xDir,
-    y: state.ball.y + state.ball.yDir
-  }
-})
+const moveBall = state => {
+  const { ball } = state
+  ball.x += ball.xDir
+  ball.y += ball.yDir
+}
 
 script8.updateState = (state, input) => {
-  let newState = { ...state }
-
-  switch (newState.mode) {
+  switch (state.mode) {
     case modes.start: {
       if (input.start) {
-        newState = {
-          ...newState,
-          mode: modes.play
-        }
+        state.mode = modes.play
       }
       break
     }
     case modes.play: {
-      // Move paddle.
-      newState = movePaddle({ state: newState, input })
-
-      // Bounce ball off walls.
-      newState = bounceOffWalls({ state: newState })
-
-      // Bounce ball off paddle.
-      newState = bounceOffPaddle({ state: newState })
-
-      // Move ball.
-      newState = moveBall({ state: newState })
-
-      // Lose dead ball.
-      newState = loseDeadBall({ state: newState })
+      movePaddle(state, input)
+      bounceOffWalls(state)
+      bounceOffPaddle(state)
+      moveBall(state)
+      loseDeadBall(state)
       break
     }
     case modes.over: {
       if (input.start) {
-        newState = {
-          ...newState,
-          mode: modes.play,
-          score: 0,
-          lives: script8.initialState.lives
-        }
+        state.mode = modes.play
+        state.score = 0
+        state.lives = script8.initialState.lives
       }
       break
     }
   }
-
-  return newState
 }
-
-// I want the ability to, at run-time, select which actor or actors
-// to highlight.
-// For that, I need to have a list of actors to choose from.
-// Then, when paused, I draw everything, plus the non-highlightable actors.
-// And then I highlight the actors.
 
 script8.actors = ['paddle', 'ball']
 
