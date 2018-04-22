@@ -36,6 +36,7 @@ const loseDeadBall = state => {
     ball.x = script8.initialState.ball.x
     ball.y = script8.initialState.ball.y
     ball.yDir = script8.initialState.ball.yDir
+    ball.xDir = script8.initialState.ball.xDir
     state.lives -= 1
     if (state.lives < 1) {
       state.mode = modes.over
@@ -85,8 +86,8 @@ script8.updateState = (state, input) => {
     case modes.over: {
       if (input.start) {
         state.mode = modes.play
-        state.score = 0
         state.lives = script8.initialState.lives
+        state.score = script8.initialState.score
       }
       break
     }
