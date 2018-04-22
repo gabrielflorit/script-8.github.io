@@ -23,7 +23,8 @@ script8.initialState = {
       x: 64,
       y: 120,
       width: 36,
-      height: 4
+      height: 4,
+      color: 2
     }
   ],
   score: 0,
@@ -86,6 +87,8 @@ const bounceOffPaddle = state => {
 const movePaddle = (state, input) => {
   const paddle = state.actors.find(d => d.type === 'paddle')
   paddle.x += input.left ? -3 : input.right ? 3 : 0
+  paddle.x = Math.max(0, paddle.x)
+  paddle.x = Math.min(128 - paddle.width, paddle.x)
 }
 
 const moveBall = state => {
@@ -127,10 +130,10 @@ script8.update = (state, input) => {
 
 const draw = {
   ball ({ x, y, radius, color, fade }) {
-    circFill(x, y, radius, fade ? color : color)
+    circFill(x, y, radius, fade ? color + 2 : color)
   },
-  paddle ({ x, y, width, height, fade }) {
-    rectFill(x, y, width, height, fade ? 5 : 2)
+  paddle ({ x, y, width, height, color, fade }) {
+    rectFill(x, y, width, height, fade ? color + 2 : color)
   }
 }
 
