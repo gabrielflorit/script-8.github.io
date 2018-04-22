@@ -1,15 +1,3 @@
-const actionTypes = {
-  TICK: 'TICK'
-}
-
-// const tick = () => ({
-//   type: actionTypes.TICK
-// })
-
-// const actions = {
-//   tick
-// }
-
 script8.initialState = {
   ball: {
     x: 64,
@@ -58,46 +46,34 @@ const bounceOffPaddle = ({ ball, paddle }) => {
   return result
 }
 
-script8.reducer = (state = script8.initialState, action) => {
-  log(action)
-  switch (action.type) {
-    case actionTypes.TICK: {
-      const { input } = action
-      // Bounce ball off walls.
-      let ball = bounceOffWalls(state.ball)
+script8.updateState = (state, input) => {
+  let { ball, paddle } = state
 
-      // Bounce ball off paddle.
-      ball = bounceOffPaddle({ ball, paddle: state.paddle })
+  // Bounce ball off walls.
+  ball = bounceOffWalls(ball)
 
-      // Move ball.
-      ball = {
-        ...ball,
-        x: ball.x + ball.xDir,
-        y: ball.y + ball.yDir
-      }
+  // Bounce ball off paddle.
+  ball = bounceOffPaddle({ ball, paddle: state.paddle })
 
-      // Move paddle.
-      log({ left: input.arrowLeft })
-      const { paddle } = state
-      const newPaddle = {
-        ...paddle,
-        x: paddle.x + (input.arrowLeft ? -1 : 0)
-      }
+  // Move ball.
+  ball = {
+    ...ball,
+    x: ball.x + ball.xDir,
+    y: ball.y + ball.yDir
+  }
 
-      return {
-        ...state,
-        ball,
-        paddle: newPaddle
-      }
-    }
-    default:
-      return state
+  // Move paddle.
+  paddle = {
+    ...paddle,
+    x: paddle.x + (input.left ? -3 : input.right ? 3 : 0)
+  }
+
+  return {
+    ...state,
+    ball,
+    paddle
   }
 }
-
-// script8.update = () => {
-//   script8.store.dispatch(actions.tick())
-// }
 
 // I want the ability to, at run-time, select which actor or actors
 // to highlight.

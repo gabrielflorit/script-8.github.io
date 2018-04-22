@@ -12,7 +12,7 @@ import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
 import utilsAPI from './utils/utilsAPI.js'
 
-const FPS = 1
+const FPS = 30
 
 // Create a noop for convenience.
 const __noop = () => {}
@@ -72,26 +72,23 @@ Object.keys(__globals).forEach(key => (window[key] = __globals[key]))
 let __keys = new Set()
 
 // Export user input for convenience.
-let __userInput = {}
-const __updateUserInput = () => {
+const getUserInput = () => {
   const { buttons } = window.navigator.getGamepads()[0] || {}
 
-  __userInput = {
-    arrowUp: __keys.has('ArrowUp') || (buttons && buttons[12].pressed),
-    arrowRight: __keys.has('ArrowRight') || (buttons && buttons[15].pressed),
-    arrowDown: __keys.has('ArrowDown') || (buttons && buttons[13].pressed),
-    arrowLeft: __keys.has('ArrowLeft') || (buttons && buttons[14].pressed),
-    buttonA:
+  return {
+    up: __keys.has('ArrowUp') || (buttons && buttons[12].pressed),
+    right: __keys.has('ArrowRight') || (buttons && buttons[15].pressed),
+    down: __keys.has('ArrowDown') || (buttons && buttons[13].pressed),
+    left: __keys.has('ArrowLeft') || (buttons && buttons[14].pressed),
+    a:
       __keys.has('a') ||
       (buttons && (buttons[1].pressed || buttons[2].pressed)),
-    buttonB:
+    b:
       __keys.has('b') ||
       (buttons && (buttons[0].pressed || buttons[3].pressed)),
-    buttonStart: __keys.has('Enter') || (buttons && buttons[9].pressed),
-    buttonSelect: __keys.has(' ') || (buttons && buttons[8].pressed)
+    start: __keys.has('Enter') || (buttons && buttons[9].pressed),
+    select: __keys.has(' ') || (buttons && buttons[8].pressed)
   }
-  // Copy user input to window.
-  Object.keys(__userInput).forEach(key => (window[key] = __userInput[key]))
 }
 
 // Keep track of what keys we're pressing.
@@ -119,9 +116,7 @@ const __reduxLogger = store => next => action => {
     }
   ].slice(-(FPS * 3))
 
-  const result = next(action)
-
-  return result
+  return next(action)
 }
 
 let __previousInitialState = {}
@@ -161,6 +156,20 @@ window._script8.callCode = ({
       eval(game)
     `)
 
+    const __reducer = (state = script8.initialState, action) => {
+      switch (action.type) {
+        case 'TICK': {
+          return script8.updateState
+            ? script8.updateState(state, action.input)
+            : state
+        }
+        default:
+          return state
+      }
+    }
+
+    let __store
+
     // If it's paused,
     if (isPaused) {
       // stop and destroy the timer.
@@ -173,17 +182,17 @@ window._script8.callCode = ({
 
       // Create the store with the first item in reduxHistory
       // as the initial state.
-      script8.store = createStore(script8.reducer, __reduxHistory[0].state)
+      __store = createStore(__reducer, __reduxHistory[0].state)
 
       // Save that state to alteredStates.
-      alteredStates.push(script8.store.getState())
+      alteredStates.push(__store.getState())
 
       // Then, for all next actions in the history,
       // dispatch it,
       // and save the resulting state to alteredStates.
       __reduxHistory.forEach(({ state, action }) => {
-        script8.store.dispatch(action)
-        alteredStates.push(script8.store.getState())
+        __store.dispatch(action)
+        alteredStates.push(__store.getState())
       })
 
       // Now we have all the alteredStates.
@@ -207,15 +216,14 @@ window._script8.callCode = ({
         __storeState = script8.initialState
       } else {
         // If they haven't, try using the state from existing store.
-        __storeState = script8.store && script8.store.getState()
+        __storeState = __store && __store.getState()
       }
       // Save the user's script8.initialState so we have it for later.
       __previousInitialState = script8.initialState
 
       // Use the current state to (re)create the store.
-      // TODO: do we have to expose store?
-      script8.store = createStore(
-        script8.reducer,
+      __store = createStore(
+        __reducer,
         __storeState || undefined,
         applyMiddleware(__reduxLogger)
       )
@@ -223,20 +231,14 @@ window._script8.callCode = ({
       // Reassign a timer callback. Every tick,
       __timerCallback = () => {
         try {
-          // TODO: is this necessary?
-          // update user input (e.g. what's pressed),
-          __updateUserInput()
-
-          // TODO: is exposing update necessary?
-          // call update (this fires the tick action),
-          // script8.update && script8.update()
-          script8.store.dispatch({
+          // update the redux store,
+          __store.dispatch({
             type: 'TICK',
-            input: __userInput
+            input: getUserInput()
           })
 
           // expose the state,
-          script8.state = script8.store.getState()
+          script8.state = __store.getState()
 
           // and call draw.
           script8.draw && script8.draw()
@@ -271,7 +273,6 @@ window.__script8.validateToken = token => {
     // If user types a token defined in globals or updateableGlobals,
     // it's valid.
     Object.keys(__globals).indexOf(token) > -1 ||
-    Object.keys(__userInput).indexOf(token) > -1 ||
     token === 'script8'
   ) {
     isValid = true
