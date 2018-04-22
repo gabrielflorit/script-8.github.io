@@ -160,9 +160,9 @@ window._script8.callCode = ({
     const __reducer = (state = script8.initialState, action) => {
       switch (action.type) {
         case 'TICK': {
-          if (script8.updateState) {
+          if (script8.update) {
             const newState = JSON.parse(JSON.stringify(state))
-            script8.updateState(newState, action.input)
+            script8.update(newState, action.input)
             return newState
           } else {
             return state
@@ -201,16 +201,14 @@ window._script8.callCode = ({
       // Now we have all the alteredStates.
 
       // Set the user state to the last one, and draw everything.
-      script8.state = alteredStates[alteredStates.length - 1]
-      script8.draw()
+      script8.draw(alteredStates[alteredStates.length - 1])
 
       // Then set the user state to the first one,
       // and for each altered state,
       // draw the actors, faded.
       // Make sure to draw the actors fully opaque if we're on the last state.
       alteredStates.forEach((state, i) => {
-        script8.state = state
-        script8.drawActors(i < alteredStates.length - 1)
+        script8.drawActors(state, i < alteredStates.length - 1)
       })
     } else {
       __reduxHistory = []
@@ -242,11 +240,8 @@ window._script8.callCode = ({
             input: getUserInput()
           })
 
-          // expose the state,
-          script8.state = __store.getState()
-
           // and call draw.
-          script8.draw && script8.draw()
+          script8.draw && script8.draw(__store.getState())
         } catch (e) {
           // If there is an error, print it as a warning.
           console.warn(e.message)

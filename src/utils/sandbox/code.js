@@ -67,7 +67,7 @@ const moveBall = state => {
   ball.y += ball.yDir
 }
 
-script8.updateState = (state, input) => {
+script8.update = (state, input) => {
   switch (state.mode) {
     case modes.start: {
       if (input.start) {
@@ -105,17 +105,16 @@ const draw = {
   }
 }
 
-script8.drawActors = fade => {
-  const { state } = script8
+script8.drawActors = (state, fade) => {
   script8.actors.forEach(actor => {
     draw[actor]({ ...state[actor], fade })
   })
 }
 
-script8.draw = () => {
+script8.draw = state => {
   clear()
   rectFill(0, 0, 128, 128, 6)
-  const { score, lives, mode } = script8.state
+  const { score, lives, mode } = state
   switch (mode) {
     case modes.start: {
       print(7, 34, 'this is a paddle-and-ball game', 2)
@@ -128,7 +127,7 @@ script8.draw = () => {
       range(lives).forEach(i => {
         circStroke(100 + i * 8, 10, 3, 3)
       })
-      script8.drawActors()
+      script8.drawActors(state)
       break
     }
     case modes.over: {
