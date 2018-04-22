@@ -120,6 +120,7 @@ const __reduxLogger = store => next => action => {
 }
 
 let __previousInitialState = {}
+let __store
 
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
@@ -168,8 +169,6 @@ window._script8.callCode = ({
       }
     }
 
-    let __store
-
     // If it's paused,
     if (isPaused) {
       // stop and destroy the timer.
@@ -210,6 +209,8 @@ window._script8.callCode = ({
         script8.drawActors(i < alteredStates.length - 1)
       })
     } else {
+      __reduxHistory = []
+
       // If the user has changed script8.initialState, use that.
       let __storeState
       if (!equal(script8.initialState, __previousInitialState)) {
