@@ -7,10 +7,12 @@ import flatten from 'lodash/flatten'
 import random from 'lodash/random'
 import clamp from 'lodash/clamp'
 import once from 'lodash/once'
+import uniqBy from 'lodash/uniqBy'
 
 import canvasAPI from './utils/canvasAPI/index.js'
 import soundAPI from './utils/soundAPI/index.js'
 import utilsAPI from './utils/utilsAPI.js'
+import trimCanvas from './utils/canvasAPI/trimCanvas.js'
 
 const FPS = 60
 
@@ -34,7 +36,7 @@ window._script8 = {}
 window.__script8 = {}
 
 // Initialize canvas.
-const __canvas = document.querySelector('canvas')
+const __canvas = document.querySelector('canvas.master')
 const __size = 128
 const __ctx = __canvas.getContext('2d')
 
@@ -120,6 +122,7 @@ const __reduxLogger = store => next => action => {
   return next(action)
 }
 
+const __timelineDiv = document.querySelector('div.timeline')
 const __input = document.querySelector('input')
 let __inputCallback = __noop
 __input.addEventListener('input', e => {
@@ -188,8 +191,8 @@ window._script8.callCode = ({
         __timer = null
       }
 
-      // show the slider.
-      __input.classList.remove('invisible')
+      // show the timeline.
+      __timelineDiv.classList.remove('invisible')
 
       const alteredStates = []
 
@@ -208,10 +211,36 @@ window._script8.callCode = ({
         alteredStates.push(__store.getState())
       })
 
-      // // Get actors for every state.
-      // const lengths = alteredStates.map(state =>
-      //   state.actors.map(actor => actor.name)
-      // )
+      // Get all unique actors.
+      const actors = flatten(alteredStates.map(state => state.actors))
+      const uniqueActors = uniqBy(actors, d => d.name)
+
+      // Clear out ul items.
+      const ul = document.querySelector('ul')
+      while (ul.firstChild) {
+        ul.firstChild.remove()
+      }
+
+      // For each unique actor,
+      uniqueActors.forEach(actor => {
+        window.clear()
+        // draw it,
+        script8.drawActors({ actors: [actor] })
+
+        // get its canvas,
+        const lilCanvas = trimCanvas({
+          ctx: __ctx,
+          width: __size,
+          height: __size
+        })
+
+        // and create the corresponding button.
+        const li = document.createElement('li')
+        const button = document.createElement('button')
+        button.appendChild(lilCanvas)
+        li.appendChild(button)
+        ul.appendChild(li)
+      })
 
       __input.max = alteredStates.length - 1
       __input.value = alteredStates.length - 1
@@ -240,8 +269,8 @@ window._script8.callCode = ({
       }
       __inputCallback(alteredStates.length - 1)
     } else {
-      // hide the slider.
-      __input.classList.add('invisible')
+      // hide the timeline.
+      __timelineDiv.classList.add('invisible')
 
       __reduxHistory = []
 

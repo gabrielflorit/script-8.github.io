@@ -17,9 +17,6 @@ body {
   visibility: hidden;
 }
 
-div.container {
-}
-
 input {
   width: calc(100% - 3px);
   display: block;
@@ -27,8 +24,28 @@ input {
 
 canvas {
   display: block;
-  width: 100vw;
-  height: 100vw;
   image-rendering: -moz-crisp-edges;
   image-rendering: pixelated;
+}
+
+canvas.master {
+  width: 100vw;
+  height: 100vw;
+}
+
+ul {
+  justify-content: space-between;
+  display: flex;
+  list-style: none;
+}
+
+ul li button {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  width: calc(16px * 2);
+  height: calc(16px * 2);
+}
+
+ul li button canvas {
+  width: 100%;
 }
