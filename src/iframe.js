@@ -115,7 +115,7 @@ const __reduxLogger = store => next => action => {
       state: store.getState(),
       action
     }
-  ].slice(-(FPS * 3))
+  ].slice(-(FPS * 2))
 
   return next(action)
 }
@@ -209,7 +209,7 @@ window._script8.callCode = ({
 
       // For each altered state, minus the timeLineIndex one, draw the actors, faded.
       alteredStates.forEach((state, i) => {
-        if (i !== timeLineIndex) {
+        if (i !== timeLineIndex && i % 4 === 0) {
           script8.drawActors(state, true)
         }
       })

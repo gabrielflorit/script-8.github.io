@@ -46,7 +46,8 @@ class Output extends Component {
   handlePlay () {
     const { isPlaying } = this.state
     this.setState({
-      isPlaying: !isPlaying
+      isPlaying: !isPlaying,
+      timeLineIndex: 0
     })
   }
 
