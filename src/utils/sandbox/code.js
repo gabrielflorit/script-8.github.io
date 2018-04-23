@@ -5,6 +5,7 @@ const modes = {
 }
 const ballTemplate = {
   type: 'ball',
+  name: 'ball0',
   x: 64,
   y: 64,
   xDir: 3,
@@ -20,6 +21,7 @@ script8.initialState = {
     },
     {
       type: 'paddle',
+      name: 'paddle',
       x: 64,
       y: 120,
       width: 36,
@@ -69,10 +71,11 @@ const bounceOffPaddle = state => {
       state.score++
       const jump = 3
       if (state.score === jump || state.score === jump * 2) {
-        const newBall = {
-          ...ballTemplate
-        }
         const delta = Math.floor(state.score / jump)
+        const newBall = {
+          ...ballTemplate,
+          name: `ball${delta}`
+        }
         newBall.color += delta
         newBall.radius -= delta
         newBalls.push(newBall)

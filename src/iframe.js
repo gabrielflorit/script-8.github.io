@@ -204,6 +204,13 @@ window._script8.callCode = ({
       // Now we have all the alteredStates.
       timeLineLengthCallback(alteredStates.length)
 
+      // Get actors for every state.
+      const lengths = alteredStates.map(state =>
+        state.actors.map(actor => actor.name)
+      )
+
+      console.log(JSON.stringify(lengths, null, 2))
+
       // Set the user state to the last one, and draw everything.
       script8.draw(alteredStates[alteredStates.length - 1])
 
