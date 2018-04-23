@@ -13,7 +13,16 @@ body {
   align-items: center;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 div.container {
+}
+
+input {
+  width: calc(100% - 3px);
+  display: block;
 }
 
 canvas {

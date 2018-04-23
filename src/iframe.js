@@ -120,6 +120,12 @@ const __reduxLogger = store => next => action => {
   return next(action)
 }
 
+const __input = document.querySelector('input')
+let __inputCallback = __noop
+__input.addEventListener('input', e => {
+  __inputCallback(+e.target.value)
+})
+
 let __previousInitialState = {}
 let __store
 
@@ -131,9 +137,7 @@ window._script8.callCode = ({
   phrases,
   run,
   isPaused,
-  endCallback = __noop,
-  timeLineLengthCallback = __noop,
-  timeLineIndex
+  endCallback = __noop
 }) => {
   // If we're in `run` mode, create playSong function from music data.
   // Otherwise ignore - we don't want to hear music while we code!
@@ -184,6 +188,9 @@ window._script8.callCode = ({
         __timer = null
       }
 
+      // show the slider.
+      __input.classList.remove('invisible')
+
       const alteredStates = []
 
       // Create the store with the first item in reduxHistory
@@ -201,33 +208,41 @@ window._script8.callCode = ({
         alteredStates.push(__store.getState())
       })
 
-      // Now we have all the alteredStates.
-      timeLineLengthCallback(alteredStates.length)
+      // // Get actors for every state.
+      // const lengths = alteredStates.map(state =>
+      //   state.actors.map(actor => actor.name)
+      // )
 
-      // Get actors for every state.
-      const lengths = alteredStates.map(state =>
-        state.actors.map(actor => actor.name)
-      )
+      __input.max = alteredStates.length - 1
+      __input.value = alteredStates.length - 1
 
-      console.log(JSON.stringify(lengths, null, 2))
+      __inputCallback = timeLineIndex => {
+        // Set the user state to the last one, and draw everything.
+        script8.draw(alteredStates[alteredStates.length - 1])
 
-      // Set the user state to the last one, and draw everything.
-      script8.draw(alteredStates[alteredStates.length - 1])
+        // For each altered state, minus the timeLineIndex one,
+        // draw the actors, faded.
+        alteredStates.forEach((state, i) => {
+          if (
+            (i !== timeLineIndex && i % 4 === 0) ||
+            i === alteredStates.length - 1
+          ) {
+            script8.drawActors(state, true)
+          }
+        })
 
-      // For each altered state, minus the timeLineIndex one, draw the actors, faded.
-      alteredStates.forEach((state, i) => {
-        if (i !== timeLineIndex && i % 4 === 0) {
-          script8.drawActors(state, true)
-        }
-      })
+        // Draw the timeLineIndex one last, not faded.
+        script8.drawActors(alteredStates[timeLineIndex])
 
-      // Draw the timeLineIndex one last, not faded.
-      script8.drawActors(alteredStates[timeLineIndex])
-
-      // Finally, set the store to point to the timeLineIndex altered state,
-      // so that when we hit play, we can resume right from this point.
-      __store = createStore(__reducer, alteredStates[timeLineIndex])
+        // Finally, set the store to point to the timeLineIndex altered state,
+        // so that when we hit play, we can resume right from this point.
+        __store = createStore(__reducer, alteredStates[timeLineIndex])
+      }
+      __inputCallback(alteredStates.length - 1)
     } else {
+      // hide the slider.
+      __input.classList.add('invisible')
+
       __reduxHistory = []
 
       // If the user has changed script8.initialState, use that.
