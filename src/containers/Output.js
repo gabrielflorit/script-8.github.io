@@ -99,15 +99,6 @@ class Output extends Component {
   }
 
   render () {
-    // <input
-    //   className={classNames({ invisible: isPlaying })}
-    //   type='range'
-    //   min={0}
-    //   step={1}
-    //   max={timeLineLength - 1}
-    //   value={timeLineIndex}
-    //   onChange={this.handleTimelineIndexChange}
-    // />
     const { isPlaying } = this.state
     return (
       <div className='Output'>

@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  src: local('VT323 Regular'), local('VT323-Regular'), url("fonts/VT323-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+}
+
 body {
   position: absolute;
   width: 100%;
@@ -48,4 +56,39 @@ ul li button {
 
 ul li button canvas {
   width: 100%;
+}
+
+button.play {
+  display: block;
+  width: 100%;
+  border: solid #0f2a3f 1px;
+  height: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+button.play.active {
+  cursor: pointer;
+}
+
+.button {
+  border: none;
+  color: #997577;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  padding: 0 0.75rem;
+  margin: 0;
+
+  font-family: 'VT323', monospace;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+
+.button:hover {
+  color: #f6d6bd;
+}
+
+button.active {
+  color: #c3a38a;
+  background: $palette-6;
+  cursor: default;
 }

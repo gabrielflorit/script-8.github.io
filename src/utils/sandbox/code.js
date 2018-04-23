@@ -148,6 +148,8 @@ script8.drawActors = (state, fade) => {
 
 script8.draw = state => {
   clear()
+  // circFill(64, 64, 6, 0)
+  // log(toImage())
   rectFill(0, 0, 128, 128, 6)
   const { score, lives, mode } = state
   switch (mode) {
