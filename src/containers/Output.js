@@ -82,6 +82,11 @@ class Output extends Component {
     // Get the iframe.
     const iframe = window.frames[0]
 
+    // Set iframe height.
+    this._iframe.height = this._iframe.contentWindow.document.body.querySelector(
+      '.container'
+    ).scrollHeight
+
     // Validate code before drawing:
 
     // get the iframe's validateToken function,
