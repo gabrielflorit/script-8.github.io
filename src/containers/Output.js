@@ -26,9 +26,11 @@ class Output extends Component {
 
     this.handlePlay = this.handlePlay.bind(this)
     this.evaluate = this.evaluate.bind(this)
+    this.handleTimelineLength = this.handleTimelineLength.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
 
     this.state = {
+      timeLineLength: 0,
       isPlaying: true
     }
   }
@@ -50,15 +52,18 @@ class Output extends Component {
     this._iframe.focus()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate (prevProps, prevState) {
     if (this.isLoaded) {
-      // if (this.props.game !== prevProps.game) {
-      this.evaluate()
-      // }
+      this.evaluate(prevState)
     }
   }
 
-  evaluate () {
+  handleTimelineLength (timeLineLength) {
+    console.log(timeLineLength)
+    this.setState({ timeLineLength })
+  }
+
+  evaluate (prevState) {
     const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
 
     // Get the iframe.
@@ -78,7 +83,10 @@ class Output extends Component {
 
     if (isValid) {
       // Send iframe the game code.
+      const wasPaused = prevState && !prevState.isPlaying
       const isPaused = !this.state.isPlaying
+      const timeLineLengthCallback =
+        isPaused && !wasPaused ? this.handleTimelineLength : undefined
       iframe._script8.callCode({
         game,
         songs,
@@ -86,6 +94,7 @@ class Output extends Component {
         phrases,
         run,
         endCallback: finishBoot,
+        timeLineLengthCallback,
         isPaused
       })
     } else {

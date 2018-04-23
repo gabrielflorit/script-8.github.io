@@ -131,7 +131,8 @@ window._script8.callCode = ({
   phrases,
   run,
   isPaused,
-  endCallback = __noop
+  endCallback = __noop,
+  timeLineLengthCallback = __noop
 }) => {
   // If we're in `run` mode, create playSong function from music data.
   // Otherwise ignore - we don't want to hear music while we code!
@@ -200,6 +201,7 @@ window._script8.callCode = ({
       })
 
       // Now we have all the alteredStates.
+      timeLineLengthCallback(alteredStates.length)
 
       // Set the user state to the last one, and draw everything.
       script8.draw(alteredStates[alteredStates.length - 1])
