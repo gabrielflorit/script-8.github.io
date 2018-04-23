@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import classNames from 'classnames'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
@@ -24,26 +23,14 @@ class Output extends Component {
   constructor (props) {
     super(props)
 
-    this.handlePlay = this.handlePlay.bind(this)
     this.evaluate = this.evaluate.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
-
-    this.state = {
-      isPlaying: true
-    }
   }
 
   noop () {}
 
   handleBlur (e) {
     e.currentTarget.focus()
-  }
-
-  handlePlay () {
-    const { isPlaying } = this.state
-    this.setState({
-      isPlaying: !isPlaying
-    })
   }
 
   componentDidMount () {
@@ -58,7 +45,6 @@ class Output extends Component {
 
   evaluate () {
     const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
-    const { isPlaying } = this.state
 
     // Get the iframe.
     const iframe = window.frames[0]
@@ -82,15 +68,13 @@ class Output extends Component {
 
     if (isValid) {
       // Send iframe the game code.
-      const isPaused = !isPlaying
       iframe._script8.callCode({
         game,
         songs,
         chains,
         phrases,
         run,
-        endCallback: finishBoot,
-        isPaused
+        endCallback: finishBoot
       })
     } else {
       // If we had errors, print them to console.
@@ -99,15 +83,8 @@ class Output extends Component {
   }
 
   render () {
-    const { isPlaying } = this.state
     return (
       <div className='Output'>
-        <button
-          className={classNames('play button', { active: !isPlaying })}
-          onClick={this.handlePlay}
-        >
-          {isPlaying ? 'pause' : 'play'}
-        </button>
         <iframe
           src='iframe.html'
           sandbox='allow-scripts allow-same-origin'

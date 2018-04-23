@@ -26,8 +26,10 @@ body {
 }
 
 input {
-  width: calc(100% - 3px);
+  /* width: calc(100% - 3px); */
+  width: 100%;
   display: block;
+  margin: 0.75rem 0;
 }
 
 canvas {
@@ -39,12 +41,16 @@ canvas {
 canvas.master {
   width: 100vw;
   height: 100vw;
+  margin-bottom: 3rem;
 }
 
 ul {
-  justify-content: space-between;
   display: flex;
   list-style: none;
+}
+
+ul li {
+  margin-right: 1.5rem;
 }
 
 ul li button {
@@ -58,18 +64,7 @@ ul li button canvas {
   width: 100%;
 }
 
-button.play {
-  display: block;
-  width: 100%;
-  border: solid #0f2a3f 1px;
-  height: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-button.play.active {
-  cursor: pointer;
-}
-
-.button {
+button.button {
   border: none;
   color: #997577;
   cursor: pointer;
@@ -77,18 +72,27 @@ button.play.active {
   outline: none;
   padding: 0 0.75rem;
   margin: 0;
-
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   font-size: 1.5rem;
 }
 
-.button:hover {
+button.button:hover {
   color: #f6d6bd;
 }
 
-button.active {
+button.button.active {
   color: #c3a38a;
-  background: $palette-6;
-  cursor: default;
+  background: #0f2a3f;
+}
+
+button.play {
+  display: block;
+  width: 100%;
+  border: solid #0f2a3f 1px;
+  height: 1.5rem;
+}
+
+button.play.active {
+  cursor: pointer;
 }

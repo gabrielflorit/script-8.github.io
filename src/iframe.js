@@ -131,6 +131,15 @@ __input.addEventListener('input', e => {
 
 let __previousInitialState = {}
 let __store
+let __innerFunction
+let __isPaused = false
+
+document.querySelector('.button.play').addEventListener('click', e => {
+  e.target.innerHTML = e.target.innerHTML === 'play' ? 'pause' : 'play'
+  __isPaused = !__isPaused
+  e.target.classList.toggle('active')
+  __innerFunction && __innerFunction()
+})
 
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
@@ -139,186 +148,190 @@ window._script8.callCode = ({
   chains,
   phrases,
   run,
-  isPaused,
   endCallback = __noop
 }) => {
-  // If we're in `run` mode, create playSong function from music data.
-  // Otherwise ignore - we don't want to hear music while we code!
-  window.playSong = run
-    ? __globals.playSong({ songs, chains, phrases })
-    : __noop
+  // This inner closured function is here so we can call it
+  // from outside - e.g., from a button.
+  __innerFunction = () => {
+    // If we're in `run` mode, create playSong function from music data.
+    // Otherwise ignore - we don't want to hear music while we code!
+    window.playSong = run
+      ? __globals.playSong({ songs, chains, phrases })
+      : __noop
 
-  // Make available an end function, and call the callback once.
-  window.__script8.end = once(endCallback)
+    // Make available an end function, and call the callback once.
+    window.__script8.end = once(endCallback)
 
-  try {
-    // Clear the screen.
-    script8.draw = () => {
-      window.clear()
-    }
+    try {
+      // Clear the screen.
+      script8.draw = () => {
+        window.clear()
+      }
 
-    // Eval the supplied game.
-    const shadowString = `var ${[...__shadows].join(',')}`
-    // eslint-disable-next-line no-eval
-    eval(`
+      // Eval the supplied game.
+      const shadowString = `var ${[...__shadows].join(',')}`
+      // eslint-disable-next-line no-eval
+      eval(`
       // Shadow variables we don't want available.
       ${shadowString}
       // The inception eval allows the user to declare vars (e.g. screen).
       eval(game)
     `)
 
-    const __reducer = (state = script8.initialState, action) => {
-      switch (action.type) {
-        case 'TICK': {
-          if (script8.update) {
-            const newState = JSON.parse(JSON.stringify(state))
-            script8.update(newState, action.input)
-            return newState
-          } else {
+      const __reducer = (state = script8.initialState, action) => {
+        switch (action.type) {
+          case 'TICK': {
+            if (script8.update) {
+              const newState = JSON.parse(JSON.stringify(state))
+              script8.update(newState, action.input)
+              return newState
+            } else {
+              return state
+            }
+          }
+          default:
             return state
-          }
         }
-        default:
-          return state
-      }
-    }
-
-    // If it's paused,
-    if (isPaused) {
-      // stop and destroy the timer.
-      if (__timer) {
-        __timer.stop()
-        __timer = null
       }
 
-      // show the timeline.
-      __timelineDiv.classList.remove('invisible')
+      // If it's paused,
+      if (__isPaused) {
+        // stop and destroy the timer.
+        if (__timer) {
+          __timer.stop()
+          __timer = null
+        }
 
-      const alteredStates = []
+        // show the timeline.
+        __timelineDiv.classList.remove('invisible')
 
-      // Create the store with the first item in reduxHistory
-      // as the initial state.
-      __store = createStore(__reducer, __reduxHistory[0].state)
+        const alteredStates = []
 
-      // Save that state to alteredStates.
-      alteredStates.push(__store.getState())
+        // Create the store with the first item in reduxHistory
+        // as the initial state.
+        __store = createStore(__reducer, __reduxHistory[0].state)
 
-      // Then, for all next actions in the history,
-      // dispatch it,
-      // and save the resulting state to alteredStates.
-      __reduxHistory.forEach(({ state, action }) => {
-        __store.dispatch(action)
+        // Save that state to alteredStates.
         alteredStates.push(__store.getState())
-      })
 
-      // Get all unique actors.
-      const actors = flatten(alteredStates.map(state => state.actors))
-      const uniqueActors = uniqBy(actors, d => d.name)
-
-      // Clear out ul items.
-      const ul = document.querySelector('ul')
-      while (ul.firstChild) {
-        ul.firstChild.remove()
-      }
-
-      // For each unique actor,
-      uniqueActors.forEach(actor => {
-        window.clear()
-        // draw it,
-        script8.drawActors({ actors: [actor] })
-
-        // get its canvas,
-        const lilCanvas = trimCanvas({
-          ctx: __ctx,
-          width: __size,
-          height: __size
+        // Then, for all next actions in the history,
+        // dispatch it,
+        // and save the resulting state to alteredStates.
+        __reduxHistory.forEach(({ state, action }) => {
+          __store.dispatch(action)
+          alteredStates.push(__store.getState())
         })
 
-        // and create the corresponding button.
-        const li = document.createElement('li')
-        const button = document.createElement('button')
-        button.appendChild(lilCanvas)
-        li.appendChild(button)
-        ul.appendChild(li)
-      })
+        // Get all unique actors.
+        const actors = flatten(alteredStates.map(state => state.actors))
+        const uniqueActors = uniqBy(actors, d => d.name)
 
-      __input.max = alteredStates.length - 1
-      __input.value = alteredStates.length - 1
+        // Clear out ul items.
+        const ul = document.querySelector('ul')
+        while (ul.firstChild) {
+          ul.firstChild.remove()
+        }
 
-      __inputCallback = timeLineIndex => {
-        // Set the user state to the last one, and draw everything.
-        script8.draw(alteredStates[alteredStates.length - 1])
+        // For each unique actor,
+        uniqueActors.forEach(actor => {
+          window.clear()
+          // draw it,
+          script8.drawActors({ actors: [actor] })
 
-        // For each altered state, minus the timeLineIndex one,
-        // draw the actors, faded.
-        alteredStates.forEach((state, i) => {
-          if (
-            (i !== timeLineIndex && i % 4 === 0) ||
-            i === alteredStates.length - 1
-          ) {
-            script8.drawActors(state, true)
-          }
-        })
-
-        // Draw the timeLineIndex one last, not faded.
-        script8.drawActors(alteredStates[timeLineIndex])
-
-        // Finally, set the store to point to the timeLineIndex altered state,
-        // so that when we hit play, we can resume right from this point.
-        __store = createStore(__reducer, alteredStates[timeLineIndex])
-      }
-      __inputCallback(alteredStates.length - 1)
-    } else {
-      // hide the timeline.
-      __timelineDiv.classList.add('invisible')
-
-      __reduxHistory = []
-
-      // If the user has changed script8.initialState, use that.
-      let __storeState
-      if (!equal(script8.initialState, __previousInitialState)) {
-        __storeState = script8.initialState
-      } else {
-        // If they haven't, try using the state from existing store.
-        __storeState = __store && __store.getState()
-      }
-      // Save the user's script8.initialState so we have it for later.
-      __previousInitialState = script8.initialState
-
-      // Use the current state to (re)create the store.
-      __store = createStore(
-        __reducer,
-        __storeState || undefined,
-        applyMiddleware(__reduxLogger)
-      )
-
-      // Reassign a timer callback. Every tick,
-      __timerCallback = () => {
-        try {
-          // update the redux store,
-          __store.dispatch({
-            type: 'TICK',
-            input: getUserInput()
+          // get its canvas,
+          const lilCanvas = trimCanvas({
+            ctx: __ctx,
+            width: __size,
+            height: __size
           })
 
-          // and call draw.
-          script8.draw && script8.draw(__store.getState())
-        } catch (e) {
-          // If there is an error, print it as a warning.
-          console.warn(e.message)
+          // and create the corresponding button.
+          const li = document.createElement('li')
+          const button = document.createElement('button')
+          button.appendChild(lilCanvas)
+          li.appendChild(button)
+          ul.appendChild(li)
+        })
+
+        __input.max = alteredStates.length - 1
+        __input.value = alteredStates.length - 1
+
+        __inputCallback = timeLineIndex => {
+          // Set the user state to the last one, and draw everything.
+          script8.draw(alteredStates[alteredStates.length - 1])
+
+          // For each altered state, minus the timeLineIndex one,
+          // draw the actors, faded.
+          alteredStates.forEach((state, i) => {
+            if (
+              (i !== timeLineIndex && i % 4 === 0) ||
+              i === alteredStates.length - 1
+            ) {
+              script8.drawActors(state, true)
+            }
+          })
+
+          // Draw the timeLineIndex one last, not faded.
+          script8.drawActors(alteredStates[timeLineIndex])
+
+          // Finally, set the store to point to the timeLineIndex altered state,
+          // so that when we hit play, we can resume right from this point.
+          __store = createStore(__reducer, alteredStates[timeLineIndex])
+        }
+        __inputCallback(alteredStates.length - 1)
+      } else {
+        // hide the timeline.
+        __timelineDiv.classList.add('invisible')
+
+        __reduxHistory = []
+
+        // If the user has changed script8.initialState, use that.
+        let __storeState
+        if (!equal(script8.initialState, __previousInitialState)) {
+          __storeState = script8.initialState
+        } else {
+          // If they haven't, try using the state from existing store.
+          __storeState = __store && __store.getState()
+        }
+        // Save the user's script8.initialState so we have it for later.
+        __previousInitialState = script8.initialState
+
+        // Use the current state to (re)create the store.
+        __store = createStore(
+          __reducer,
+          __storeState || undefined,
+          applyMiddleware(__reduxLogger)
+        )
+
+        // Reassign a timer callback. Every tick,
+        __timerCallback = () => {
+          try {
+            // update the redux store,
+            __store.dispatch({
+              type: 'TICK',
+              input: getUserInput()
+            })
+
+            // and call draw.
+            script8.draw && script8.draw(__store.getState())
+          } catch (e) {
+            // If there is an error, print it as a warning.
+            console.warn(e.message)
+          }
+        }
+
+        // If we haven't created a timer yet,
+        // do so now.
+        if (!__timer) {
+          __timer = interval(__timerCallback, 1000 / FPS)
         }
       }
-
-      // If we haven't created a timer yet,
-      // do so now.
-      if (!__timer) {
-        __timer = interval(__timerCallback, 1000 / FPS)
-      }
+    } catch (e) {
+      // If any part of this resulted in an error, print it.
+      console.warn(e.message)
     }
-  } catch (e) {
-    // If any part of this resulted in an error, print it.
-    console.warn(e.message)
   }
+  __innerFunction()
 }
 
 // Let's sandbox JS!
