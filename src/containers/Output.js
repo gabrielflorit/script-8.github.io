@@ -27,10 +27,12 @@ class Output extends Component {
     this.handlePlay = this.handlePlay.bind(this)
     this.evaluate = this.evaluate.bind(this)
     this.handleTimelineLength = this.handleTimelineLength.bind(this)
+    this.handleTimelineIndexChange = this.handleTimelineIndexChange.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
 
     this.state = {
       timeLineLength: 0,
+      timeLineIndex: 0,
       isPlaying: true
     }
   }
@@ -59,12 +61,22 @@ class Output extends Component {
   }
 
   handleTimelineLength (timeLineLength) {
-    console.log(timeLineLength)
-    this.setState({ timeLineLength })
+    this.setState({
+      timeLineIndex: timeLineLength - 1,
+      timeLineLength
+    })
+  }
+
+  handleTimelineIndexChange (e) {
+    const { value } = e.target
+    this.setState({
+      timeLineIndex: +value
+    })
   }
 
   evaluate (prevState) {
     const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
+    const { isPlaying, timeLineIndex } = this.state
 
     // Get the iframe.
     const iframe = window.frames[0]
@@ -83,8 +95,8 @@ class Output extends Component {
 
     if (isValid) {
       // Send iframe the game code.
+      const isPaused = !isPlaying
       const wasPaused = prevState && !prevState.isPlaying
-      const isPaused = !this.state.isPlaying
       const timeLineLengthCallback =
         isPaused && !wasPaused ? this.handleTimelineLength : undefined
       iframe._script8.callCode({
@@ -95,6 +107,7 @@ class Output extends Component {
         run,
         endCallback: finishBoot,
         timeLineLengthCallback,
+        timeLineIndex,
         isPaused
       })
     } else {
@@ -104,15 +117,26 @@ class Output extends Component {
   }
 
   render () {
-    const { isPlaying } = this.state
+    const { isPlaying, timeLineLength, timeLineIndex } = this.state
     return (
       <div className='Output'>
-        <button
-          className={classNames('play button', { active: !isPlaying })}
-          onClick={this.handlePlay}
-        >
-          {isPlaying ? 'pause' : 'play'}
-        </button>
+        <div className='timeline'>
+          <button
+            className={classNames('play button', { active: !isPlaying })}
+            onClick={this.handlePlay}
+          >
+            {isPlaying ? 'pause' : 'play'}
+          </button>
+          <input
+            className={classNames({ invisible: isPlaying })}
+            type='range'
+            min={0}
+            step={1}
+            max={timeLineLength - 1}
+            value={timeLineIndex}
+            onChange={this.handleTimelineIndexChange}
+          />
+        </div>
         <iframe
           src='iframe.html'
           sandbox='allow-scripts allow-same-origin'
@@ -126,6 +150,7 @@ class Output extends Component {
             this.evaluate()
           }}
         />
+        <div className='stats'>stats</div>
       </div>
     )
   }

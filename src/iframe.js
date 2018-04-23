@@ -132,7 +132,8 @@ window._script8.callCode = ({
   run,
   isPaused,
   endCallback = __noop,
-  timeLineLengthCallback = __noop
+  timeLineLengthCallback = __noop,
+  timeLineIndex
 }) => {
   // If we're in `run` mode, create playSong function from music data.
   // Otherwise ignore - we don't want to hear music while we code!
@@ -206,13 +207,19 @@ window._script8.callCode = ({
       // Set the user state to the last one, and draw everything.
       script8.draw(alteredStates[alteredStates.length - 1])
 
-      // Then set the user state to the first one,
-      // and for each altered state,
-      // draw the actors, faded.
-      // Make sure to draw the actors fully opaque if we're on the last state.
+      // For each altered state, minus the timeLineIndex one, draw the actors, faded.
       alteredStates.forEach((state, i) => {
-        script8.drawActors(state, i < alteredStates.length - 1)
+        if (i !== timeLineIndex) {
+          script8.drawActors(state, true)
+        }
       })
+
+      // Draw the timeLineIndex one last, not faded.
+      script8.drawActors(alteredStates[timeLineIndex])
+
+      // Finally, set the store to point to the timeLineIndex altered state,
+      // so that when we hit play, we can resume right from this point.
+      __store = createStore(__reducer, alteredStates[timeLineIndex])
     } else {
       __reduxHistory = []
 
