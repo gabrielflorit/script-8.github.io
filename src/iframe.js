@@ -16,7 +16,8 @@ import trimCanvas from './utils/canvasAPI/trimCanvas.js'
 
 const FPS = 60
 let __previousElapsed = 0
-const __fpsDiv = document.querySelector('.stats .fps')
+const __stats = document.querySelector('.stats')
+const __fpsDiv = __stats.querySelector('.fps')
 const __fpsSpan = __fpsDiv.querySelector('span')
 let __fpsValues = []
 
@@ -119,16 +120,16 @@ const __reduxLogger = store => next => action => {
       state: store.getState(),
       action
     }
-  ].slice(-(FPS * 2))
+  ].slice(-(FPS * 3))
 
   return next(action)
 }
 
-const __buttonPlay = document.querySelector('button.play')
 const __timelineDiv = document.querySelector('div.timeline')
+// When we change the slider,
 const __input = document.querySelector('input')
-let __inputCallback = __noop
 __input.addEventListener('input', e => {
+  // call a function.
   __inputCallback(+e.target.value)
 })
 
@@ -138,10 +139,16 @@ let __innerFunction
 let __wasPaused = false
 let __isPaused = false
 
-document.querySelector('.button.play').addEventListener('click', e => {
+// When we click the play button,
+const __buttonPlay = document.querySelector('button.play')
+__buttonPlay.addEventListener('click', e => {
+  // change its play/pause text,
   e.target.innerHTML = e.target.innerHTML === 'play' ? 'pause' : 'play'
+  // change the global __isPaused variable,
   __isPaused = !__isPaused
+  // change its appearance,
   e.target.classList.toggle('active')
+  // and try calling the innerFunction.
   __innerFunction && __innerFunction()
 })
 
@@ -164,6 +171,14 @@ window._script8.callCode = ({
       ? __globals.playSong({ __songs, __chains, __phrases })
       : __noop
 
+    // Also, if we're not in run mode, remove hide from stats and timeline.
+    // Note that this doesn't show them - it puts them in the DOM flow.
+    // They're still hidden.
+    if (!__run) {
+      __stats.classList.remove('hide')
+      __timelineDiv.classList.remove('hide')
+    }
+
     // Make available an end function, and call the callback once.
     window.__script8.end = once(__endCallback)
 
@@ -183,6 +198,7 @@ window._script8.callCode = ({
       eval(__game)
     `)
 
+      // Create the reducer, with the script8 state or an empty object.
       const __reducer = (state = script8.initialState || {}, action) => {
         switch (action.type) {
           case 'TICK': {
@@ -199,6 +215,7 @@ window._script8.callCode = ({
         }
       }
 
+      // If we have actors, show the play button.
       if (script8.initialState && script8.initialState.actors) {
         __buttonPlay.classList.remove('invisible')
       } else {
@@ -249,9 +266,9 @@ window._script8.callCode = ({
         // Set the timeline's length.
         __input.max = alteredStates.length - 1
 
-        // If the timeline is set to something, don't change it.
+        // If we were previously in play mode,
         if (!__wasPaused) {
-          // Otherwise set it to the max.
+          // set the timeline to the max.
           __input.value = alteredStates.length - 1
         }
 
@@ -270,7 +287,7 @@ window._script8.callCode = ({
           // draw the actors, if they're selected, faded.
           alteredStates.forEach((state, i) => {
             if (
-              (i !== timeLineIndex && i % 4 === 0) ||
+              (i !== timeLineIndex && i % 5 === 0) ||
               i === alteredStates.length - 1
             ) {
               const matchingActors = state.actors.filter(d =>
