@@ -106,7 +106,6 @@ document.addEventListener('keyup', e => {
 })
 
 let __reduxHistory = []
-
 const __reduxLogger = store => next => action => {
   // Add this state and action to history,
   // and limit it to the 3 seconds worth of entries.
@@ -132,6 +131,7 @@ __input.addEventListener('input', e => {
 let __previousInitialState = {}
 let __store
 let __innerFunction
+let __wasPaused = false
 let __isPaused = false
 
 document.querySelector('.button.play').addEventListener('click', e => {
@@ -154,7 +154,6 @@ window._script8.callCode = ({
   // This inner closured function is here so we can call it
   // from outside - e.g., from a button.
   __innerFunction = () => {
-
     // If we're in `run` mode, create playSong function from music data.
     // Otherwise ignore - we don't want to hear music while we code!
     window.playSong = run
@@ -234,10 +233,12 @@ window._script8.callCode = ({
           ul.firstChild.remove()
         }
 
-        // For each unique actor,
+        // Create the tiny actor buttons.
         uniqueActors.forEach(actor => {
           window.clear()
-          // draw it,
+
+          // For each actor,
+          // draw it on the canvas,
           script8.drawActors({ actors: [actor] })
 
           // get its canvas,
@@ -255,8 +256,14 @@ window._script8.callCode = ({
           ul.appendChild(li)
         })
 
+        // Set the timeline's length.
         __input.max = alteredStates.length - 1
-        __input.value = alteredStates.length - 1
+
+        // If the timeline is set to something, don't change it.
+        if (!__wasPaused) {
+          // Otherwise set it to the max.
+          __input.value = alteredStates.length - 1
+        }
 
         __inputCallback = timeLineIndex => {
           // Set the user state to the last one, and draw everything.
@@ -280,7 +287,8 @@ window._script8.callCode = ({
           // so that when we hit play, we can resume right from this point.
           __store = createStore(__reducer, alteredStates[timeLineIndex])
         }
-        __inputCallback(alteredStates.length - 1)
+        __inputCallback(+__input.value)
+        __wasPaused = true
       } else {
         // hide the timeline.
         __timelineDiv.classList.add('invisible')
@@ -327,6 +335,8 @@ window._script8.callCode = ({
         if (!__timer) {
           __timer = interval(__timerCallback, 1000 / FPS)
         }
+
+        __wasPaused = false
       }
     } catch (e) {
       // If any part of this resulted in an error, print it.
