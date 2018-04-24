@@ -58,6 +58,12 @@ ul li button {
   border: none;
   width: calc(16px * 2);
   height: calc(16px * 2);
+  opacity: 0.25;
+  cursor: pointer;
+}
+
+ul li button.active {
+  opacity: 1;
 }
 
 ul li button canvas {

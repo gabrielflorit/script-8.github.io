@@ -233,6 +233,52 @@ window._script8.callCode = ({
           ul.firstChild.remove()
         }
 
+        // Set the timeline's length.
+        __input.max = alteredStates.length - 1
+
+        // If the timeline is set to something, don't change it.
+        if (!__wasPaused) {
+          // Otherwise set it to the max.
+          __input.value = alteredStates.length - 1
+        }
+
+        // Create the function that will be called every time
+        // the input changes.
+        __inputCallback = timeLineIndex => {
+          // Get all active actors.
+          const activeActors = [...ul.querySelectorAll('button.active')].map(
+            d => d.dataset.name
+          )
+
+          // Set the user state to the last one, and draw everything.
+          script8.draw(alteredStates[alteredStates.length - 1])
+
+          // For each altered state, minus the timeLineIndex one,
+          // draw the actors, if they're selected, faded.
+          alteredStates.forEach((state, i) => {
+            if (
+              (i !== timeLineIndex && i % 4 === 0) ||
+              i === alteredStates.length - 1
+            ) {
+              const matchingActors = state.actors.filter(d =>
+                activeActors.includes(d.name)
+              )
+              script8.drawActors({ actors: matchingActors }, true)
+            }
+          })
+
+          // Draw the timeLineIndex one last, not faded.
+          script8.drawActors({
+            actors: alteredStates[timeLineIndex].actors.filter(d =>
+              activeActors.includes(d.name)
+            )
+          })
+
+          // Finally, set the store to point to the timeLineIndex altered state,
+          // so that when we hit play, we can resume right from this point.
+          __store = createStore(__reducer, alteredStates[timeLineIndex])
+        }
+
         // Create the tiny actor buttons.
         uniqueActors.forEach(actor => {
           window.clear()
@@ -251,43 +297,27 @@ window._script8.callCode = ({
           // and create the corresponding button.
           const li = document.createElement('li')
           const button = document.createElement('button')
+          button.dataset.name = actor.name
+
+          // When the user clicks a tiny actor button,
+          button.addEventListener('click', () => {
+            // toggle its active state,
+            button.classList.toggle('active')
+
+            // and call the input callback.
+            __inputCallback(+__input.value)
+          })
           button.appendChild(lilCanvas)
           li.appendChild(button)
           ul.appendChild(li)
         })
 
-        // Set the timeline's length.
-        __input.max = alteredStates.length - 1
-
-        // If the timeline is set to something, don't change it.
-        if (!__wasPaused) {
-          // Otherwise set it to the max.
-          __input.value = alteredStates.length - 1
-        }
-
-        __inputCallback = timeLineIndex => {
-          // Set the user state to the last one, and draw everything.
-          script8.draw(alteredStates[alteredStates.length - 1])
-
-          // For each altered state, minus the timeLineIndex one,
-          // draw the actors, faded.
-          alteredStates.forEach((state, i) => {
-            if (
-              (i !== timeLineIndex && i % 4 === 0) ||
-              i === alteredStates.length - 1
-            ) {
-              script8.drawActors(state, true)
-            }
-          })
-
-          // Draw the timeLineIndex one last, not faded.
-          script8.drawActors(alteredStates[timeLineIndex])
-
-          // Finally, set the store to point to the timeLineIndex altered state,
-          // so that when we hit play, we can resume right from this point.
-          __store = createStore(__reducer, alteredStates[timeLineIndex])
-        }
+        // Call the input callback for the first time.
         __inputCallback(+__input.value)
+
+        // Set this so we know the previous state.
+        // This is the 2nd time we need to remember previous state.
+        // Maybe we should consider switching the iframe to React soon.
         __wasPaused = true
       } else {
         // hide the timeline.
