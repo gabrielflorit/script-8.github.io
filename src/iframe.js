@@ -148,11 +148,13 @@ window._script8.callCode = ({
   chains,
   phrases,
   run,
+  heightCallback,
   endCallback = __noop
 }) => {
   // This inner closured function is here so we can call it
   // from outside - e.g., from a button.
   __innerFunction = () => {
+
     // If we're in `run` mode, create playSong function from music data.
     // Otherwise ignore - we don't want to hear music while we code!
     window.playSong = run
@@ -330,6 +332,9 @@ window._script8.callCode = ({
       // If any part of this resulted in an error, print it.
       console.warn(e.message)
     }
+
+    // Tell the parent it should recompute the iframe height.
+    heightCallback()
   }
   __innerFunction()
 }
