@@ -1,12 +1,17 @@
-export default `
-script8.init = function () {
+export default `script8.initialState = {
+  actors: [
+  ]
 }
 
-script8.update = function () {
+script8.drawActors = (state, fade) => {
 
 }
 
-script8.draw = function () {
+script8.update = (state, input) => {
+
+}
+
+script8.draw = state => {
 
   clear()
 

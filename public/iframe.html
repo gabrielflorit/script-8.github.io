@@ -9,16 +9,15 @@
   <body>
     <div class='container'>
       <canvas class='master' width=128 height=128></canvas>
-      <button class='button play'>pause</button>
-      <div class='timeline' class='invisible'>
+      <div class='stats hide'>
+        <button class='button play invisible'>pause</button>
+        <div class='fps'>fps (avg): <span></span></div>
+      </div>
+      <div class='timeline hide' class='invisible'>
         <input type='range' min=0 />
         <ul>
         </ul>
       </div>
-      <ul class='stats'>
-        <li class='fps'>fps (avg): <span></span></li>
-        <li class='tokens'>tokens: <span></span></li>
-      </ul>
     </div>
     <script>window.TONE_SILENCE_VERSION_LOGGING = true</script>
     <script src='iframe-build.js'></script>

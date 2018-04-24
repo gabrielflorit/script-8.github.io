@@ -1,10 +1,5 @@
 .Code
 
-  &.tutorial
-    .Output
-      padding-top 3rem
-      align-items start
-
   .main
     grid-template-columns auto calc(128 * 3px + 3rem)
     grid-template-rows auto
@@ -13,9 +8,9 @@
     .CodeEditor
       border-right solid $palette-6 2px
 
-//     @media screen and (max-width: 800px)
-//       .CodeEditor
-//         grid-column 1 / span 2
-//         border-right none
-//       .Output
-//         display none
+    @media screen and (max-width: 800px)
+      .CodeEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none

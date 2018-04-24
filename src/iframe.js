@@ -16,7 +16,8 @@ import trimCanvas from './utils/canvasAPI/trimCanvas.js'
 
 const FPS = 60
 let __previousElapsed = 0
-const __fpsDiv = document.querySelector('.stats .fps span')
+const __fpsDiv = document.querySelector('.stats .fps')
+const __fpsSpan = __fpsDiv.querySelector('span')
 let __fpsValues = []
 
 // Create a noop for convenience.
@@ -46,8 +47,7 @@ const __ctx = __canvas.getContext('2d')
 // Create a globals object. We'll move all these to window a bit further down.
 let __globals = {
   Math,
-  Date,
-  Object
+  Date
 }
 
 // Setup API functions.
@@ -124,6 +124,7 @@ const __reduxLogger = store => next => action => {
   return next(action)
 }
 
+const __buttonPlay = document.querySelector('button.play')
 const __timelineDiv = document.querySelector('div.timeline')
 const __input = document.querySelector('input')
 let __inputCallback = __noop
@@ -146,25 +147,25 @@ document.querySelector('.button.play').addEventListener('click', e => {
 
 // Output.js will call this every time the code is modified.
 window._script8.callCode = ({
-  game,
-  songs,
-  chains,
-  phrases,
-  run,
-  heightCallback,
-  endCallback = __noop
+  game: __game,
+  songs: __songs,
+  chains: __chains,
+  phrases: __phrases,
+  run: __run,
+  heightCallback: __heightCallback,
+  endCallback: __endCallback = __noop
 }) => {
   // This inner closured function is here so we can call it
   // from outside - e.g., from a button.
   __innerFunction = () => {
     // If we're in `run` mode, create playSong function from music data.
     // Otherwise ignore - we don't want to hear music while we code!
-    window.playSong = run
-      ? __globals.playSong({ songs, chains, phrases })
+    window.playSong = __run
+      ? __globals.playSong({ __songs, __chains, __phrases })
       : __noop
 
     // Make available an end function, and call the callback once.
-    window.__script8.end = once(endCallback)
+    window.__script8.end = once(__endCallback)
 
     try {
       // Clear the screen.
@@ -179,10 +180,10 @@ window._script8.callCode = ({
       // Shadow variables we don't want available.
       ${shadowString}
       // The inception eval allows the user to declare vars (e.g. screen).
-      eval(game)
+      eval(__game)
     `)
 
-      const __reducer = (state = script8.initialState, action) => {
+      const __reducer = (state = script8.initialState || {}, action) => {
         switch (action.type) {
           case 'TICK': {
             if (script8.update) {
@@ -198,6 +199,12 @@ window._script8.callCode = ({
         }
       }
 
+      if (script8.initialState && script8.initialState.actors) {
+        __buttonPlay.classList.remove('invisible')
+      } else {
+        __buttonPlay.classList.add('invisible')
+      }
+
       // If it's paused,
       if (__isPaused) {
         // stop and destroy the timer.
@@ -206,8 +213,11 @@ window._script8.callCode = ({
           __timer = null
         }
 
-        // show the timeline.
+        // Show the timeline.
         __timelineDiv.classList.remove('invisible')
+
+        // Hide the fps counter.
+        __fpsDiv.classList.add('invisible')
 
         const alteredStates = []
 
@@ -323,8 +333,11 @@ window._script8.callCode = ({
         // Maybe we should consider switching the iframe to React soon.
         __wasPaused = true
       } else {
-        // hide the timeline.
+        // Hide the timeline.
         __timelineDiv.classList.add('invisible')
+
+        // Show the fps counter.
+        __fpsDiv.classList.remove('invisible')
 
         __reduxHistory = []
 
@@ -361,7 +374,7 @@ window._script8.callCode = ({
               const avg =
                 __fpsValues.reduce((acc, current) => acc + current) /
                 __fpsValues.length
-              __fpsDiv.innerHTML = Math.round(avg)
+              __fpsSpan.innerHTML = Math.round(avg)
             }
 
             __previousElapsed = elapsed
@@ -394,7 +407,7 @@ window._script8.callCode = ({
     }
 
     // Tell the parent it should recompute the iframe height.
-    heightCallback()
+    __heightCallback()
   }
   __innerFunction()
 }

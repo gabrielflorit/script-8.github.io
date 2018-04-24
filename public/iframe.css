@@ -21,12 +21,7 @@ body {
   align-items: center;
 }
 
-.invisible {
-  visibility: hidden;
-}
-
 input {
-  /* width: calc(100% - 3px); */
   width: 100%;
   display: block;
   margin: 0.75rem 0;
@@ -38,15 +33,9 @@ canvas {
   image-rendering: pixelated;
 }
 
-canvas.fps {
-  background: #0f2a3f;
-  width: 100vw;
-}
-
 canvas.master {
   width: 100vw;
   height: 100vw;
-  margin-bottom: 3rem;
 }
 
 ul {
@@ -99,9 +88,9 @@ button.button.active {
 
 button.play {
   display: block;
-  width: 100%;
   height: 1.5rem;
   color: #4e495f;
+  padding: 0;
 }
 
 button.play.active {
@@ -109,25 +98,8 @@ button.play.active {
   background: none;
 }
 
-.fps-container {
-  display: flex;
-  margin-bottom: 1.5rem;
-}
-
-.fps-container div {
-  width: 1.5rem;
-  font-family: 'VT323', monospace;
-  text-transform: uppercase;
-  font-size: 1.5rem;
-  color: #997577;
-}
-
-.fps-container canvas {
-  width: calc(100% - 1.5rem);
-  background: none;
-}
-
-ul.stats {
+.stats {
+  margin-top: 0.75rem;
   list-style: none;
   display: flex;
   font-family: 'VT323', monospace;
@@ -135,5 +107,12 @@ ul.stats {
   font-size: 1.5rem;
   color: #0f2a3f;
   justify-content: space-between;
-  margin-top: 3rem;
+}
+
+.hide {
+  display: none;
+}
+
+.invisible {
+  visibility: hidden;
 }

@@ -13,16 +13,16 @@ const mapStateToProps = ({ game, newUser, tutorial }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  isNewUser: () => dispatch(actions.isNewUser()),
+  // isNewUser: () => dispatch(actions.isNewUser()),
   updateGame: game => dispatch(actions.updateGame(game))
 })
 
 class Code extends Component {
   componentDidMount () {
-    const { newUser, isNewUser } = this.props
-    if (newUser === null) {
-      isNewUser()
-    }
+    // const { newUser, isNewUser } = this.props
+    // if (newUser === null) {
+    //   isNewUser()
+    // }
   }
 
   render () {
