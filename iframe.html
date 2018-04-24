@@ -7,8 +7,17 @@
     <link rel='stylesheet' href='iframe.css'>
   </head>
   <body>
-    <div>
-      <canvas width=128 height=128 />
+    <div class='container'>
+      <canvas class='master' width=128 height=128></canvas>
+      <div class='stats hide'>
+        <button class='button play invisible'>pause</button>
+        <div class='fps'>fps (avg): <span></span></div>
+      </div>
+      <div class='timeline hide' class='invisible'>
+        <input type='range' min=0 />
+        <ul>
+        </ul>
+      </div>
     </div>
     <script>window.TONE_SILENCE_VERSION_LOGGING = true</script>
     <script src='iframe-build.js'></script>
