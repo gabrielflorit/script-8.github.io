@@ -3,7 +3,7 @@ import * as walk from 'acorn/dist/walk'
 import _ from 'lodash'
 
 const parseOptions = {
-  ecmaVersion: 7,
+  ecmaVersion: 9,
   sourceType: 'script',
   locations: true
 }

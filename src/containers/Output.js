@@ -23,6 +23,8 @@ class Output extends Component {
   constructor (props) {
     super(props)
 
+    this.handleHeightCallback = this.handleHeightCallback.bind(this)
+    this.evaluate = this.evaluate.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
   }
 
@@ -32,24 +34,26 @@ class Output extends Component {
     e.currentTarget.focus()
   }
 
-  shouldComponentUpdate () {
-    return false
-  }
-
   componentDidMount () {
     this._iframe.focus()
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     if (this.isLoaded) {
-      const { game } = nextProps
-      if (game !== this.props.game) {
-        this.evaluate(nextProps)
-      }
+      this.evaluate()
     }
   }
 
-  evaluate ({ game, finishBoot, run, songs, chains, phrases, screen }) {
+  handleHeightCallback () {
+    // Set iframe height.
+    this._iframe.height = this._iframe.contentWindow.document.body.querySelector(
+      '.container'
+    ).scrollHeight
+  }
+
+  evaluate () {
+    const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
+
     // Get the iframe.
     const iframe = window.frames[0]
 
@@ -73,7 +77,8 @@ class Output extends Component {
         chains,
         phrases,
         run,
-        endCallback: finishBoot
+        endCallback: finishBoot,
+        heightCallback: this.handleHeightCallback
       })
     } else {
       // If we had errors, print them to console.
@@ -94,7 +99,7 @@ class Output extends Component {
           }}
           onLoad={() => {
             this.isLoaded = true
-            this.evaluate(this.props)
+            this.evaluate()
           }}
         />
       </div>

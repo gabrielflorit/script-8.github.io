@@ -7,7 +7,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     if (dotted) {
       ctx.setLineDash([1, 1])
     }
-    ctx.strokeStyle = colors.one(c)
+    ctx.strokeStyle = colors.rgb(c)
     ctx.beginPath()
     ctx.moveTo(Math.floor(x), Math.floor(y) + 0.5)
     ctx.lineTo(Math.floor(x + l), Math.floor(y) + 0.5)
@@ -19,7 +19,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     if (dotted) {
       ctx.setLineDash([1, 1])
     }
-    ctx.strokeStyle = colors.one(c)
+    ctx.strokeStyle = colors.rgb(c)
     ctx.beginPath()
     ctx.moveTo(Math.floor(x) + 0.5, Math.floor(y))
     ctx.lineTo(Math.floor(x) + 0.5, Math.floor(y + l))
@@ -32,7 +32,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
   },
 
   rectStroke (x, y, w, h, c) {
-    ctx.strokeStyle = colors.one(c)
+    ctx.strokeStyle = colors.rgb(c)
     ctx.strokeRect(
       Math.floor(x) + 0.5,
       Math.floor(y) + 0.5,
@@ -42,7 +42,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
   },
 
   rectFill (x, y, w, h, c) {
-    ctx.fillStyle = colors.one(c)
+    ctx.fillStyle = colors.rgb(c)
     ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
   },
 
@@ -52,7 +52,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
       cy: Math.floor(y),
       radius: Math.floor(r),
       ctx,
-      color: colors.one(c),
+      color: colors.rgb(c),
       onlyStroke: true
     })
   },
@@ -63,7 +63,7 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
       cy: Math.floor(y),
       radius: Math.floor(r),
       ctx,
-      color: colors.one(c)
+      color: colors.rgb(c)
     })
   },
 

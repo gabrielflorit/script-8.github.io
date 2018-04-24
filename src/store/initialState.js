@@ -1,5 +1,5 @@
 import screenTypes from '../utils/screenTypes.js'
-import demo from '../utils/demo.js'
+import demo from '../utils/blank.js'
 
 const initialState = {
   // screen: screenTypes.CHAIN,

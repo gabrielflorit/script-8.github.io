@@ -8,7 +8,7 @@ import Chain from './Chain.js'
 import Song from './Song.js'
 import Run from './Run.js'
 import Code from './Code.js'
-import Tutorial from './Tutorial.js'
+// import Tutorial from './Tutorial.js'
 import Help from './Help.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -44,7 +44,6 @@ const App = ({ screen }) => (
       })}
     >
       {options[screen]()}
-      <Tutorial />
     </div>
   </ErrorBoundary>
 )

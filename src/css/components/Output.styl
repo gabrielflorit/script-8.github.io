@@ -1,10 +1,21 @@
 .Output
   display flex
-  justify-content center
+  justify-content space-between
   align-items center
   background $palette-7
+  position relative
+  padding 1.5rem
+  flex-direction column
+
+  button.play
+    width 100%
+    margin 0
 
   iframe
     border none
-    height 128 * 3px
-    width @height + 32px
+    width 100%
+
+  .stats
+    width 100%
+    background $palette-6
+    color $palette-3

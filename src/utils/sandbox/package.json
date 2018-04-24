@@ -11,7 +11,10 @@
       "clamp",
       "lineV",
       "lineH",
-      "d3"
+      "script8",
+      "combineReducers",
+      "createStore",
+      "log"
     ]
   }
 }
