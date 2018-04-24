@@ -38,6 +38,11 @@ canvas {
   image-rendering: pixelated;
 }
 
+canvas.fps {
+  background: #0f2a3f;
+  width: 100vw;
+}
+
 canvas.master {
   width: 100vw;
   height: 100vw;
@@ -95,10 +100,40 @@ button.button.active {
 button.play {
   display: block;
   width: 100%;
-  border: solid #0f2a3f 1px;
   height: 1.5rem;
+  color: #4e495f;
 }
 
 button.play.active {
   cursor: pointer;
+  background: none;
+}
+
+.fps-container {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.fps-container div {
+  width: 1.5rem;
+  font-family: 'VT323', monospace;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  color: #997577;
+}
+
+.fps-container canvas {
+  width: calc(100% - 1.5rem);
+  background: none;
+}
+
+ul.stats {
+  list-style: none;
+  display: flex;
+  font-family: 'VT323', monospace;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  color: #0f2a3f;
+  justify-content: space-between;
+  margin-top: 3rem;
 }

@@ -15,6 +15,9 @@ import utilsAPI from './utils/utilsAPI.js'
 import trimCanvas from './utils/canvasAPI/trimCanvas.js'
 
 const FPS = 60
+let __previousElapsed = 0
+const __fpsDiv = document.querySelector('.stats .fps span')
+let __fpsValues = []
 
 // Create a noop for convenience.
 const __noop = () => {}
@@ -344,8 +347,25 @@ window._script8.callCode = ({
         )
 
         // Reassign a timer callback. Every tick,
-        __timerCallback = () => {
+        __timerCallback = elapsed => {
           try {
+            // calculate the actual FPS,
+            const tickLength = elapsed - __previousElapsed
+            const fps = Math.round(1000 / tickLength)
+
+            // add fps to array,
+            __fpsValues.push(fps)
+
+            // update fps stats once per second,
+            if (__fpsValues.length % 60 === 0) {
+              const avg =
+                __fpsValues.reduce((acc, current) => acc + current) /
+                __fpsValues.length
+              __fpsDiv.innerHTML = Math.round(avg)
+            }
+
+            __previousElapsed = elapsed
+
             // update the redux store,
             __store.dispatch({
               type: 'TICK',

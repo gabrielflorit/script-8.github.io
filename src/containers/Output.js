@@ -102,7 +102,6 @@ class Output extends Component {
             this.evaluate()
           }}
         />
-        <div className='stats'>stats</div>
       </div>
     )
   }
