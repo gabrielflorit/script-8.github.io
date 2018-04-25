@@ -14,7 +14,7 @@ class Iframe extends Component {
   constructor (props) {
     super(props)
     this._shadows = new Set(['document'])
-    this._blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
+    this._blacklist = new Set(['eval', 'alert', '_script8'])
     this._canvasSize = 128
     this.state = {
       game: '',
@@ -70,7 +70,16 @@ class Iframe extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    callCode({ ...this.state, shadows: this._shadows })
+    const { state, _shadows } = this
+    const { message } = state
+
+    callCode({ ...state, shadows: _shadows })
+
+    if (message) {
+      message.ports[0].postMessage({
+        height: document.body.querySelector('.container').scrollHeight
+      })
+    }
   }
 
   render () {

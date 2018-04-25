@@ -41,9 +41,6 @@ const callCode = ({ game, shadows, message, callbacks }) => {
     // If any part of this resulted in an error, print it.
     console.warn(e.message)
   }
-  message.ports[0].postMessage({
-    height: document.body.querySelector('.container').scrollHeight
-  })
 }
 
 export default callCode
