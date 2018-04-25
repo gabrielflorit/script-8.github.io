@@ -34,7 +34,6 @@ const callCode = ({ game, shadows, message, callbacks }) => {
       }
     }
     if (timer) {
-      console.log('stopping timer')
       timer.stop()
     }
     timer = interval(timerCallback, 1000 / FPS)

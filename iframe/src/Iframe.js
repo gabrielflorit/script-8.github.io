@@ -16,6 +16,11 @@ class Iframe extends Component {
     this._shadows = new Set(['document'])
     this._blacklist = new Set(['eval', 'alert', '_script8', '__script8'])
     this._canvasSize = 128
+    this.state = {
+      game: '',
+      message: null,
+      callbacks: {}
+    }
   }
 
   componentDidMount () {
@@ -40,7 +45,12 @@ class Iframe extends Component {
 
       // Run user code.
       if (type === 'callCode') {
-        callCode({ ...payload, shadows: this._shadows, message })
+        this.setState({
+          game: payload.game,
+          message,
+          callbacks: payload.callbacks
+        })
+        // callCode({ ...payload, shadows: this._shadows, message })
       }
 
       // Find the first invalid token in the provided tokens array.
@@ -59,8 +69,8 @@ class Iframe extends Component {
     })
   }
 
-  componentDidUpdate (prevProps) {
-    // callCode({ game: this.state.game, shadows: this._shadows })
+  componentDidUpdate (prevProps, prevState) {
+    callCode({ ...this.state, shadows: this._shadows })
   }
 
   render () {
