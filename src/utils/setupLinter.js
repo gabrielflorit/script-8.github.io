@@ -1,6 +1,5 @@
 import * as acorn from 'acorn'
 import * as walk from 'acorn/dist/walk'
-import _ from 'lodash'
 
 const parseOptions = {
   ecmaVersion: 9,
@@ -17,28 +16,40 @@ class InvalidTokenError extends Error {
   }
 }
 
-const getLintErrors = ({
-  text,
-  validateToken = _.get(window, 'frames[0].__script8.validateToken', null)
-}) => {
+const findInvalidNode = nodes => {
+  return new Promise(resolve => {
+    const channel = new window.MessageChannel()
+    const payload = {
+      type: 'findInvalidToken',
+      tokens: nodes.map(d => d.name)
+    }
+    const iframe = document.querySelector('iframe')
+    iframe.contentWindow.postMessage(payload, '*', [channel.port2])
+    channel.port1.onmessage = message => {
+      resolve(nodes[message.data])
+    }
+  })
+}
+
+const getLintErrors = async ({ text }) => {
   const errors = []
   try {
     const parsed = acorn.parse(text, parseOptions)
+    let nodes = []
     walk.simple(parsed, {
       Identifier (node) {
-        if (validateToken) {
-          const isValidToken = validateToken(node.name)
-          if (!isValidToken) {
-            const error = {
-              loc: node.loc.start,
-              raisedAt: node.end,
-              message: `${node.name} is not allowed in SCRIPT-8`
-            }
-            throw new InvalidTokenError(error)
-          }
-        }
+        nodes.push(node)
       }
     })
+    const node = await findInvalidNode(nodes)
+    if (node) {
+      const error = {
+        loc: node.loc.start,
+        raisedAt: node.end,
+        message: `${node.name} is not allowed in SCRIPT-8, nope`
+      }
+      throw new InvalidTokenError(error)
+    }
   } catch (error) {
     errors.push({
       from: {

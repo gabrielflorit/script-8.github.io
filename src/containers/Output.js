@@ -23,7 +23,6 @@ class Output extends Component {
   constructor (props) {
     super(props)
 
-    this.handleHeightCallback = this.handleHeightCallback.bind(this)
     this.evaluate = this.evaluate.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
   }
@@ -44,45 +43,52 @@ class Output extends Component {
     }
   }
 
-  handleHeightCallback () {
-    // Set iframe height.
-    this._iframe.height = this._iframe.contentWindow.document.body.querySelector(
-      '.container'
-    ).scrollHeight
-  }
-
   evaluate () {
     const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
 
-    // Get the iframe.
-    const iframe = window.frames[0]
+    // Create a closured function for eval'ing the game.
+    const sendPayload = (callbacks = {}) => {
+      const channel = new window.MessageChannel()
+      this._iframe.contentWindow.postMessage(
+        {
+          type: 'callCode',
+          game,
+          songs,
+          chains,
+          phrases,
+          run,
+          callbacks
+        },
+        '*',
+        [channel.port2]
+      )
+      channel.port1.onmessage = e => {
+        if (e.data.callback === 'finishBoot') {
+          finishBoot()
+        }
+        const { height } = e.data
+        if (height) {
+          this._iframe.height = height
+        }
+      }
+    }
 
-    // Validate code before drawing:
-
-    // get the iframe's validateToken function,
-    const validateToken =
-      screen === screenTypes.BOOT ? () => true : iframe.__script8.validateToken
-
-    // and use it to get any linting errors.
-    const errors = getLintErrors({ text: game, validateToken })
-
-    // No errors = we're good!
-    const isValid = !errors.length
-
-    if (isValid) {
-      // Send iframe the game code.
-      iframe._script8.callCode({
-        game,
-        songs,
-        chains,
-        phrases,
-        run,
-        endCallback: finishBoot,
-        heightCallback: this.handleHeightCallback
+    // If we're on the boot screen,
+    // ignore validation.
+    if (screen === screenTypes.BOOT) {
+      sendPayload({
+        endCallback: 'finishBoot'
       })
     } else {
-      // If we had errors, print them to console.
-      console.warn(errors[0].message)
+      // Validate code before drawing.
+      getLintErrors({ text: game }).then(errors => {
+        if (!errors.length) {
+          sendPayload()
+        } else {
+          // If we had errors, print them to console.
+          console.warn(errors[0].message)
+        }
+      })
     }
   }
 
@@ -90,9 +96,9 @@ class Output extends Component {
     return (
       <div className='Output'>
         <iframe
-          src='iframe.html'
-          sandbox='allow-scripts allow-same-origin'
+          src='http://localhost:3001'
           title='SCRIPT-8'
+          sandbox='allow-scripts allow-same-origin'
           onBlur={this.handleBlur}
           ref={_iframe => {
             this._iframe = _iframe

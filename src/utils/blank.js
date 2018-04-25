@@ -14,5 +14,6 @@ script8.update = (state, input) => {
 script8.draw = state => {
 
   clear()
+  print(0, 0, 'hello script-8', 0)
 
 }`
