@@ -8,7 +8,6 @@
 
 html
   background $palette-7
-  // @extend .VT323
 
 body
   position absolute
@@ -27,11 +26,36 @@ canvas.master
   width 100vw
   height 100vw
 
-// input {
-//   width 100%
-//   display block
-//   margin 0.75rem 0
-// }
+.button
+  border none
+  color $palette-5
+  cursor pointer
+  outline none
+  padding 0 0.75rem
+  margin 0
+  @extend .VT323
+  text-transform uppercase
+  font-size $font-large
+  &.active
+    color $palette-1
+  &:hover
+    color $palette-0
+
+button.play
+  display block
+  border solid $palette-6 1px
+  height 1.5rem
+  margin-bottom 1.5rem
+  background none
+  border none
+  padding-left 0
+  padding-right 0
+
+input {
+  width 100%
+  display block
+  margin 0.75rem 0
+}
 
 // ul {
 //   display flex
@@ -59,55 +83,20 @@ canvas.master
 //   width 100%
 // }
 
-// button.button {
-//   border none
-//   color #997577
-//   cursor pointer
-//   background none
-//   outline none
-//   padding 0 0.75rem
-//   margin 0
-//   font-family 'VT323', monospace
-//   text-transform uppercase
-//   font-size 1.5rem
-// }
+.stats
+  margin-top 0.75rem
+  list-style none
+  display flex
+  text-transform uppercase
+  justify-content space-between
 
-// button.button:hover {
-//   color #f6d6bd
-// }
+  .fps
+    color $palette-6
+    font-size $font-large
+    @extend .VT323
 
-// button.button.active {
-//   color #c3a38a
-//   background #0f2a3f
-// }
+.hide
+  display none
 
-// button.play {
-//   display block
-//   height 1.5rem
-//   color #4e495f
-//   padding 0
-// }
-
-// button.play.active {
-//   cursor pointer
-//   background none
-// }
-
-// .stats {
-//   margin-top 0.75rem
-//   list-style none
-//   display flex
-//   font-family 'VT323', monospace
-//   text-transform uppercase
-//   font-size 1.5rem
-//   color #0f2a3f
-//   justify-content space-between
-// }
-
-// .hide {
-//   display none
-// }
-
-// .invisible {
-//   visibility hidden
-// }
+.invisible
+  visibility hidden

@@ -428,32 +428,3 @@ window._script8.callCode = ({
   }
   __innerFunction()
 }
-
-// // Let's sandbox JS!
-// // This always returns true. Refactor.
-// window.__script8.validateToken = token => {
-//   let isValid
-
-//   // If user types a token in blacklist,
-//   // it's most definitely invalid.
-//   if (__blacklist.has(token)) {
-//     isValid = false
-//   } else if (
-//     // If user types a token defined in globals or updateableGlobals,
-//     // it's valid.
-//     Object.keys(__globals).indexOf(token) > -1 ||
-//     token === 'script8'
-//   ) {
-//     isValid = true
-//   } else if (window.hasOwnProperty(token)) {
-//     // If user types a token on window scope (e.g. `screen`),
-//     // add it to the list of __shadows, and make it valid.
-//     __shadows.add(token)
-//     isValid = true
-//   } else {
-//     // Otherwise, return valid.
-//     isValid = true
-//   }
-
-//   return isValid
-// }

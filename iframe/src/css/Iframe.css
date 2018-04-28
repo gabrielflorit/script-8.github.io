@@ -10,7 +10,9 @@
   src: local('VT323 Regular'), local('VT323-Regular'), url("fonts/VT323-latin.woff2") format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
 }
-.VT323 {
+.VT323,
+.button,
+.stats .fps {
   font-family: 'VT323', monospace;
 }
 html {
@@ -32,4 +34,52 @@ canvas {
 canvas.master {
   width: 100vw;
   height: 100vw;
+}
+.button {
+  border: none;
+  color: #20394f;
+  cursor: pointer;
+  outline: none;
+  padding: 0 0.75rem;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+.button.active {
+  color: #c3a38a;
+}
+.button:hover {
+  color: #f6d6bd;
+}
+button.play {
+  display: block;
+  border: solid #0f2a3f 1px;
+  height: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: none;
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+input {
+  width: 100%;
+  display: block;
+  margin: 0.75rem 0;
+}
+.stats {
+  margin-top: 0.75rem;
+  list-style: none;
+  display: flex;
+  text-transform: uppercase;
+  justify-content: space-between;
+}
+.stats .fps {
+  color: #0f2a3f;
+  font-size: 1.5rem;
+}
+.hide {
+  display: none;
+}
+.invisible {
+  visibility: hidden;
 }

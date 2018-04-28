@@ -46,7 +46,7 @@ const getLintErrors = async ({ text }) => {
       const error = {
         loc: node.loc.start,
         raisedAt: node.end,
-        message: `${node.name} is not allowed in SCRIPT-8, nope`
+        message: `${node.name} is not allowed in SCRIPT-8.`
       }
       throw new InvalidTokenError(error)
     }
