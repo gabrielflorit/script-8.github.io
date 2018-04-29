@@ -303,7 +303,7 @@ window._script8.callCode = ({
               activeActors.includes(d.name)
             )
           })
-
+          
           // Finally, set the store to point to the timeLineIndex altered state,
           // so that when we hit play, we can resume right from this point.
           __store = createStore(__reducer, alteredStates[timeLineIndex])

@@ -45,6 +45,7 @@ class Iframe extends Component {
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.handleTimelineInput = this.handleTimelineInput.bind(this)
+    this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
 
     this.shadows = new Set(['document'])
@@ -78,6 +79,7 @@ class Iframe extends Component {
       game: '',
       timelineIndex: 0,
       actors: [],
+      selectedActors: [],
       message: null,
       callbacks: {},
       isPaused: false,
@@ -199,6 +201,22 @@ class Iframe extends Component {
     })
   }
 
+  handleActorClick (actorName) {
+    const { selectedActors } = this.state
+
+    // If actorName is in selectedActors, take it out.
+    // Otherwise put it in.
+    const actors = selectedActors.includes(actorName)
+      ? selectedActors.filter(d => d !== actorName)
+      : [...selectedActors, actorName]
+
+    console.log(actors)
+
+    this.setState({
+      selectedActors: actors
+    })
+  }
+
   handlePauseClick () {
     if (this.state.isPaused) {
       this.reduxHistory = []
@@ -216,11 +234,14 @@ class Iframe extends Component {
   // When the app's UI state has changed,
   componentDidUpdate (prevProps, prevState) {
     const { state, shadows } = this
-    const { message, isPaused, game, timelineIndex, actors } = state
-    const previousSelectedActorsNames = prevState.actors
-      .filter(d => d.selected)
-      .map(d => d.name)
-    const selectedActorsNames = actors.filter(d => d.selected).map(d => d.name)
+    const {
+      message,
+      isPaused,
+      game,
+      timelineIndex,
+      actors,
+      selectedActors
+    } = state
     const { script8 } = window
 
     // If we're playing,
@@ -229,34 +250,32 @@ class Iframe extends Component {
       // evaluate user code,
       // get redux state,
       // and create redux store.
-      if (prevState.game !== game || true) {
-        console.log('componentDidUpdate: running play logic')
-        // Evaluate user code.
-        this.evalCode({ ...state, shadows: shadows })
+      console.log('componentDidUpdate: running play logic')
+      // Evaluate user code.
+      this.evalCode({ ...state, shadows: shadows })
 
-        // Before we create a redux store, let's think about what state we want.
-        // If the user has changed script8.initialState, use that.
-        // This way we let the user start over when they modify initialState.
-        // This is an escape hatch of sorts.
-        // Otherwise use the current store state. This will enable us to modify game
-        // code and not lose game state.
-        let storeState
-        if (!equal(script8.initialState, this.previousInitialState)) {
-          console.log('setting storestate to script8.initialState')
-          storeState = script8.initialState
-        } else {
-          console.log('setting storestate to store.getState()')
-          storeState = this.store.getState()
-        }
-        // Now we can create the store.
-        // Notice that we'll pass in reduxLogger as middleware.
-        // This enables us to save each action. We'll need them for the time debugger.
-        this.store = createStore(
-          this.reducer,
-          storeState || undefined,
-          applyMiddleware(this.reduxLogger)
-        )
+      // Before we create a redux store, let's think about what state we want.
+      // If the user has changed script8.initialState, use that.
+      // This way we let the user start over when they modify initialState.
+      // This is an escape hatch of sorts.
+      // Otherwise use the current store state. This will enable us to modify game
+      // code and not lose game state.
+      let storeState
+      if (!equal(script8.initialState, this.previousInitialState)) {
+        console.log('setting storestate to script8.initialState')
+        storeState = script8.initialState
+      } else {
+        console.log('setting storestate to store.getState()')
+        storeState = this.store.getState()
       }
+      // Now we can create the store.
+      // Notice that we'll pass in reduxLogger as middleware.
+      // This enables us to save each action. We'll need them for the time debugger.
+      this.store = createStore(
+        this.reducer,
+        storeState || undefined,
+        applyMiddleware(this.reduxLogger)
+      )
     } else {
       // If we're paused,
       // and either game, timelineIndex, or selectedActors is different:
@@ -264,7 +283,7 @@ class Iframe extends Component {
         !equal(isPaused, prevState.isPaused) ||
         !equal(game, prevState.game) ||
         !equal(timelineIndex, prevState.timelineIndex) ||
-        !equal(selectedActorsNames, previousSelectedActorsNames)
+        !equal(selectedActors, prevState.selectedActors)
       ) {
         console.log(
           'componentDidUpdate: running paused logic, something different'
@@ -310,7 +329,7 @@ class Iframe extends Component {
         const buttons = [...this._ul.querySelectorAll('button')]
         const canvases = [...this._ul.querySelectorAll('canvas')]
 
-        if (buttons.length !== canvases.length && false) {
+        if (buttons.length !== canvases.length) {
           console.log(
             'componentDidUpdate: running paused logic, buttons have no canvases'
           )
@@ -338,6 +357,8 @@ class Iframe extends Component {
             // and append to button.
             buttons[i].appendChild(lilCanvas)
           })
+
+          script8.draw(this.store.getState())
         }
       }
     }
@@ -372,7 +393,13 @@ class Iframe extends Component {
   }
 
   render () {
-    const { isPaused, actors, alteredStates, timelineIndex } = this.state
+    const {
+      isPaused,
+      actors,
+      alteredStates,
+      timelineIndex,
+      selectedActors
+    } = this.state
     // console.log(alteredStates.length)
     // hide: !this.actorsAvailable,
     // invisible: !isPaused
@@ -400,9 +427,11 @@ class Iframe extends Component {
               fps (avg): <span />
             </div>
           </div>
-          <div className={classNames('timeline', {
-            invisible: !isPaused
-          })}>
+          <div
+            className={classNames('timeline', {
+              invisible: !isPaused
+            })}
+          >
             <input
               type='range'
               value={timelineIndex}
@@ -417,7 +446,12 @@ class Iframe extends Component {
             >
               {actors.map(actor => (
                 <li key={actor.name}>
-                  <button />
+                  <button
+                    className={classNames({
+                      active: selectedActors.includes(actor.name)
+                    })}
+                    onClick={() => this.handleActorClick(actor.name)}
+                  />
                 </li>
               ))}
             </ul>

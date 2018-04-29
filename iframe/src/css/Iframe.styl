@@ -69,14 +69,26 @@ ul
     
     button
       background-color rgba(0, 0, 0, 0)
-      border none
+      border-radius 3px
+      border solid $palette-6 1px
       width 3rem
+      padding 0.25rem
       height @width
-      opacity 1
       cursor pointer
-      
+      outline none
       canvas
         width 100%
+        opacity 0.25
+        
+      &:hover
+        border solid $palette-2 1px
+        canvas
+          opacity 0.5
+        
+      &.active
+        border solid $palette-0 1px
+        canvas
+          opacity 1      
 
 .stats
   margin-top 0.75rem
