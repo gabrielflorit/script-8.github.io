@@ -5,7 +5,7 @@ import TopBar from '../components/TopBar.js'
 // import screenTypes from '../utils/screenTypes.js'
 
 // const mapStateToProps = ({ screen }) => ({ screen })
-const mapStateToProps = () => {}
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = dispatch => ({
   // setScreen: screen => dispatch(actions.setScreen(screen)),

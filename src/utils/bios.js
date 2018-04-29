@@ -58,8 +58,7 @@ script8.update = () => {
   }
 
   if (screen === 'end' && elapsed > 600) {
-    __script8.end()
-    // console.log(before - beforeTotal)
+    _script8.end()
   }
 }
 

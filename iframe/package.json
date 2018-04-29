@@ -1,0 +1,23 @@
+{
+  "name": "iframe",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "d3-timer": "^1.0.7",
+    "equal": "^0.1.1",
+    "lodash": "^4.17.5",
+    "npm-run-all": "^4.1.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.1.0",
+    "redux": "^3.7.2"
+  },
+  "scripts": {
+    "start-js": "react-scripts start",
+    "watch-css": "stylus src/css/Iframe.styl -o src/css -w",
+    "start": "npm-run-all -p start-js watch-css",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
