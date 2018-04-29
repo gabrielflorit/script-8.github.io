@@ -1,4 +1,4 @@
-import { version } from '../../package.json'
+import { version } from '../iframe/package.json'
 const boot = `
 
 function random(min, max) {

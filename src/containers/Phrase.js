@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth, playNote } from '../utils/soundAPI/index.js'
+import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TopBar from '../components/TopBar.js'
 import TextInput from '../components/TextInput.js'
-import toLetter from '../utils/toLetter.js'
-import settings from '../utils/settings.js'
+import toLetter from '../iframe/src/toLetter.js'
+import settings from '../iframe/src/settings.js'
 
 const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
