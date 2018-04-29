@@ -9,6 +9,7 @@ import random from 'lodash/random'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
+import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
 import utilsAPI from './utilsAPI.js'
@@ -22,6 +23,7 @@ console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 window.script8 = {}
 window._script8 = {}
 
+const NOOP = () => {}
 const FPS = 60
 const CANVAS_SIZE = 128
 const ACTOR_FRAME_SKIP = 5
@@ -104,6 +106,7 @@ class Iframe extends Component {
     const globals = {
       Math,
       ...utilsAPI(),
+      ...soundAPI(),
       ...canvasAPI({
         ctx: this._canvas.getContext('2d'),
         width: CANVAS_SIZE,
@@ -131,6 +134,8 @@ class Iframe extends Component {
       const { blacklist, shadows } = this
       // Run user code.
       if (type === 'callCode') {
+        window.playSong = payload.run ? globals.playSong({ ...payload }) : NOOP
+
         this.setState({
           game: payload.game,
           message,
