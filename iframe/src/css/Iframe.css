@@ -35,6 +35,9 @@ canvas.master {
   width: 100vw;
   height: 100vw;
 }
+button {
+  display: block;
+}
 .button {
   border: none;
   color: #20394f;
@@ -55,7 +58,6 @@ button.play {
   display: block;
   border: solid #0f2a3f 1px;
   height: 1.5rem;
-  margin-bottom: 1.5rem;
   background: none;
   border: none;
   padding-left: 0;
@@ -65,6 +67,25 @@ input {
   width: 100%;
   display: block;
   margin: 0.75rem 0;
+}
+ul {
+  display: flex;
+  list-style: none;
+  min-height: 3rem;
+}
+ul li {
+  margin-right: 1.5rem;
+}
+ul li button {
+  background-color: rgba(0,0,0,0);
+  border: none;
+  width: 3rem;
+  height: 3rem;
+  opacity: 1;
+  cursor: pointer;
+}
+ul li button canvas {
+  width: 100%;
 }
 .stats {
   margin-top: 0.75rem;

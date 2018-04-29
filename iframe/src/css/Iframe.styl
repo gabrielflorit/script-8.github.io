@@ -26,6 +26,9 @@ canvas.master
   width 100vw
   height 100vw
 
+button
+  display block
+
 .button
   border none
   color $palette-5
@@ -45,7 +48,6 @@ button.play
   display block
   border solid $palette-6 1px
   height 1.5rem
-  margin-bottom 1.5rem
   background none
   border none
   padding-left 0
@@ -57,31 +59,24 @@ input {
   margin 0.75rem 0
 }
 
-// ul {
-//   display flex
-//   list-style none
-// }
-
-// ul li {
-//   margin-right 1.5rem
-// }
-
-// ul li button {
-//   background-color rgba(0, 0, 0, 0)
-//   border none
-//   width calc(16px * 2)
-//   height calc(16px * 2)
-//   opacity 0.25
-//   cursor pointer
-// }
-
-// ul li button.active {
-//   opacity 1
-// }
-
-// ul li button canvas {
-//   width 100%
-// }
+ul
+  display flex
+  list-style none
+  min-height 3rem
+  
+  li
+    margin-right 1.5rem
+    
+    button
+      background-color rgba(0, 0, 0, 0)
+      border none
+      width 3rem
+      height @width
+      opacity 1
+      cursor pointer
+      
+      canvas
+        width 100%
 
 .stats
   margin-top 0.75rem
