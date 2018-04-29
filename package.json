@@ -30,8 +30,6 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
-    "build-tutorial": "node src/utils/tutorial/parser.js > src/utils/tutorial/slides.json",
-    "build-iframe": "cp src/index.js src/temp.js && cp src/iframe.js src/index.js && react-scripts build && mv build/static/js/*.js public/iframe-build.js && cp src/temp.js src/index.js && rm src/temp.js && rm build/static/js/*.map",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
     "build-css": "stylus src/css/App.styl -o src/css",
@@ -39,7 +37,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p start-js watch-css",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-tutorial build-css build-js",
+    "build": "npm-run-all build-css build-js",
     "serve": "serve -s build",
     "build-dev": "npm-run-all -s build serve",
     "test": "react-scripts test --env=jsdom",
