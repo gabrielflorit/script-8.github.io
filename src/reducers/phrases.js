@@ -3,7 +3,7 @@ import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
-import toLetter, { letterToNumber } from './../utils/toLetter.js'
+import toLetter, { letterToNumber } from '../iframe/src/toLetter.js'
 
 const compressPhrases = phrases =>
   _.mapValues(phrases, phrase =>
