@@ -18,6 +18,10 @@ import './css/Iframe.css'
 window.script8 = {}
 window._script8 = {}
 
+const FPS = 60
+const CANVAS_SIZE = 128
+const ACTOR_FRAME_SKIP = 5
+
 const createReducer = () => {
   // Create the reducer, with the script8 state or an empty object.
   const reducer = (state = window.script8.initialState || {}, action) => {
@@ -50,10 +54,8 @@ class Iframe extends Component {
 
     this.shadows = new Set(['document'])
     this.blacklist = new Set(['eval', 'alert', '_script8'])
-    this.CANVAS_SIZE = 128
     this.keys = new Set()
 
-    this.FPS = 60
     this.timer = null
 
     this.reducer = createReducer()
@@ -70,7 +72,7 @@ class Iframe extends Component {
           state: store.getState(),
           action
         }
-      ].slice(-(this.FPS * 3))
+      ].slice(-(FPS * 3))
 
       return next(action)
     }
@@ -95,8 +97,8 @@ class Iframe extends Component {
       ...utilsAPI(),
       ...canvasAPI({
         ctx: this._canvas.getContext('2d'),
-        width: this.CANVAS_SIZE,
-        height: this.CANVAS_SIZE
+        width: CANVAS_SIZE,
+        height: CANVAS_SIZE
       }),
       range,
       flatten,
@@ -192,7 +194,7 @@ class Iframe extends Component {
     if (this.timer) {
       this.timer.stop()
     }
-    this.timer = interval(timerCallback, 1000 / this.FPS)
+    this.timer = interval(timerCallback, 1000 / FPS)
   }
 
   handleTimelineInput (e) {
@@ -226,6 +228,7 @@ class Iframe extends Component {
     }
 
     this.setState({
+      selectedActors: [],
       actors: [],
       isPaused: !this.state.isPaused
     })
@@ -303,17 +306,40 @@ class Iframe extends Component {
           alteredStates.push(this.store.getState())
         })
 
-        // Get all unique actors.
-        const allActors = flatten(alteredStates.map(state => state.actors))
-        const actors = uniqBy(allActors, d => d.name)
-
+        // If we were previously in play mode,
+        // set the timeline to the max.
         const newTimelineIndex = prevState.isPaused
           ? timelineIndex
           : alteredStates.length - 1
 
+        // Get all unique actors.
+        const allActors = flatten(alteredStates.map(state => state.actors))
+        const actors = uniqBy(allActors, d => d.name)
+
         // Draw the timeline index state.
         const stateToDraw = alteredStates[newTimelineIndex]
         script8.draw(stateToDraw)
+
+        // For each altered state, minus the timeLineIndex one,
+        // draw the actors, if they're selected, faded.
+        alteredStates.forEach((state, i) => {
+          if (
+            (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
+            i === alteredStates.length - 1
+          ) {
+            const matchingActors = state.actors.filter(d =>
+              selectedActors.includes(d.name)
+            )
+            script8.drawActors({ actors: matchingActors }, true)
+          }
+        })
+
+        // Draw the timeLineIndex one last, not faded.
+        script8.drawActors({
+          actors: alteredStates[newTimelineIndex].actors.filter(d =>
+            selectedActors.includes(d.name)
+          )
+        })
 
         // Finally, set the store to point to the timeLineIndex altered state,
         // so that when we hit play, we can resume right from this point.
@@ -350,8 +376,8 @@ class Iframe extends Component {
             // get its canvas,
             const lilCanvas = trimCanvas({
               ctx: this._canvas.getContext('2d'),
-              width: this.CANVAS_SIZE,
-              height: this.CANVAS_SIZE
+              width: CANVAS_SIZE,
+              height: CANVAS_SIZE
             })
 
             // and append to button.

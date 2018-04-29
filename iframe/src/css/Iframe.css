@@ -78,10 +78,9 @@ ul li {
 }
 ul li button {
   background-color: rgba(0,0,0,0);
-  border-radius: 3px;
-  border: solid #0f2a3f 1px;
+  border: solid #0f2a3f 2px;
   width: 3rem;
-  padding: 0.25rem;
+  padding: 0.35rem;
   height: 3rem;
   cursor: pointer;
   outline: none;
@@ -91,13 +90,13 @@ ul li button canvas {
   opacity: 0.25;
 }
 ul li button:hover {
-  border: solid #997577 1px;
+  border-color: #997577;
 }
 ul li button:hover canvas {
   opacity: 0.5;
 }
 ul li button.active {
-  border: solid #f6d6bd 1px;
+  border-color: #f6d6bd;
 }
 ul li button.active canvas {
   opacity: 1;
