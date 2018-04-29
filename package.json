@@ -32,7 +32,8 @@
   "scripts": {
     "iframe-rename": "cd iframe; mv build/index.html build/iframe.html",
     "iframe-build": "cd iframe; yarn build",
-    "iframe": "npm-run-all -s iframe-build iframe-rename",
+    "iframe-copy": "cp -a iframe/build/. build/",
+    "iframe": "npm-run-all -s iframe-build iframe-rename iframe-copy",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
     "build-css": "stylus src/css/App.styl -o src/css",
@@ -40,7 +41,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p start-js watch-css",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js",
+    "build": "npm-run-all build-css build-js iframe",
     "serve": "serve -s build",
     "build-dev": "npm-run-all -s build serve",
     "test": "react-scripts test --env=jsdom",

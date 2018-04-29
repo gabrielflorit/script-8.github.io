@@ -103,7 +103,6 @@ class Iframe extends Component {
     // Assign various properties to global scope, for the user.
     const globals = {
       Math,
-      Object,
       ...utilsAPI(),
       ...canvasAPI({
         ctx: this._canvas.getContext('2d'),

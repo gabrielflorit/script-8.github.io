@@ -80,7 +80,6 @@ class Help extends Component {
                     <li>func log(message)</li>
                     <li>func range([start=0], end, [step=1])</li>
                     <li>func flatten(array)</li>
-                    <li>func clamp(number, [lower], upper)</li>
                     <li>func random([lower=0], [upper=1], [floating])</li>
                   </ul>
                 </li>
@@ -89,7 +88,6 @@ class Help extends Component {
                   System
                   <ul className='third-list'>
                     <li>obj Math</li>
-                    <li>obj Date</li>
                   </ul>
                 </li>
               </ul>
