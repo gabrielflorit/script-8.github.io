@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
@@ -25,6 +26,15 @@ class Output extends Component {
 
     this.evaluate = this.evaluate.bind(this)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
+
+    window.addEventListener(
+      'resize',
+      _.debounce(() => {
+        if (this.isLoaded) {
+          this.evaluate()
+        }
+      })
+    )
   }
 
   noop () {}
@@ -37,7 +47,7 @@ class Output extends Component {
     this._iframe.focus()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate () {
     if (this.isLoaded) {
       this.evaluate()
     }
@@ -49,26 +59,28 @@ class Output extends Component {
     // Create a closured function for eval'ing the game.
     const sendPayload = (callbacks = {}) => {
       const channel = new window.MessageChannel()
-      this._iframe.contentWindow.postMessage(
-        {
-          type: 'callCode',
-          game,
-          songs,
-          chains,
-          phrases,
-          run,
-          callbacks
-        },
-        '*',
-        [channel.port2]
-      )
-      channel.port1.onmessage = e => {
-        if (e.data.callback === 'finishBoot') {
-          finishBoot()
-        }
-        const { height } = e.data
-        if (height) {
-          this._iframe.height = height
+      if (this._iframe) {
+        this._iframe.contentWindow.postMessage(
+          {
+            type: 'callCode',
+            game,
+            songs,
+            chains,
+            phrases,
+            run,
+            callbacks
+          },
+          '*',
+          [channel.port2]
+        )
+        channel.port1.onmessage = e => {
+          if (e.data.callback === 'finishBoot') {
+            finishBoot()
+          }
+          const { height } = e.data
+          if (height && this._iframe) {
+            this._iframe.height = height
+          }
         }
       }
     }
