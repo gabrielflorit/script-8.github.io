@@ -12,7 +12,7 @@ import Code from './Code.js'
 import Help from './Help.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
-import { version } from '../../package.json'
+import { version } from '../iframe/package.json'
 import '../css/App.css'
 
 console.log(JSON.stringify(`SCRIPT-8 app v ${version}`, null, 2))
