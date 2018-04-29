@@ -15,6 +15,9 @@ import utilsAPI from './utilsAPI.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import './css/Iframe.css'
+import { version } from '../package.json'
+
+console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
 window.script8 = {}
 window._script8 = {}

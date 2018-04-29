@@ -96,7 +96,7 @@ class Output extends Component {
     return (
       <div className='Output'>
         <iframe
-          src='http://localhost:3001'
+          src={process.env.IFRAME_URL}
           title='SCRIPT-8'
           sandbox='allow-scripts allow-same-origin'
           onBlur={this.handleBlur}

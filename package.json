@@ -30,6 +30,9 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
+    "iframe-rename": "cd iframe; mv build/index.html build/iframe.html",
+    "iframe-build": "cd iframe; yarn build",
+    "iframe": "npm-run-all -s iframe-build iframe-rename",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
     "build-css": "stylus src/css/App.styl -o src/css",
