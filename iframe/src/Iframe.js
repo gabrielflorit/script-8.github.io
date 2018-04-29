@@ -8,6 +8,7 @@ import flatten from 'lodash/flatten'
 import random from 'lodash/random'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
+import isEmpty from 'lodash/isEmpty'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
 import utilsAPI from './utilsAPI.js'
@@ -90,7 +91,8 @@ class Iframe extends Component {
       message: null,
       callbacks: {},
       isPaused: false,
-      alteredStates: []
+      alteredStates: [],
+      run: true
     }
   }
 
@@ -130,6 +132,7 @@ class Iframe extends Component {
         this.setState({
           game: payload.game,
           message,
+          run: payload.run,
           callbacks: payload.callbacks
         })
       } else if (type === 'findInvalidToken') {
@@ -215,7 +218,7 @@ class Iframe extends Component {
         script8 && script8.draw && script8.draw(this.store.getState())
 
         // Update fps, only if we had a new measurement.
-        if (newFps !== undefined) {
+        if (newFps !== undefined && newFps !== this.state.fps) {
           this.setState({
             fps: newFps
           })
@@ -281,11 +284,12 @@ class Iframe extends Component {
 
     // If we're playing,
     if (!isPaused) {
+      // and we came back from being paused, or the game is different,
       if (prevState.isPaused || game !== prevState.game) {
-        // and the game is different,
         // evaluate user code,
         // get redux state,
         // and create redux store.
+
         // Evaluate user code.
         this.evalCode({ ...state, shadows: shadows })
 
@@ -299,7 +303,7 @@ class Iframe extends Component {
         if (!equal(script8.initialState, this.previousInitialState)) {
           storeState = script8.initialState
         } else {
-          storeState = this.store.getState()
+          storeState = (this.store && this.store.getState()) || {}
         }
         // Now we can create the store.
         // Notice that we'll pass in reduxLogger as middleware.
@@ -339,7 +343,7 @@ class Iframe extends Component {
         // Save that state to alteredStates.
         // Then, for all next actions in the history, dispatch the action,
         // and save resulting state to alteredStates.
-        const alteredStates = []
+        let alteredStates = []
         this.store = createStore(this.reducer, this.reduxHistory[0].state)
         alteredStates.push(this.store.getState())
         this.reduxHistory.forEach(({ state, action }) => {
@@ -347,19 +351,23 @@ class Iframe extends Component {
           alteredStates.push(this.store.getState())
         })
 
+        alteredStates = alteredStates.filter(d => !isEmpty(d))
+
         // If we were previously in play mode,
         // set the timeline to the max.
         const newTimelineIndex = prevState.isPaused
           ? timelineIndex
           : alteredStates.length - 1
 
-        // Get all unique actors.
-        const allActors = flatten(alteredStates.map(state => state.actors))
-        const actors = uniqBy(allActors, d => d.name)
-
         // Draw the timeline index state.
         const stateToDraw = alteredStates[newTimelineIndex]
         script8.draw(stateToDraw)
+
+        // Get all unique actors.
+        const allActors = flatten(
+          alteredStates.map(state => state.actors)
+        ).filter(d => d)
+        const actors = uniqBy(allActors, d => d.name)
 
         // For each altered state, minus the timeLineIndex one,
         // draw the actors, if they're selected, faded.
@@ -368,19 +376,22 @@ class Iframe extends Component {
             (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
             i === alteredStates.length - 1
           ) {
-            const matchingActors = state.actors.filter(d =>
-              selectedActors.includes(d.name)
-            )
-            script8.drawActors({ actors: matchingActors }, true)
+            const matchingActors =
+              (state.actors &&
+                state.actors.filter(d => selectedActors.includes(d.name))) ||
+              []
+            script8.drawActors &&
+              script8.drawActors({ actors: matchingActors }, true)
           }
         })
 
         // Draw the timeLineIndex one last, not faded.
-        script8.drawActors({
-          actors: alteredStates[newTimelineIndex].actors.filter(d =>
-            selectedActors.includes(d.name)
-          )
-        })
+        script8.drawActors &&
+          script8.drawActors({
+            actors: alteredStates[newTimelineIndex].actors.filter(d =>
+              selectedActors.includes(d.name)
+            )
+          })
 
         // Finally, set the store to point to the timeLineIndex altered state,
         // so that when we hit play, we can resume right from this point.
@@ -450,20 +461,25 @@ class Iframe extends Component {
       alteredStates,
       timelineIndex,
       selectedActors,
-      fps
+      fps,
+      run
     } = this.state
     return (
       <div className='Iframe'>
         <div className='container'>
           <canvas
             className='master'
-            width={128}
-            height={128}
+            width={CANVAS_SIZE}
+            height={CANVAS_SIZE}
             ref={_canvas => {
               this._canvas = _canvas
             }}
           />
-          <div className='stats'>
+          <div
+            className={classNames('stats', {
+              hide: run
+            })}
+          >
             <button
               className={classNames('button play', {
                 active: isPaused
@@ -472,12 +488,17 @@ class Iframe extends Component {
             >
               {isPaused ? 'play' : 'pause'}
             </button>
-            <div className='fps'>
+            <div
+              className={classNames('fps', {
+                hide: isPaused
+              })}
+            >
               fps (avg): <span>{fps}</span>
             </div>
           </div>
           <div
             className={classNames('timeline', {
+              hide: run || alteredStates.length === 0,
               invisible: !isPaused
             })}
           >
