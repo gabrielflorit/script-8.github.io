@@ -52,11 +52,15 @@ class Iframe extends Component {
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
 
+    this.heightSent = 0
+
     this.shadows = new Set(['document'])
     this.blacklist = new Set(['eval', 'alert', '_script8'])
     this.keys = new Set()
 
     this.timer = null
+    this.previousElapsed = 0
+    this.fpsValues = []
 
     this.reducer = createReducer()
     this.store = null
@@ -78,6 +82,7 @@ class Iframe extends Component {
     }
 
     this.state = {
+      fps: null,
       game: '',
       timelineIndex: 0,
       actors: [],
@@ -178,15 +183,43 @@ class Iframe extends Component {
   }
 
   startTimer () {
-    const timerCallback = () => {
+    const timerCallback = elapsed => {
       try {
-        // update the redux store,
+        // Calculate the actual FPS,
+        const tickLength = elapsed - this.previousElapsed
+        const fps = Math.round(1000 / tickLength)
+
+        // add fps to array,
+        this.fpsValues.push(fps)
+
+        // and update fps stats once per second.
+        let newFps
+        if (this.fpsValues.length % 60 === 0) {
+          const avg =
+            this.fpsValues.reduce((acc, current) => acc + current) /
+            this.fpsValues.length
+          newFps = Math.round(avg)
+        }
+
+        // Save current elapsed.
+        this.previousElapsed = elapsed
+
+        // Update the redux store.
         this.store.dispatch({
           type: 'TICK',
           input: getUserInput(this.keys)
         })
+
+        // Draw this state.
         const { script8 } = window
         script8 && script8.draw && script8.draw(this.store.getState())
+
+        // Update fps, only if we had a new measurement.
+        if (newFps !== undefined) {
+          this.setState({
+            fps: newFps
+          })
+        }
       } catch (e) {
         console.warn(e.message)
       }
@@ -212,8 +245,6 @@ class Iframe extends Component {
       ? selectedActors.filter(d => d !== actorName)
       : [...selectedActors, actorName]
 
-    console.log(actors)
-
     this.setState({
       selectedActors: actors
     })
@@ -230,6 +261,7 @@ class Iframe extends Component {
     this.setState({
       selectedActors: [],
       actors: [],
+      fps: null,
       isPaused: !this.state.isPaused
     })
   }
@@ -249,37 +281,49 @@ class Iframe extends Component {
 
     // If we're playing,
     if (!isPaused) {
-      // and the game is different,
-      // evaluate user code,
-      // get redux state,
-      // and create redux store.
-      console.log('componentDidUpdate: running play logic')
-      // Evaluate user code.
-      this.evalCode({ ...state, shadows: shadows })
+      if (prevState.isPaused || game !== prevState.game) {
+        // and the game is different,
+        // evaluate user code,
+        // get redux state,
+        // and create redux store.
+        // Evaluate user code.
+        this.evalCode({ ...state, shadows: shadows })
 
-      // Before we create a redux store, let's think about what state we want.
-      // If the user has changed script8.initialState, use that.
-      // This way we let the user start over when they modify initialState.
-      // This is an escape hatch of sorts.
-      // Otherwise use the current store state. This will enable us to modify game
-      // code and not lose game state.
-      let storeState
-      if (!equal(script8.initialState, this.previousInitialState)) {
-        console.log('setting storestate to script8.initialState')
-        storeState = script8.initialState
-      } else {
-        console.log('setting storestate to store.getState()')
-        storeState = this.store.getState()
+        // Before we create a redux store, let's think about what state we want.
+        // If the user has changed script8.initialState, use that.
+        // This way we let the user start over when they modify initialState.
+        // This is an escape hatch of sorts.
+        // Otherwise use the current store state. This will enable us to modify game
+        // code and not lose game state.
+        let storeState
+        if (!equal(script8.initialState, this.previousInitialState)) {
+          storeState = script8.initialState
+        } else {
+          storeState = this.store.getState()
+        }
+        // Now we can create the store.
+        // Notice that we'll pass in reduxLogger as middleware.
+        // This enables us to save each action. We'll need them for the time debugger.
+        this.store = createStore(
+          this.reducer,
+          storeState || undefined,
+          applyMiddleware(this.reduxLogger)
+        )
       }
-      // Now we can create the store.
-      // Notice that we'll pass in reduxLogger as middleware.
-      // This enables us to save each action. We'll need them for the time debugger.
-      this.store = createStore(
-        this.reducer,
-        storeState || undefined,
-        applyMiddleware(this.reduxLogger)
-      )
     } else {
+      // If we're not playing,
+      // we can have several different kinds of inputs:
+      // - game has changed
+      // - timelineIndex has changed
+      // - selectedActors has changed
+      // Stop the timer (ONLY when pause was clicked).
+      // Evaluate user code (ONLY when game has changed).
+      // Create array of alteredStates (ONLY when game has changed).
+      // Populated list of actor buttons (ONLY when game has changed).
+      // Set timeline length to alteredStates' length (ONLY when pause was clicked).
+      // Set timeline index to max (ONLY when pause was clicked).
+      // Draw the last state, and draw selected actors (highlight timeline index actors).
+
       // If we're paused,
       // and either game, timelineIndex, or selectedActors is different:
       if (
@@ -288,9 +332,6 @@ class Iframe extends Component {
         !equal(timelineIndex, prevState.timelineIndex) ||
         !equal(selectedActors, prevState.selectedActors)
       ) {
-        console.log(
-          'componentDidUpdate: running paused logic, something different'
-        )
         // Evaluate user code.
         this.evalCode({ ...state, shadows: shadows })
 
@@ -356,9 +397,6 @@ class Iframe extends Component {
         const canvases = [...this._ul.querySelectorAll('canvas')]
 
         if (buttons.length !== canvases.length) {
-          console.log(
-            'componentDidUpdate: running paused logic, buttons have no canvases'
-          )
           actors.forEach((actor, i) => {
             window.clear()
             // For each actor,
@@ -391,30 +429,17 @@ class Iframe extends Component {
 
     // If we haven't started the timer yet, do so now.
     if (!this.timer && !isPaused) {
-      console.log('componentDidUpdate: starting timer')
       this.startTimer()
     }
-
-    // If we're not playing,
-    // we can have several different kinds of inputs:
-    // - game has changed
-    // - timelineIndex has changed
-    // - selectedActors has changed
-    // Stop the timer (ONLY when pause was clicked).
-    // Evaluate user code (ONLY when game has changed).
-    // Create array of alteredStates (ONLY when game has changed).
-    // Populated list of actor buttons (ONLY when game has changed).
-    // Set timeline length to alteredStates' length (ONLY when pause was clicked).
-    // Set timeline index to max (ONLY when pause was clicked).
-    // Draw the last state, and draw selected actors (highlight timeline index actors).
-
-    // Create array of alteredStates (ONLY when game has changed).
 
     // If we had a message,
     if (message) {
       // send the height to parent.
       const height = document.body.querySelector('.container').scrollHeight
-      message.ports[0].postMessage({ height })
+      if (height !== this.heightSent) {
+        message.ports[0].postMessage({ height })
+        this.heightSent = height
+      }
     }
   }
 
@@ -424,11 +449,9 @@ class Iframe extends Component {
       actors,
       alteredStates,
       timelineIndex,
-      selectedActors
+      selectedActors,
+      fps
     } = this.state
-    // console.log(alteredStates.length)
-    // hide: !this.actorsAvailable,
-    // invisible: !isPaused
     return (
       <div className='Iframe'>
         <div className='container'>
@@ -450,7 +473,7 @@ class Iframe extends Component {
               {isPaused ? 'play' : 'pause'}
             </button>
             <div className='fps'>
-              fps (avg): <span />
+              fps (avg): <span>{fps}</span>
             </div>
           </div>
           <div
