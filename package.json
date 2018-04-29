@@ -30,6 +30,7 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
+    "version": "cd src/iframe; npm version patch",
     "iframe-start-js": "cd src/iframe; react-scripts start",
     "iframe-watch-css": "cd src/iframe; stylus src/css/Iframe.styl -o src/css -w",
     "iframe-start": "npm-run-all -p iframe-start-js iframe-watch-css",
