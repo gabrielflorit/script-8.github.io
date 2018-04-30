@@ -40,6 +40,16 @@ const createReducer = () => {
           } catch (e) {
             newState = JSON.parse(JSON.stringify(state))
             console.warn(e.message)
+          } finally {
+            if (newState.actors) {
+              // Find actors with no name.
+              const namelessActors = newState.actors.filter(
+                actor => !actor.name
+              )
+              if (namelessActors.length) {
+                console.warn('Error: actors must have a name property.')
+              }
+            }
           }
           return newState
         } else {
