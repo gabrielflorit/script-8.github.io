@@ -35,7 +35,7 @@ const createReducer = () => {
       case 'TICK': {
         if (window.script8.update) {
           const newState = JSON.parse(JSON.stringify(state))
-          window.script8.update(newState, action.input)
+          window.script8.update(newState, action.input, action.elapsed)
           return newState
         } else {
           return state
@@ -217,7 +217,8 @@ class Iframe extends Component {
         // Update the redux store.
         this.store.dispatch({
           type: 'TICK',
-          input: getUserInput(this.keys)
+          input: getUserInput(this.keys),
+          elapsed: elapsed - this.previousElapsed
         })
 
         // Draw this state.
@@ -237,6 +238,7 @@ class Iframe extends Component {
     if (this.timer) {
       this.timer.stop()
     }
+    this.previousElapsed = 0
     this.timer = interval(timerCallback, 1000 / FPS)
   }
 
