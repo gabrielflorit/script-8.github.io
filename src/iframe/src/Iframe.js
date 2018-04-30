@@ -26,6 +26,7 @@ window._script8 = {}
 
 const NOOP = () => {}
 const FPS = 60
+const SECONDS = 2
 const CANVAS_SIZE = 128
 const ACTOR_FRAME_SKIP = 5
 
@@ -98,7 +99,7 @@ class Iframe extends Component {
           state: store.getState(),
           action
         }
-      ].slice(-(FPS * 3))
+      ].slice(-(FPS * SECONDS))
 
       return next(action)
     }
