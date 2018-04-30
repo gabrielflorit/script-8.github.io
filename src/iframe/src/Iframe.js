@@ -34,8 +34,13 @@ const createReducer = () => {
     switch (action.type) {
       case 'TICK': {
         if (window.script8.update) {
-          const newState = JSON.parse(JSON.stringify(state))
-          window.script8.update(newState, action.input, action.elapsed)
+          let newState = JSON.parse(JSON.stringify(state))
+          try {
+            window.script8.update(newState, action.input, action.elapsed)
+          } catch (e) {
+            newState = JSON.parse(JSON.stringify(state))
+            console.warn(e.message)
+          }
           return newState
         } else {
           return state
