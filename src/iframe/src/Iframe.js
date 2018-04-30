@@ -34,13 +34,10 @@ const createReducer = () => {
     switch (action.type) {
       case 'TICK': {
         if (window.script8.update) {
-          let newState = JSON.parse(JSON.stringify(state))
+          let newState
           try {
-            window.script8.update(newState, action.input, action.elapsed)
-          } catch (e) {
             newState = JSON.parse(JSON.stringify(state))
-            console.warn(e.message)
-          } finally {
+            window.script8.update(newState, action.input, action.elapsed)
             if (newState.actors) {
               // Find actors with no name.
               const namelessActors = newState.actors.filter(
@@ -50,6 +47,9 @@ const createReducer = () => {
                 console.warn('Error: actors must have a name property.')
               }
             }
+          } catch (e) {
+            console.warn(e.message)
+            return state
           }
           return newState
         } else {
