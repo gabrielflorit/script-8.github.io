@@ -6,6 +6,7 @@ import { createStore, applyMiddleware } from 'redux'
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
 import random from 'lodash/random'
+import clamp from 'lodash/clamp'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
@@ -129,7 +130,8 @@ class Iframe extends Component {
       }),
       range,
       flatten,
-      random
+      random,
+      clamp
     }
 
     // Keep track of what keys we're pressing.
@@ -360,72 +362,76 @@ class Iframe extends Component {
         !equal(timelineIndex, prevState.timelineIndex) ||
         !equal(selectedActors, prevState.selectedActors)
       ) {
-        // Evaluate user code.
-        this.evalCode({ ...state, shadows: shadows })
+        try {
+          // Evaluate user code.
+          this.evalCode({ ...state, shadows: shadows })
 
-        // Create the store with the first item in reduxHistory as initial state.
-        // Save that state to alteredStates.
-        // Then, for all next actions in the history, dispatch the action,
-        // and save resulting state to alteredStates.
-        let alteredStates = []
-        this.store = createStore(this.reducer, this.reduxHistory[0].state)
-        alteredStates.push(this.store.getState())
-        this.reduxHistory.forEach(({ state, action }) => {
-          this.store.dispatch(action)
+          // Create the store with the first item in reduxHistory as initial state.
+          // Save that state to alteredStates.
+          // Then, for all next actions in the history, dispatch the action,
+          // and save resulting state to alteredStates.
+          let alteredStates = []
+          this.store = createStore(this.reducer, this.reduxHistory[0].state)
           alteredStates.push(this.store.getState())
-        })
-
-        alteredStates = alteredStates.filter(d => !isEmpty(d))
-
-        // If we were previously in play mode,
-        // set the timeline to the max.
-        const newTimelineIndex = prevState.isPaused
-          ? timelineIndex
-          : alteredStates.length - 1
-
-        // Draw the timeline index state.
-        const stateToDraw = alteredStates[newTimelineIndex]
-        script8.draw(stateToDraw)
-
-        // Get all unique actors.
-        const allActors = flatten(
-          alteredStates.map(state => state.actors)
-        ).filter(d => d)
-        const actors = uniqBy(allActors, d => d.name)
-
-        // For each altered state, minus the timeLineIndex one,
-        // draw the actors, if they're selected, faded.
-        alteredStates.forEach((state, i) => {
-          if (
-            (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
-            i === alteredStates.length - 1
-          ) {
-            const matchingActors =
-              (state.actors &&
-                state.actors.filter(d => selectedActors.includes(d.name))) ||
-              []
-            script8.drawActors &&
-              script8.drawActors({ actors: matchingActors }, true)
-          }
-        })
-
-        // Draw the timeLineIndex one last, not faded.
-        script8.drawActors &&
-          script8.drawActors({
-            actors: alteredStates[newTimelineIndex].actors.filter(d =>
-              selectedActors.includes(d.name)
-            )
+          this.reduxHistory.forEach(({ state, action }) => {
+            this.store.dispatch(action)
+            alteredStates.push(this.store.getState())
           })
 
-        // Finally, set the store to point to the timeLineIndex altered state,
-        // so that when we hit play, we can resume right from this point.
-        this.store = createStore(this.reducer, stateToDraw)
+          alteredStates = alteredStates.filter(d => !isEmpty(d))
 
-        this.setState({
-          alteredStates,
-          actors,
-          timelineIndex: newTimelineIndex
-        })
+          // If we were previously in play mode,
+          // set the timeline to the max.
+          const newTimelineIndex = prevState.isPaused
+            ? timelineIndex
+            : alteredStates.length - 1
+
+          // Draw the timeline index state.
+          const stateToDraw = alteredStates[newTimelineIndex]
+          script8.draw(stateToDraw)
+
+          // Get all unique actors.
+          const allActors = flatten(
+            alteredStates.map(state => state.actors)
+          ).filter(d => d)
+          const actors = uniqBy(allActors, d => d.name)
+
+          // For each altered state, minus the timeLineIndex one,
+          // draw the actors, if they're selected, faded.
+          alteredStates.forEach((state, i) => {
+            if (
+              (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
+              i === alteredStates.length - 1
+            ) {
+              const matchingActors =
+                (state.actors &&
+                  state.actors.filter(d => selectedActors.includes(d.name))) ||
+                []
+              script8.drawActors &&
+                script8.drawActors({ actors: matchingActors }, true)
+            }
+          })
+
+          // Draw the timeLineIndex one last, not faded.
+          script8.drawActors &&
+            script8.drawActors({
+              actors: alteredStates[newTimelineIndex].actors.filter(d =>
+                selectedActors.includes(d.name)
+              )
+            })
+
+          // Finally, set the store to point to the timeLineIndex altered state,
+          // so that when we hit play, we can resume right from this point.
+          this.store = createStore(this.reducer, stateToDraw)
+
+          this.setState({
+            alteredStates,
+            actors,
+            timelineIndex: newTimelineIndex
+          })
+        } catch (e) {
+          console.warn(e.message)
+        }
       } else {
         // If the ul buttons don't have any canvases, add them!
         const buttons = [...this._ul.querySelectorAll('button')]
