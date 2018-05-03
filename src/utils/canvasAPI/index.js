@@ -26,6 +26,49 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     ctx.stroke()
     ctx.setLineDash([])
   },
+  
+  line (x1, y1, x2, y2, c) {
+    ctx.fillStyle = colors.one(c)
+    let steep = false
+    if (Math.abs(x1 - x2) < Math.abs(y1 - y2)) {
+      [x1, y1] = [y1, x1]
+      [x2, y2] = [y2, x2]
+      steep = true
+    }
+    if (x1 > x2) {
+      [x1, x2] = [x2, x1]
+      [y1, y2] = [y2, y1]
+    }
+    let dx = x2 - x1
+    let dy = y2 - y1
+    let derror = Math.abs(dy) * 2
+    let error = 0
+    let y = y1
+    for (let x = x1; x <= x2; x++) {
+      if (steep) {
+        ctx.fillRect(
+          Math.round(x) + 0.5,
+          Math.round(y) + 0.5,
+          1, 1
+        )
+      } else {
+        ctx.fillRect(
+          Math.round(y) + 0.5,
+          Math.round(x) + 0.5,
+          1, 1
+        )
+      }
+      error += derror
+      if (error > dx) {
+        if (y2 > y1) {
+            y++
+        } else {
+            y--
+        }
+        error -= dx * 2
+      }
+    }
+  }
 
   print (x, y, letters, c) {
     print({ x, y, letters, c, ctx })
