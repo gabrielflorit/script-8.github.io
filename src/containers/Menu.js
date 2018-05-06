@@ -22,7 +22,13 @@ const mapStateToProps = ({
   nextAction
 }) => ({
   showNew: _.includes(
-    [screenTypes.CODE, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE],
+    [
+      screenTypes.CODE,
+      screenTypes.SONG,
+      screenTypes.CHAIN,
+      screenTypes.PHRASE,
+      screenTypes.SPRITE
+    ],
     screen
   ),
   screen,

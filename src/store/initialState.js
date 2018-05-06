@@ -14,6 +14,7 @@ const initialState = {
   token: {},
   nextAction: null,
   sfxs: [],
+  sprites: {},
   phrases: {},
   chains: {},
   songs: {},

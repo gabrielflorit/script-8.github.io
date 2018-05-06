@@ -1,0 +1,16 @@
+.Sprite
+
+  .main
+    grid-template-columns auto calc(128 * 3px + 3rem)
+    grid-template-rows auto
+    grid-row-gap 2px
+
+    .SpriteEditor
+      border-right solid $palette-6 2px
+
+    @media screen and (max-width: 800px)
+      .SpriteEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none

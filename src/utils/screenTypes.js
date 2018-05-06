@@ -3,6 +3,7 @@ const screenTypes = {
   RUN: 'RUN',
   CODE: 'CODE',
   CHAIN: 'CHAIN',
+  SPRITE: 'SPRITE',
   PHRASE: 'PHRASE',
   SONG: 'SONG',
   HELP: 'HELP'
