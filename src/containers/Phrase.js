@@ -236,7 +236,7 @@ class Phrase extends Component {
                       return (
                         <td
                           key={col}
-                          onClick={e => this.handleNoteClick({ row, col })}
+                          onClick={() => this.handleNoteClick({ row, col })}
                           className={classNames({
                             match,
                             highlight: col === playingIndex && isPlaying,

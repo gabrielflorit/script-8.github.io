@@ -7,6 +7,9 @@
 
     .SpriteEditor
       border-right solid $palette-6 2px
+      color $palette-4
+      padding 1.5rem
+      text-transform uppercase
 
     @media screen and (max-width: 800px)
       .SpriteEditor
@@ -14,3 +17,39 @@
         border-right none
       .Output
         display none
+        
+    table
+      border-collapse collapse
+      table-layout fixed
+      border solid $palette-6 2px
+      margin-bottom 3rem
+
+      td
+        text-transform uppercase
+        text-align center
+        position relative
+        padding 0
+        button
+          border none
+          &:focus
+            z-index 10
+            position relative
+          &.background-
+            color $palette-6
+            background none
+          width 1.5rem
+          height @width
+          @extend .VT323
+          font-size $font-large
+          padding 0
+          cursor pointer
+          display block
+          
+      &.colors
+        button
+          margin 4px
+          width calc(3rem - 8px)
+          height @width
+          border solid $palette-7 0px
+        td.active
+          background-color $palette-0
