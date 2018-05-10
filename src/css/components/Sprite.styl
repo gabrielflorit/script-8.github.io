@@ -11,10 +11,22 @@
       padding 1.5rem
       text-transform uppercase
       display grid
-      grid-template-columns calc(1.5rem * 8) calc(1.5rem * 4)
+      grid-template-columns calc(1.5rem * 8 + 4px) calc(1.5rem * 4 + 4px)
+      grid-template-rows calc(1.5rem * 8 + 4px) 
       grid-column-gap 3rem
+      grid-row-gap 1.5rem
+      
+      canvas
+        display block
+        image-rendering -moz-crisp-edges
+        image-rendering pixelated
+        // background red
+        width calc(128px * 3 + 4px + 8px)
+        grid-column 1 / span 2
+        border solid $palette-6 2px
+        padding 4px
 
-    @media screen and (max-width: 800px)
+    @media screen and (max-width: 880px)
       .SpriteEditor
         grid-column 1 / span 2
         border-right none
@@ -25,7 +37,6 @@
       border-collapse collapse
       table-layout fixed
       border solid $palette-6 2px
-      margin-bottom 3rem
 
       td
         text-transform uppercase

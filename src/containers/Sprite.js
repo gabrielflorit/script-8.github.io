@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import Output from './Output.js'
 import actions from '../actions/actions.js'
 import TopBar from '../components/TopBar.js'
+import canvasAPI from '../iframe/src/canvasAPI/index.js'
 import { replaceAt } from '../utils/string.js'
 
 const mapStateToProps = ({ sprites }) => ({ sprites })
@@ -23,6 +24,7 @@ class Sprite extends Component {
   constructor (props) {
     super(props)
 
+    this.draw = this.draw.bind(this)
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleSpriteClick = this.handleSpriteClick.bind(this)
 
@@ -30,6 +32,29 @@ class Sprite extends Component {
       spriteIndex: 0,
       colorIndex: 0
     }
+  }
+
+  draw () {
+    // Assign various properties to global scope, for the user.
+    const { sprites } = this.props
+    this.canvasAPI = canvasAPI({
+      ctx: this._canvas.getContext('2d'),
+      width: 128,
+      height: 128,
+      sprites
+    })
+
+    this.canvasAPI.clear()
+    Object.keys(sprites).forEach(skey => {
+      const key = +skey
+      const row = Math.floor(key / 8)
+      const col = key % 8
+      this.canvasAPI.sprite(col * 8, row * 8, key)
+    })
+  }
+
+  componentDidMount () {
+    this.draw()
   }
 
   handleColorClick (colorIndex) {
@@ -55,6 +80,10 @@ class Sprite extends Component {
     )
 
     updateSprite({ sprite: newSprite, index: spriteIndex })
+  }
+
+  componentDidUpdate () {
+    this.draw()
   }
 
   render () {
@@ -111,6 +140,13 @@ class Sprite extends Component {
                 ))}
               </tbody>
             </table>
+            <canvas
+              width={128}
+              height={128}
+              ref={_canvas => {
+                this._canvas = _canvas
+              }}
+            />
           </div>
           <Output />
         </div>
