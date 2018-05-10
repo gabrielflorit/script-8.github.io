@@ -88,9 +88,9 @@ class Sprite extends Component {
             </table>
             <table className='colors'>
               <tbody>
-                {_.range(2).map(row => (
+                {_.range(4).map(row => (
                   <tr key={row}>
-                    {_.range(0 + 4 * row, 4 + 4 * row).map(col => {
+                    {_.range(0 + 2 * row, 2 + 2 * row).map(col => {
                       return (
                         <td
                           key={col}

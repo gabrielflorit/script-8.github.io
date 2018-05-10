@@ -10,6 +10,9 @@
       color $palette-4
       padding 1.5rem
       text-transform uppercase
+      display grid
+      grid-template-columns calc(1.5rem * 8) calc(1.5rem * 4)
+      grid-column-gap 3rem
 
     @media screen and (max-width: 800px)
       .SpriteEditor
@@ -47,9 +50,9 @@
           
       &.colors
         button
-          margin 4px
-          width calc(3rem - 8px)
+          margin 2px
+          width calc(3rem - 4px)
           height @width
-          border solid $palette-7 0px
+          border solid $palette-7 2px
         td.active
           background-color $palette-0
