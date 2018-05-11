@@ -26,7 +26,9 @@ class Sprite extends Component {
 
     this.draw = this.draw.bind(this)
     this.handleColorClick = this.handleColorClick.bind(this)
+    this.handleCanvasClick = this.handleCanvasClick.bind(this)
     this.handleSpriteClick = this.handleSpriteClick.bind(this)
+    this.getCurrentSprite = this.getCurrentSprite.bind(this)
 
     this.state = {
       spriteIndex: 0,
@@ -40,21 +42,31 @@ class Sprite extends Component {
     this.canvasAPI = canvasAPI({
       ctx: this._canvas.getContext('2d'),
       width: 128,
-      height: 128,
+      height: 64,
       sprites
     })
 
     this.canvasAPI.clear()
     Object.keys(sprites).forEach(skey => {
       const key = +skey
-      const row = Math.floor(key / 8)
-      const col = key % 8
+      const row = Math.floor(key / 16)
+      const col = key % 16
       this.canvasAPI.sprite(col * 8, row * 8, key)
     })
   }
 
   componentDidMount () {
     this.draw()
+  }
+
+  getCurrentSprite () {
+    const { sprites } = this.props
+    const { spriteIndex } = this.state
+    return _.get(sprites, spriteIndex, _.range(8).map(d => '        '))
+  }
+
+  handleCanvasClick (spriteIndex) {
+    this.setState({ spriteIndex })
   }
 
   handleColorClick (colorIndex) {
@@ -65,8 +77,7 @@ class Sprite extends Component {
     const { spriteIndex, colorIndex } = this.state
     const { updateSprite } = this.props
 
-    // TODO: get sprite correctly
-    const sprite = this.props.sprites[spriteIndex]
+    const sprite = this.getCurrentSprite()
 
     let newSprite = JSON.parse(JSON.stringify(sprite))
 
@@ -88,65 +99,103 @@ class Sprite extends Component {
 
   render () {
     const { spriteIndex, colorIndex } = this.state
-    const sprite = this.props.sprites[spriteIndex]
+    const sprite = this.getCurrentSprite()
     return (
       <div className='Sprite two-rows two-rows-and-grid'>
         <TopBar />
         <div className='main'>
           <div className='SpriteEditor'>
-            <table className='sprite'>
-              <tbody>
-                {_.range(8).map(row => (
-                  <tr key={row}>
-                    {_.range(8).map(col => {
-                      const value = _.get(sprite, [row, col], ' ')
-                      return (
-                        <td key={col}>
-                          <button
-                            onClick={() => this.handleSpriteClick({ row, col })}
-                            className={`background-${value}`}
-                          >
-                            {value === ' ' ? 'x' : ''}
-                          </button>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <table className='colors'>
-              <tbody>
-                {_.range(4).map(row => (
-                  <tr key={row}>
-                    {_.range(0 + 2 * row, 2 + 2 * row).map(col => {
-                      return (
-                        <td
-                          key={col}
-                          className={classNames({
-                            active: col === colorIndex
-                          })}
-                        >
-                          <button
-                            onClick={() => this.handleColorClick(col)}
-                            className={classNames(`background-${col}`, {
-                              active: col === colorIndex
+            <div className='sprite-colors'>
+              <table className='sprite'>
+                <tbody>
+                  {_.range(8).map(row => (
+                    <tr key={row}>
+                      {_.range(8).map(col => {
+                        const value = _.get(sprite, [row, col], ' ')
+                        return (
+                          <td key={col}>
+                            <button
+                              onClick={() =>
+                                this.handleSpriteClick({ row, col })
+                              }
+                              className={`background-${value}`}
+                            >
+                              {value === ' ' ? 'x' : ''}
+                            </button>
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className='colors'>
+                <table>
+                  <tbody>
+                    {_.range(2).map(row => (
+                      <tr key={row}>
+                        {_.range(0 + 4 * row, 4 + 4 * row).map(col => {
+                          return (
+                            <td
+                              key={col}
+                              className={classNames({
+                                active: col === colorIndex
+                              })}
+                            >
+                              <button
+                                onClick={() => this.handleColorClick(col)}
+                                className={classNames(
+                                  `background-${col}`,
+                                  `border-${col}`,
+                                  {
+                                    active: col === colorIndex
+                                  }
+                                )}
+                              />
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className='sprites'>
+              <table>
+                <tbody>
+                  {_.range(8).map(row => (
+                    <tr key={row}>
+                      {_.range(16).map(col => {
+                        const thisSpriteIndex = row * 16 + col
+                        return (
+                          <td
+                            className={classNames({
+                              active: spriteIndex === thisSpriteIndex
                             })}
-                          />
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <canvas
-              width={128}
-              height={128}
-              ref={_canvas => {
-                this._canvas = _canvas
-              }}
-            />
+                            key={col}
+                          >
+                            <button
+                              onClick={() =>
+                                this.handleCanvasClick(thisSpriteIndex)
+                              }
+                            />
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <canvas
+                width={128}
+                height={64}
+                ref={_canvas => {
+                  this._canvas = _canvas
+                }}
+                onClick={this.handleCanvasClick}
+              />
+            </div>
           </div>
           <Output />
         </div>

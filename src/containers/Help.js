@@ -62,6 +62,7 @@ class Help extends Component {
                     <li>func rectFill(x, y, width, height, color)</li>
                     <li>func circStroke(x, y, radius, color)</li>
                     <li>func circFill(x, y, radius, color)</li>
+                    <li>func sprite(x, y, spriteIndex)</li>
                     <li>func clear()</li>
                   </ul>
                 </li>

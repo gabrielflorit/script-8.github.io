@@ -55,19 +55,21 @@ const canvasAPI = ({
     },
 
     sprite (x, y, spriteIndex) {
-      _sprites[spriteIndex].forEach((cells, rowIndex) => {
-        cells.split('').forEach((color, colIndex) => {
-          if (color !== ' ') {
-            ctx.fillStyle = colors.rgb(color)
-            ctx.fillRect(
-              Math.floor(x) + colIndex,
-              Math.floor(y) + rowIndex,
-              1,
-              1
-            )
-          }
+      if (_sprites[spriteIndex]) {
+        _sprites[spriteIndex].forEach((cells, rowIndex) => {
+          cells.split('').forEach((color, colIndex) => {
+            if (color !== ' ') {
+              ctx.fillStyle = colors.rgb(color)
+              ctx.fillRect(
+                Math.floor(x) + colIndex,
+                Math.floor(y) + rowIndex,
+                1,
+                1
+              )
+            }
+          })
         })
-      })
+      }
     },
 
     circStroke (x, y, r, c) {
