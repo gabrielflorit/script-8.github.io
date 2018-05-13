@@ -2,11 +2,8 @@ $px = 8px
 
 .Boot
   @extends .VT323
-  color white
-  font-size 40px
-  text-transform uppercase
-
   height 100%
+
   > div
     height 100%
     display flex
@@ -17,12 +14,12 @@ $px = 8px
     position absolute
 
   .Output
+    padding 0
     iframe
       width 384px
       height @width
       
-    @media screen and (max-width: 416px)
-      padding 0
+    @media screen and (max-width: 384px)
       iframe
         width 100vw
         height 100vw
