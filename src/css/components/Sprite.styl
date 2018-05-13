@@ -1,16 +1,12 @@
 .Sprite
 
   .main
-    grid-template-columns calc(128px * 3 + 8px + 3rem) calc(128 * 3px + 3rem)
+    grid-template-columns auto calc(128 * 3px + 3rem)
     grid-template-rows auto
     grid-row-gap 2px
-
-    @media screen and (max-width: $max-width)
-      .SpriteEditor
-        grid-column 1 / span 2
-        border-right none
-      .Output
-        display none
+//   grid-template-columns calc(128px * 3 + 8px + 3rem) calc(128 * 3px + 3rem)
+//   grid-template-rows auto
+//   grid-row-gap 2px
 
     .SpriteEditor
       border-right solid $palette-6 2px
@@ -94,3 +90,10 @@
           height calc(100% - 4px)
           image-rendering -moz-crisp-edges
           image-rendering pixelated
+    
+    @media screen and (max-width: $max-width)
+      .SpriteEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none
