@@ -160,6 +160,7 @@ class Sprite extends Component {
                   </tbody>
                 </table>
               </div>
+              <div className='tools'>the tools</div>
             </div>
             <div className='sprites'>
               <table>

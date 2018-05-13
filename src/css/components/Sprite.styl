@@ -21,6 +21,8 @@
           text-align center
           position relative
           padding 0
+          width 1.5rem
+          height @width
           button
             border none
             width 1.5rem
@@ -35,29 +37,38 @@
               background none
 
       .sprite-colors
-        display flex
-        margin-bottom 1.5rem
+        border solid red 1px
+        display grid
+        grid-template-columns auto auto
+        grid-template-rows auto
 
-        .sprite
-            border solid $palette-6 2px
-            margin-right 3rem
-          button
-            &:focus
-              z-index 10
-              position relative
+        // display flex
+        // margin-bottom 1.5rem
 
-        .colors
-          border solid $palette-6 2px
-          padding 2px
-          height calc((2.25rem - 1px) * 2 + 8px)
-          button
-            width calc(2.25rem - 1px)
-            height @width
-          td.active
-            outline solid $palette-0 3px
-            z-index 1
-            button
-              border solid $palette-7 3px
+        // .sprite
+        //     border solid $palette-6 2px
+        //     margin-right 3rem
+        //   button
+        //     &:focus
+        //       z-index 10
+        //       position relative
+
+        // .colors
+        //   border solid $palette-6 2px
+        //   padding 2px
+        //   height calc((2.25rem - 1px) * 2 + 8px)
+        //   button
+        //     width calc(2.25rem - 1px)
+        //     height @width
+        //   td.active
+        //     outline solid $palette-0 3px
+        //     z-index 1
+        //     button
+        //       border solid $palette-7 3px
+              
+        // .tools
+        //   color white
+        //   display none
 
       .sprites
         width calc(128px * 3 + 8px)
