@@ -23,16 +23,6 @@ const mapStateToProps = ({
   screen,
   nextAction
 }) => ({
-  showNew: _.includes(
-    [
-      screenTypes.CODE,
-      screenTypes.SONG,
-      screenTypes.CHAIN,
-      screenTypes.PHRASE,
-      screenTypes.SPRITE
-    ],
-    screen
-  ),
   screen,
   gist,
   game,
@@ -124,8 +114,7 @@ class Menu extends Component {
       sprites,
       phrases,
       chains,
-      songs,
-      showNew
+      songs
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -147,17 +136,6 @@ class Menu extends Component {
     const gistLogin = _.get(gist, 'data.owner.login', null)
     const currentLogin = _.get(token, 'user.login', null)
 
-    const newButton = showNew ? (
-      <button
-        key='1'
-        disabled={isFetching}
-        className='button'
-        onClick={this.onNewClick}
-      >
-        New
-      </button>
-    ) : null
-
     // If the gist is not empty, AND:
     //  - the gistLogin is null (gist was created anonymously),
     //  - or the gistLogin does not match currentLogin (gist wasn't created by us),
@@ -168,20 +146,25 @@ class Menu extends Component {
         ? 'clone'
         : 'save'
 
-    return screen === screenTypes.HELP
-      ? []
-      : [
-        newButton,
-        <button
-          key='2'
-          disabled={isFetching}
-          className='button'
-          onClick={this.onSaveClick}
-        >
-          {saveText}
-          <span className={classNames({ invisible: !dirty })}>*</span>
-        </button>
-      ]
+    return [
+      <button
+        key='new'
+        disabled={isFetching || screen === screenTypes.HELP}
+        className='button'
+        onClick={this.onNewClick}
+      >
+        New
+      </button>,
+      <button
+        key='save'
+        disabled={isFetching || screen === screenTypes.HELP}
+        className='button'
+        onClick={this.onSaveClick}
+      >
+        {saveText}
+        <span className={classNames({ invisible: !dirty })}>*</span>
+      </button>
+    ]
   }
 }
 

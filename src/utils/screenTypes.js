@@ -1,12 +1,12 @@
 const screenTypes = {
   BOOT: 'BOOT',
   RUN: 'RUN',
+  HELP: 'HELP',
   CODE: 'CODE',
-  CHAIN: 'CHAIN',
   SPRITE: 'SPRITE',
-  PHRASE: 'PHRASE',
   SONG: 'SONG',
-  HELP: 'HELP'
+  CHAIN: 'CHAIN',
+  PHRASE: 'PHRASE'
 }
 
 export default screenTypes
