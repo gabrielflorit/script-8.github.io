@@ -27,25 +27,22 @@ const NavBar = ({ screen, setScreen }) => {
     )
   }
 
-  const lis = items.map((d, i) => {
+  return items.map((d, i) => {
     const label =
       screen === screenTypes.RUN && d === screenTypes.CODE ? 'edit' : d
+
     return (
-      <li key={i}>
-        <button
-          onClick={() => {
-            setScreen(d === 'edit' ? screenTypes.CODE : d)
-          }}
-          className={classNames({ active: screen === d }, 'button')}
-        >
-          <span className='normal'>{label}</span>
-          <abbr>{label.slice(0, 1)}</abbr>
-        </button>
-      </li>
+      <button
+        key={i}
+        onClick={() => {
+          setScreen(d === 'edit' ? screenTypes.CODE : d)
+        }}
+        className={classNames({ active: screen === d }, 'button')}
+      >
+        {label}
+      </button>
     )
   })
-
-  return <ul className='NavBar'>{lis}</ul>
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar)

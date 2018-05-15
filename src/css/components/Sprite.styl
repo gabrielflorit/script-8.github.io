@@ -1,12 +1,24 @@
 .Sprite
 
+  &.two-rows
+    grid-template-rows 3*$font-large auto
+    @media screen and (min-width: 22rem)
+      grid-template-rows 2*$font-large auto
+    @media screen and (min-width: 43rem)
+      grid-template-rows $font-large auto
+
   .main
     grid-template-columns auto calc(128 * 3px + 3rem)
     grid-template-rows auto
     grid-row-gap 2px
-//   grid-template-columns calc(128px * 3 + 8px + 3rem) calc(128 * 3px + 3rem)
-//   grid-template-rows auto
-//   grid-row-gap 2px
+
+    @media screen and (max-width: $max-width)
+      grid-template-columns auto
+      .SpriteEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none
 
     .SpriteEditor
       border-right solid $palette-6 2px
@@ -99,10 +111,8 @@
           height calc(100% - 4px)
           image-rendering -moz-crisp-edges
           image-rendering pixelated
-    
-    // @media screen and (max-width: $max-width)
-    //   .SpriteEditor
-    //     grid-column 1 / span 2
-    //     border-right none
-    //   .Output
-    //     display none
+
+//   grid-template-columns calc(128px * 3 + 8px + 3rem) calc(128 * 3px + 3rem)
+//   grid-template-rows auto
+//   grid-row-gap 2px
+

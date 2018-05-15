@@ -1,16 +1,24 @@
-// .Code
+.Code
+  
+  &.two-rows
+    grid-template-rows 3*$font-large auto
+    @media screen and (min-width: 22rem)
+      grid-template-rows 2*$font-large auto
+    @media screen and (min-width: 43rem)
+      grid-template-rows $font-large auto
 
-//   .main
-//     grid-template-columns auto calc(128 * 3px + 3rem)
-//     grid-template-rows auto
-//     grid-row-gap 2px
+  .main
+    grid-template-columns auto calc(128 * 3px + 3rem)
+    grid-template-rows auto
+    grid-row-gap 2px
 
-//     .CodeEditor
-//       border-right solid $palette-6 2px
+    .CodeEditor
+      border-right solid $palette-6 2px
 
-//     @media screen and (max-width: $max-width)
-//       .CodeEditor
-//         grid-column 1 / span 2
-//         border-right none
-//       .Output
-//         display none
+    @media screen and (max-width: $max-width)
+      grid-template-columns auto
+      .CodeEditor
+        grid-column 1 / span 2
+        border-right none
+      .Output
+        display none

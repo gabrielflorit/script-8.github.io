@@ -144,20 +144,19 @@ class Menu extends Component {
       dirtyGame || dirtyPhrases || dirtyChains || dirtySongs || dirtySprites
     const isFetching = gist.isFetching || token.isFetching
 
-    const newLi = showNew ? (
-      <li>
-        <button
-          disabled={isFetching}
-          className='button'
-          onClick={this.onNewClick}
-        >
-          New
-        </button>
-      </li>
-    ) : null
-
     const gistLogin = _.get(gist, 'data.owner.login', null)
     const currentLogin = _.get(token, 'user.login', null)
+
+    const newButton = showNew ? (
+      <button
+        key='1'
+        disabled={isFetching}
+        className='button'
+        onClick={this.onNewClick}
+      >
+        New
+      </button>
+    ) : null
 
     // If the gist is not empty, AND:
     //  - the gistLogin is null (gist was created anonymously),
@@ -169,23 +168,20 @@ class Menu extends Component {
         ? 'clone'
         : 'save'
 
-    return screen === screenTypes.HELP ? (
-      <ul className='Menu' />
-    ) : (
-      <ul className={classNames('Menu', { 'is-fetching': isFetching })}>
-        {newLi}
-        <li>
-          <button
-            disabled={isFetching}
-            className='button'
-            onClick={this.onSaveClick}
-          >
-            {saveText}
-            {dirty ? ' *' : ''}
-          </button>
-        </li>
-      </ul>
-    )
+    return screen === screenTypes.HELP
+      ? []
+      : [
+        newButton,
+        <button
+          key='2'
+          disabled={isFetching}
+          className='button'
+          onClick={this.onSaveClick}
+        >
+          {saveText}
+          <span className={classNames({ invisible: !dirty })}>*</span>
+        </button>
+      ]
   }
 }
 

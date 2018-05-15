@@ -51,18 +51,21 @@ const getLintErrors = async ({ text }) => {
       throw new InvalidTokenError(error)
     }
   } catch (error) {
-    errors.push({
-      from: {
-        line: error.loc.line - 1,
-        ch: error.loc.column
-      },
-      to: {
-        line: error.loc.line - 1,
-        ch: error.raisedAt
-      },
-      message: error.message.replace(/ \(\d+:\d+\)$/, ''),
-      severity: 'error'
-    })
+    // TODO:
+    // report error
+    console.log(error)
+    // errors.push({
+    //   from: {
+    //     line: error.loc.line - 1,
+    //     ch: error.loc.column
+    //   },
+    //   to: {
+    //     line: error.loc.line - 1,
+    //     ch: error.raisedAt
+    //   },
+    //   message: error.message.replace(/ \(\d+:\d+\)$/, ''),
+    //   severity: 'error'
+    // })
   }
 
   return errors

@@ -45,7 +45,7 @@ class Help extends Component {
     // </li>
 
     return (
-      <div className='Help'>
+      <div className='Help two-rows'>
         <TopBar />
         <div className='main'>
           <ul className='top-list'>
