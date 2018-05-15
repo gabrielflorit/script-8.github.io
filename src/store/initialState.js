@@ -7,13 +7,25 @@ const initialState = {
   // screen: screenTypes.SONG,
   screen: screenTypes.BOOT,
   // screen: screenTypes.CODE,
-  // screen: screenTypes.HELP,
+  // screen: screenTypes.SPRITE,
   booted: false,
   gist: {},
   game: demo,
   token: {},
   nextAction: null,
   sfxs: [],
+  sprites: {
+    0: [
+      '   2220 ',
+      '   22222',
+      '  303 0 ',
+      '  300330',
+      '   3000 ',
+      ' 220331 ',
+      '0 333352',
+      '  3   4 '
+    ]
+  },
   phrases: {},
   chains: {},
   songs: {},

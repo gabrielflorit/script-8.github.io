@@ -3,6 +3,54 @@
   padding: 0;
   box-sizing: border-box;
 }
+.background-0 {
+  background-color: #f6d6bd;
+}
+.background-1 {
+  background-color: #c3a38a;
+}
+.background-2 {
+  background-color: #997577;
+}
+.background-3 {
+  background-color: #816271;
+}
+.background-4 {
+  background-color: #4e495f;
+}
+.background-5 {
+  background-color: #20394f;
+}
+.background-6 {
+  background-color: #0f2a3f;
+}
+.background-7 {
+  background-color: #08141e;
+}
+.border-0 {
+  border-color: #f6d6bd;
+}
+.border-1 {
+  border-color: #c3a38a;
+}
+.border-2 {
+  border-color: #997577;
+}
+.border-3 {
+  border-color: #816271;
+}
+.border-4 {
+  border-color: #4e495f;
+}
+.border-5 {
+  border-color: #20394f;
+}
+.border-6 {
+  border-color: #0f2a3f;
+}
+.border-7 {
+  border-color: #08141e;
+}
 @font-face {
   font-family: 'VT323';
   font-style: normal;

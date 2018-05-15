@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import includes from 'lodash/includes'
 import classNames from 'classnames'
 import Boot from './Boot.js'
+import Sprite from './Sprite.js'
 import Phrase from './Phrase.js'
 import Chain from './Chain.js'
 import Song from './Song.js'
@@ -25,6 +26,7 @@ const mapDispatchToProps = () => ({})
 
 const options = {
   [screenTypes.BOOT]: () => <Boot />,
+  [screenTypes.SPRITE]: () => <Sprite />,
   [screenTypes.PHRASE]: () => <Phrase />,
   [screenTypes.CHAIN]: () => <Chain />,
   [screenTypes.SONG]: () => <Song />,

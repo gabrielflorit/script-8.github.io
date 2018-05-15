@@ -7,6 +7,7 @@
 $font-large = 1.5rem
 $font-medium = 1.25rem
 $font-small = 1rem
+$max-width = 872px
 
 @font-face
   font-family 'VT323'
@@ -62,6 +63,9 @@ button.play
   outline none
   padding 0 0.75rem
   margin 0
+  
+  &:disabled
+    color $palette-6
 
   @extend .VT323
   text-transform uppercase
@@ -78,9 +82,9 @@ button.play
 .two-rows
   height 100%
   display grid
-  grid-template-rows $font-large auto
   grid-row-gap 2px
   background $palette-6
+  grid-template-rows $font-large auto
 
   &-and-grid
     .main

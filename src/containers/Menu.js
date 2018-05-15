@@ -6,6 +6,7 @@ import _ from 'lodash'
 import actions, { saveGist, fetchToken } from '../actions/actions.js'
 import screenTypes from '../utils/screenTypes.js'
 import { parseGistGame } from '../reducers/game.js'
+import { extractGistSprites } from '../reducers/sprites.js'
 import { extractGistPhrases } from '../reducers/phrases.js'
 import { extractGistChains } from '../reducers/chains.js'
 import { extractGistSongs } from '../reducers/songs.js'
@@ -14,6 +15,7 @@ const mapStateToProps = ({
   gist,
   game,
   sfxs,
+  sprites,
   phrases,
   chains,
   songs,
@@ -21,14 +23,11 @@ const mapStateToProps = ({
   screen,
   nextAction
 }) => ({
-  showNew: _.includes(
-    [screenTypes.CODE, screenTypes.SONG, screenTypes.CHAIN, screenTypes.PHRASE],
-    screen
-  ),
   screen,
   gist,
   game,
   sfxs,
+  sprites,
   phrases,
   chains,
   songs,
@@ -40,8 +39,10 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
-  saveGist: ({ game, sfxs, token, gist, phrases, chains, songs }) =>
-    dispatch(saveGist({ game, sfxs, token, gist, phrases, chains, songs })),
+  saveGist: ({ game, sfxs, token, gist, sprites, phrases, chains, songs }) =>
+    dispatch(
+      saveGist({ game, sfxs, token, gist, sprites, phrases, chains, songs })
+    ),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction))
 })
 
@@ -70,11 +71,12 @@ class Menu extends Component {
       saveGist,
       gist,
       sfxs,
+      sprites,
       phrases,
       chains,
       songs
     } = this.props
-    saveGist({ token, game, sfxs, phrases, chains, songs, gist })
+    saveGist({ token, game, sfxs, sprites, phrases, chains, songs, gist })
   }
 
   onNewClick () {
@@ -109,36 +111,27 @@ class Menu extends Component {
       gist,
       token,
       game,
+      sprites,
       phrases,
       chains,
-      songs,
-      showNew
+      songs
     } = this.props
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
     const gistGame = parseGistGame(gist.data)
+    const gistSprites = extractGistSprites(gist.data)
     const gistPhrases = extractGistPhrases(gist.data)
     const gistChains = extractGistChains(gist.data)
     const gistSongs = extractGistSongs(gist.data)
     const dirtyGame = !equal(gistGame, game)
+    const dirtySprites = !equal(gistSprites, sprites)
     const dirtyPhrases = !equal(gistPhrases, phrases)
     const dirtyChains = !equal(gistChains, chains)
     const dirtySongs = !equal(gistSongs, songs)
-    const dirty = dirtyGame || dirtyPhrases || dirtyChains || dirtySongs
+    const dirty =
+      dirtyGame || dirtyPhrases || dirtyChains || dirtySongs || dirtySprites
     const isFetching = gist.isFetching || token.isFetching
-
-    const newLi = showNew ? (
-      <li>
-        <button
-          disabled={isFetching}
-          className='button'
-          onClick={this.onNewClick}
-        >
-          New
-        </button>
-      </li>
-    ) : null
 
     const gistLogin = _.get(gist, 'data.owner.login', null)
     const currentLogin = _.get(token, 'user.login', null)
@@ -153,23 +146,25 @@ class Menu extends Component {
         ? 'clone'
         : 'save'
 
-    return screen === screenTypes.HELP ? (
-      <ul className='Menu' />
-    ) : (
-      <ul className={classNames('Menu', { 'is-fetching': isFetching })}>
-        {newLi}
-        <li>
-          <button
-            disabled={isFetching}
-            className='button'
-            onClick={this.onSaveClick}
-          >
-            {saveText}
-            {dirty ? ' *' : ''}
-          </button>
-        </li>
-      </ul>
-    )
+    return [
+      <button
+        key='new'
+        disabled={isFetching || screen === screenTypes.HELP}
+        className='button'
+        onClick={this.onNewClick}
+      >
+        New
+      </button>,
+      <button
+        key='save'
+        disabled={isFetching || screen === screenTypes.HELP}
+        className='button'
+        onClick={this.onSaveClick}
+      >
+        {saveText}
+        <span className={classNames({ invisible: !dirty })}>*</span>
+      </button>
+    ]
   }
 }
 

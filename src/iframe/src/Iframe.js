@@ -69,6 +69,8 @@ class Iframe extends Component {
   constructor (props) {
     super(props)
 
+    this.updateGlobals = this.updateGlobals.bind(this)
+
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.handleTimelineInput = this.handleTimelineInput.bind(this)
@@ -107,6 +109,7 @@ class Iframe extends Component {
     this.state = {
       fps: null,
       game: '',
+      sprites: {},
       timelineIndex: 0,
       actors: [],
       selectedActors: [],
@@ -118,7 +121,7 @@ class Iframe extends Component {
     }
   }
 
-  componentDidMount () {
+  updateGlobals () {
     // Assign various properties to global scope, for the user.
     const globals = {
       Math,
@@ -127,13 +130,23 @@ class Iframe extends Component {
       ...canvasAPI({
         ctx: this._canvas.getContext('2d'),
         width: CANVAS_SIZE,
-        height: CANVAS_SIZE
+        height: CANVAS_SIZE,
+        sprites: this.state.sprites
       }),
       range,
       flatten,
       random,
       clamp
     }
+
+    // Assign all the globals to window.
+    Object.keys(globals).forEach(key => (window[key] = globals[key]))
+
+    return globals
+  }
+
+  componentDidMount () {
+    const globals = this.updateGlobals()
 
     // Keep track of what keys we're pressing.
     document.addEventListener('keydown', ({ key }) => {
@@ -142,9 +155,6 @@ class Iframe extends Component {
     document.addEventListener('keyup', ({ key }) => {
       this.keys.delete(key)
     })
-
-    // Assign all the globals to window.
-    Object.keys(globals).forEach(key => (window[key] = globals[key]))
 
     // Listen for callCode or validateToken parent messages.
     window.addEventListener('message', message => {
@@ -156,6 +166,7 @@ class Iframe extends Component {
 
         this.setState({
           game: payload.game,
+          sprites: payload.sprites,
           message,
           run: payload.run,
           callbacks: payload.callbacks
@@ -303,11 +314,16 @@ class Iframe extends Component {
       message,
       isPaused,
       game,
+      sprites,
       timelineIndex,
       actors,
       selectedActors
     } = state
     const { script8 } = window
+
+    if (!equal(sprites, prevState.sprites)) {
+      this.updateGlobals()
+    }
 
     // If we're playing,
     if (!isPaused) {

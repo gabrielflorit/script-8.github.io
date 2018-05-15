@@ -8,8 +8,8 @@ import NavBar from '../containers/NavBar.js'
 const TopBar = ({ hideMenu }) => (
   <div className='TopBar'>
     <Updater />
-    {hideMenu ? null : <Menu />}
     <Title />
+    {hideMenu ? null : <Menu />}
     <NavBar />
   </div>
 )

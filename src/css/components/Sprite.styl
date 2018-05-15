@@ -1,0 +1,110 @@
+.Sprite
+
+  &.two-rows
+    grid-template-rows 3*$font-large auto
+    @media screen and (min-width: 22rem)
+      grid-template-rows 2*$font-large auto
+    @media screen and (min-width: 43rem)
+      grid-template-rows $font-large auto
+
+  .main
+    grid-template-columns auto calc(128 * 3px + 3rem)
+    grid-template-rows auto
+    grid-row-gap 2px
+
+    .SpriteEditor
+      border-right solid $palette-6 2px
+      padding 1.5rem
+
+    @media screen and (max-width: $max-width)
+      grid-template-columns auto
+      .SpriteEditor
+        grid-column 1 / span 2
+        border-right none
+        padding 0.35rem
+      .Output
+        display none
+
+    .SpriteEditor
+      table
+        border-collapse collapse
+        table-layout fixed
+
+        td
+          text-transform uppercase
+          text-align center
+          position relative
+          padding 0
+          button
+            border none
+            width 1.5rem
+            height @width
+            padding 0
+            cursor pointer
+            display block
+            @extend .VT323
+            font-size $font-large
+            &.background-
+              color $palette-6
+              background none
+
+      .sprite-and-colors
+        display flex
+        margin-bottom 1.5rem
+
+        .sprite
+            border solid $palette-6 2px
+            margin-right 3rem
+          button
+            &:focus
+              z-index 10
+              position relative
+
+        .colors
+          border solid $palette-6 2px
+          padding 2px
+          height calc((2.25rem - 1px) * 2 + 8px)
+          button
+            width calc(2.25rem - 1px)
+            height @width
+          td.active
+            outline solid $palette-0 3px
+            z-index 1
+            button
+              border solid $palette-7 3px
+              
+        .tools
+          color white
+          display none
+
+      .sprites
+        width calc(128px * 3 + 8px)
+        position relative
+        border solid $palette-6 2px
+        padding 2px
+        
+        table
+          position relative
+          z-index 1
+          border none
+          td
+            background none
+            &.active
+              outline solid $palette-7 3px
+              button
+                outline solid $palette-0 6px
+            button
+              width calc(128px * 3 / 16)
+              height @width
+              background none
+            
+        canvas
+          display block
+          position absolute
+          z-index 0
+          top 2px
+          left 2px
+          width calc(100% - 4px)
+          height calc(100% - 4px)
+          image-rendering -moz-crisp-edges
+          image-rendering pixelated

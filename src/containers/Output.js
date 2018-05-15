@@ -6,10 +6,18 @@ import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 
-const mapStateToProps = ({ screen, game, songs, chains, phrases }) => ({
+const mapStateToProps = ({
+  screen,
+  game,
   songs,
   chains,
   phrases,
+  sprites
+}) => ({
+  songs,
+  chains,
+  phrases,
+  sprites,
   game: screen === screenTypes.BOOT ? bios : game,
   focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
@@ -54,7 +62,16 @@ class Output extends Component {
   }
 
   evaluate () {
-    const { game, finishBoot, run, songs, chains, phrases, screen } = this.props
+    const {
+      game,
+      finishBoot,
+      run,
+      songs,
+      chains,
+      phrases,
+      sprites,
+      screen
+    } = this.props
 
     // Create a closured function for eval'ing the game.
     const sendPayload = (callbacks = {}) => {
@@ -67,6 +84,7 @@ class Output extends Component {
             songs,
             chains,
             phrases,
+            sprites,
             run,
             callbacks
           },

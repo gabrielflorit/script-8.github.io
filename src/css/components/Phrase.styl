@@ -1,5 +1,12 @@
 .Phrase
 
+  &.two-rows
+    grid-template-rows 3*$font-large auto
+    @media screen and (min-width: 22rem)
+      grid-template-rows 2*$font-large auto
+    @media screen and (min-width: 43rem)
+      grid-template-rows $font-large auto
+
   .main
     grid-template-columns auto 17*1.5rem
     grid-template-rows auto
@@ -8,9 +15,9 @@
     padding 1.5rem
     justify-content start
 
-    @media screen and (max-width: 40rem)
+    @media screen and (max-width: 36rem)
       grid-template-columns auto
-      grid-template-rows auto
+      grid-template-rows $font-large auto
       padding 0.35rem
       .settings
         display flex

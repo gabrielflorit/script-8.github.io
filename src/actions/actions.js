@@ -18,6 +18,7 @@ const actions = createActions({
   [actionTypes.SAVE_GIST_REQUEST]: () => {},
   [actionTypes.SAVE_GIST_SUCCESS]: d => d,
   [actionTypes.UPDATE_SFX]: d => d,
+  [actionTypes.UPDATE_SPRITE]: d => d,
   [actionTypes.UPDATE_PHRASE]: d => d,
   [actionTypes.UPDATE_CHAIN]: d => d,
   [actionTypes.UPDATE_SONG]: d => d,
@@ -100,6 +101,7 @@ export const saveGist = ({
   token,
   gist,
   sfxs,
+  sprites,
   phrases,
   chains,
   songs
@@ -123,6 +125,9 @@ export const saveGist = ({
         {
           'code.js': {
             content: game
+          },
+          'sprites.json': {
+            content: _.isEmpty(sprites) ? null : JSON.stringify(sprites, null, 2)
           },
           'phrases.json': {
             content: _.isEmpty(phrases)
