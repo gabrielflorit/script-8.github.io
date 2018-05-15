@@ -105,7 +105,7 @@ class Sprite extends Component {
         <TopBar />
         <div className='main'>
           <div className='SpriteEditor'>
-            <div className='sprite-colors'>
+            <div className='sprite-and-colors'>
               <table className='sprite'>
                 <tbody>
                   {_.range(8).map(row => (
@@ -129,8 +129,8 @@ class Sprite extends Component {
                   ))}
                 </tbody>
               </table>
-              <div className='colors'>
-                <table>
+              <div className='colors-and-tools'>
+                <table className='colors'>
                   <tbody>
                     {_.range(2).map(row => (
                       <tr key={row}>
@@ -159,8 +159,8 @@ class Sprite extends Component {
                     ))}
                   </tbody>
                 </table>
+                <div className='tools'>the tools</div>
               </div>
-              <div className='tools'>the tools</div>
             </div>
             <div className='sprites'>
               <table>

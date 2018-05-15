@@ -1,3 +1,5 @@
+// TODO: active topbar buttons shouldn't occupy different width/height
+
 .Sprite
 
   &.two-rows
@@ -12,6 +14,10 @@
     grid-template-rows auto
     grid-row-gap 2px
 
+    .SpriteEditor
+      border-right solid $palette-6 2px
+      padding 1.5rem
+
     @media screen and (max-width: $max-width)
       grid-template-columns auto
       .SpriteEditor
@@ -21,9 +27,6 @@
         display none
 
     .SpriteEditor
-      border-right solid $palette-6 2px
-      padding 1.5rem
-      
       table
         border-collapse collapse
         table-layout fixed
@@ -46,39 +49,34 @@
               color $palette-6
               background none
 
-      .sprite-colors
-        border solid red 1px
-        display grid
-        grid-template-columns auto auto
-        grid-template-rows auto
+      .sprite-and-colors
+        display flex
+        margin-bottom 1.5rem
 
-        // display flex
-        // margin-bottom 1.5rem
+        .sprite
+            border solid $palette-6 2px
+            margin-right 3rem
+          button
+            &:focus
+              z-index 10
+              position relative
 
-        // .sprite
-        //     border solid $palette-6 2px
-        //     margin-right 3rem
-        //   button
-        //     &:focus
-        //       z-index 10
-        //       position relative
-
-        // .colors
-        //   border solid $palette-6 2px
-        //   padding 2px
-        //   height calc((2.25rem - 1px) * 2 + 8px)
-        //   button
-        //     width calc(2.25rem - 1px)
-        //     height @width
-        //   td.active
-        //     outline solid $palette-0 3px
-        //     z-index 1
-        //     button
-        //       border solid $palette-7 3px
+        .colors
+          border solid $palette-6 2px
+          padding 2px
+          height calc((2.25rem - 1px) * 2 + 8px)
+          button
+            width calc(2.25rem - 1px)
+            height @width
+          td.active
+            outline solid $palette-0 3px
+            z-index 1
+            button
+              border solid $palette-7 3px
               
-        // .tools
-        //   color white
-        //   display none
+        .tools
+          color white
+          display none
 
       .sprites
         width calc(128px * 3 + 8px)
