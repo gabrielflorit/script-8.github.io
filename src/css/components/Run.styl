@@ -5,24 +5,28 @@
 
   .Output
     justify-content center
+    padding 0
     iframe
       width 384px
       height @width
-      
-    @media screen and (max-width: 416px)
-      padding 0
-      iframe
+
+      @media screen and (max-width: 384px)
         width 100vw
         height 100vw
+      
+//     @media screen and (max-width: 416px)
+//       padding 0
+//       iframe
+//         width 100vw
+//         height 100vw
 
+//   .NavBar li button
+//     padding 0 0.75rem
+//     span
+//       display inline
+//     abbr
+//       display none
 
-  .NavBar li button
-    padding 0 0.75rem
-    span
-      display inline
-    abbr
-      display none
-
-  @media screen and (max-width: 60rem)
-    .Title
-      text-align left
+//   @media screen and (max-width: 60rem)
+//     .Title
+//       text-align left
