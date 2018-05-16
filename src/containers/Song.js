@@ -47,6 +47,8 @@ class Song extends Component {
   }
 
   componentDidMount () {
+    Tone.context.resume()
+
     const { chains, phrases } = this.props
 
     this.sequence = new Tone.Sequence(

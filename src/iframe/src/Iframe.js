@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import equal from 'deep-equal'
+import * as Tone from 'tone'
 import { interval } from 'd3-timer'
 import { createStore, applyMiddleware } from 'redux'
 import range from 'lodash/range'
@@ -146,6 +147,7 @@ class Iframe extends Component {
   }
 
   componentDidMount () {
+    Tone.context.resume()
     const globals = this.updateGlobals()
 
     // Keep track of what keys we're pressing.

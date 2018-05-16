@@ -51,6 +51,8 @@ class Phrase extends Component {
   }
 
   componentDidMount () {
+    Tone.context.resume()
+
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
