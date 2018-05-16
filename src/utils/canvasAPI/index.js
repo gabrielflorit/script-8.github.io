@@ -89,31 +89,29 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
   },
 
-  polyStroke (points, c) {
+  polyStroke (points, ...args) {
     if (!points.length) {
       return
     }
+	let c = args[args.length - 1]
+	let new_points
+	switch(args.length) {
+	  case 1:
+	    new_points = points.map(p => [...p])
+		break;
+	  case 2:
+	    let xs = points.map(p => p[0])
+		let ys = points.map(p => p[1])
+		let min_x = 
+		new_points = points.map(p => [p[0]])
+	}
     for (let i = 1; i < points.length; i++) {
 	  canvasAPI({ ctx, width: canvasWidth, height: canvasHeight }).line(
-	  c
-	    points[i - 1][0], points[i - 1][1],
-		points[i][0], points[i][1]
+	    c,
+	    new_points[i - 1][0], new_points[i - 1][1],
+		new_points[i][0], new_points[i][1]
 	  )
     }
-  },
-
-  polyFill (points, c) {
-    if (!points.length) {
-      return
-    }
-    ctx.fillStyle = colors.one(c)
-    ctx.beginPath()
-    ctx.moveTo(Math.floor(points[0][0]), Math.floor(points[0][1]))
-    for (let i = 0; i < points.length; i++) {
-      ctx.lineTo(Math.floor(points[i][0]), Math.floor(points[i][1]))
-    }
-    ctx.closePath()
-    ctx.fill()
   },
 
   circStroke (x, y, r, c) {
