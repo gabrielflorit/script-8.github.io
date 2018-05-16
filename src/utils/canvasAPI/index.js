@@ -93,24 +93,45 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     if (!points.length) {
       return
     }
-	let c = args[args.length - 1]
-	let new_points
-	switch(args.length) {
-	  case 1:
-	    new_points = points.map(p => [...p])
-		break;
-	  case 2:
-	    let xs = points.map(p => p[0])
-		let ys = points.map(p => p[1])
-		let min_x = 
-		new_points = points.map(p => [p[0]])
-	}
+    let c, new_points
+    switch (args.length) {
+      case 1:
+        c = args[0]
+        new_points = points.map(p => [...p])
+        break
+      case 2:
+        c = args[1]
+        let x_rot = Math.cos(args[0])
+        let y_rot = Math.sin(args[0])
+        let xs = points.map(p => p[0])
+        let ys = points.map(p => p[1])
+        let mid_x = (Math.min.apply(Math, xs) + Math.max.apply(Math, xs)) / 2
+        let mid_y = (Math.min.apply(Math, ys) + Math.max.apply(Math, ys)) / 2
+        new_points = points.map(p => [
+          ((p[0] - mid_x) * x_rot - (p[1] - mid_y) * y_rot) + mid_x,
+          ((p[0] - mid_x) * y_rot + (p[1] - mid_y) * x_rot) + mid_y
+        ])
+        break
+      case 3:
+        throw "`polyStroke` found 3 arguments instead of 2, 3, or 5."
+      default:
+        c = args[3]
+        let x_rot = Math.cos(args[0])
+        let y_rot = Math.sin(args[0])
+        let mid_x = args[1]
+        let mid_y = args[2]
+        new_points = points.map(p => [
+          ((p[0] - mid_x) * x_rot - (p[1] - mid_y) * y_rot) + mid_x,
+          ((p[0] - mid_x) * y_rot + (p[1] - mid_y) * x_rot) + mid_y
+        ])
+        break
+    }
     for (let i = 1; i < points.length; i++) {
-	  canvasAPI({ ctx, width: canvasWidth, height: canvasHeight }).line(
-	    c,
-	    new_points[i - 1][0], new_points[i - 1][1],
-		new_points[i][0], new_points[i][1]
-	  )
+      canvasAPI({ ctx, width: canvasWidth, height: canvasHeight }).line(
+        c,
+        new_points[i - 1][0], new_points[i - 1][1],
+        new_points[i][0], new_points[i][1]
+      )
     }
   },
 
