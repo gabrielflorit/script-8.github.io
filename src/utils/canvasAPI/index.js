@@ -1,5 +1,6 @@
 import colors from '../colors.js'
 import circle from './circle.js'
+import line from './line.js'
 import print from './print.js'
 
 const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
@@ -28,47 +29,13 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
   },
   
   line (x1, y1, x2, y2, c) {
-    ctx.fillStyle = colors.one(c)
-    let steep = false
-    if (Math.abs(x1 - x2) < Math.abs(y1 - y2)) {
-      [x1, y1] = [y1, x1];
-      [x2, y2] = [y2, x2];
-      steep = true
-    }
-    if (x1 > x2) {
-      [x1, x2] = [x2, x1];
-      [y1, y2] = [y2, y1];
-    }
-    let dx = x2 - x1
-    let dy = y2 - y1
-    let derror = Math.abs(dy) * 2
-    let error = 0
-    let y = y1
-    for (let x = x1; x <= x2; x++) {
-      if (steep) {
-        ctx.fillRect(
-          Math.round(y) + 0.5,
-          Math.round(x) + 0.5,
-          1, 1
-        )
-      } else {
-        ctx.fillRect(
-          Math.round(x) + 0.5,
-          Math.round(y) + 0.5,
-          1, 1
-        )
-      }
-      error += derror
-      if (error > dx) {
-        if (y2 > y1) {
-            y++
-        } else {
-            y--
-        }
-        error -= dx * 2
-      }
-    }
-  }
+    line({
+	  Math.floor(x1), Math.floor(y1),
+	  Math.floor(x2), Math.floor(y2),
+	  ctx,
+	  color: colors.one(c)
+	})
+  },
 
   print (x, y, letters, c) {
     print({ x, y, letters, c, ctx })
@@ -127,11 +94,12 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
         break
     }
     for (let i = 1; i < points.length; i++) {
-      canvasAPI({ ctx, width: canvasWidth, height: canvasHeight }).line(
-        c,
-        new_points[i - 1][0], new_points[i - 1][1],
-        new_points[i][0], new_points[i][1]
-      )
+      line({
+        x1: new_points[i - 1][0], y1: new_points[i - 1][1],
+        x2: new_points[i][0], y2: new_points[i][1],
+        ctx,
+        color: c
+      })
     }
   },
 
