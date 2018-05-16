@@ -15,18 +15,6 @@ const initialState = {
   nextAction: null,
   sfxs: [],
   sprites: {},
-  // sprites: {
-  //   0: [
-  //     '   2220 ',
-  //     '   22222',
-  //     '  303 0 ',
-  //     '  300330',
-  //     '   3000 ',
-  //     ' 220331 ',
-  //     '0 333352',
-  //     '  3   4 '
-  //   ]
-  // },
   phrases: {},
   chains: {},
   songs: {},
