@@ -105,6 +105,12 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
         color: c
       })
     }
+    line({
+      x1: new_points[new_points.length - 1][0], y1: new_points[new_points.length - 1][1],
+      x2: new_points[0][0], y2: new_points[0][1],
+      ctx,
+      color: c
+    })
   },
 
   circStroke (x, y, r, c) {
