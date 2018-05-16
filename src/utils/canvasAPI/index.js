@@ -93,14 +93,13 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
     if (!points.length) {
       return
     }
-    ctx.strokeStyle = colors.one(c)
-    ctx.beginPath()
-    ctx.moveTo(Math.floor(points[0][0]) + 0.5, Math.floor(points[0][1]) - 1)
-    for (let i = 0; i < points.length; i++) {
-      ctx.lineTo(Math.floor(points[i][0]) + 0.5, Math.floor(points[i][1]) - 1)
+    for (let i = 1; i < points.length; i++) {
+	  canvasAPI({ ctx, width: canvasWidth, height: canvasHeight }).line(
+	  c
+	    points[i - 1][0], points[i - 1][1],
+		points[i][0], points[i][1]
+	  )
     }
-    ctx.closePath()
-    ctx.stroke()
   },
 
   polyFill (points, c) {
