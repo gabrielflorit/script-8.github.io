@@ -1,4 +1,4 @@
-const line ({ x1, y1, x2, y2, ctx, color }) {
+const line ({ x1, y1, x2, y2, ctx, color }) => {
   ctx.fillStyle = color
   let steep = false
   
