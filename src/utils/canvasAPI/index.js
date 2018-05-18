@@ -30,8 +30,8 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
   
   line (x1, y1, x2, y2, c) {
     line({
-      Math.floor(x1), Math.floor(y1),
-      Math.floor(x2), Math.floor(y2),
+      x1: Math.floor(x1), y1: Math.floor(y1),
+      x2: Math.floor(x2), y2: Math.floor(y2),
       ctx,
       color: colors.one(c)
     })
