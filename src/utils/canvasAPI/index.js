@@ -102,14 +102,14 @@ const canvasAPI = ({ ctx, width: canvasWidth, height: canvasHeight }) => ({
         x1: Math.round(new_points[i - 1][0]), y1: Math.round(new_points[i - 1][1]),
         x2: Math.round(new_points[i][0]), y2: Math.round(new_points[i][1]),
         ctx,
-        color: c
+        color: colors.one(c)
       })
     }
     line({
       x1: Math.round(new_points[new_points.length - 1][0]), y1: Math.round(new_points[new_points.length - 1][1]),
       x2: Math.round(new_points[0][0]), y2: Math.round(new_points[0][1]),
       ctx,
-      color: c
+      color: colors.one(c)
     })
   },
 
