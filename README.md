@@ -32,3 +32,4 @@ SCRIPT-8 is now on `localhost:3000`.
 ```
 yarn build
 ```
+Your SCRIPT-8 build is in the `build` folder. You must host it, not use locally.
