@@ -5,7 +5,7 @@ A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org
 
 ### 0 - Clone this repository
 
-- `git clone git@github.com:script-8/script-8.github.io.git`
+`git clone git@github.com:script-8/script-8.github.io.git`
 
 ### 1 - Install prerequisites
 
@@ -14,7 +14,7 @@ A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org
 
 ### 2 - Install this repository
 
-- `yarn`
+`yarn`
 
 ### 3 - Start a development server
 Open up 2 terminals.
