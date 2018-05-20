@@ -3,9 +3,7 @@ A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org
 
 ## Setup for local development
 
-### 0 - Clone this repository
-
-`git clone git@github.com:script-8/script-8.github.io.git`
+### 0 - Clone or download this repository
 
 ### 1 - Install prerequisites
 
