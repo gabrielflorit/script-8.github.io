@@ -5,18 +5,28 @@ A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org
 
 ### 0 - Clone this repository
 
-`git clone git@github.com:script-8/script-8.github.io.git`
+`git clone https://github.com/script-8/script-8.github.io.git`
 
 ### 1 - Install prerequisites
 
 - [node.js](nodejs.org)
 - [yarn](https://yarnpkg.com/en/)
+- [stylus](https://www.npmjs.com/package/stylus)
 
-### 2 - Install this repository
+Follow your distro's instructions on how to install node and npm.
+To install yarn and stylus, type in a root terminal:
+```
+npm install yarn stylus -g
+```
+
+### 2 - Install dependencies
 
 ```
+npm install
 yarn
 ```
+
+npm might say that there are some vunerabilities. `macaddress` is not used in a vulnerable way. We're fixing the `base64url` vulnerability, but don't worry - it shouldn't affect anything on your side, except if you're hosting SCRIPT-8 on GitHub Pages.
 
 ### 3 - Start a development server
 Open up 2 terminals.
@@ -33,6 +43,7 @@ yarn start
 ````
 
 This will open SCRIPT-8 on `http://localhost:3000`.
+You can also try it on another device connected to the same network, by using the address shown in the terminal (`On Your Network`)
 
 ## Other information
 
