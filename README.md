@@ -1,17 +1,22 @@
 # SCRIPT-8
 A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy console.
 
-## Building
-To build SCRIPT-8, you must first install [node.js](nodejs.org) with [npm](https://npmjs.com).
+## Setup for local development
 
-### Install required software
+### 0 - Clone this repository
 
-```
-npm install -g yarn npm-run-all
-yarn
-```
+- `git clone git@github.com:script-8/script-8.github.io.git`
 
-### Start a development server
+### 1 - Install prerequisites
+
+- [node.js](nodejs.org)
+- [yarn](https://yarnpkg.com/en/)
+
+### 2 - Install this repository
+
+- `yarn`
+
+### 3 - Start a development server
 Open up 2 terminals.
 In the first one, type:
 
@@ -26,10 +31,8 @@ yarn iframe-start
 ````
 
 Allow `yarn` to run `iframe-start` on port 3001.
-SCRIPT-8 is now on `localhost:3000`.
+SCRIPT-8 is now on `http://localhost:3000`.
 
-### Make a production build
-```
-yarn build
-```
-Your SCRIPT-8 build is in the `build` folder. You must host it, not use locally.
+### Other information
+
+SCRIPt-8 was built with [create-react-app]. Consult its guide for more instructions (e.g. running tests, building).
