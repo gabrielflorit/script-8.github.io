@@ -1,5 +1,6 @@
 import colors from '../colors.js'
 import circle from './circle.js'
+import line from './line.js'
 import print from './print.js'
 
 const canvasAPI = ({
@@ -11,6 +12,17 @@ const canvasAPI = ({
   const _sprites = sprites
 
   return {
+    line (x1, y1, x2, y2, c) {
+      line({
+        x1: Math.floor(x1),
+        y1: Math.floor(y1),
+        x2: Math.floor(x2),
+        y2: Math.floor(y2),
+        ctx,
+        color: colors.one(c)
+      })
+    },
+
     lineH (x, y, l, c, dotted) {
       if (dotted) {
         ctx.setLineDash([1, 1])
