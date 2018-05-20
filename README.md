@@ -14,7 +14,9 @@ A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org
 
 ### 2 - Install this repository
 
-`yarn`
+```
+yarn
+```
 
 ### 3 - Start a development server
 Open up 2 terminals.
