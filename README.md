@@ -33,6 +33,11 @@ yarn iframe-start
 Allow `yarn` to run `iframe-start` on port 3001.
 SCRIPT-8 is now on `http://localhost:3000`.
 
-### Other information
+## Other information
 
 SCRIPt-8 was built with [create-react-app](https://github.com/facebook/create-react-app). Consult its guide for more instructions (e.g. running tests, building).
+
+## Contributors
+
+- [Gabriel Florit](https://github.com/gabrielflorit)
+- [matimati433](https://github.com/matimati433)
