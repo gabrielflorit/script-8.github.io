@@ -26,7 +26,7 @@ In the first one, type:
 yarn iframe-start
 ```
 
-Wait until it says `Compiled successfully!`. In the second terminal, type:
+**Wait** until it says `Compiled successfully!`. Then, in the second terminal, type:
 
 ```
 yarn start
