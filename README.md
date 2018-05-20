@@ -23,17 +23,16 @@ Open up 2 terminals.
 In the first one, type:
 
 ```
-yarn start
-```
-
-In the second one, type:
-
-```
 yarn iframe-start
+```
+
+Wait until it says `Compiled successfully!`. In the second terminal, type:
+
+```
+yarn start
 ````
 
-Allow `yarn` to run `iframe-start` on port 3001.
-SCRIPT-8 is now on `http://localhost:3000`.
+This will open SCRIPT-8 on `http://localhost:3000`.
 
 ## Other information
 
