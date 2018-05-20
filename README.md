@@ -35,7 +35,7 @@ SCRIPT-8 is now on `http://localhost:3000`.
 
 ## Other information
 
-SCRIPt-8 was built with [create-react-app](https://github.com/facebook/create-react-app). Consult its guide for more instructions (e.g. running tests, building).
+SCRIPT-8 was built with [create-react-app](https://github.com/facebook/create-react-app). Consult its guide for more instructions (e.g. running tests, building).
 
 ## Contributors
 
