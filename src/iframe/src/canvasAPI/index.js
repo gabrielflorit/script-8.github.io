@@ -1,6 +1,7 @@
 import colors from '../colors.js'
 import circle from './circle.js'
 import line from './line.js'
+import polyStroke from './polyStroke.js'
 import print from './print.js'
 
 const canvasAPI = ({
@@ -12,6 +13,10 @@ const canvasAPI = ({
   const _sprites = sprites
 
   return {
+    polyStroke (points, ...args) {
+      polyStroke({ points, args, ctx })
+    },
+
     line (x1, y1, x2, y2, c) {
       line({
         x1: Math.floor(x1),
@@ -19,32 +24,8 @@ const canvasAPI = ({
         x2: Math.floor(x2),
         y2: Math.floor(y2),
         ctx,
-        color: colors.one(c)
+        color: colors.rgb(c)
       })
-    },
-
-    lineH (x, y, l, c, dotted) {
-      if (dotted) {
-        ctx.setLineDash([1, 1])
-      }
-      ctx.strokeStyle = colors.rgb(c)
-      ctx.beginPath()
-      ctx.moveTo(Math.floor(x), Math.floor(y) + 0.5)
-      ctx.lineTo(Math.floor(x + l), Math.floor(y) + 0.5)
-      ctx.stroke()
-      ctx.setLineDash([])
-    },
-
-    lineV (x, y, l, c, dotted) {
-      if (dotted) {
-        ctx.setLineDash([1, 1])
-      }
-      ctx.strokeStyle = colors.rgb(c)
-      ctx.beginPath()
-      ctx.moveTo(Math.floor(x) + 0.5, Math.floor(y))
-      ctx.lineTo(Math.floor(x) + 0.5, Math.floor(y + l))
-      ctx.stroke()
-      ctx.setLineDash([])
     },
 
     print (x, y, letters, c) {
