@@ -39,4 +39,5 @@ SCRIPT-8 was built with [create-react-app](https://github.com/facebook/create-re
 ## Contributors
 
 - [Gabriel Florit](https://github.com/gabrielflorit)
+- [Benjamin Philippe Applegate](https://github.com/Camto)
 - [matimati433](https://github.com/matimati433)
