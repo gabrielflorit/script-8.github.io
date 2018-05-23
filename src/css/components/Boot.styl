@@ -15,11 +15,9 @@ $px = 8px
 
   .Output
     padding 0
+    justify-content center
     iframe
-      width 384px
-      height @width
-      
-    @media screen and (max-width: 384px)
-      iframe
-        width 100vw
-        height 100vw
+      width 100vmin
+      height 100vmin
+      max-width 128px*5
+      max-height 128px*5
