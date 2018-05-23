@@ -184,7 +184,9 @@ class Menu extends Component {
         <ul>
           <li>
             <button className='button'>
-              Cassette
+              <span className='full'>cassette</span>
+              <span className='mid'>cas</span>
+              <span className='small'>ca</span>
               <span className={classNames({ invisible: !dirty })}>*</span>
             </button>
             <ul className='dropdown'>
@@ -233,7 +235,9 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              CODE
+              <span className='full'>CODE</span>
+              <span className='mid'>cod</span>
+              <span className='small'>co</span>
             </button>
           </li>
 
@@ -246,7 +250,9 @@ class Menu extends Component {
                 active: screen === screenTypes.SPRITE
               })}
             >
-              SPRITE
+              <span className='full'>SPRITE</span>
+              <span className='mid'>spr</span>
+              <span className='small'>sp</span>
             </button>
           </li>
 
@@ -260,7 +266,9 @@ class Menu extends Component {
                 ].includes(screen)
               })}
             >
-              SOUND
+              <span className='full'>SOUND</span>
+              <span className='mid'>sou</span>
+              <span className='small'>so</span>
             </button>
             <ul className='dropdown'>
               <li>
@@ -313,7 +321,9 @@ class Menu extends Component {
                 active: screen === screenTypes.RUN
               })}
             >
-              RUN
+              <span className='full'>RUN</span>
+              <span className='mid'>run</span>
+              <span className='small'>ru</span>
             </button>
           </li>
 
@@ -326,7 +336,9 @@ class Menu extends Component {
                 active: screen === screenTypes.HELP
               })}
             >
-              HELP
+              <span className='full'>HELP</span>
+              <span className='mid'>hel</span>
+              <span className='small'>he</span>
             </button>
           </li>
         </ul>
