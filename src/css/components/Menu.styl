@@ -1,20 +1,30 @@
 .Menu
   margin 0
   padding 0
-  list-style none
-  background $palette-7
   display flex
-  align-items center
-  
-  &.is-fetching
-    button
-      color $palette-5
 
-  @media screen and (max-width: 40rem)
-    button
-      padding 0 0.35rem
+  button
+    cursor pointer
+    &.button
+      padding 0 0.75rem
 
-  li
-    button
-      abbr
-        display none
+  & > ul
+    display flex
+
+  ul li
+    position relative
+
+  ul li:hover > ul
+    display block
+
+  ul li ul
+    display none
+    position absolute
+    white-space nowrap
+    z-index 10
+    background $palette-7
+    border solid $palette-6 2px
+
+  ul li ul li button
+    width 100%
+    text-align left

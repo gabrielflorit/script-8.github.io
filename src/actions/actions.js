@@ -97,6 +97,7 @@ export const fetchToken = code => dispatch => {
 }
 
 export const saveGist = ({
+  toBlank,
   game,
   token,
   gist,
@@ -172,8 +173,8 @@ export const saveGist = ({
       )
       .then(data => dispatch(actions.saveGistSuccess(data)))
 
-  // If there is no gist, create it.
-  if (!gist.data) {
+  // If there is no gist or we want to record to blank, create it.
+  if (!gist.data || toBlank) {
     return createGist()
   } else {
     // If there is a gist, and it is ours,
