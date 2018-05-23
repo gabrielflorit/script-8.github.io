@@ -1,2 +1,16 @@
 .TopBar
   background $palette-7
+  .mid, .small
+    display none
+  @media screen and (max-width: 35rem)
+    .full, .small
+      display none
+    .mid
+      display inline-block
+  @media screen and (max-width: 27rem)
+    .full, .mid
+      display none
+    .small
+      display inline-block
+    button.button
+      padding 0 0.5rem

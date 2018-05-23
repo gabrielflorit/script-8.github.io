@@ -1,12 +1,5 @@
 .Sprite
 
-  &.two-rows
-    grid-template-rows 3*$font-large auto
-    @media screen and (min-width: 22rem)
-      grid-template-rows 2*$font-large auto
-    @media screen and (min-width: 43rem)
-      grid-template-rows $font-large auto
-
   .main
     grid-template-columns auto calc(128 * 3px + 3rem)
     grid-template-rows auto
