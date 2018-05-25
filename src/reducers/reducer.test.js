@@ -58,6 +58,93 @@ describe('tutorial', () => {
   })
 })
 
+describe('updateSprite', () => {
+  test('complete', () => {
+    const before = initialState
+    const action = actions.updateSprite({
+      sprite: [
+        '01234567',
+        '01234567',
+        '01234567',
+        '01234567',
+        '01234567',
+        '01234567',
+        '01234567',
+        '01234567'
+      ],
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      sprites: {
+        1: [
+          '01234567',
+          '01234567',
+          '01234567',
+          '01234567',
+          '01234567',
+          '01234567',
+          '01234567',
+          '01234567'
+        ]
+      }
+    })
+  })
+
+  test('partial', () => {
+    const before = initialState
+    const action = actions.updateSprite({
+      sprite: [
+        '        ',
+        '01234567',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        '
+      ],
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      sprites: {
+        1: [
+          '        ',
+          '01234567',
+          '        ',
+          '        ',
+          '        ',
+          '        ',
+          '        ',
+          '        '
+        ]
+      }
+    })
+  })
+
+  test('empty', () => {
+    const before = initialState
+    const action = actions.updateSprite({
+      sprite: [
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
+        '        '
+      ],
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      sprites: {}
+    })
+  })
+})
+
 describe('updateChain', () => {
   test('complete', () => {
     const before = initialState

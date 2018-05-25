@@ -18,11 +18,14 @@ const sprites = handleActions(
     [actionTypes.NEW_GAME]: () => initialState.sprites,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       extractGistSprites(action.payload),
-    [actionTypes.UPDATE_SPRITE]: (state, { payload }) =>
-      omitEmpty({
+    [actionTypes.UPDATE_SPRITE]: (state, { payload }) => {
+      const { sprite } = payload
+      return omitEmpty({
         ...state,
-        [payload.index]: payload.sprite
+        [payload.index]:
+          sprite && sprite.filter(d => d !== '        ').length ? sprite : null
       })
+    }
   },
   initialState.sprites
 )
