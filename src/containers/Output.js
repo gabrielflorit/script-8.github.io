@@ -33,19 +33,19 @@ class Output extends Component {
     super(props)
 
     this.evaluate = this.evaluate.bind(this)
+    this.resize = _.debounce(this.resize.bind(this), 100)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
 
-    window.addEventListener(
-      'resize',
-      _.debounce(() => {
-        if (this.isLoaded) {
-          this.evaluate()
-        }
-      })
-    )
+    window.addEventListener('resize', this.resize)
   }
 
   noop () {}
+
+  resize () {
+    if (this.isLoaded) {
+      this.evaluate()
+    }
+  }
 
   handleBlur (e) {
     e.currentTarget.focus()
@@ -59,6 +59,10 @@ class Output extends Component {
     if (this.isLoaded) {
       this.evaluate()
     }
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.resize)
   }
 
   evaluate () {
