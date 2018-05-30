@@ -27,12 +27,16 @@ class Sprite extends Component {
     this.draw = this.draw.bind(this)
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleCanvasClick = this.handleCanvasClick.bind(this)
-    this.handleSpriteClick = this.handleSpriteClick.bind(this)
+    this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+    this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
+    this.handleOnMouseEnter = this.handleOnMouseEnter.bind(this)
     this.getCurrentSprite = this.getCurrentSprite.bind(this)
+    this.drawPixel = this.drawPixel.bind(this)
 
     this.state = {
       spriteIndex: 0,
-      colorIndex: 0
+      colorIndex: 0,
+      mouseDown: false
     }
   }
 
@@ -73,22 +77,36 @@ class Sprite extends Component {
     this.setState({ colorIndex })
   }
 
-  handleSpriteClick ({ row, col }) {
+  handleOnMouseUp () {
+    this.setState({
+      mouseDown: false
+    })
+  }
+
+  handleOnMouseDown ({ row, col }) {
+    this.setState({
+      mouseDown: true
+    })
+    this.drawPixel({ row, col })
+  }
+
+  handleOnMouseEnter ({ row, col }) {
+    console.log('on mouse enter')
+    if (this.state.mouseDown) {
+      this.drawPixel({ row, col })
+    }
+  }
+
+  drawPixel ({ row, col }) {
     const { spriteIndex, colorIndex } = this.state
     const { updateSprite } = this.props
 
     const sprite = this.getCurrentSprite()
 
-    let newSprite = JSON.parse(JSON.stringify(sprite))
+    const newSprite = JSON.parse(JSON.stringify(sprite))
 
-    // If we are clicking on a cell that already has the
-    // currently selected color, clear it out.
-    // Otherwise set it to the selected color.
-    newSprite[row] = replaceAt(
-      newSprite[row],
-      col,
-      newSprite[row][col] === colorIndex.toString() ? ' ' : colorIndex
-    )
+    // Set it to the selected color.
+    newSprite[row] = replaceAt(newSprite[row], col, colorIndex)
 
     updateSprite({ sprite: newSprite, index: spriteIndex })
   }
@@ -101,7 +119,10 @@ class Sprite extends Component {
     const { spriteIndex, colorIndex } = this.state
     const sprite = this.getCurrentSprite()
     return (
-      <div className='Sprite two-rows two-rows-and-grid'>
+      <div
+        onMouseUp={this.handleOnMouseUp}
+        className='Sprite two-rows two-rows-and-grid'
+      >
         <TopBar />
         <div className='main'>
           <div className='SpriteEditor'>
@@ -115,9 +136,12 @@ class Sprite extends Component {
                         return (
                           <td key={col}>
                             <button
-                              onClick={() =>
-                                this.handleSpriteClick({ row, col })
-                              }
+                              onMouseDown={() => {
+                                this.handleOnMouseDown({ row, col })
+                              }}
+                              onMouseEnter={() => {
+                                this.handleOnMouseEnter({ row, col })
+                              }}
                               className={`background-${value}`}
                             >
                               {value === ' ' ? 'x' : ''}
