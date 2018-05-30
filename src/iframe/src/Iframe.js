@@ -364,6 +364,7 @@ class Iframe extends Component {
       // If we're not playing,
       // we can have several different kinds of inputs:
       // - game has changed
+      // - sprites have changed
       // - timelineIndex has changed
       // - selectedActors has changed
       // Stop the timer (ONLY when pause was clicked).
@@ -379,6 +380,7 @@ class Iframe extends Component {
       if (
         !equal(isPaused, prevState.isPaused) ||
         !equal(game, prevState.game) ||
+        !equal(sprites, prevState.sprites) ||
         !equal(timelineIndex, prevState.timelineIndex) ||
         !equal(selectedActors, prevState.selectedActors)
       ) {
