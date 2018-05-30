@@ -32,11 +32,13 @@ class Sprite extends Component {
     this.handleOnMouseEnter = this.handleOnMouseEnter.bind(this)
     this.getCurrentSprite = this.getCurrentSprite.bind(this)
     this.drawPixel = this.drawPixel.bind(this)
+    this.setMode = this.setMode.bind(this)
 
     this.state = {
       spriteIndex: 0,
       colorIndex: 0,
-      mouseDown: false
+      mouseDown: false,
+      mode: '+'
     }
   }
 
@@ -74,7 +76,7 @@ class Sprite extends Component {
   }
 
   handleColorClick (colorIndex) {
-    this.setState({ colorIndex })
+    this.setState({ colorIndex, mode: '+' })
   }
 
   handleOnMouseUp () {
@@ -91,14 +93,19 @@ class Sprite extends Component {
   }
 
   handleOnMouseEnter ({ row, col }) {
-    console.log('on mouse enter')
     if (this.state.mouseDown) {
       this.drawPixel({ row, col })
     }
   }
 
+  setMode (mode) {
+    this.setState({
+      mode
+    })
+  }
+
   drawPixel ({ row, col }) {
-    const { spriteIndex, colorIndex } = this.state
+    const { spriteIndex, colorIndex, mode } = this.state
     const { updateSprite } = this.props
 
     const sprite = this.getCurrentSprite()
@@ -106,7 +113,11 @@ class Sprite extends Component {
     const newSprite = JSON.parse(JSON.stringify(sprite))
 
     // Set it to the selected color.
-    newSprite[row] = replaceAt(newSprite[row], col, colorIndex)
+    newSprite[row] = replaceAt(
+      newSprite[row],
+      col,
+      mode === '+' ? colorIndex : ' '
+    )
 
     updateSprite({ sprite: newSprite, index: spriteIndex })
   }
@@ -116,7 +127,7 @@ class Sprite extends Component {
   }
 
   render () {
-    const { spriteIndex, colorIndex } = this.state
+    const { spriteIndex, colorIndex, mode } = this.state
     const sprite = this.getCurrentSprite()
     return (
       <div
@@ -163,7 +174,7 @@ class Sprite extends Component {
                             <td
                               key={col}
                               className={classNames({
-                                active: col === colorIndex
+                                active: col === colorIndex && mode === '+'
                               })}
                             >
                               <button
@@ -172,7 +183,7 @@ class Sprite extends Component {
                                   `background-${col}`,
                                   `border-${col}`,
                                   {
-                                    active: col === colorIndex
+                                    active: col === colorIndex && mode === '+'
                                   }
                                 )}
                               />
@@ -183,7 +194,29 @@ class Sprite extends Component {
                     ))}
                   </tbody>
                 </table>
-                <div className='tools'>the tools</div>
+                <div className='tools'>
+                  <button
+                    className={classNames('button', {
+                      active: mode === '+'
+                    })}
+                    onClick={() => {
+                      this.setMode('+')
+                    }}
+                  >
+                    +
+                  </button>
+
+                  <button
+                    className={classNames('button', {
+                      active: mode === '-'
+                    })}
+                    onClick={() => {
+                      this.setMode('-')
+                    }}
+                  >
+                    -
+                  </button>
+                </div>
               </div>
             </div>
             <div className='sprites'>
