@@ -74,10 +74,15 @@
               height @width
               min-width 1.5rem
               min-height @min-width
-              
+
         .tools
+          margin-top 1.5rem
           color white
-          display none
+
+          button
+            width calc(2.25rem)
+            height @width
+            padding 0
 
       .sprites
         width 100%
@@ -97,7 +102,7 @@
           width calc((1.5rem - 5px)*16 + 8px)
         @media screen and (max-width: 20rem)
           width calc((1.5rem - 6px)*16 + 8px)
-        
+
         table
           position relative
           z-index 1
@@ -106,6 +111,7 @@
             background none
             &.active
               outline solid $palette-7 3px
+
               button
                 outline solid $palette-0 6px
             button
@@ -141,7 +147,7 @@
             td button
               width calc(1.5rem - 6px)
               height @width
-            
+
         canvas
           display block
           // display none
