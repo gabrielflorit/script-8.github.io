@@ -23,7 +23,8 @@ const mapStateToProps = ({
   songs,
   token,
   screen,
-  nextAction
+  nextAction,
+  sound
 }) => ({
   screen,
   gist,
@@ -33,10 +34,12 @@ const mapStateToProps = ({
   chains,
   songs,
   token,
-  nextAction
+  nextAction,
+  sound
 })
 
 const mapDispatchToProps = dispatch => ({
+  toggleSound: () => dispatch(actions.toggleSound()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
@@ -120,7 +123,9 @@ class Menu extends Component {
       phrases,
       chains,
       songs,
-      setScreen
+      setScreen,
+      sound,
+      toggleSound
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -267,8 +272,8 @@ class Menu extends Component {
               })}
             >
               <span className='full'>MUSIC</span>
-              <span className='mid'>sou</span>
-              <span className='small'>so</span>
+              <span className='mid'>mus</span>
+              <span className='small'>mu</span>
             </button>
             <ul className='dropdown'>
               <li>
@@ -346,5 +351,20 @@ class Menu extends Component {
     )
   }
 }
+
+// <li>
+//   <button
+//     onClick={() => {
+//       toggleSound()
+//     }}
+//     className={classNames('button', {
+//       // active: screen === screenTypes.HELP
+//     })}
+//   >
+//     <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
+//     <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
+//     <span className='small'>{sound ? 'OFF' : 'ON'}</span>
+//   </button>
+// </li>
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

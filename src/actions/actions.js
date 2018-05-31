@@ -5,6 +5,7 @@ import actionTypes from './actionTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 
 const actions = createActions({
+  [actionTypes.TOGGLE_SOUND]: () => {},
   [actionTypes.SET_SCREEN]: d => d,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},
   [actionTypes.FETCH_GIST_SUCCESS]: d => d,

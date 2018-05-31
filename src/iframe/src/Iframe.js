@@ -118,7 +118,8 @@ class Iframe extends Component {
       callbacks: {},
       isPaused: true,
       alteredStates: [],
-      run: true
+      run: true,
+      sound: false
     }
   }
 
@@ -172,6 +173,8 @@ class Iframe extends Component {
           message,
           run: payload.run,
           isPaused: payload.run === true ? false : this.state.isPaused,
+          // TODO: only enable sound during RUN
+          sound: payload.sound,
           callbacks: payload.callbacks
         })
       } else if (type === 'findInvalidToken') {
@@ -320,12 +323,28 @@ class Iframe extends Component {
       sprites,
       timelineIndex,
       actors,
-      selectedActors
+      selectedActors,
+      sound
     } = state
     const { script8 } = window
 
     if (!equal(sprites, prevState.sprites)) {
       this.updateGlobals()
+    }
+
+    if (!equal(sound, prevState.sound)) {
+      console.log('This will mute / unmute in the future')
+      // const volume = new Tone.Volume()
+      // if (sound) {
+      //   // Tone.context.resume()
+      //   // volume.mute = false
+      // } else {
+      //   // Tone.context.suspend()
+      //   // volume.mute = true
+      // }
+      // } else {
+      //   Tone.context.resume()
+      // }
     }
 
     // If we're playing,

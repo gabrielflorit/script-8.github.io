@@ -12,6 +12,7 @@ import chains from './chains.js'
 import songs from './songs.js'
 import tutorial from './tutorial.js'
 import newUser from './newUser.js'
+import sound from './sound.js'
 
 const reducer = combineReducers({
   screen,
@@ -26,7 +27,8 @@ const reducer = combineReducers({
   chains,
   songs,
   tutorial,
-  newUser
+  newUser,
+  sound
 })
 
 export default reducer
