@@ -27,9 +27,10 @@ class Sprite extends Component {
     this.draw = this.draw.bind(this)
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleCanvasClick = this.handleCanvasClick.bind(this)
-    this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
     this.handleOnMouseEnter = this.handleOnMouseEnter.bind(this)
+    this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+    this.handleOnTouchMove = this.handleOnTouchMove.bind(this)
     this.getCurrentSprite = this.getCurrentSprite.bind(this)
     this.drawPixel = this.drawPixel.bind(this)
     this.setMode = this.setMode.bind(this)
@@ -79,22 +80,38 @@ class Sprite extends Component {
     this.setState({ colorIndex, mode: '+' })
   }
 
+  handleOnMouseDown (e) {
+    const { row, col } = e.target.dataset
+    this.setState({
+      mouseDown: true
+    })
+    this.drawPixel({ row: +row, col: +col })
+  }
+
+  handleOnMouseEnter (e) {
+    if (this.state.mouseDown) {
+      const { row, col } = e.target.dataset
+      this.drawPixel({ row: +row, col: +col })
+    }
+  }
+
   handleOnMouseUp () {
     this.setState({
       mouseDown: false
     })
   }
 
-  handleOnMouseDown ({ row, col }) {
-    this.setState({
-      mouseDown: true
-    })
-    this.drawPixel({ row, col })
-  }
-
-  handleOnMouseEnter ({ row, col }) {
+  handleOnTouchMove (e) {
     if (this.state.mouseDown) {
-      this.drawPixel({ row, col })
+      const touchLocation = e.changedTouches[0]
+      const dataset = document.elementFromPoint(
+        touchLocation.clientX,
+        touchLocation.clientY
+      ).dataset
+      const { row, col } = dataset
+      if (row && col) {
+        this.drawPixel({ row: +row, col: +col })
+      }
     }
   }
 
@@ -132,6 +149,7 @@ class Sprite extends Component {
     return (
       <div
         onMouseUp={this.handleOnMouseUp}
+        onTouchEnd={this.handleOnMouseUp}
         className='Sprite two-rows two-rows-and-grid'
       >
         <TopBar />
@@ -147,12 +165,12 @@ class Sprite extends Component {
                         return (
                           <td key={col}>
                             <button
-                              onMouseDown={() => {
-                                this.handleOnMouseDown({ row, col })
-                              }}
-                              onMouseEnter={() => {
-                                this.handleOnMouseEnter({ row, col })
-                              }}
+                              data-row={row}
+                              data-col={col}
+                              onMouseDown={this.handleOnMouseDown}
+                              onMouseEnter={this.handleOnMouseEnter}
+                              onTouchStart={this.handleOnMouseDown}
+                              onTouchMove={this.handleOnTouchMove}
                               className={`background-${value}`}
                             >
                               {value === ' ' ? 'x' : ''}
