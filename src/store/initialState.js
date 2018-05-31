@@ -19,7 +19,8 @@ const initialState = {
   chains: {},
   songs: {},
   tutorial: false,
-  newUser: null
+  newUser: null,
+  sound: false
 }
 
 export default initialState
