@@ -266,7 +266,7 @@ class Menu extends Component {
                 ].includes(screen)
               })}
             >
-              <span className='full'>SOUND</span>
+              <span className='full'>MUSIC</span>
               <span className='mid'>sou</span>
               <span className='small'>so</span>
             </button>
