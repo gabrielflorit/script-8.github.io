@@ -156,7 +156,7 @@ class Iframe extends Component {
   }
 
   componentDidMount () {
-    Tone.context.resume()
+    Tone.Master.mute = true
     const globals = this.updateGlobals()
 
     // Keep track of what keys we're pressing.
@@ -356,18 +356,10 @@ class Iframe extends Component {
     }
 
     if (!equal(sound, prevState.sound)) {
-      console.log('This will mute / unmute in the future')
-      // const volume = new Tone.Volume()
-      // if (sound) {
-      //   // Tone.context.resume()
-      //   // volume.mute = false
-      // } else {
-      //   // Tone.context.suspend()
-      //   // volume.mute = true
-      // }
-      // } else {
-      //   Tone.context.resume()
-      // }
+      if (Tone.context.state !== 'running') {
+        Tone.context.resume()
+      }
+      Tone.Master.mute = !sound
     }
 
     // If we're playing,

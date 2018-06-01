@@ -318,6 +318,14 @@ class Menu extends Component {
           </li>
 
           <li>
+            <button onClick={toggleSound} className='button'>
+              <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
+              <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
+              <span className='small'>{sound ? 'OFF' : 'ON'}</span>
+            </button>
+          </li>
+
+          <li>
             <button
               onClick={() => {
                 setScreen(screenTypes.RUN)
@@ -351,20 +359,5 @@ class Menu extends Component {
     )
   }
 }
-
-// <li>
-//   <button
-//     onClick={() => {
-//       toggleSound()
-//     }}
-//     className={classNames('button', {
-//       // active: screen === screenTypes.HELP
-//     })}
-//   >
-//     <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
-//     <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
-//     <span className='small'>{sound ? 'OFF' : 'ON'}</span>
-//   </button>
-// </li>
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
