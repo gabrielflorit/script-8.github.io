@@ -126,25 +126,28 @@ class Iframe extends Component {
     }
   }
 
-  updateGlobals () {
+  updateGlobals (providedGlobals) {
     // Assign various properties to global scope, for the user.
-    const globals = {
-      Math,
-      ...utilsAPI(),
-      ...soundAPI(),
-      ...canvasAPI({
-        ctx: this._canvas.getContext('2d'),
-        width: CANVAS_SIZE,
-        height: CANVAS_SIZE,
-        sprites: this.state.sprites
-      }),
-      range,
-      flatten,
-      random,
-      clamp
-    }
+    let globals
 
-    globals.playSong = this.state.run ? globals.playSong(this.state) : NOOP
+    if (!providedGlobals) {
+      globals = {
+        Math,
+        ...utilsAPI(),
+        ...canvasAPI({
+          ctx: this._canvas.getContext('2d'),
+          width: CANVAS_SIZE,
+          height: CANVAS_SIZE,
+          sprites: this.state.sprites
+        }),
+        range,
+        flatten,
+        random,
+        clamp
+      }
+    } else {
+      globals = providedGlobals
+    }
 
     // Assign all the globals to window.
     Object.keys(globals).forEach(key => (window[key] = globals[key]))
@@ -170,6 +173,21 @@ class Iframe extends Component {
       const { blacklist, shadows } = this
       // Run user code.
       if (type === 'callCode') {
+        // If we haven't setup sound functions yet,
+        if (!window.playSong) {
+          // and we're in RUN mode,
+          if (payload.run) {
+            // do so now.
+            this.updateGlobals(soundAPI(payload))
+          } else {
+            // Otherwise set to NOOP.
+            this.updateGlobals({
+              playSong: NOOP,
+              stopSong: NOOP
+            })
+          }
+        }
+
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
