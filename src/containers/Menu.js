@@ -5,7 +5,11 @@ import equal from 'deep-equal'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import blankGame from '../utils/blank.js'
-import actions, { saveGist, fetchToken } from '../actions/actions.js'
+import actions, {
+  saveGist,
+  fetchToken,
+  putOnShelf
+} from '../actions/actions.js'
 import Title from './Title.js'
 
 import { parseGistGame } from '../reducers/game.js'
@@ -43,6 +47,8 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
+  putOnShelf: ({ user, gist, cover }) =>
+    dispatch(putOnShelf({ user, gist, cover })),
   saveGist: ({ game, token, gist, sprites, phrases, chains, songs, toBlank }) =>
     dispatch(
       saveGist({ game, token, gist, sprites, phrases, chains, songs, toBlank })
@@ -56,6 +62,7 @@ class Menu extends Component {
     super(props)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
+    this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
     window.script8.handleCode = props.fetchToken
   }
@@ -75,6 +82,36 @@ class Menu extends Component {
 
   onInsertBlankClick () {
     this.props.newGame(this.props.screen)
+  }
+
+  onPutOnShelfClick () {
+    const { putOnShelf, gist } = this.props
+
+    const gistUser = _.get(gist, 'data.owner.login', null)
+    const gistId = _.get(gist, 'data.id', null)
+    const payload = { user: gistUser, gist: gistId }
+
+    const iframe = document.querySelector('iframe')
+
+    if (iframe) {
+      const channel = new window.MessageChannel()
+      iframe.contentWindow.postMessage(
+        {
+          type: 'image'
+        },
+        '*',
+        [channel.port2]
+      )
+      channel.port1.onmessage = e => {
+        const { data } = e
+        putOnShelf({
+          ...payload,
+          cover: data
+        })
+      }
+    } else {
+      putOnShelf(payload)
+    }
   }
 
   onRecordClick (toBlank) {
@@ -183,11 +220,20 @@ class Menu extends Component {
       !_.isEmpty(gist) &&
       (gistLogin === null || gistLogin !== currentLogin || !contentIsEmpty)
 
+    // SHELVE can only happen when:
+    // - gist is ours AND
+    // - content is NOT dirty
+    const canShelve = currentLogin && currentLogin === gistLogin && !dirty
+
     return (
       <nav className='Menu'>
         <Title />
         <ul>
-          <li>
+          <li
+            className={classNames({
+              hide: screen === screenTypes.RUN || screen === screenTypes.SHELF
+            })}
+          >
             <button className='button'>
               <span className='full'>cassette</span>
               <span className='mid'>cas</span>
@@ -228,6 +274,16 @@ class Menu extends Component {
                   Record to blank
                 </button>
               </li>
+
+              <li>
+                <button
+                  onClick={this.onPutOnShelfClick}
+                  disabled={!canShelve}
+                  className='button'
+                >
+                  Put on shelf
+                </button>
+              </li>
             </ul>
           </li>
 
@@ -237,6 +293,8 @@ class Menu extends Component {
                 setScreen(screenTypes.CODE)
               }}
               className={classNames('button', {
+                hide:
+                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
                 active: screen === screenTypes.CODE
               })}
             >
@@ -252,6 +310,8 @@ class Menu extends Component {
                 setScreen(screenTypes.SPRITE)
               }}
               className={classNames('button', {
+                hide:
+                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
                 active: screen === screenTypes.SPRITE
               })}
             >
@@ -264,6 +324,8 @@ class Menu extends Component {
           <li>
             <button
               className={classNames('button', {
+                hide:
+                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
                 active: [
                   screenTypes.SONG,
                   screenTypes.CHAIN,
@@ -317,11 +379,20 @@ class Menu extends Component {
             </ul>
           </li>
 
-          <li>
-            <button onClick={toggleSound} className='button'>
-              <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
-              <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
-              <span className='small'>{sound ? 'OFF' : 'ON'}</span>
+          <li
+            className={classNames({
+              hide: screen !== screenTypes.RUN && screen !== screenTypes.SHELF
+            })}
+          >
+            <button
+              onClick={() => {
+                setScreen(screenTypes.CODE)
+              }}
+              className='button'
+            >
+              <span className='full'>EDIt</span>
+              <span className='mid'>edit</span>
+              <span className='small'>edit</span>
             </button>
           </li>
 
@@ -340,12 +411,41 @@ class Menu extends Component {
             </button>
           </li>
 
+          <li
+            className={classNames({
+              hide: screen !== screenTypes.RUN
+            })}
+          >
+            <button onClick={toggleSound} className='button'>
+              <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
+              <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
+              <span className='small'>{sound ? 'OFF' : 'ON'}</span>
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.SHELF)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.SHELF
+              })}
+            >
+              <span className='full'>SHELF</span>
+              <span className='mid'>she</span>
+              <span className='small'>sh</span>
+            </button>
+          </li>
+
           <li>
             <button
               onClick={() => {
                 setScreen(screenTypes.HELP)
               }}
               className={classNames('button', {
+                hide:
+                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
                 active: screen === screenTypes.HELP
               })}
             >

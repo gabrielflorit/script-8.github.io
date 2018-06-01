@@ -212,6 +212,13 @@ class Iframe extends Component {
             })
         )
         message.ports[0].postMessage(invalidTokenIndex)
+      } else if (type === 'image') {
+        const smallCanvas = document.createElement('canvas')
+        const size = 128
+        smallCanvas.width = size
+        smallCanvas.height = size
+        smallCanvas.getContext('2d').drawImage(this._canvas, 0, 0, size, size)
+        message.ports[0].postMessage(smallCanvas.toDataURL())
       }
     })
   }

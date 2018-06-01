@@ -11,6 +11,7 @@ import Run from './Run.js'
 import Code from './Code.js'
 // import Tutorial from './Tutorial.js'
 import Help from './Help.js'
+import Shelf from './Shelf.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
 import { version } from '../iframe/package.json'
@@ -32,7 +33,8 @@ const options = {
   [screenTypes.SONG]: () => <Song />,
   [screenTypes.RUN]: () => <Run />,
   [screenTypes.CODE]: () => <Code />,
-  [screenTypes.HELP]: () => <Help />
+  [screenTypes.HELP]: () => <Help />,
+  [screenTypes.SHELF]: () => <Shelf />
 }
 
 const App = ({ screen }) => (

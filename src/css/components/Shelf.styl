@@ -1,0 +1,29 @@
+.Shelf
+
+  .main
+    padding 1.5rem
+    background $palette-7
+    color $palette-2
+    @extend .VT323
+    font-size $font-large
+    color $palette-3
+
+    ul
+      list-style none
+      padding 0
+      margin 0
+      display flex
+      flex-wrap wrap
+
+      li
+        padding 1.5rem
+        .img
+          cursor pointer
+          width 128px * 2
+          height @width
+          border solid $palette-6 2px
+          img
+            width 100%
+            height @width
+            vertical-align bottom
+            image-rendering pixelated
