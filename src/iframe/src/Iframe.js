@@ -111,6 +111,9 @@ class Iframe extends Component {
       fps: null,
       game: '',
       sprites: {},
+      songs: {},
+      chains: {},
+      phrases: {},
       timelineIndex: 0,
       actors: [],
       selectedActors: [],
@@ -141,6 +144,8 @@ class Iframe extends Component {
       clamp
     }
 
+    globals.playSong = this.state.run ? globals.playSong(this.state) : NOOP
+
     // Assign all the globals to window.
     Object.keys(globals).forEach(key => (window[key] = globals[key]))
 
@@ -165,17 +170,17 @@ class Iframe extends Component {
       const { blacklist, shadows } = this
       // Run user code.
       if (type === 'callCode') {
-        window.playSong = payload.run ? globals.playSong({ ...payload }) : NOOP
-
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
           message,
           run: payload.run,
           isPaused: payload.run === true ? false : this.state.isPaused,
-          // TODO: only enable sound during RUN
           sound: payload.sound,
-          callbacks: payload.callbacks
+          callbacks: payload.callbacks,
+          phrases: payload.phrases,
+          chains: payload.chains,
+          songs: payload.songs
         })
       } else if (type === 'findInvalidToken') {
         // Find the first invalid token in the provided tokens array.
