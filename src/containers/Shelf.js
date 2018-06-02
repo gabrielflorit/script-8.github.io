@@ -43,7 +43,6 @@ class Shelf extends Component {
               .sortBy('updated')
               .reverse()
               .map((d, i) => {
-                const date = new Date(d.updated)
                 return (
                   <li key={i}>
                     <div
@@ -54,7 +53,6 @@ class Shelf extends Component {
                     >
                       {d.cover ? <img src={d.cover} alt='' /> : null}
                     </div>
-                    <div className='timestamp'>{date.toISOString()}</div>
                   </li>
                 )
               })

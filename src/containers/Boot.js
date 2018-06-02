@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Boot extends Component {
   componentDidMount () {
-    const { fetchGist, token } = this.props
+    const { fetchGist, token, setScreen } = this.props
 
     const { search } = window.location
     const params = new window.URLSearchParams(search)
@@ -29,9 +29,8 @@ class Boot extends Component {
       fetchGist({ id, token })
     } else {
       // If there is no id,
-      // load the default one,
-      // and set the id on the query string.
-      fetchGist({ id: 'bc89aef1ab257def52475c9c452c1dda', token })
+      // show shelf.
+      setScreen(screenTypes.SHELF)
     }
   }
 

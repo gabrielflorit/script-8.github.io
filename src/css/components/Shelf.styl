@@ -1,7 +1,6 @@
 .Shelf
 
   .main
-    padding 1.5rem
     background $palette-7
     color $palette-2
     @extend .VT323
@@ -17,11 +16,15 @@
 
       li
         padding 1.5rem
+        padding-right 0
+        padding-bottom 0
         .img
           cursor pointer
-          width 128px * 2
+          width 1.5rem * 7
           height @width
           border solid $palette-6 2px
+          &:hover
+            border-color $palette-0
           img
             width 100%
             height @width
