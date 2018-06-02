@@ -2,7 +2,11 @@ import { createActions } from 'redux-actions'
 import GitHub from 'github-api'
 import _ from 'lodash'
 import actionTypes from './actionTypes.js'
+import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
+import throwError from '../utils/throwError.js'
+
+const nowRoot = 'https://my-service-fvlfualcjz.now.sh'
 
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
@@ -25,14 +29,38 @@ const actions = createActions({
   [actionTypes.UPDATE_SONG]: d => d,
   [actionTypes.IS_NEW_USER]: () => {},
   [actionTypes.SET_TUTORIAL_SLIDE]: d => d,
-  [actionTypes.CLOSE_TUTORIAL]: () => {}
+  [actionTypes.CLOSE_TUTORIAL]: () => {},
+  [actionTypes.SHELVE_CASSETTE_REQUEST]: () => {},
+  [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d
 })
 
 export default actions
 
-const throwError = ({ error, message }) => {
-  error.message = [error.message, message].join('. ')
-  throw new Error(error)
+export const putOnShelf = ({ user, gist, cover }) => dispatch => {
+  dispatch(actions.shelveCassetteRequest())
+
+  return window
+    .fetch(`${nowRoot}/cassette`, {
+      method: 'POST',
+      body: JSON.stringify({
+        user,
+        gist,
+        cover
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(
+      response => response.json(),
+      error =>
+        throwError({
+          error,
+          message: `Could not post cassette via now.sh service.`
+        })
+    )
+    .then(json => dispatch(actions.shelveCassetteSuccess(json)))
+    .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
 export const fetchGist = ({ id, token }) => dispatch => {
@@ -54,7 +82,7 @@ export const fetchGist = ({ id, token }) => dispatch => {
       .then(json => dispatch(actions.fetchGistSuccess(json)))
   } else {
     return window
-      .fetch(`https://my-service-pyccaoirrn.now.sh/${id}`)
+      .fetch(`${nowRoot}/${id}`)
       .then(
         response => response.json(),
         error =>

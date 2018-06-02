@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 
-const mapStateToProps = ({ gist, token }) => ({
-  isFetching: gist.isFetching || token.isFetching
+const mapStateToProps = ({ gist, token, shelving }) => ({
+  isFetching: gist.isFetching || token.isFetching || shelving
 })
 
 const mapDispatchToProps = () => ({})

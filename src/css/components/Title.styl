@@ -1,3 +1,12 @@
+@keyframes pulse {
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
 .Title
   display inline-block
   background $palette-7
@@ -9,6 +18,6 @@
   padding 0 0.5rem
   white-space nowrap
 
-//   &.is-fetching
-//     button
-//       color $palette-5
+  &.is-fetching
+    color $palette-0
+    animation pulse 0.25s infinite alternate

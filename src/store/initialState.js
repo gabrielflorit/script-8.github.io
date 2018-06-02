@@ -6,7 +6,7 @@ const initialState = {
   // screen: screenTypes.PHRASE,
   // screen: screenTypes.SONG,
   screen: screenTypes.BOOT,
-  // screen: screenTypes.CODE,
+  // screen: screenTypes.SHELF,
   // screen: screenTypes.SPRITE,
   booted: false,
   gist: {},
@@ -20,7 +20,8 @@ const initialState = {
   songs: {},
   tutorial: false,
   newUser: null,
-  sound: false
+  sound: false,
+  shelving: false
 }
 
 export default initialState

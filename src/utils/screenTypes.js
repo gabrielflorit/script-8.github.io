@@ -6,7 +6,8 @@ const screenTypes = {
   SPRITE: 'SPRITE',
   SONG: 'SONG',
   CHAIN: 'CHAIN',
-  PHRASE: 'PHRASE'
+  PHRASE: 'PHRASE',
+  SHELF: 'SHELF'
 }
 
 export default screenTypes

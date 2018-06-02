@@ -13,6 +13,7 @@ import songs from './songs.js'
 import tutorial from './tutorial.js'
 import newUser from './newUser.js'
 import sound from './sound.js'
+import shelving from './shelving.js'
 
 const reducer = combineReducers({
   screen,
@@ -28,7 +29,8 @@ const reducer = combineReducers({
   songs,
   tutorial,
   newUser,
-  sound
+  sound,
+  shelving
 })
 
 export default reducer
