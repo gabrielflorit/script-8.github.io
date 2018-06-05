@@ -390,7 +390,7 @@ class Menu extends Component {
               }}
               className='button'
             >
-              <span className='full'>EDIt</span>
+              <span className='full'>edit</span>
               <span className='mid'>edit</span>
               <span className='small'>edit</span>
             </button>
@@ -407,7 +407,11 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
-              <span className='small'>ru</span>
+              <span className='small'>
+                {screen === screenTypes.RUN || screen === screenTypes.SHELF
+                  ? 'run'
+                  : 'ru'}
+              </span>
             </button>
           </li>
 
@@ -417,9 +421,9 @@ class Menu extends Component {
             })}
           >
             <button onClick={toggleSound} className='button'>
-              <span className='full'>SOUND {sound ? 'OFF' : 'ON'}</span>
-              <span className='mid'>{sound ? 'OFF' : 'ON'}</span>
-              <span className='small'>{sound ? 'OFF' : 'ON'}</span>
+              <span className='full'>sound-{sound ? 'OFF' : 'ON'}</span>
+              <span className='mid'>sound-{sound ? 'OFF' : 'ON'}</span>
+              <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
             </button>
           </li>
 
@@ -433,8 +437,16 @@ class Menu extends Component {
               })}
             >
               <span className='full'>SHELF</span>
-              <span className='mid'>she</span>
-              <span className='small'>sh</span>
+              <span className='mid'>
+                {screen === screenTypes.RUN || screen === screenTypes.SHELF
+                  ? 'shelf'
+                  : 'she'}
+              </span>
+              <span className='small'>
+                {screen === screenTypes.RUN || screen === screenTypes.SHELF
+                  ? 'shelf'
+                  : 'sh'}
+              </span>
             </button>
           </li>
 
