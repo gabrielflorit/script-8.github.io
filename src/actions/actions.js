@@ -6,8 +6,6 @@ import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 import throwError from '../utils/throwError.js'
 
-const nowRoot = 'https://my-service-fvlfualcjz.now.sh'
-
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
   [actionTypes.SET_SCREEN]: d => d,
@@ -40,7 +38,7 @@ export const putOnShelf = ({ user, gist, cover }) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
   return window
-    .fetch(`${nowRoot}/cassette`, {
+    .fetch(`${process.env.REACT_APP_NOW}/cassette`, {
       method: 'POST',
       body: JSON.stringify({
         user,
@@ -82,7 +80,7 @@ export const fetchGist = ({ id, token }) => dispatch => {
       .then(json => dispatch(actions.fetchGistSuccess(json)))
   } else {
     return window
-      .fetch(`${nowRoot}/${id}`)
+      .fetch(`${process.env.REACT_APP_NOW}/${id}`)
       .then(
         response => response.json(),
         error =>

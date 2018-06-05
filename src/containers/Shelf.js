@@ -19,7 +19,7 @@ class Shelf extends Component {
 
   componentDidMount () {
     window
-      .fetch('https://my-service-fvlfualcjz.now.sh/cassettes')
+      .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
       .then(
         response => response.json(),
         error =>
