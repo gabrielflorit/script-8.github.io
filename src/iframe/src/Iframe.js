@@ -22,10 +22,10 @@ import { version } from '../package.json'
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
-window._initialState = {}
-window._update = () => {}
-window._drawActors = () => {}
-window._draw = () => {}
+window.initialState = {}
+window.update = () => {}
+window.drawActors = () => {}
+window.draw = () => {}
 window._script8 = {}
 
 const NOOP = () => {}
@@ -36,14 +36,14 @@ const ACTOR_FRAME_SKIP = 5
 
 const createReducer = () => {
   // Create the reducer, with the script8 state or an empty object.
-  const reducer = (state = window._initialState || {}, action) => {
+  const reducer = (state = window.initialState || {}, action) => {
     switch (action.type) {
       case 'TICK': {
-        if (window._update) {
+        if (window.update) {
           let newState
           try {
             newState = JSON.parse(JSON.stringify(state))
-            window._update(newState, action.input, action.elapsed)
+            window.update(newState, action.input, action.elapsed)
             if (newState.actors) {
               // Find actors with no name.
               const namelessActors = newState.actors.filter(
@@ -238,7 +238,7 @@ class Iframe extends Component {
         })
       })
       // Save previous initial state.
-      this.previousInitialState = window._initialState
+      this.previousInitialState = window.initialState
       // Eval the supplied game.
       const shadowString = `var ${[...shadows].join(',')}`
       // eslint-disable-next-line no-eval
@@ -290,7 +290,7 @@ class Iframe extends Component {
         })
 
         // Draw this state.
-        window._draw && window._draw(this.store.getState())
+        window.draw && window.draw(this.store.getState())
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
@@ -382,14 +382,14 @@ class Iframe extends Component {
         this.evalCode({ ...state, shadows: shadows })
 
         // Before we create a redux store, let's think about what state we want.
-        // If the user has changed _initialState, use that.
+        // If the user has changed initialState, use that.
         // This way we let the user start over when they modify initialState.
         // This is an escape hatch of sorts.
         // Otherwise use the current store state. This will enable us to modify game
         // code and not lose game state.
         let storeState
-        if (!equal(window._initialState, this.previousInitialState)) {
-          storeState = window._initialState
+        if (!equal(window.initialState, this.previousInitialState)) {
+          storeState = window.initialState
         } else {
           storeState = (this.store && this.store.getState()) || {}
         }
@@ -453,7 +453,7 @@ class Iframe extends Component {
 
             // Draw the timeline index state.
             const stateToDraw = alteredStates[newTimelineIndex]
-            window._draw(stateToDraw)
+            window.draw(stateToDraw)
 
             // Get all unique actors.
             const allActors = flatten(
@@ -474,14 +474,14 @@ class Iframe extends Component {
                       selectedActors.includes(d.name)
                     )) ||
                   []
-                window._drawActors &&
-                  window._drawActors({ actors: matchingActors }, true)
+                window.drawActors &&
+                  window.drawActors({ actors: matchingActors }, true)
               }
             })
 
             // Draw the timeLineIndex one last, not faded.
-            window._drawActors &&
-              window._drawActors({
+            window.drawActors &&
+              window.drawActors({
                 actors: alteredStates[newTimelineIndex].actors.filter(d =>
                   selectedActors.includes(d.name)
                 )
@@ -510,7 +510,7 @@ class Iframe extends Component {
             window.clear()
             // For each actor,
             // draw it on the canvas,
-            window._drawActors({
+            window.drawActors({
               actors: [
                 {
                   ...actor,
@@ -531,7 +531,7 @@ class Iframe extends Component {
             buttons[i].appendChild(lilCanvas)
           })
 
-          window._draw(this.store.getState())
+          window.draw(this.store.getState())
         }
       }
     }

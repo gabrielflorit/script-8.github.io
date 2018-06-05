@@ -1,16 +1,16 @@
-export default `_initialState = {
+export default `initialState = {
   actors: [
   ]
 }
 
-_update = (state, input, elapsed) => {
+update = (state, input, elapsed) => {
 }
 
-_drawActors = (state, fade) => {
+drawActors = (state, fade) => {
   state.actors.forEach(actor => {
   })
 }
 
-_draw = state => {
+draw = state => {
   clear()
 }`
