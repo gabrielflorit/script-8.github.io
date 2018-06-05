@@ -1,16 +1,16 @@
-export default `script8.initialState = {
+export default `_initialState = {
   actors: [
   ]
 }
 
-script8.drawActors = (state, fade) => {
+_update = (state, input, elapsed) => {
+}
+
+_drawActors = (state, fade) => {
   state.actors.forEach(actor => {
   })
 }
 
-script8.update = (state, input, elapsed) => {
-}
-
-script8.draw = state => {
+_draw = state => {
   clear()
 }`

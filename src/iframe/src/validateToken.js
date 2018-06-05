@@ -9,7 +9,10 @@ const validateToken = ({ token, blacklist, globals, shadows }) => {
     // If user types a token defined in globals or updateableGlobals,
     // it's valid.
     Object.keys(globals).indexOf(token) > -1 ||
-    token === 'script8'
+    token === '_initialState' ||
+    token === '_update' ||
+    token === '_drawActors' ||
+    token === '_draw'
   ) {
     isValid = true
   } else if (window.hasOwnProperty(token)) {
