@@ -12,6 +12,7 @@ class Shelf extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      fetching: true,
       cassettes: []
     }
   }
@@ -28,17 +29,18 @@ class Shelf extends Component {
           })
       )
       .then(cassettes => {
-        this.setState({ cassettes })
+        this.setState({ cassettes, fetching: false })
       })
   }
 
   render () {
-    const { cassettes } = this.state
+    const { cassettes, fetching } = this.state
     return (
       <div className='Shelf two-rows'>
         <TopBar />
         <div className='main'>
           <ul>
+            {fetching ? <p>Loading latest cassettes.</p> : null}
             {_(cassettes)
               .sortBy('updated')
               .reverse()
