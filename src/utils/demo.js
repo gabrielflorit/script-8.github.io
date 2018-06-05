@@ -1,12 +1,12 @@
 const demo = `let radius = 1
 let delta = 1
 
-script8.update = () => {
+update = () => {
   radius += delta
   if (radius >= 64 || radius <= 0) delta = -delta
 }
 
-script8.draw = () => {
+draw = () => {
   clear()
   rectFill(0, 0, 128, 128, 6)
 
