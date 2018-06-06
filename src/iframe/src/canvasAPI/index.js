@@ -4,6 +4,8 @@ import line from './line.js'
 import polyStroke from './polyStroke.js'
 import print from './print.js'
 
+const clamp = (min, max, n) => Math.min(Math.max(n, min), max)
+
 const canvasAPI = ({
   ctx,
   width: canvasWidth,
@@ -47,12 +49,13 @@ const canvasAPI = ({
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
-    sprite (x, y, spriteIndex) {
+    sprite (x, y, spriteIndex, darken = 0) {
       if (_sprites[spriteIndex]) {
         _sprites[spriteIndex].forEach((cells, rowIndex) => {
           cells.split('').forEach((color, colIndex) => {
             if (color !== ' ') {
-              ctx.fillStyle = colors.rgb(color)
+              const clamped = clamp(0, 7, +color - darken)
+              ctx.fillStyle = colors.rgb(clamped)
               ctx.fillRect(
                 Math.floor(x) + colIndex,
                 Math.floor(y) + rowIndex,
