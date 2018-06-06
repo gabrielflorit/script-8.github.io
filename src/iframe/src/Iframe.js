@@ -379,7 +379,7 @@ class Iframe extends Component {
         // and create redux store.
 
         // Evaluate user code.
-        this.evalCode({ ...state, shadows: shadows })
+        this.evalCode({ ...state, shadows })
 
         // Before we create a redux store, let's think about what state we want.
         // If the user has changed initialState, use that.
@@ -429,7 +429,7 @@ class Iframe extends Component {
         try {
           if (this.reduxHistory.length) {
             // Evaluate user code.
-            this.evalCode({ ...state, shadows: shadows })
+            this.evalCode({ ...state, shadows })
 
             // Create the store with the first item in reduxHistory as initial state.
             // Save that state to alteredStates.
