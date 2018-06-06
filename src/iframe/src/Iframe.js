@@ -22,10 +22,10 @@ import { version } from '../package.json'
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
-window.initialState = {}
-window.update = () => {}
-window.drawActors = () => {}
-window.draw = () => {}
+window.initialState = null
+window.update = null
+window.drawActors = null
+window.draw = null
 window._script8 = {}
 
 const NOOP = () => {}
