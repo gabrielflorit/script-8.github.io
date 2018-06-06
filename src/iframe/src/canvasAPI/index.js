@@ -1,10 +1,9 @@
+import clamp from 'lodash/clamp'
 import colors from '../colors.js'
 import circle from './circle.js'
 import line from './line.js'
 import polyStroke from './polyStroke.js'
 import print from './print.js'
-
-const clamp = (min, max, n) => Math.min(Math.max(n, min), max)
 
 const canvasAPI = ({
   ctx,
@@ -54,7 +53,7 @@ const canvasAPI = ({
         _sprites[spriteIndex].forEach((cells, rowIndex) => {
           cells.split('').forEach((color, colIndex) => {
             if (color !== ' ') {
-              const clamped = clamp(0, 7, +color - darken)
+              const clamped = clamp(+color - darken, 0, 7)
               ctx.fillStyle = colors.rgb(clamped)
               ctx.fillRect(
                 Math.floor(x) + colIndex,
