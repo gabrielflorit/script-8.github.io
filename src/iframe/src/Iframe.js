@@ -26,7 +26,9 @@ window.initialState = null
 window.update = null
 window.drawActors = null
 window.draw = null
-window._script8 = {}
+window._script8 = {
+  globalKeys: new Set()
+}
 
 const NOOP = () => {}
 const FPS = 60
@@ -152,15 +154,19 @@ class Iframe extends Component {
       globals = providedGlobals
     }
 
-    // Assign all the globals to window.
-    Object.keys(globals).forEach(key => (window[key] = globals[key]))
+    // For each global key,
+    Object.keys(globals).forEach(key => {
+      // assign the corresponding global object to window,
+      window[key] = globals[key]
 
-    return globals
+      // and assign the key itself to window._script8.globalKeys.
+      window._script8.globalKeys.add(key)
+    })
   }
 
   componentDidMount () {
     Tone.Master.mute = true
-    const globals = this.updateGlobals()
+    this.updateGlobals()
 
     // Keep track of what keys we're pressing.
     document.addEventListener('keydown', ({ key }) => {
@@ -210,7 +216,7 @@ class Iframe extends Component {
             !validateToken({
               token,
               blacklist,
-              globals,
+              globals: window._script8.globalKeys,
               shadows
             })
         )
