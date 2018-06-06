@@ -45,6 +45,14 @@ class Shelf extends Component {
               .sortBy('updated')
               .reverse()
               .map((d, i) => {
+                const title = d.title || ''
+                const maxLength = 16
+                const tooLong = title.length > maxLength
+                const finalTitle = [
+                  title.substring(0, maxLength).trim(),
+                  tooLong ? '…' : ''
+                ].join('')
+
                 return (
                   <li key={i}>
                     <div
@@ -55,6 +63,8 @@ class Shelf extends Component {
                     >
                       {d.cover ? <img src={d.cover} alt='' /> : null}
                     </div>
+                    <p className='title'>{finalTitle}</p>
+                    <p className='author'>by {d.user}</p>
                   </li>
                 )
               })

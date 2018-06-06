@@ -47,8 +47,8 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
-  putOnShelf: ({ user, gist, cover }) =>
-    dispatch(putOnShelf({ user, gist, cover })),
+  putOnShelf: ({ user, gist, cover, title }) =>
+    dispatch(putOnShelf({ user, gist, cover, title })),
   saveGist: ({ game, token, gist, sprites, phrases, chains, songs, toBlank }) =>
     dispatch(
       saveGist({ game, token, gist, sprites, phrases, chains, songs, toBlank })
@@ -85,11 +85,18 @@ class Menu extends Component {
   }
 
   onPutOnShelfClick () {
-    const { putOnShelf, gist } = this.props
+    const { putOnShelf, gist, game } = this.props
 
     const gistUser = _.get(gist, 'data.owner.login', null)
     const gistId = _.get(gist, 'data.id', null)
-    const payload = { user: gistUser, gist: gistId }
+
+    let title
+    const match = game.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
+    if (match) {
+      title = match[1].trim()
+    }
+
+    const payload = { user: gistUser, gist: gistId, title }
 
     const iframe = document.querySelector('iframe')
 

@@ -34,7 +34,7 @@ const actions = createActions({
 
 export default actions
 
-export const putOnShelf = ({ user, gist, cover }) => dispatch => {
+export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
   return window
@@ -43,7 +43,8 @@ export const putOnShelf = ({ user, gist, cover }) => dispatch => {
       body: JSON.stringify({
         user,
         gist,
-        cover
+        cover,
+        title
       }),
       headers: {
         'Content-Type': 'application/json'
