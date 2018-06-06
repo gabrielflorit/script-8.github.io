@@ -28,12 +28,13 @@ const playNote = ({
   // don't play the note.
   // Otherwise play the note.
   if (time >= Tone.context.currentTime) {
+    const normalizedVolume = normalize.volume(volume) * 0.25
     const letter = toLetter(note + octave * 12, true, true)
     synth.triggerAttackRelease(
       letter,
       settings.subdivision,
       time,
-      normalize.volume(volume) / 10
+      normalizedVolume
     )
   }
 }
