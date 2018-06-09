@@ -197,12 +197,23 @@ class Iframe extends Component {
           }
         }
 
+        let isPaused = payload.run === true ? false : this.state.isPaused
+
+        // If we're in run mode (e.g. BOOT or RUN screens),
+        // and we're paused,
+        // and the timer already exists (e.g. we came here from CODE),
+        // resume.
+        if (payload.run && this.state.isPaused) {
+          this.handlePauseClick()
+          isPaused = false
+        }
+
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
           message,
           run: payload.run,
-          isPaused: payload.run === true ? false : this.state.isPaused,
+          isPaused,
           sound: payload.sound,
           callbacks: payload.callbacks,
           phrases: payload.phrases,

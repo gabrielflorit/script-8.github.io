@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Updater from './Updater.js'
-import Output from './Output.js'
 import screenTypes from '../utils/screenTypes.js'
 import actions, { fetchGist } from '../actions/actions.js'
 
@@ -48,7 +47,6 @@ class Boot extends Component {
   render () {
     return (
       <div className='Boot'>
-        <Output />
       </div>
     )
   }

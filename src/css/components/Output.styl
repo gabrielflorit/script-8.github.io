@@ -1,5 +1,5 @@
 .Output
-  display flex
+  display none
   justify-content space-between
   align-items center
   background $palette-7
@@ -7,16 +7,15 @@
   padding 1.5rem
   flex-direction column
 
-  // position absolute
-  // z-index 10
-  // right 0
-  // top calc(1.5rem + 2px)
-  // width calc(128px*3 + 3rem)
-  // width calc(100vmin - 3rem)
-  // height calc(100vmin - 3rem)
-  // @media screen and (max-width: 26rem)
-  //   width calc(100vmin)
-  //   height calc(100vmin)
+  z-index 10
+  padding 0
+  position absolute
+  width calc(100vmin - 3rem)
+  height calc(100vmin - 3rem)
+  max-width 40rem
+  @media screen and (max-width: 26rem)
+    width calc(100vmin)
+    height calc(100vmin)
 
   button.play
     width 100%

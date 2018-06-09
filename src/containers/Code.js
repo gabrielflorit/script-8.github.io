@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
-import Output from './Output.js'
 import actions from '../actions/actions.js'
 
 const mapStateToProps = ({ game, newUser, tutorial }) => ({
@@ -35,7 +34,6 @@ class Code extends Component {
       >
         <div className='main'>
           <CodeEditor game={game} updateGame={updateGame} />
-          <Output />
         </div>
       </div>
     )

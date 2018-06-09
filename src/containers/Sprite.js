@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import classNames from 'classnames'
-import Output from './Output.js'
 import actions from '../actions/actions.js'
 import canvasAPI from '../iframe/src/canvasAPI/index.js'
 import { replaceAt } from '../utils/string.js'
@@ -271,7 +270,6 @@ class Sprite extends Component {
               />
             </div>
           </div>
-          <Output />
         </div>
       </div>
     )

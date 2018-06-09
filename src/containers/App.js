@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import includes from 'lodash/includes'
 import classNames from 'classnames'
 import Boot from './Boot.js'
+import Output from './Output.js'
 import Sprite from './Sprite.js'
 import Phrase from './Phrase.js'
 import Chain from './Chain.js'
@@ -50,6 +51,7 @@ const App = ({ screen }) => (
     >
       <TopBar />
       {options[screen]()}
+      <Output />
     </div>
   </ErrorBoundary>
 )

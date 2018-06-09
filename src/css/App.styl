@@ -39,18 +39,43 @@ body
   grid-template-rows 1fr auto
   &.App-BOOT
     background $palette-7
-    grid-template-rows $font-large auto
+    grid-template-rows auto
+    .Output
+      display flex
+      justify-self center
+      align-self center
+    .TopBar
+      display none
   &.App-RUN
     background $palette-7
     grid-template-rows $font-large auto
+    .Output
+      display flex
+      max-height 40rem
+      justify-self center
+      align-self center
   &.App-CODE
     background $palette-7
     grid-template-rows $font-large auto
+    .Output
+      display flex
+      top calc(3rem + 2px)
+      right 1.5rem
+      width calc(128px*3)
+      @media screen and (max-width: $max-width)
+        display none
     .main
       height 100%
   &.App-SPRITE
     background $palette-7
     grid-template-rows $font-large auto
+    .Output
+      display flex
+      top calc(3rem + 2px)
+      right 1.5rem
+      width calc(128px*3)
+      @media screen and (max-width: $max-width)
+        display none
     .main
       height 100%
   &.App-PHRASE,
