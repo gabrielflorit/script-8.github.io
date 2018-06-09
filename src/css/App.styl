@@ -37,6 +37,40 @@ body
     height 100%
   display grid
   grid-template-rows 1fr auto
+  &.App-BOOT
+    background $palette-7
+    grid-template-rows $font-large auto
+  &.App-RUN
+    background $palette-7
+    grid-template-rows $font-large auto
+  &.App-CODE
+    background $palette-7
+    grid-template-rows $font-large auto
+    .main
+      height 100%
+  &.App-SPRITE
+    background $palette-7
+    grid-template-rows $font-large auto
+    .main
+      height 100%
+  &.App-PHRASE,
+  &.App-CHAIN,
+  &.App-SONG
+    background $palette-7
+    grid-template-rows $font-large auto
+  &.App-HELP
+    background $palette-7
+    grid-template-rows $font-large auto
+  &.App-SHELF
+    background $palette-7
+    grid-template-rows $font-large auto
+
+.two-rows-and-grid
+  .main
+    background $palette-7
+    @extend .VT323
+    font-size $font-large
+    display grid
 
 ul
   margin 0
@@ -81,20 +115,6 @@ button.play
     color $palette-1
     background $palette-6
     cursor default
-
-.two-rows
-  height 100%
-  display grid
-  grid-row-gap 2px
-  background $palette-6
-  grid-template-rows $font-large auto
-
-  &-and-grid
-    .main
-      background $palette-7
-      @extend .VT323
-      font-size $font-large
-      display grid
 
 .ErrorBoundary
   margin 1.5rem

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import TopBar from '../components/TopBar.js'
 // import actions from '../actions/actions.js'
 // import screenTypes from '../utils/screenTypes.js'
 
@@ -45,8 +44,7 @@ class Help extends Component {
     // </li>
 
     return (
-      <div className='Help two-rows'>
-        <TopBar />
+      <div className='Help'>
         <div className='main'>
           <ul className='top-list'>
             <li>

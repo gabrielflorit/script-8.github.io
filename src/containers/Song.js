@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
-import TopBar from '../components/TopBar.js'
 import settings from '../iframe/src/settings.js'
 
 const synths = _.range(settings.chainChannels).map(createSynth)
@@ -186,8 +185,7 @@ class Song extends Component {
     const { chains } = this.props
 
     return (
-      <div className='Song two-rows two-rows-and-grid'>
-        <TopBar />
+      <div className='Song two-rows-and-grid'>
         <div className='main'>
           <div className={classNames('warning', { hide: !_.isEmpty(chains) })}>
             error: no chains found

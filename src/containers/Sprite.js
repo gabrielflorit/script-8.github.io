@@ -4,7 +4,6 @@ import _ from 'lodash'
 import classNames from 'classnames'
 import Output from './Output.js'
 import actions from '../actions/actions.js'
-import TopBar from '../components/TopBar.js'
 import canvasAPI from '../iframe/src/canvasAPI/index.js'
 import { replaceAt } from '../utils/string.js'
 
@@ -150,9 +149,8 @@ class Sprite extends Component {
       <div
         onMouseUp={this.handleOnMouseUp}
         onTouchEnd={this.handleOnMouseUp}
-        className='Sprite two-rows two-rows-and-grid'
+        className='Sprite two-rows-and-grid'
       >
-        <TopBar />
         <div className='main'>
           <div className='SpriteEditor'>
             <div className='sprite-and-colors'>

@@ -5,7 +5,6 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
-import TopBar from '../components/TopBar.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../iframe/src/toLetter.js'
 import settings from '../iframe/src/settings.js'
@@ -203,8 +202,7 @@ class Phrase extends Component {
     const phrase = this.getCurrentPhrase()
 
     return (
-      <div className='Phrase two-rows two-rows-and-grid'>
-        <TopBar />
+      <div className='Phrase two-rows-and-grid'>
         <div className='main'>
           <div className='settings'>
             <div className='title'>Phrase</div>

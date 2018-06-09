@@ -5,7 +5,6 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
-import TopBar from '../components/TopBar.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../iframe/src/settings.js'
 
@@ -174,8 +173,7 @@ class Chain extends Component {
     const { phrases } = this.props
 
     return (
-      <div className='Chain two-rows two-rows-and-grid'>
-        <TopBar />
+      <div className='Chain two-rows-and-grid'>
         <div className='main'>
           <div className={classNames('warning', { hide: !_.isEmpty(phrases) })}>
             error: no phrases found

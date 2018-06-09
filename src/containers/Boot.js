@@ -48,7 +48,6 @@ class Boot extends Component {
   render () {
     return (
       <div className='Boot'>
-        <Updater />
         <Output />
       </div>
     )

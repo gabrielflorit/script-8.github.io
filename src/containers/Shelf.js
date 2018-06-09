@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import TopBar from '../components/TopBar.js'
 import throwError from '../utils/throwError.js'
 
 const mapStateToProps = () => ({})
@@ -36,8 +35,7 @@ class Shelf extends Component {
   render () {
     const { cassettes, fetching } = this.state
     return (
-      <div className='Shelf two-rows'>
-        <TopBar />
+      <div className='Shelf'>
         <div className='main'>
           <ul>
             {fetching ? <p>Loading latest cassettes.</p> : null}

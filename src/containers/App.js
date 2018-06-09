@@ -12,6 +12,7 @@ import Code from './Code.js'
 // import Tutorial from './Tutorial.js'
 import Help from './Help.js'
 import Shelf from './Shelf.js'
+import TopBar from '../components/TopBar.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../utils/screenTypes.js'
 import { version } from '../iframe/package.json'
@@ -40,13 +41,14 @@ const options = {
 const App = ({ screen }) => (
   <ErrorBoundary>
     <div
-      className={classNames('App', {
+      className={classNames('App', `App-${screen}`, {
         'full-height': includes(
           [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
           screen
         )
       })}
     >
+      <TopBar />
       {options[screen]()}
     </div>
   </ErrorBoundary>

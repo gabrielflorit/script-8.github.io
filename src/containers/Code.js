@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
-import TopBar from '../components/TopBar.js'
 import Output from './Output.js'
 import actions from '../actions/actions.js'
 
@@ -30,11 +29,10 @@ class Code extends Component {
 
     return (
       <div
-        className={classNames('Code two-rows two-rows-and-grid', {
+        className={classNames('Code two-rows-and-grid', {
           tutorial: tutorial !== false
         })}
       >
-        <TopBar />
         <div className='main'>
           <CodeEditor game={game} updateGame={updateGame} />
           <Output />
