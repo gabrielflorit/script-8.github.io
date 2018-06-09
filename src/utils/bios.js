@@ -58,7 +58,7 @@ update = () => {
   }
 
   if (screen === 'end' && elapsed > 600) {
-    // _script8.end()
+    _script8.end()
   }
 }
 

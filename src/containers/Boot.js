@@ -45,11 +45,13 @@ class Boot extends Component {
     }
   }
 
-  // <Updater />
-  // <Output />
-
   render () {
-    return <div className='Boot' />
+    return (
+      <div className='Boot'>
+        <Updater />
+        <Output />
+      </div>
+    )
   }
 }
 
