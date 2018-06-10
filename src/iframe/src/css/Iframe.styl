@@ -51,6 +51,8 @@ button.play
   border none
   padding-left 0
   padding-right 0
+  &.hide
+    display none
 
 input {
   width 100%
@@ -62,10 +64,10 @@ ul
   display flex
   list-style none
   min-height 3rem
-  
+
   li
     margin-right 1.5rem
-    
+
     button
       background-color rgba(0, 0, 0, 0)
       border solid $palette-6 2px
@@ -77,25 +79,28 @@ ul
       canvas
         width 100%
         opacity 0.25
-        
+
       &:hover
         border-color $palette-2
         canvas
           opacity 0.5
-        
+
       &.active
         border-color $palette-0
         canvas
-          opacity 1      
+          opacity 1
 
 .stats
   margin-top 0.75rem
   list-style none
   display flex
   text-transform uppercase
-  justify-content space-between
+
+  button
+    padding-right 1rem
 
   .fps
+    margin-left auto
     color $palette-6
     font-size $font-large
     @extend .VT323

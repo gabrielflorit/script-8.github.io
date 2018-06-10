@@ -17,6 +17,7 @@ import trimCanvas from './canvasAPI/trimCanvas.js'
 import utilsAPI from './utilsAPI.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
+import createReducer from './createReducer.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
@@ -36,41 +37,6 @@ const SECONDS = 2
 const CANVAS_SIZE = 128
 const ACTOR_FRAME_SKIP = 5
 
-const createReducer = () => {
-  // Create the reducer, with the script8 state or an empty object.
-  const reducer = (state = window.initialState || {}, action) => {
-    switch (action.type) {
-      case 'TICK': {
-        if (window.update) {
-          let newState
-          try {
-            newState = JSON.parse(JSON.stringify(state))
-            window.update(newState, action.input, action.elapsed)
-            if (newState.actors) {
-              // Find actors with no name.
-              const namelessActors = newState.actors.filter(
-                actor => !actor.name
-              )
-              if (namelessActors.length) {
-                console.warn('Error: actors must have a name property.')
-              }
-            }
-          } catch (e) {
-            console.warn(e.message)
-            return state
-          }
-          return newState
-        } else {
-          return state
-        }
-      }
-      default:
-        return state
-    }
-  }
-  return reducer
-}
-
 class Iframe extends Component {
   constructor (props) {
     super(props)
@@ -82,6 +48,7 @@ class Iframe extends Component {
     this.handleTimelineInput = this.handleTimelineInput.bind(this)
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
+    this.handleRestartClick = this.handleRestartClick.bind(this)
 
     this.heightSent = 0
 
@@ -339,6 +306,11 @@ class Iframe extends Component {
     })
   }
 
+  handleRestartClick () {
+    window.initialState = Date.now()
+    this.forceUpdate()
+  }
+
   handlePauseClick () {
     if (this.state.isPaused) {
       this.reduxHistory = []
@@ -415,7 +387,8 @@ class Iframe extends Component {
       if (
         prevState.isPaused ||
         game !== prevState.game ||
-        run !== prevState.run
+        run !== prevState.run ||
+        !equal(window.initialState, this.previousInitialState)
       ) {
         // evaluate user code,
         // get redux state,
@@ -621,14 +594,19 @@ class Iframe extends Component {
               hide: run
             })}
           >
-            <button
-              className={classNames('button play', {
-                active: isPaused
-              })}
-              onClick={this.handlePauseClick}
-            >
+            <button className='button play' onClick={this.handlePauseClick}>
               {isPaused ? 'play' : 'pause'}
             </button>
+
+            <button
+              className={classNames('button play', {
+                hide: isPaused
+              })}
+              onClick={this.handleRestartClick}
+            >
+              restart
+            </button>
+
             <div
               className={classNames('fps', {
                 hide: isPaused

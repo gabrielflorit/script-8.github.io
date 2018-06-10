@@ -111,6 +111,9 @@ button.play {
   padding-left: 0;
   padding-right: 0;
 }
+button.play.hide {
+  display: none;
+}
 input {
   width: 100%;
   display: block;
@@ -154,9 +157,12 @@ ul li button.active canvas {
   list-style: none;
   display: flex;
   text-transform: uppercase;
-  justify-content: space-between;
+}
+.stats button {
+  padding-right: 1rem;
 }
 .stats .fps {
+  margin-left: auto;
   color: #0f2a3f;
   font-size: 1.5rem;
 }
