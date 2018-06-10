@@ -39,7 +39,7 @@ const playNote = ({
   }
 }
 
-const soundAPI = ({ songs, chains, phrases }) => {
+const soundAPI = () => {
   const synths = _.range(settings.chainChannels).map(createSynth)
 
   Tone.Transport.bpm.value = settings.bpm
@@ -54,7 +54,7 @@ const soundAPI = ({ songs, chains, phrases }) => {
     })
   }
 
-  const playSong = (number, loop = false) => {
+  const playSong = ({ songs, chains, phrases }) => (number, loop = false) => {
     // Get this song.
     const song = _.get(songs, number)
 

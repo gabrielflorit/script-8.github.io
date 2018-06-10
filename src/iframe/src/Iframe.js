@@ -112,6 +112,8 @@ class Iframe extends Component {
       return next(action)
     }
 
+    this.soundFunctions = null
+
     this.state = {
       fps: null,
       game: '',
@@ -167,6 +169,11 @@ class Iframe extends Component {
   componentDidMount () {
     Tone.Master.mute = true
     this.updateGlobals()
+    this.soundFunctions = soundAPI()
+    this.updateGlobals({
+      playSong: NOOP,
+      stopSong: this.soundFunctions.stopSong
+    })
 
     // Keep track of what keys we're pressing.
     document.addEventListener('keydown', ({ key }) => {
@@ -180,23 +187,9 @@ class Iframe extends Component {
     window.addEventListener('message', message => {
       const { type, ...payload } = message.data
       const { blacklist, shadows } = this
+
       // Run user code.
       if (type === 'callCode') {
-        // If we haven't setup sound functions yet,
-        if (!window.playSong) {
-          // and we're in RUN mode,
-          if (payload.run) {
-            // do so now.
-            this.updateGlobals(soundAPI(payload))
-          } else {
-            // Otherwise set to NOOP.
-            this.updateGlobals({
-              playSong: NOOP,
-              stopSong: NOOP
-            })
-          }
-        }
-
         let isPaused = payload.run === true ? false : this.state.isPaused
 
         // If we're in run mode (e.g. BOOT or RUN screens),
@@ -373,13 +366,21 @@ class Iframe extends Component {
       timelineIndex,
       actors,
       selectedActors,
-      sound
+      sound,
+      songs,
+      chains,
+      phrases,
+      run
     } = state
 
+    // If the sprites have changed, update the globals.
     if (!equal(sprites, prevState.sprites)) {
       this.updateGlobals()
     }
 
+    // If soundon/soundoff has changed,
+    // toggle volume.
+    // Also resume AudioContext IF it's not running.
     if (!equal(sound, prevState.sound)) {
       if (Tone.context.state !== 'running') {
         Tone.context.resume()
@@ -387,10 +388,35 @@ class Iframe extends Component {
       Tone.Master.mute = !sound
     }
 
+    // If we are not on a run screen,
+    if (!run) {
+      // stop the song,
+      this.soundFunctions.stopSong()
+      // and set playSong to NOOP
+      this.updateGlobals({
+        playSong: NOOP
+      })
+    } else {
+      // If we are on a run screen,
+      // set the playSong correctly.
+      this.updateGlobals({
+        playSong: this.soundFunctions.playSong({
+          songs,
+          chains,
+          phrases
+        })
+      })
+    }
+
     // If we're playing,
     if (!isPaused) {
       // and we came back from being paused, or the game is different,
-      if (prevState.isPaused || game !== prevState.game) {
+      // or the run mode was different,
+      if (
+        prevState.isPaused ||
+        game !== prevState.game ||
+        run !== prevState.run
+      ) {
         // evaluate user code,
         // get redux state,
         // and create redux store.
