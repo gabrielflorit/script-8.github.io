@@ -263,7 +263,7 @@ class Iframe extends Component {
         this.store.dispatch({
           type: 'TICK',
           input: getUserInput(this.keys),
-          elapsed: elapsed - this.previousElapsed
+          elapsed: tickLength
         })
 
         // Draw this state.
