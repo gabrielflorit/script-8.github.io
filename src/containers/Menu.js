@@ -1,22 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import equal from 'deep-equal'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
-import blankGame from '../utils/blank.js'
+import isDirty from '../utils/isDirty.js'
+import isBlank from '../utils/isBlank.js'
+import areYouSure from '../utils/areYouSure.js'
 import actions, {
   saveGist,
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
 import Title from './Title.js'
-
-import { parseGistGame } from '../reducers/game.js'
-import { extractGistSprites } from '../reducers/sprites.js'
-import { extractGistPhrases } from '../reducers/phrases.js'
-import { extractGistChains } from '../reducers/chains.js'
-import { extractGistSongs } from '../reducers/songs.js'
 
 const mapStateToProps = ({
   gist,
@@ -81,7 +76,13 @@ class Menu extends Component {
   }
 
   onInsertBlankClick () {
-    this.props.newGame(this.props.screen)
+    const { gist, game, sprites, phrases, chains, songs } = this.props
+
+    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
+
+    if (!dirty || areYouSure()) {
+      this.props.newGame(this.props.screen)
+    }
   }
 
   onPutOnShelfClick () {
@@ -174,18 +175,8 @@ class Menu extends Component {
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
-    const gistGame = parseGistGame(gist.data)
-    const gistSprites = extractGistSprites(gist.data)
-    const gistPhrases = extractGistPhrases(gist.data)
-    const gistChains = extractGistChains(gist.data)
-    const gistSongs = extractGistSongs(gist.data)
-    const dirtyGame = !equal(gistGame, game)
-    const dirtySprites = !equal(gistSprites, sprites)
-    const dirtyPhrases = !equal(gistPhrases, phrases)
-    const dirtyChains = !equal(gistChains, chains)
-    const dirtySongs = !equal(gistSongs, songs)
-    const dirty =
-      dirtyGame || dirtyPhrases || dirtyChains || dirtySongs || dirtySprites
+    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
+    const blank = isBlank({ game, sprites, phrases, chains, songs })
 
     const contentIsEmpty =
       _.isEmpty(game) &&
@@ -203,15 +194,7 @@ class Menu extends Component {
     // INSERT BLANK can only be enabled when:
     // - the gist is not empty
     // - OR content is not NEW_GAME template
-    const enableInsertBlank =
-      !_.isEmpty(gist) ||
-      !(
-        game === blankGame &&
-        _.isEmpty(sprites) &&
-        _.isEmpty(phrases) &&
-        _.isEmpty(chains) &&
-        _.isEmpty(songs)
-      )
+    const enableInsertBlank = !_.isEmpty(gist) || !blank
 
     // RECORD can only be enabled when:
     // - the gist is ours AND content is dirty

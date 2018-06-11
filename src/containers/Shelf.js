@@ -2,14 +2,25 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import throwError from '../utils/throwError.js'
+import isDirty from '../utils/isDirty.js'
+import isBlank from '../utils/isBlank.js'
+import areYouSure from '../utils/areYouSure.js'
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ gist, game, sprites, phrases, chains, songs }) => ({
+  gist,
+  game,
+  sprites,
+  phrases,
+  chains,
+  songs
+})
 
 const mapDispatchToProps = dispatch => ({})
 
 class Shelf extends Component {
   constructor (props) {
     super(props)
+    this.handleOnClick = this.handleOnClick.bind(this)
     this.state = {
       fetching: true,
       cassettes: []
@@ -30,6 +41,15 @@ class Shelf extends Component {
       .then(cassettes => {
         this.setState({ cassettes, fetching: false })
       })
+  }
+
+  handleOnClick (id) {
+    const { gist, game, sprites, phrases, chains, songs } = this.props
+    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
+    const blank = isBlank({ game, sprites, phrases, chains, songs })
+    if (!dirty || blank || areYouSure()) {
+      window.location = `/?id=${id}`
+    }
   }
 
   render () {
@@ -56,7 +76,7 @@ class Shelf extends Component {
                     <div
                       className='img'
                       onClick={() => {
-                        window.location = `/?id=${d.gist}`
+                        this.handleOnClick(d.gist)
                       }}
                     >
                       {d.cover ? <img src={d.cover} alt='' /> : null}

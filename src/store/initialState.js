@@ -1,5 +1,5 @@
 import screenTypes from '../utils/screenTypes.js'
-import demo from '../utils/blank.js'
+import blank from '../utils/blank.js'
 
 const initialState = {
   // screen: screenTypes.CHAIN,
@@ -10,7 +10,7 @@ const initialState = {
   // screen: screenTypes.SPRITE,
   booted: false,
   gist: {},
-  game: demo,
+  game: blank,
   token: {},
   nextAction: null,
   sfxs: [],
