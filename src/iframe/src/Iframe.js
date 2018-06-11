@@ -308,6 +308,7 @@ class Iframe extends Component {
 
   handleRestartClick () {
     window.initialState = Date.now()
+    this.reduxHistory = []
     this.forceUpdate()
   }
 
@@ -406,6 +407,7 @@ class Iframe extends Component {
         let storeState
         if (!equal(window.initialState, this.previousInitialState)) {
           storeState = window.initialState
+          this.reduxHistory = []
         } else {
           storeState = (this.store && this.store.getState()) || {}
         }
