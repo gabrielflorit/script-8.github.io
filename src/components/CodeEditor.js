@@ -51,8 +51,8 @@ class CodeEditor extends Component {
     if (nextProps.game === 'SCRIPT-8 NEW') {
       this.setContents(blank)
     }
-    if (nextProps.game.startsWith('SCRIPT-8 TUTORIAL')) {
-      this.setContents(nextProps.game.replace('SCRIPT-8 TUTORIAL', ''))
+    if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
+      this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
     }
   }
 
