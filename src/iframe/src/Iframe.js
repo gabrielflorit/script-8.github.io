@@ -42,7 +42,6 @@ class Iframe extends Component {
     super(props)
 
     this.updateGlobals = this.updateGlobals.bind(this)
-
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.handleTimelineInput = this.handleTimelineInput.bind(this)
@@ -157,6 +156,7 @@ class Iframe extends Component {
 
       // Run user code.
       if (type === 'callCode') {
+        // console.log(payload.game)
         let isPaused = payload.run === true ? false : this.state.isPaused
 
         // If we're in run mode (e.g. BOOT or RUN screens),
@@ -167,6 +167,9 @@ class Iframe extends Component {
           this.handlePauseClick()
           isPaused = false
         }
+
+        // If we're paused, and user inserted a blank cassette,
+        // resume.
 
         this.setState({
           game: payload.game,

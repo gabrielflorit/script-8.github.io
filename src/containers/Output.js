@@ -13,7 +13,8 @@ const mapStateToProps = ({
   chains,
   phrases,
   sprites,
-  sound
+  sound,
+  nextAction
 }) => ({
   songs,
   chains,
@@ -23,7 +24,8 @@ const mapStateToProps = ({
   focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
-  sound
+  sound,
+  nextAction
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -77,8 +79,11 @@ class Output extends Component {
       phrases,
       sprites,
       screen,
-      sound
+      sound,
+      nextAction
     } = this.props
+
+    console.log({ nextAction, game })
 
     // Create a closured function for eval'ing the game.
     const sendPayload = (callbacks = {}) => {
