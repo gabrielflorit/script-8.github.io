@@ -20,7 +20,8 @@ const dir = `${process.argv[2]}/*.*`
 console.log(`Watching ${dir}`)
 chokidar.watch(dir).on('change', path => {
   console.log(path)
-  const str = fs.readFileSync(path, 'utf8')
+  const str = fs.readFileSync(path, 'utf8').replace(/\/\* eslint.*\*\/\n/, '')
+
   console.log(str)
   wss.clients.forEach(client => {
     client.send(str)
