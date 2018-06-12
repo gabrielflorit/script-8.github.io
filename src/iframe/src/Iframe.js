@@ -42,7 +42,6 @@ class Iframe extends Component {
     super(props)
 
     this.updateGlobals = this.updateGlobals.bind(this)
-
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
     this.handleTimelineInput = this.handleTimelineInput.bind(this)
@@ -168,6 +167,13 @@ class Iframe extends Component {
           isPaused = false
         }
 
+        // If we're paused, and this is a new cassette, and it wasn't new before,
+        // resume.
+        if (this.state.isPaused && payload.isNew && !this.state.isNew) {
+          this.handlePauseClick()
+          isPaused = false
+        }
+
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
@@ -178,7 +184,8 @@ class Iframe extends Component {
           callbacks: payload.callbacks,
           phrases: payload.phrases,
           chains: payload.chains,
-          songs: payload.songs
+          songs: payload.songs,
+          isNew: payload.isNew
         })
       } else if (type === 'findInvalidToken') {
         // Find the first invalid token in the provided tokens array.
