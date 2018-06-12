@@ -33,6 +33,59 @@ class CodeEditor extends Component {
       this.props.updateGame(content)
     })
 
+    this.codeMirror.on('mousedown', (cm, e) => {
+      // const rect = this._wrapper.getBoundingClientRect()
+      // const coords = [e.clientX, e.clientY]
+
+      // const offset = { left: rect.left - coords[0] - rect.left, top: rect.top - coords[1] }
+
+      // Get mouse coordinates respective to viewport.
+      const viewportMouseCoords = {
+        left: e.clientX + cm.defaultCharWidth(),
+        top: e.clientY
+      }
+
+      // Get position under mouse coordinates.
+      const coordsChar = cm.coordsChar(viewportMouseCoords)
+
+      // Get token for this position.
+      const token = cm.getTokenAt(coordsChar)
+
+      console.log(token)
+
+      // If it's a number,
+      if (token && token.type === 'number') {
+        // move the slider here.
+        this._slider.style.top = `${viewportMouseCoords.top}px`
+        this._slider.style.left = `${viewportMouseCoords.left}px`
+        this._slider.classList.remove('hide')
+      }
+
+      // console.log(this._wrapper.offset())
+
+      // const offset = [e.offsetX, e.offsetY]
+
+      // console.log(documentCoords)
+
+      // const normalizedOffset = [
+      //   offset[0] * width / rect.width,
+      //   offset[1] * this.height / rect.height
+      // ]
+
+      // const token = cm.getTokenAt(cursor)
+      // if (token && token.type === 'number') {
+      //   const coords = cm.charCoords(cursor)
+      //   console.log(coords)
+      //   console.log(this._slider)
+      //   // this.setState({
+      //   //   slider: {
+      //   //     top: coords.top,
+      //   //     left: coords.left
+      //   //   }
+      //   // })
+      // }
+    })
+
     // This timeout is to force CodeMirror to set
     // its layout correctly, so it knows how to draw cursors.
     setTimeout(() => {
@@ -63,11 +116,23 @@ class CodeEditor extends Component {
   render () {
     return (
       <div className='CodeEditor'>
-        <div className='wrapper'>
+        <div
+          className='wrapper'
+          ref={_wrapper => {
+            this._wrapper = _wrapper
+          }}
+        >
           <div
             className='_editor'
             ref={_editor => {
               this._editor = _editor
+            }}
+          />
+          <input
+            type='range'
+            className='slider hide'
+            ref={_slider => {
+              this._slider = _slider
             }}
           />
         </div>
