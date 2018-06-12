@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
+import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 
 const mapStateToProps = ({
@@ -14,7 +15,7 @@ const mapStateToProps = ({
   phrases,
   sprites,
   sound,
-  nextAction
+  gist
 }) => ({
   songs,
   chains,
@@ -25,7 +26,7 @@ const mapStateToProps = ({
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
   sound,
-  nextAction
+  gist
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -80,15 +81,15 @@ class Output extends Component {
       sprites,
       screen,
       sound,
-      nextAction
+      gist
     } = this.props
-
-    console.log({ nextAction, game })
 
     // Create a closured function for eval'ing the game.
     const sendPayload = (callbacks = {}) => {
       const channel = new window.MessageChannel()
       if (this._iframe) {
+        const blank = isBlank({ game, sprites, phrases, chains, songs })
+        const gistIsEmpty = _.isEmpty(gist)
         this._iframe.contentWindow.postMessage(
           {
             type: 'callCode',
@@ -99,7 +100,8 @@ class Output extends Component {
             sprites,
             run,
             callbacks,
-            sound
+            sound,
+            isNew: blank && gistIsEmpty
           },
           '*',
           [channel.port2]

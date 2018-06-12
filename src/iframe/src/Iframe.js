@@ -156,7 +156,6 @@ class Iframe extends Component {
 
       // Run user code.
       if (type === 'callCode') {
-        // console.log(payload.game)
         let isPaused = payload.run === true ? false : this.state.isPaused
 
         // If we're in run mode (e.g. BOOT or RUN screens),
@@ -168,8 +167,12 @@ class Iframe extends Component {
           isPaused = false
         }
 
-        // If we're paused, and user inserted a blank cassette,
+        // If we're paused, and this is a new cassette, and it wasn't new before,
         // resume.
+        if (this.state.isPaused && payload.isNew && !this.state.isNew) {
+          this.handlePauseClick()
+          isPaused = false
+        }
 
         this.setState({
           game: payload.game,
@@ -181,7 +184,8 @@ class Iframe extends Component {
           callbacks: payload.callbacks,
           phrases: payload.phrases,
           chains: payload.chains,
-          songs: payload.songs
+          songs: payload.songs,
+          isNew: payload.isNew
         })
       } else if (type === 'findInvalidToken') {
         // Find the first invalid token in the provided tokens array.
