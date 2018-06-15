@@ -9,7 +9,11 @@
       z-index 10
       top 0
       left 0
-      border solid red 1px
+      display block
+      transform translateX(-50%)
+      width 1.5rem * 10
+      &.hide
+        display none
 
     ._editor
       position absolute
@@ -22,3 +26,7 @@
         height 100%
         @extend .VT323
         font-size $font-medium
+
+        .slider-token
+          background $palette-0
+          color $palette-7

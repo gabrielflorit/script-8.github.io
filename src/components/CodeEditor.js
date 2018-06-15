@@ -8,7 +8,11 @@ class CodeEditor extends Component {
   constructor (props) {
     super(props)
 
+    this.mark = null
     this.setContents = this.setContents.bind(this)
+    this.handleSlider = this.handleSlider.bind(this)
+    this.activateSlider = this.activateSlider.bind(this)
+    this.hideSlider = this.hideSlider.bind(this)
   }
 
   componentDidMount () {
@@ -33,64 +37,117 @@ class CodeEditor extends Component {
       this.props.updateGame(content)
     })
 
-    this.codeMirror.on('mousedown', (cm, e) => {
-      // const rect = this._wrapper.getBoundingClientRect()
-      // const coords = [e.clientX, e.clientY]
+    this.codeMirror.on('keydown', (cm, e) => {
+      // TODO: Win? Linux?
 
-      // const offset = { left: rect.left - coords[0] - rect.left, top: rect.top - coords[1] }
-
-      // Get mouse coordinates respective to viewport.
-      const viewportMouseCoords = {
-        left: e.clientX + cm.defaultCharWidth(),
-        top: e.clientY
+      if (e.key === 'Meta') {
+        this.activateSlider()
       }
-
-      // Get position under mouse coordinates.
-      const coordsChar = cm.coordsChar(viewportMouseCoords)
-
-      // Get token for this position.
-      const token = cm.getTokenAt(coordsChar)
-
-      console.log(token)
-
-      // If it's a number,
-      if (token && token.type === 'number') {
-        // move the slider here.
-        this._slider.style.top = `${viewportMouseCoords.top}px`
-        this._slider.style.left = `${viewportMouseCoords.left}px`
-        this._slider.classList.remove('hide')
-      }
-
-      // console.log(this._wrapper.offset())
-
-      // const offset = [e.offsetX, e.offsetY]
-
-      // console.log(documentCoords)
-
-      // const normalizedOffset = [
-      //   offset[0] * width / rect.width,
-      //   offset[1] * this.height / rect.height
-      // ]
-
-      // const token = cm.getTokenAt(cursor)
-      // if (token && token.type === 'number') {
-      //   const coords = cm.charCoords(cursor)
-      //   console.log(coords)
-      //   console.log(this._slider)
-      //   // this.setState({
-      //   //   slider: {
-      //   //     top: coords.top,
-      //   //     left: coords.left
-      //   //   }
-      //   // })
-      // }
     })
+
+    // add this eventlistener to window
+    window.addEventListener('keyup', this.hideSlider)
 
     // This timeout is to force CodeMirror to set
     // its layout correctly, so it knows how to draw cursors.
     setTimeout(() => {
       this.setContents(this.props.game || '')
     }, 1000)
+  }
+
+  hideSlider () {
+    this.mark && this.mark.clear()
+    this._slider.classList.add('hide')
+  }
+
+  activateSlider () {
+    // If the cursor is on a number,
+    // reset and show the slider.
+
+    // Get cursor.
+    const cursor = this.codeMirror.getCursor()
+
+    // Get token for this position.
+    const token = this.codeMirror.getTokenAt({
+      ...cursor,
+      ch: cursor.ch + 1
+    })
+
+    // If it's a number,
+    if (token && token.type === 'number') {
+      // clear out the previous mark,
+      this.mark && this.mark.clear()
+
+      // and mark this token.
+      this.mark = this.codeMirror.markText(
+        {
+          line: cursor.line,
+          ch: token.start
+        },
+        {
+          line: cursor.line,
+          ch: token.end
+        },
+        {
+          className: 'slider-token'
+        }
+      )
+
+      // get the token's middle point coords.
+      const middleCoords = this.codeMirror.charCoords({
+        line: cursor.line,
+        ch: token.start
+      })
+
+      // Get the wrapper rect.
+      const wrapperRect = this._wrapper.getBoundingClientRect()
+
+      // Save token.
+      const value = token.string
+
+      if (value === '0') {
+        this._slider.min = -10
+        this._slider.max = 10
+      } else {
+        this._slider.min = +value - +value * 10
+        this._slider.max = +value + +value * 10
+      }
+      this._slider.value = +value
+
+      // Position slider centered above token.
+      this._slider.style.left = `${middleCoords.left -
+        wrapperRect.left +
+        value.length * this.codeMirror.defaultCharWidth() / 2}px`
+      this._slider.style.top = `${middleCoords.top -
+        wrapperRect.top -
+        this.codeMirror.defaultTextHeight()}px`
+
+      // Show slider.
+      this._slider.classList.remove('hide')
+    }
+  }
+
+  handleSlider (e) {
+    // Get mark positions.
+    const { from, to } = this.mark.find()
+
+    // Calculate new token.
+    const newToken = e.target.value.toString()
+
+    // Change token content.
+    this.codeMirror.replaceRange(newToken, from, to)
+
+    // Re-select token.
+    this.mark = this.codeMirror.markText(
+      from,
+      {
+        ...from,
+        ch: from.ch + newToken.length
+      },
+      {
+        className: 'slider-token'
+      }
+    )
   }
 
   setContents (value) {
@@ -107,6 +164,10 @@ class CodeEditor extends Component {
     if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
       this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
     }
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('keyup', this.hideSlider)
   }
 
   shouldComponentUpdate () {
@@ -134,6 +195,7 @@ class CodeEditor extends Component {
             ref={_slider => {
               this._slider = _slider
             }}
+            onInput={this.handleSlider}
           />
         </div>
       </div>
