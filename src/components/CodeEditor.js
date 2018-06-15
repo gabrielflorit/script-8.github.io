@@ -8,7 +8,11 @@ class CodeEditor extends Component {
   constructor (props) {
     super(props)
 
+    this.mark = null
     this.setContents = this.setContents.bind(this)
+    this.handleSlider = this.handleSlider.bind(this)
+    this.activateSlider = this.activateSlider.bind(this)
+    this.hideSlider = this.hideSlider.bind(this)
   }
 
   componentDidMount () {
@@ -33,11 +37,117 @@ class CodeEditor extends Component {
       this.props.updateGame(content)
     })
 
+    this.codeMirror.on('keydown', (cm, e) => {
+      // TODO: Win? Linux?
+
+      if (e.key === 'Meta') {
+        this.activateSlider()
+      }
+    })
+
+    // add this eventlistener to window
+    window.addEventListener('keyup', this.hideSlider)
+
     // This timeout is to force CodeMirror to set
     // its layout correctly, so it knows how to draw cursors.
     setTimeout(() => {
       this.setContents(this.props.game || '')
     }, 1000)
+  }
+
+  hideSlider () {
+    this.mark && this.mark.clear()
+    this._slider.classList.add('hide')
+  }
+
+  activateSlider () {
+    // If the cursor is on a number,
+    // reset and show the slider.
+
+    // Get cursor.
+    const cursor = this.codeMirror.getCursor()
+
+    // Get token for this position.
+    const token = this.codeMirror.getTokenAt({
+      ...cursor,
+      ch: cursor.ch + 1
+    })
+
+    // If it's a number,
+    if (token && token.type === 'number') {
+      // clear out the previous mark,
+      this.mark && this.mark.clear()
+
+      // and mark this token.
+      this.mark = this.codeMirror.markText(
+        {
+          line: cursor.line,
+          ch: token.start
+        },
+        {
+          line: cursor.line,
+          ch: token.end
+        },
+        {
+          className: 'slider-token'
+        }
+      )
+
+      // get the token's middle point coords.
+      const middleCoords = this.codeMirror.charCoords({
+        line: cursor.line,
+        ch: token.start
+      })
+
+      // Get the wrapper rect.
+      const wrapperRect = this._wrapper.getBoundingClientRect()
+
+      // Save token.
+      const value = token.string
+
+      if (value === '0') {
+        this._slider.min = -10
+        this._slider.max = 10
+      } else {
+        this._slider.min = +value - +value * 10
+        this._slider.max = +value + +value * 10
+      }
+      this._slider.value = +value
+
+      // Position slider centered above token.
+      this._slider.style.left = `${middleCoords.left -
+        wrapperRect.left +
+        value.length * this.codeMirror.defaultCharWidth() / 2}px`
+      this._slider.style.top = `${middleCoords.top -
+        wrapperRect.top -
+        this.codeMirror.defaultTextHeight()}px`
+
+      // Show slider.
+      this._slider.classList.remove('hide')
+    }
+  }
+
+  handleSlider (e) {
+    // Get mark positions.
+    const { from, to } = this.mark.find()
+
+    // Calculate new token.
+    const newToken = e.target.value.toString()
+
+    // Change token content.
+    this.codeMirror.replaceRange(newToken, from, to)
+
+    // Re-select token.
+    this.mark = this.codeMirror.markText(
+      from,
+      {
+        ...from,
+        ch: from.ch + newToken.length
+      },
+      {
+        className: 'slider-token'
+      }
+    )
   }
 
   setContents (value) {
@@ -56,6 +166,10 @@ class CodeEditor extends Component {
     }
   }
 
+  componentWillUnmount () {
+    window.removeEventListener('keyup', this.hideSlider)
+  }
+
   shouldComponentUpdate () {
     return false
   }
@@ -63,12 +177,25 @@ class CodeEditor extends Component {
   render () {
     return (
       <div className='CodeEditor'>
-        <div className='wrapper'>
+        <div
+          className='wrapper'
+          ref={_wrapper => {
+            this._wrapper = _wrapper
+          }}
+        >
           <div
             className='_editor'
             ref={_editor => {
               this._editor = _editor
             }}
+          />
+          <input
+            type='range'
+            className='slider hide'
+            ref={_slider => {
+              this._slider = _slider
+            }}
+            onInput={this.handleSlider}
           />
         </div>
       </div>
