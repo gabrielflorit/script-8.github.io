@@ -35,7 +35,7 @@ class Shelf extends Component {
         error =>
           throwError({
             error,
-            message: `Could not request cassettes via now.sh service.`
+            message: `Could not request cassettes via appspot service.`
           })
       )
       .then(cassettes => {
@@ -60,7 +60,7 @@ class Shelf extends Component {
           <ul>
             {fetching ? <p>Loading latest cassettes.</p> : null}
             {_(cassettes)
-              .sortBy('updated')
+              .sortBy(d => Date.parse(d.updated))
               .reverse()
               .map((d, i) => {
                 const title = d.title || ''

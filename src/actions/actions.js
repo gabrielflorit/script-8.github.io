@@ -55,7 +55,7 @@ export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
       error =>
         throwError({
           error,
-          message: `Could not post cassette via now.sh service.`
+          message: `Could not post cassette via appspot service.`
         })
     )
     .then(json => dispatch(actions.shelveCassetteSuccess(json)))
@@ -87,7 +87,7 @@ export const fetchGist = ({ id, token }) => dispatch => {
         error =>
           throwError({
             error,
-            message: `Could not fetch gist ${id} via now.sh service.`
+            message: `Could not fetch gist ${id} via appspot service.`
           })
       )
       .then(json => dispatch(actions.fetchGistSuccess(json)))
