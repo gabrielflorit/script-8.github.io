@@ -79,6 +79,7 @@ class Iframe extends Component {
     }
 
     this.soundFunctions = null
+    this.songSequences = null
 
     this.state = {
       fps: null,
@@ -138,7 +139,7 @@ class Iframe extends Component {
     this.soundFunctions = soundAPI()
     this.updateGlobals({
       playSong: NOOP,
-      stopSong: this.soundFunctions.stopSong
+      stopSong: this.soundFunctions.stopSequence
     })
 
     // Keep track of what keys we're pressing.
@@ -371,20 +372,29 @@ class Iframe extends Component {
     // If we are not on a run screen,
     if (!run) {
       // stop the song,
-      this.soundFunctions.stopSong()
+      this.soundFunctions.stopSequence()
       // and set playSong to NOOP
       this.updateGlobals({
         playSong: NOOP
       })
     } else {
       // If we are on a run screen,
-      // set the playSong correctly.
-      this.updateGlobals({
-        playSong: this.soundFunctions.playSong({
+      // and if the music data changed, make sequences.
+      if (
+        !equal(songs, prevState.songs) ||
+        !equal(chains, prevState.chains) ||
+        !equal(phrases, prevState.phrases)
+      ) {
+        this.songSequences = this.soundFunctions.makeSequences({
           songs,
           chains,
           phrases
         })
+      }
+      // Also, since we are on a run screen,
+      // set the playSong correctly.
+      this.updateGlobals({
+        playSong: this.soundFunctions.playSequence(this.songSequences)
       })
     }
 
