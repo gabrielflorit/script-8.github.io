@@ -105,13 +105,8 @@ class CodeEditor extends Component {
       // Save token.
       const value = token.string
 
-      if (value === '0') {
-        this._slider.min = -10
-        this._slider.max = 10
-      } else {
-        this._slider.min = +value - +value * 10
-        this._slider.max = +value + +value * 10
-      }
+      this._slider.min = 0
+      this._slider.max = value === '0' ? 10 : +value * 2
       this._slider.value = +value
 
       // Position slider centered above token.
@@ -192,6 +187,7 @@ class CodeEditor extends Component {
           <input
             type='range'
             className='slider hide'
+            step={1}
             ref={_slider => {
               this._slider = _slider
             }}

@@ -1,6 +1,8 @@
 {
   "standard": {
     "globals": [
+      "sprite",
+      "random",
       "clear",
       "print",
       "rectFill",
