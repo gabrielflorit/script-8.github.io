@@ -4,14 +4,8 @@ import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
 import settings from '../settings.js'
 
-const pulse = {
-  oscillator: {
-    type: 'pulse'
-  }
-}
-
 const createSynth = () => {
-  const synth = new Tone.Synth(pulse).toMaster()
+  const synth = new Tone.Synth().toMaster()
   return synth
 }
 
@@ -28,7 +22,7 @@ const playNote = ({
   // don't play the note.
   // Otherwise play the note.
   if (time >= Tone.context.currentTime) {
-    const normalizedVolume = normalize.volume(volume) * 0.25
+    const normalizedVolume = normalize.volume(volume)
     const letter = toLetter(note + octave * 12, true, true)
     synth.triggerAttackRelease(letter, '32n', time, normalizedVolume)
   }
