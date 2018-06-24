@@ -34,20 +34,22 @@ const soundAPI = () => {
   Tone.Transport.bpm.value = settings.bpm
   Tone.Transport.start(settings.startOffset)
 
-  const songSequencePool = []
+  let sequences = {}
 
   const stopSequence = () => {
-    _.range(songSequencePool.length).forEach(() => {
-      const s = songSequencePool.pop()
-      s.stop()
+    // Stop all sequences.
+    _.forEach(sequences, (value, key) => {
+      if (value.sequence && !value.disposed) {
+        value.sequence.dispose()
+        value.disposed = true
+      }
     })
   }
 
   const makeSequences = ({ songs, chains, phrases }) => {
-    const sequences = _.mapValues(songs, song =>
+    sequences = _.mapValues(songs, song =>
       makeSequence({ song, chains, phrases })
     )
-    return sequences
   }
 
   const makeSequence = ({ song, chains, phrases }) => {
@@ -112,42 +114,46 @@ const soundAPI = () => {
       .dropRightWhile(_.isEmpty)
       .value()
 
-    const sequence = new Tone.Sequence(
-      (time, position) => {
-        notePositions[position].forEach(d => {
-          const { channel, noteElement } = d
-          playNote({
-            ...noteElement,
-            time: time,
-            synth: synths[channel]
-          })
+    const callback = (time, position) => {
+      notePositions[position].forEach(d => {
+        const { channel, noteElement } = d
+        playNote({
+          ...noteElement,
+          time: time,
+          synth: synths[channel]
         })
-      },
-      _.range(notePositions.length),
-      settings.subdivision
-    )
+      })
+    }
 
-    return sequence
+    const events = _.range(notePositions.length)
+
+    const subdivision = settings.subdivision
+
+    return {
+      callback,
+      events,
+      subdivision,
+      sequence: null
+    }
   }
 
-  const playSequence = sequences => (number, loop = false) => {
-    // Get this sequence.
-    const sequence = _.get(sequences, number)
+  const playSequence = (number, loop = false) => {
+    stopSequence()
 
-    // If the sequence exists,
-    if (!_.isNil(sequence)) {
-      // stop all sequences.
-      stopSequence()
-
-      // Loop it if requested.
-      sequence.loop = loop
-
-      // Start it,
-      sequence.start()
-
-      // and add it to the pool.
-      songSequencePool.push(sequence)
-    }
+    _.forEach(sequences, (value, key) => {
+      if (+key === number) {
+        const before = Date.now()
+        value.sequence = new Tone.Sequence(
+          value.callback,
+          value.events,
+          value.subdivision
+        )
+        console.log(`making this sequence took ${Date.now() - before}ms`)
+        value.sequence.loop = loop
+        value.sequence.start()
+        value.disposed = false
+      }
+    })
   }
 
   return {

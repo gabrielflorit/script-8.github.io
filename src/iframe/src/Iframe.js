@@ -385,7 +385,7 @@ class Iframe extends Component {
         !equal(chains, prevState.chains) ||
         !equal(phrases, prevState.phrases)
       ) {
-        this.songSequences = this.soundFunctions.makeSequences({
+        this.soundFunctions.makeSequences({
           songs,
           chains,
           phrases
@@ -394,7 +394,7 @@ class Iframe extends Component {
       // Also, since we are on a run screen,
       // set the playSong correctly.
       this.updateGlobals({
-        playSong: this.soundFunctions.playSequence(this.songSequences)
+        playSong: this.soundFunctions.playSequence
       })
     }
 
