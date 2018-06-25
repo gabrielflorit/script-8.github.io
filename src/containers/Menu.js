@@ -59,7 +59,10 @@ class Menu extends Component {
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
+    this.onClose = this.onClose.bind(this)
     window.script8.handleCode = props.fetchToken
+
+    window.addEventListener('beforeunload', this.onClose)
   }
 
   componentDidUpdate () {
@@ -72,6 +75,21 @@ class Menu extends Component {
       if (nextAction === 'recordtoblank') {
         this.record(true)
       }
+    }
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.onClose)
+  }
+
+  onClose (e) {
+    const { gist, game, sprites, phrases, chains, songs } = this.props
+    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
+    const blank = isBlank({ game, sprites, phrases, chains, songs })
+    if (dirty && !blank) {
+      const message = 'Leave site? Changes you made may not be saved.'
+      e.returnValue = message
+      return message
     }
   }
 
