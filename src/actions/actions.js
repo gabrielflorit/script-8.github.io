@@ -149,7 +149,7 @@ export const saveGist = ({
     const payload = {
       public: true,
       description: 'SCRIPT-8',
-      files: _.omitBy(
+      files: _.mapValues(
         {
           'code.js': {
             content: game
@@ -174,7 +174,8 @@ export const saveGist = ({
             content
           }
         },
-        d => _.isNil(d.content) || _.isEmpty(d.content)
+        (value, key) =>
+          _.isNil(value.content) || _.isEmpty(value.content) ? null : value
       )
     }
 
