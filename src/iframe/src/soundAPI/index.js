@@ -35,6 +35,8 @@ const soundAPI = () => {
   Tone.Transport.start(settings.startOffset)
 
   let sequences = {}
+  let localPhrases = {}
+  let phrasePool = []
 
   const stopSong = () => {
     // Stop all sequences.
@@ -47,6 +49,7 @@ const soundAPI = () => {
   }
 
   const makeSongs = ({ songs, chains, phrases }) => {
+    localPhrases = phrases
     sequences = _.mapValues(songs, song =>
       makeSequence({ song, chains, phrases })
     )
@@ -142,13 +145,13 @@ const soundAPI = () => {
 
     _.forEach(sequences, (value, key) => {
       if (+key === number) {
-        const before = Date.now()
+        // const before = Date.now()
         value.sequence = new Tone.Sequence(
           value.callback,
           value.events,
           value.subdivision
         )
-        console.log(`making this sequence took ${Date.now() - before}ms`)
+        // console.log(`making this sequence took ${Date.now() - before}ms`)
         value.sequence.loop = loop
         value.sequence.start()
         value.disposed = false
@@ -156,10 +159,36 @@ const soundAPI = () => {
     })
   }
 
+  const playPhrase = number => {
+    // const before = Date.now()
+    const phrase = _.get(localPhrases, number)
+    if (phrase) {
+      while (phrasePool.length) {
+        const popped = phrasePool.pop()
+        popped.dispose()
+      }
+
+      const sequence = new Tone.Sequence(
+        (time, index) => {
+          const value = phrase[index]
+          if (value) {
+            playNote({ ...value, time, synth: synths[0] })
+          }
+        },
+        _.range(settings.matrixLength),
+        settings.subdivision
+      )
+      sequence.loop = false
+      sequence.start()
+      // console.log(`starting this phrase took ${Date.now() - before}ms`)
+      phrasePool.push(sequence)
+    }
+  }
   return {
     playSong,
     makeSongs,
-    stopSong
+    stopSong,
+    playPhrase
   }
 }
 

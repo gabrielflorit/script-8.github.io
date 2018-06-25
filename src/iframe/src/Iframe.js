@@ -139,6 +139,7 @@ class Iframe extends Component {
     this.soundFunctions = soundAPI()
     this.updateGlobals({
       playSong: NOOP,
+      playPhrase: NOOP,
       stopSong: this.soundFunctions.stopSong
     })
 
@@ -375,7 +376,8 @@ class Iframe extends Component {
       this.soundFunctions.stopSong()
       // and set playSong to NOOP
       this.updateGlobals({
-        playSong: NOOP
+        playSong: NOOP,
+        playPhrase: NOOP
       })
     } else {
       // If we are on a run screen,
@@ -394,7 +396,8 @@ class Iframe extends Component {
       // Also, since we are on a run screen,
       // set the playSong correctly.
       this.updateGlobals({
-        playSong: this.soundFunctions.playSong
+        playSong: this.soundFunctions.playSong,
+        playPhrase: this.soundFunctions.playPhrase
       })
     }
 
