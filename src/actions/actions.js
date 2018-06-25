@@ -149,34 +149,26 @@ export const saveGist = ({
     const payload = {
       public: true,
       description: 'SCRIPT-8',
-      files: _.mapValues(
-        {
-          'code.js': {
-            content: game
-          },
-          'sprites.json': {
-            content: _.isEmpty(sprites)
-              ? null
-              : JSON.stringify(sprites, null, 2)
-          },
-          'phrases.json': {
-            content: _.isEmpty(phrases)
-              ? null
-              : JSON.stringify(compressPhrases(phrases), null, 2)
-          },
-          'chains.json': {
-            content: _.isEmpty(chains) ? null : JSON.stringify(chains, null, 2)
-          },
-          'songs.json': {
-            content: _.isEmpty(songs) ? null : JSON.stringify(songs, null, 2)
-          },
-          'README.md': {
-            content
-          }
+      files: {
+        'code.js': {
+          content: game
         },
-        (value, key) =>
-          _.isNil(value.content) || _.isEmpty(value.content) ? null : value
-      )
+        'sprites.json': {
+          content: JSON.stringify(sprites, null, 2)
+        },
+        'phrases.json': {
+          content: JSON.stringify(compressPhrases(phrases), null, 2)
+        },
+        'chains.json': {
+          content: JSON.stringify(chains, null, 2)
+        },
+        'songs.json': {
+          content: JSON.stringify(songs, null, 2)
+        },
+        'README.md': {
+          content
+        }
+      }
     }
 
     return payload
