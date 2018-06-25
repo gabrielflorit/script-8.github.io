@@ -36,7 +36,7 @@ const soundAPI = () => {
 
   let sequences = {}
 
-  const stopSequence = () => {
+  const stopSong = () => {
     // Stop all sequences.
     _.forEach(sequences, (value, key) => {
       if (value.sequence && !value.disposed) {
@@ -46,7 +46,7 @@ const soundAPI = () => {
     })
   }
 
-  const makeSequences = ({ songs, chains, phrases }) => {
+  const makeSongs = ({ songs, chains, phrases }) => {
     sequences = _.mapValues(songs, song =>
       makeSequence({ song, chains, phrases })
     )
@@ -137,8 +137,8 @@ const soundAPI = () => {
     }
   }
 
-  const playSequence = (number, loop = false) => {
-    stopSequence()
+  const playSong = (number, loop = false) => {
+    stopSong()
 
     _.forEach(sequences, (value, key) => {
       if (+key === number) {
@@ -157,9 +157,9 @@ const soundAPI = () => {
   }
 
   return {
-    playSequence,
-    makeSequences,
-    stopSequence
+    playSong,
+    makeSongs,
+    stopSong
   }
 }
 
