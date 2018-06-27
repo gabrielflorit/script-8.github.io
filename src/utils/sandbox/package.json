@@ -19,7 +19,8 @@
       "drawActors",
       "combineReducers",
       "createStore",
-      "log"
+      "log",
+      "playPhrase"
     ]
   }
 }
