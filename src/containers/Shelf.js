@@ -73,16 +73,16 @@ class Shelf extends Component {
 
                 return (
                   <li key={i}>
-                    <div
-                      className='img'
-                      onClick={() => {
-                        this.handleOnClick(d.gist)
-                      }}
-                    >
-                      {d.cover ? <img src={d.cover} alt='' /> : null}
+                    <div className='img'>
+                      <a href={`/?id=${d.gist}`} target='_blank'>
+                        <img className='background' src='./cassette-bg.png' />
+                        {d.cover ? (
+                          <img className='cover' src={d.cover} alt='' />
+                        ) : null}
+                        <span className='title'>{finalTitle}</span>
+                        <span className='author'>by {d.user}</span>
+                      </a>
                     </div>
-                    <p className='title'>{finalTitle}</p>
-                    <p className='author'>by {d.user}</p>
                   </li>
                 )
               })
