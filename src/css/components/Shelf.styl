@@ -17,16 +17,17 @@
       margin-top 1.5rem
       display flex
       flex-wrap wrap
-
+      
       li
-        padding 0
-        width 285px
-        height 181px
-        overflow hidden
-        position relative
+        border solid $palette-6 2px
+        border-radius 2px
         margin-right 1.5rem
         margin-bottom 1.5rem
-        
+        padding 0.5rem
+        width calc(192px + 4px + 1rem)
+        height calc(311px + 4px + 1rem)
+        position relative
+
         img
           vertical-align bottom
           
@@ -34,51 +35,52 @@
           z-index 10
           pointer-events none
           
-        .title
+        img.cover
+          width 192px
+          height @width
+          image-rendering pixelated
+          margin 0.5em 0
+
+        img.background
           position absolute
-          top 8.5rem
-          left 0.8rem
-          padding 0
-          margin 0
+          height 181px*1.14
+          width 285px*1.14
+          top 0
+          left 0
+          z-index 10
+          transform rotate(90deg) translate(60px, 59px)
+          opacity 0
+          
+        .title
           text-transform uppercase
-          font-size $font-medium
+          font-size $font-xlarge
           display inline-block
-          width 7.5rem
           white-space nowrap
           overflow hidden
           text-overflow ellipsis
-          color $palette-7
-        
+          width 100%
+          text-align center
+          color $palette-2
+
         .author
-          position absolute
-          top 8.5rem
-          right 0.8rem
-          padding 0
-          margin 0
+          display inline-block
           text-transform uppercase
           font-size $font-small
-          display inline-block
-          width 7.5rem
-          white-space nowrap
-          overflow hidden
-          color $palette-7
-          text-align right
-          
-        a
+          color $palette-5
+          text-align center
           width 100%
-          height 100%
-          &:hover
-            span
-              color $palette-3
-          
-        img.background
-          position absolute
-          width 100%
-          z-index 10
-          
-        img.cover
-          position relative
-          top calc(15px - 136px/2)
-          left 16px
-          width 256px
-          image-rendering pixelated
+        
+      li
+        &:hover
+          img.background
+            opacity 1
+          .title
+            color $palette-1
+            position absolute
+            z-index 100
+            transform rotate(90deg) translate(139px, -50px)
+          .author
+            position absolute
+            z-index 100
+            transform rotate(90deg) translate(149px, 237px)
+            color $palette-4

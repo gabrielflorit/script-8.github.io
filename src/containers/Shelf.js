@@ -75,6 +75,7 @@ class Shelf extends Component {
                   <li key={i}>
                     <div className='img'>
                       <a href={`/?id=${d.gist}`} target='_blank'>
+                        <span className='title'>{finalTitle || ' '}</span>
                         <img
                           className='background'
                           alt=''
@@ -83,7 +84,6 @@ class Shelf extends Component {
                         {d.cover ? (
                           <img className='cover' src={d.cover} alt='' />
                         ) : null}
-                        <span className='title'>{finalTitle}</span>
                         <span className='author'>by {d.user}</span>
                       </a>
                     </div>
