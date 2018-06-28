@@ -75,7 +75,11 @@ class Shelf extends Component {
                   <li key={i}>
                     <div className='img'>
                       <a href={`/?id=${d.gist}`} target='_blank'>
-                        <img className='background' src='./cassette-bg.png' />
+                        <img
+                          className='background'
+                          alt=''
+                          src='./cassette-bg.png'
+                        />
                         {d.cover ? (
                           <img className='cover' src={d.cover} alt='' />
                         ) : null}
