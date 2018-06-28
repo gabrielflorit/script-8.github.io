@@ -9,7 +9,6 @@
 
     p
       margin 0
-      padding 1.5rem
 
     ul
       list-style none
@@ -20,27 +19,65 @@
       flex-wrap wrap
 
       li
-        padding 1.5rem
-        padding-right 0
-        padding-bottom 0
-        .img
-          cursor pointer
-          width 1.5rem * 7
-          height @width
-          border solid $palette-6 2px
-          &:hover
-            border-color $palette-0
-          img
-            width 100%
-            height @width
-            vertical-align bottom
-            image-rendering pixelated
-        p
-          width 1.5rem * 7
+        padding 0
+        width 285px
+        height 181px
+        overflow hidden
+        position relative
+        margin 1.5rem
+        
+        img
+          vertical-align bottom
+          
+        span
+          z-index 10
+          pointer-events none
+          
+        .title
+          position absolute
+          top 8.5rem
+          left 0.8rem
           padding 0
           margin 0
+          text-transform uppercase
+          font-size $font-medium
+          display inline-block
+          width 7.5rem
+          white-space nowrap
           overflow hidden
           text-overflow ellipsis
-          &.author
-            font-size $font-medium
-            color $palette-5
+          color $palette-7
+        
+        .author
+          position absolute
+          top 8.5rem
+          right 0.8rem
+          padding 0
+          margin 0
+          text-transform uppercase
+          font-size $font-small
+          display inline-block
+          width 7.5rem
+          white-space nowrap
+          overflow hidden
+          color $palette-7
+          text-align right
+          
+        a
+          width 100%
+          height 100%
+          &:hover
+            span
+              color $palette-3
+          
+        img.background
+          position absolute
+          width 100%
+          z-index 10
+          
+        img.cover
+          position relative
+          top calc(15px - 136px/2)
+          left 16px
+          width 256px
+          image-rendering pixelated
