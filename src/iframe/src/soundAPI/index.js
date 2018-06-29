@@ -24,7 +24,12 @@ const playNote = ({
   if (time >= Tone.context.currentTime) {
     const normalizedVolume = normalize.volume(volume)
     const letter = toLetter(note + octave * 12, true, true)
-    synth.triggerAttackRelease(letter, '32n', time, normalizedVolume)
+    synth.triggerAttackRelease(
+      letter,
+      settings.subdivision,
+      time,
+      normalizedVolume
+    )
   }
 }
 
