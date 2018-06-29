@@ -3,21 +3,25 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
-import actions from '../actions/actions.js'
+import actions, { unshelve } from '../actions/actions.js'
 
-const mapStateToProps = ({ gist, token }) => ({
+const mapStateToProps = ({ gist, token, shelving }) => ({
   gist,
-  token
+  token,
+  shelving
 })
 
 const mapDispatchToProps = dispatch => ({
-  setScreen: screen => dispatch(actions.setScreen(screen))
+  setScreen: screen => dispatch(actions.setScreen(screen)),
+  unshelve: ({ token, gistId }) => dispatch(unshelve({ token, gistId }))
 })
 
 class Shelf extends Component {
   constructor (props) {
     super(props)
+    this.fetchCassettes = this.fetchCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
+    this.handleOnUnshelve = this.handleOnUnshelve.bind(this)
     this.state = {
       fetching: true,
       cassettes: []
@@ -25,6 +29,10 @@ class Shelf extends Component {
   }
 
   componentDidMount () {
+    this.fetchCassettes()
+  }
+
+  fetchCassettes () {
     window
       .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
       .then(
@@ -40,12 +48,23 @@ class Shelf extends Component {
       })
   }
 
+  componentDidUpdate (prevProps) {
+    if (prevProps.shelving && !this.props.shelving) {
+      this.fetchCassettes()
+    }
+  }
+
   handleOnClick ({ e, id }) {
     const { gist, setScreen } = this.props
     if (id === _.get(gist, 'data.id')) {
       e.preventDefault()
       setScreen(screenTypes.RUN)
     }
+  }
+
+  handleOnUnshelve (gistId) {
+    const { token, unshelve } = this.props
+    unshelve({ token, gistId })
   }
 
   render () {
@@ -70,10 +89,17 @@ class Shelf extends Component {
                   tooLong ? '…' : ''
                 ].join('')
 
-                const unpublish =
+                const unshelve =
                   currentLogin === d.user ? (
                     <li>
-                      <button className='button'>unpublish</button>
+                      <button
+                        onClick={() => {
+                          this.handleOnUnshelve(d.gist)
+                        }}
+                        className='button'
+                      >
+                        unshelve
+                      </button>
                     </li>
                   ) : null
 
@@ -100,7 +126,7 @@ class Shelf extends Component {
                       </a>
                       <span className='author'>by {d.user}</span>
                     </div>
-                    <ul className='controls'>{unpublish}</ul>
+                    <ul className='controls'>{unshelve}</ul>
                   </li>
                 )
               })

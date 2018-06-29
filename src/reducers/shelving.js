@@ -5,7 +5,9 @@ import initialState from '../store/initialState.js'
 const shelving = handleActions(
   {
     [actionTypes.SHELVE_CASSETTE_REQUEST]: () => true,
-    [actionTypes.SHELVE_CASSETTE_SUCCESS]: () => false
+    [actionTypes.SHELVE_CASSETTE_SUCCESS]: () => false,
+    [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => true,
+    [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: () => false
   },
   initialState.shelving
 )

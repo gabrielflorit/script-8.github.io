@@ -29,10 +29,38 @@ const actions = createActions({
   [actionTypes.SET_TUTORIAL_SLIDE]: d => d,
   [actionTypes.CLOSE_TUTORIAL]: () => {},
   [actionTypes.SHELVE_CASSETTE_REQUEST]: () => {},
-  [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d
+  [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d,
+  [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
+  [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d
 })
 
 export default actions
+
+export const unshelve = ({ token, gistId }) => dispatch => {
+  dispatch(actions.unshelveCassetteRequest())
+
+  return window
+    .fetch(`${process.env.REACT_APP_NOW}/unshelve`, {
+      method: 'POST',
+      body: JSON.stringify({
+        token: token.value,
+        gistId
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(
+      response => response.json(),
+      error =>
+        throwError({
+          error,
+          message: `Could not unshelve cassette via appspot service.`
+        })
+    )
+    .then(json => dispatch(actions.unshelveCassetteSuccess()))
+    .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
+}
 
 export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
@@ -58,7 +86,7 @@ export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
           message: `Could not post cassette via appspot service.`
         })
     )
-    .then(json => dispatch(actions.shelveCassetteSuccess(json)))
+    .then(json => dispatch(actions.shelveCassetteSuccess()))
     .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
