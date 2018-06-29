@@ -68,6 +68,7 @@ class Help extends Component {
                 <li>
                   Sound
                   <ul className='third-list'>
+                    <li>func playPhrase(phrase)</li>
                     <li>func playSong(song, [loop=false])</li>
                     <li>func stopSong()</li>
                   </ul>
