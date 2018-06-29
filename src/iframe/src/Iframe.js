@@ -381,11 +381,13 @@ class Iframe extends Component {
       })
     } else {
       // If we are on a run screen,
-      // and if the music data changed, make sequences.
+      // and if the music data changed, or the previous screen was NOT a run screen,
+      // make sequences.
       if (
         !equal(songs, prevState.songs) ||
         !equal(chains, prevState.chains) ||
-        !equal(phrases, prevState.phrases)
+        !equal(phrases, prevState.phrases) ||
+        !prevState.run
       ) {
         this.soundFunctions.makeSongs({
           songs,

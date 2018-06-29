@@ -34,7 +34,8 @@ const playNote = ({
 }
 
 const soundAPI = () => {
-  const synths = _.range(settings.chainChannels).map(createSynth)
+  const chainSynths = _.range(settings.chainChannels).map(createSynth)
+  const phraseSynth = createSynth()
 
   Tone.Transport.bpm.value = settings.bpm
   Tone.Transport.start(settings.startOffset)
@@ -54,6 +55,7 @@ const soundAPI = () => {
   }
 
   const makeSongs = ({ songs, chains, phrases }) => {
+    stopSong()
     localPhrases = phrases
     sequences = _.mapValues(songs, song =>
       makeSequence({ song, chains, phrases })
@@ -128,7 +130,7 @@ const soundAPI = () => {
         playNote({
           ...noteElement,
           time: time,
-          synth: synths[channel]
+          synth: chainSynths[channel]
         })
       })
     }
@@ -156,7 +158,6 @@ const soundAPI = () => {
           value.events,
           value.subdivision
         )
-        // console.log(`making this sequence took ${Date.now() - before}ms`)
         value.sequence.loop = loop
         value.sequence.start()
         value.disposed = false
@@ -177,7 +178,7 @@ const soundAPI = () => {
         (time, index) => {
           const value = phrase[index]
           if (value) {
-            playNote({ ...value, time, synth: synths[0] })
+            playNote({ ...value, time, synth: phraseSynth })
           }
         },
         _.range(settings.matrixLength),
