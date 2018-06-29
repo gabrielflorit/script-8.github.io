@@ -10,15 +10,15 @@
     p
       margin 0
 
-    ul
+    ul.cassettes
       list-style none
       padding 0
       margin-left 1.5rem
       margin-top 1.5rem
       display flex
       flex-wrap wrap
-      
-      li
+
+      li.cassette
         border solid $palette-6 2px
         border-radius 2px
         margin-right 1.5rem
@@ -30,27 +30,37 @@
 
         img
           vertical-align bottom
-          
+          image-rendering pixelated
+
         span
           z-index 10
           pointer-events none
-          
+
         img.cover
           width 192px
           height @width
-          image-rendering pixelated
           margin 0.5em 0
+          display inline-block
 
         img.background
+          width 192px
+          height 192px
+          padding 35px 0
+          margin 0.5em 0
+          display none
+
+        .load
           position absolute
-          height 181px*1.14
-          width 285px*1.14
-          top 0
+          width 100%
+          text-align center
+          top 4rem
           left 0
-          z-index 10
-          transform rotate(90deg) translate(60px, 59px)
-          opacity 0
-          
+          z-index 0
+          color $palette-0
+          text-transform uppercase
+          font-size $font-medium
+          display none
+
         .title
           text-transform uppercase
           font-size $font-xlarge
@@ -69,18 +79,28 @@
           color $palette-5
           text-align center
           width 100%
-        
-      li
-        &:hover
-          img.background
-            opacity 1
-          .title
-            color $palette-1
-            position absolute
-            z-index 100
-            transform rotate(90deg) translate(139px, -50px)
-          .author
-            position absolute
-            z-index 100
-            transform rotate(90deg) translate(149px, 237px)
-            color $palette-4
+
+        a
+          &:hover
+            position relative
+            display inline-block
+            img.background
+              display inline-block
+            img.cover
+              display none
+            .load
+              display inline-block
+
+        ul.controls
+          position absolute
+          bottom 0.5rem
+          width 100%
+          li
+            button
+              font-size $font-small
+              padding 0.25rem
+              color $palette-5
+              border solid @color 1px
+              &:hover
+                color $palette-4
+                border-color @color

@@ -1,21 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
-import isDirty from '../utils/isDirty.js'
-import isBlank from '../utils/isBlank.js'
-import areYouSure from '../utils/areYouSure.js'
+import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ gist, game, sprites, phrases, chains, songs }) => ({
+const mapStateToProps = ({ gist, token }) => ({
   gist,
-  game,
-  sprites,
-  phrases,
-  chains,
-  songs
+  token
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  setScreen: screen => dispatch(actions.setScreen(screen))
+})
 
 class Shelf extends Component {
   constructor (props) {
@@ -43,21 +40,23 @@ class Shelf extends Component {
       })
   }
 
-  handleOnClick (id) {
-    const { gist, game, sprites, phrases, chains, songs } = this.props
-    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
-    const blank = isBlank({ game, sprites, phrases, chains, songs })
-    if (!dirty || blank || areYouSure()) {
-      window.location = `/?id=${id}`
+  handleOnClick ({ e, id }) {
+    const { gist, setScreen } = this.props
+    if (id === _.get(gist, 'data.id')) {
+      e.preventDefault()
+      setScreen(screenTypes.RUN)
     }
   }
 
   render () {
     const { cassettes, fetching } = this.state
+    const { token } = this.props
+    const currentLogin = _.get(token, 'user.login', null)
+
     return (
       <div className='Shelf'>
         <div className='main'>
-          <ul>
+          <ul className='cassettes'>
             {fetching ? <p>Loading latest cassettes.</p> : null}
             {_(cassettes)
               .sortBy(d => Date.parse(d.updated))
@@ -71,22 +70,37 @@ class Shelf extends Component {
                   tooLong ? '…' : ''
                 ].join('')
 
+                const unpublish =
+                  currentLogin === d.user ? (
+                    <li>
+                      <button className='button'>unpublish</button>
+                    </li>
+                  ) : null
+
                 return (
-                  <li key={i}>
+                  <li key={i} className='cassette'>
                     <div className='img'>
-                      <a href={`/?id=${d.gist}`} target='_blank'>
-                        <span className='title'>{finalTitle || ' '}</span>
+                      <span className='title'>{finalTitle || ' '}</span>
+                      <a
+                        href={`/?id=${d.gist}`}
+                        onClick={e => {
+                          this.handleOnClick({ e, id: d.gist })
+                        }}
+                        target='_blank'
+                      >
                         <img
                           className='background'
                           alt=''
                           src='./cassette-bg.png'
                         />
+                        <span className='load'>load cassette</span>
                         {d.cover ? (
                           <img className='cover' src={d.cover} alt='' />
                         ) : null}
-                        <span className='author'>by {d.user}</span>
                       </a>
+                      <span className='author'>by {d.user}</span>
                     </div>
+                    <ul className='controls'>{unpublish}</ul>
                   </li>
                 )
               })
