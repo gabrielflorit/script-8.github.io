@@ -10,6 +10,7 @@
       "circFill",
       "circStroke",
       "polyStroke",
+      "flatten",
       "range",
       "clamp",
       "line",
@@ -20,7 +21,8 @@
       "combineReducers",
       "createStore",
       "log",
-      "playPhrase"
+      "playPhrase",
+      "playSong"
     ]
   }
 }
