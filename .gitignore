@@ -5,3 +5,5 @@ src/css/App.css
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+src/utils/sandbox/code.js
