@@ -81,6 +81,7 @@ class Help extends Component {
                     <li>func range([start=0], end, [step=1])</li>
                     <li>func flatten(array)</li>
                     <li>func random([lower=0], [upper=1], [floating])</li>
+                    <li>func clamp(number, [lower], upper)</li>
                   </ul>
                 </li>
 

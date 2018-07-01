@@ -107,6 +107,7 @@ class Iframe extends Component {
     if (!providedGlobals) {
       globals = {
         Math,
+        Object,
         ...utilsAPI(),
         ...canvasAPI({
           ctx: this._canvas.getContext('2d'),
