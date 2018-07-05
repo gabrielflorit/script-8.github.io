@@ -48,7 +48,7 @@ const canvasAPI = ({
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
-    sprite (x, y, spriteIndex, darken = 0) {
+    sprite (x, y, spriteIndex, darken = 0, flip = false) {
       if (_sprites[spriteIndex]) {
         _sprites[spriteIndex].forEach((cells, rowIndex) => {
           cells.split('').forEach((color, colIndex) => {
@@ -56,7 +56,7 @@ const canvasAPI = ({
               const clamped = clamp(+color - darken, 0, 7)
               ctx.fillStyle = colors.rgb(clamped)
               ctx.fillRect(
-                Math.floor(x) + colIndex,
+                Math.floor(x) + (flip ? 7 - colIndex : colIndex),
                 Math.floor(y) + rowIndex,
                 1,
                 1

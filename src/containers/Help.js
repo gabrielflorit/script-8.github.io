@@ -1,48 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import actions from '../actions/actions.js'
-// import screenTypes from '../utils/screenTypes.js'
 
-// const mapStateToProps = ({ screen }) => ({ screen })
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = dispatch => ({
-  // setScreen: screen => dispatch(actions.setScreen(screen)),
-  // newGame: screen => dispatch(actions.newGame(screen)),
-  // setTutorialSlide: slide => dispatch(actions.setTutorialSlide(slide))
-})
+const mapDispatchToProps = dispatch => ({})
 
 class Help extends Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.loadTutorial = this.loadTutorial.bind(this)
-  // }
-
-  // loadTutorial () {
-  //   const { newGame, screen, setTutorialSlide, setScreen } = this.props
-  //   newGame(screen)
-  //   setTutorialSlide(1)
-  //   setScreen(screenTypes.CODE)
-  // }
-
   render () {
-    // <li>
-    //   <button className='button' onClick={this.loadTutorial}>
-    //     LOAD
-    //   </button>{' '}
-    //   tutorial.
-    // </li>
-
-    // <li>
-    //   Input
-    //   <ul className='third-list'>
-    //     <li>bool arrowUp</li>
-    //     <li>bool arrowRight</li>
-    //     <li>bool arrowDown</li>
-    //     <li>bool arrowLeft</li>
-    //   </ul>
-    // </li>
-
     return (
       <div className='Help'>
         <div className='main'>
@@ -89,6 +53,7 @@ class Help extends Component {
                   System
                   <ul className='third-list'>
                     <li>obj Math</li>
+                    <li>obj Object</li>
                   </ul>
                 </li>
               </ul>
