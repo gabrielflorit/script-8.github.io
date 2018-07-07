@@ -11,6 +11,7 @@ import clamp from 'lodash/clamp'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
+import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
@@ -106,6 +107,7 @@ class Iframe extends Component {
 
     if (!providedGlobals) {
       globals = {
+        StateMachine,
         Math,
         Object,
         ...utilsAPI(),
