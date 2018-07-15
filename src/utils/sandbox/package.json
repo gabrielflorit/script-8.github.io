@@ -1,6 +1,7 @@
 {
   "standard": {
     "globals": [
+      "StateMachine",
       "sprite",
       "random",
       "clear",
