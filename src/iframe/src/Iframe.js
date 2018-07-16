@@ -24,6 +24,10 @@ import { version } from '../package.json'
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
+const logError = e => {
+  console.warn(e)
+}
+
 window.initialState = null
 window.update = null
 window.drawActors = null
@@ -239,7 +243,7 @@ class Iframe extends Component {
     `)
     } catch (e) {
       // If any part of this resulted in an error, print it.
-      console.warn(e.message)
+      logError(e)
     }
   }
 
@@ -288,7 +292,7 @@ class Iframe extends Component {
           })
         }
       } catch (e) {
-        console.warn(e.message)
+        logError(e)
       }
     }
     if (this.timer) {
@@ -541,7 +545,7 @@ class Iframe extends Component {
             })
           }
         } catch (e) {
-          console.warn(e.message)
+          logError(e)
         }
       } else {
         // If the ul buttons don't have any canvases, add them!
