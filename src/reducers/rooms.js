@@ -19,12 +19,13 @@ const rooms = handleActions(
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       extractGistRooms(action.payload),
     [actionTypes.UPDATE_ROOM]: (state, { payload }) => {
-      const { room } = payload
-      return omitEmpty({
+      const { room, index } = payload
+      console.log({ room, index, state })
+      // return state
+      return {
         ...state,
-        [payload.index]:
-          room && room.filter(row => row.length).length ? room : null
-      })
+        [index]: room && room.filter(row => row.length).length ? room : null
+      }
     }
   },
   initialState.rooms
