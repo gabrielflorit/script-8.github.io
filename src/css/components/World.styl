@@ -40,42 +40,38 @@
             &.background-
               color $palette-6
               background none
+              
+      // .room-and-tools
+      //   display flex
+      //   justify-content space-between
+      //   margin-bottom 1.5rem
+      //   position relative
 
-      .room-and-tools
-        display flex
-        justify-content space-between
-        margin-bottom 1.5rem
+      .room
         width calc(128px * 3 + 8px)
         position relative
-
-        .room
+        padding 2px
+        border solid $palette-6 2px
+        table
           position relative
-          width 100%
-          padding 2px
-          border solid $palette-6 2px
-          table
-            position relative
-            z-index 1
-            button
-              &:focus
-                z-index 10
-                position relative
+          z-index 1
+          button
+            &:focus
+              z-index 10
+              position relative
 
-          canvas
-            display block
-            position absolute
-            z-index 0
-            top 2px
-            left 2px
-            width calc(100% - 4px)
-            height calc(100% - 4px)
-            image-rendering -moz-crisp-edges
-            image-rendering pixelated
-            
-        .tools
-          margin-left 1.5rem
-
-      .sprites
+        canvas
+          display block
+          position absolute
+          z-index 0
+          top 2px
+          left 2px
+          width calc(100% - 4px)
+          height calc(100% - 4px)
+          image-rendering -moz-crisp-edges
+          image-rendering pixelated
+          
+      .sprites, .rooms
         width 100%
         max-width calc(128px * 3 + 8px)
         position relative
