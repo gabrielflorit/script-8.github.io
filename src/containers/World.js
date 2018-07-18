@@ -67,6 +67,30 @@ class World extends Component {
       >
         <div className='main'>
           <div className='WorldEditor'>
+            <div className='room-and-tools'>
+              <table className='room'>
+                <tbody>
+                  {_.range(16).map(row => (
+                    <tr key={row}>
+                      {_.range(16).map(col => {
+                        const value = ' '
+                        return (
+                          <td key={col}>
+                            <button
+                              data-row={row}
+                              data-col={col}
+                              className={`background-${value}`}
+                            >
+                              {value === ' ' ? 'x' : ''}
+                            </button>
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <div className='sprites'>
               <table>
                 <tbody>
