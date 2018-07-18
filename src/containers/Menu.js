@@ -17,6 +17,7 @@ const mapStateToProps = ({
   gist,
   game,
   sprites,
+  rooms,
   phrases,
   chains,
   songs,
@@ -29,6 +30,7 @@ const mapStateToProps = ({
   gist,
   game,
   sprites,
+  rooms,
   phrases,
   chains,
   songs,
@@ -44,9 +46,29 @@ const mapDispatchToProps = dispatch => ({
   newGame: screen => dispatch(actions.newGame(screen)),
   putOnShelf: ({ user, gist, cover, title }) =>
     dispatch(putOnShelf({ user, gist, cover, title })),
-  saveGist: ({ game, token, gist, sprites, phrases, chains, songs, toBlank }) =>
+  saveGist: ({
+    game,
+    token,
+    gist,
+    sprites,
+    rooms,
+    phrases,
+    chains,
+    songs,
+    toBlank
+  }) =>
     dispatch(
-      saveGist({ game, token, gist, sprites, phrases, chains, songs, toBlank })
+      saveGist({
+        game,
+        token,
+        gist,
+        sprites,
+        rooms,
+        phrases,
+        chains,
+        songs,
+        toBlank
+      })
     ),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction)),
   setScreen: screen => dispatch(actions.setScreen(screen))
@@ -83,9 +105,17 @@ class Menu extends Component {
   }
 
   onClose (e) {
-    const { gist, game, sprites, phrases, chains, songs } = this.props
-    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
-    const blank = isBlank({ game, sprites, phrases, chains, songs })
+    const { gist, game, sprites, rooms, phrases, chains, songs } = this.props
+    const dirty = isDirty({
+      gist,
+      game,
+      sprites,
+      rooms,
+      phrases,
+      chains,
+      songs
+    })
+    const blank = isBlank({ game, sprites, rooms, phrases, chains, songs })
     if (dirty && !blank) {
       const message = 'Leave site? Changes you made may not be saved.'
       e.returnValue = message
@@ -94,9 +124,17 @@ class Menu extends Component {
   }
 
   onInsertBlankClick () {
-    const { gist, game, sprites, phrases, chains, songs } = this.props
+    const { gist, game, sprites, rooms, phrases, chains, songs } = this.props
 
-    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
+    const dirty = isDirty({
+      gist,
+      game,
+      sprites,
+      rooms,
+      phrases,
+      chains,
+      songs
+    })
 
     if (!dirty || areYouSure()) {
       this.props.newGame(this.props.screen)
@@ -169,11 +207,22 @@ class Menu extends Component {
       saveGist,
       gist,
       sprites,
+      rooms,
       phrases,
       chains,
       songs
     } = this.props
-    saveGist({ token, game, sprites, phrases, chains, songs, gist, toBlank })
+    saveGist({
+      token,
+      game,
+      sprites,
+      rooms,
+      phrases,
+      chains,
+      songs,
+      gist,
+      toBlank
+    })
   }
 
   render () {
@@ -183,6 +232,7 @@ class Menu extends Component {
       token,
       game,
       sprites,
+      rooms,
       phrases,
       chains,
       songs,
@@ -193,12 +243,21 @@ class Menu extends Component {
 
     // If the game isn't equal to the gist,
     // set flag to dirty.
-    const dirty = isDirty({ gist, game, sprites, phrases, chains, songs })
-    const blank = isBlank({ game, sprites, phrases, chains, songs })
+    const dirty = isDirty({
+      gist,
+      game,
+      sprites,
+      rooms,
+      phrases,
+      chains,
+      songs
+    })
+    const blank = isBlank({ game, sprites, rooms, phrases, chains, songs })
 
     const contentIsEmpty =
       _.isEmpty(game) &&
       _.isEmpty(sprites) &&
+      _.isEmpty(rooms) &&
       _.isEmpty(phrases) &&
       _.isEmpty(chains) &&
       _.isEmpty(songs)

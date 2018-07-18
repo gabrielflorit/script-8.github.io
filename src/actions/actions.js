@@ -159,6 +159,7 @@ export const saveGist = ({
   token,
   gist,
   sprites,
+  rooms,
   phrases,
   chains,
   songs
@@ -184,6 +185,9 @@ export const saveGist = ({
         },
         'sprites.json': {
           content: JSON.stringify(sprites, null, 2)
+        },
+        'rooms.json': {
+          content: JSON.stringify(rooms, null, 2)
         },
         'phrases.json': {
           content: JSON.stringify(compressPhrases(phrases), null, 2)

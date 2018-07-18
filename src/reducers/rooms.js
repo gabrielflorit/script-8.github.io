@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
@@ -20,12 +19,18 @@ const rooms = handleActions(
       extractGistRooms(action.payload),
     [actionTypes.UPDATE_ROOM]: (state, { payload }) => {
       const { room, index } = payload
-      console.log({ room, index, state })
-      // return state
-      return {
-        ...state,
-        [index]: room && room.filter(row => row.length).length ? room : null
-      }
+      const result = _.omitBy(
+        {
+          ...state,
+          [index]:
+            room &&
+            room.filter(cols => cols.filter(col => col !== null).length).length
+              ? room
+              : null
+        },
+        _.isNull
+      )
+      return result
     }
   },
   initialState.rooms
