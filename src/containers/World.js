@@ -190,131 +190,135 @@ class World extends Component {
       >
         <div className='main'>
           <div className='WorldEditor'>
-            <div className='room'>
-              <table>
-                <tbody>
-                  {_.range(16).map(row => (
-                    <tr key={row}>
-                      {_.range(16).map(col => {
-                        const value = _.get(room, [row, col], null)
-                        return (
-                          <td key={col}>
-                            <button
-                              data-row={row}
-                              data-col={col}
-                              onMouseDown={this.handleOnMouseDown}
-                              onMouseEnter={this.handleOnMouseEnter}
-                              onTouchStart={this.handleOnMouseDown}
-                              onTouchMove={this.handleOnTouchMove}
-                              className='background-'
-                            >
-                              {value !== null ? '' : 'x'}
-                            </button>
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <canvas
-                width={128}
-                height={128}
-                ref={_roomCanvas => {
-                  this._roomCanvas = _roomCanvas
-                }}
-              />
-            </div>
-            <div className='sprites'>
-              <table>
-                <tbody>
-                  {_.range(8).map(row => (
-                    <tr key={row}>
-                      {_.range(16).map(col => {
-                        const thisSpriteIndex = row * 16 + col
-                        return (
-                          <td
-                            className={classNames({
-                              active: spriteIndex === thisSpriteIndex
-                            })}
-                            key={col}
-                          >
-                            <button
-                              onClick={() =>
-                                this.handleSpriteClick(thisSpriteIndex)
-                              }
-                            />
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <canvas
-                width={128}
-                height={64}
-                ref={_spriteCanvas => {
-                  this._spriteCanvas = _spriteCanvas
-                }}
-              />
-            </div>
-            <div className='rooms'>
-              <table>
-                <tbody>
-                  {_.range(8).map(row => (
-                    <tr key={row}>
-                      {_.range(16).map(col => {
-                        const thisRoomIndex = row * 16 + col
-                        return (
-                          <td
-                            className={classNames({
-                              active: roomIndex === thisRoomIndex
-                            })}
-                            key={col}
-                          >
-                            <button
-                              onClick={() =>
-                                this.handleRoomClick(thisRoomIndex)
-                              }
-                            />
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <canvas
-                width={128 * 16}
-                height={64 * 16}
-                ref={_roomsCanvas => {
-                  this._roomsCanvas = _roomsCanvas
-                }}
-              />
-            </div>
-            <div className='tools'>
-              <button
-                className={classNames('button', {
-                  active: mode === '+'
-                })}
-                onClick={() => {
-                  this.setMode('+')
-                }}
-              >
-                +
-              </button>
+            <div className='room-and-tools'>
+              <div className='room'>
+                <table>
+                  <tbody>
+                    {_.range(16).map(row => (
+                      <tr key={row}>
+                        {_.range(16).map(col => {
+                          const value = _.get(room, [row, col], null)
+                          return (
+                            <td key={col}>
+                              <button
+                                data-row={row}
+                                data-col={col}
+                                onMouseDown={this.handleOnMouseDown}
+                                onMouseEnter={this.handleOnMouseEnter}
+                                onTouchStart={this.handleOnMouseDown}
+                                onTouchMove={this.handleOnTouchMove}
+                                className='background-'
+                              >
+                                {value !== null ? '' : 'x'}
+                              </button>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <canvas
+                  width={128}
+                  height={128}
+                  ref={_roomCanvas => {
+                    this._roomCanvas = _roomCanvas
+                  }}
+                />
+              </div>
+              <div className='tools'>
+                <button
+                  className={classNames('button', {
+                    active: mode === '+'
+                  })}
+                  onClick={() => {
+                    this.setMode('+')
+                  }}
+                >
+                  +
+                </button>
 
-              <button
-                className={classNames('button', {
-                  active: mode === '-'
-                })}
-                onClick={() => {
-                  this.setMode('-')
-                }}
-              >
-                -
-              </button>
+                <button
+                  className={classNames('button', {
+                    active: mode === '-'
+                  })}
+                  onClick={() => {
+                    this.setMode('-')
+                  }}
+                >
+                  -
+                </button>
+              </div>
+            </div>
+            <div className='sprites-and-rooms'>
+              <div className='sprites'>
+                <table>
+                  <tbody>
+                    {_.range(8).map(row => (
+                      <tr key={row}>
+                        {_.range(16).map(col => {
+                          const thisSpriteIndex = row * 16 + col
+                          return (
+                            <td
+                              className={classNames({
+                                active: spriteIndex === thisSpriteIndex
+                              })}
+                              key={col}
+                            >
+                              <button
+                                onClick={() =>
+                                  this.handleSpriteClick(thisSpriteIndex)
+                                }
+                              />
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <canvas
+                  width={128}
+                  height={64}
+                  ref={_spriteCanvas => {
+                    this._spriteCanvas = _spriteCanvas
+                  }}
+                />
+              </div>
+              <div className='rooms'>
+                <table>
+                  <tbody>
+                    {_.range(8).map(row => (
+                      <tr key={row}>
+                        {_.range(16).map(col => {
+                          const thisRoomIndex = row * 16 + col
+                          return (
+                            <td
+                              className={classNames({
+                                active: roomIndex === thisRoomIndex
+                              })}
+                              key={col}
+                            >
+                              <button
+                                onClick={() =>
+                                  this.handleRoomClick(thisRoomIndex)
+                                }
+                              />
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <canvas
+                  width={128 * 16}
+                  height={64 * 16}
+                  ref={_roomsCanvas => {
+                    this._roomsCanvas = _roomsCanvas
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

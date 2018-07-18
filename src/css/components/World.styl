@@ -9,16 +9,22 @@
       border-right solid $palette-6 2px
       padding 1.5rem
 
-    @media screen and (max-width: $max-width)
+    @media screen and (max-width: 1279px)
       grid-template-columns auto
       .WorldEditor
         grid-column 1 / span 2
         border-right none
-        padding 0.35rem
       .Output
         display none
 
     .WorldEditor
+      
+      width 100%
+      overflow hidden
+      
+      & > div
+        float left
+
       table
         border-collapse collapse
         table-layout fixed
@@ -41,12 +47,9 @@
               color $palette-6
               background none
               
-      // .room-and-tools
-      //   display flex
-      //   justify-content space-between
-      //   margin-bottom 1.5rem
-      //   position relative
-
+      .room-and-tools
+        margin-right 0.75rem
+              
       .room
         width calc(128px * 3 + 8px)
         position relative
@@ -71,12 +74,17 @@
           image-rendering -moz-crisp-edges
           image-rendering pixelated
           
+      .tools
+        margin-top 0.75rem
+        text-align right
+          
       .sprites, .rooms
         width 100%
         max-width calc(128px * 3 + 8px)
         position relative
         border solid $palette-6 2px
         padding 2px
+        margin-bottom 1.75rem
 
         table
           position relative
