@@ -17,16 +17,18 @@ class World extends Component {
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
     this.handleOnMouseEnter = this.handleOnMouseEnter.bind(this)
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
-    // this.handleOnTouchMove = this.handleOnTouchMove.bind(this)
+    this.handleOnTouchMove = this.handleOnTouchMove.bind(this)
     this.handleSpriteClick = this.handleSpriteClick.bind(this)
     this.drawSprite = this.drawSprite.bind(this)
     this.drawRoom = this.drawRoom.bind(this)
     this.getCurrentRoom = this.getCurrentRoom.bind(this)
+    this.setMode = this.setMode.bind(this)
 
     this.state = {
       spriteIndex: 0,
       roomIndex: 0,
-      mouseDown: false
+      mouseDown: false,
+      mode: '+'
     }
   }
 
@@ -60,6 +62,7 @@ class World extends Component {
 
   drawRoom () {
     const room = this.getCurrentRoom()
+    this.roomCanvasAPI.clear()
     room.forEach((row, rowNumber) => {
       row.forEach((col, colNumber) => {
         this.roomCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
@@ -79,10 +82,10 @@ class World extends Component {
     this.drawSprite({ row: +row, col: +col })
   }
 
-  handleOnMouseEnter () {
+  handleOnMouseEnter (e) {
     if (this.state.mouseDown) {
-      // const { row, col } = e.target.dataset
-      // this.drawPixel({ row: +row, col: +col })
+      const { row, col } = e.target.dataset
+      this.drawSprite({ row: +row, col: +col })
     }
   }
 
@@ -92,18 +95,32 @@ class World extends Component {
     })
   }
 
+  handleOnTouchMove (e) {
+    if (this.state.mouseDown) {
+      const touchLocation = e.changedTouches[0]
+      const dataset = document.elementFromPoint(
+        touchLocation.clientX,
+        touchLocation.clientY
+      ).dataset
+      const { row, col } = dataset
+      if (row && col) {
+        this.drawSprite({ row: +row, col: +col })
+      }
+    }
+  }
+
   handleSpriteClick (spriteIndex) {
-    this.setState({ spriteIndex })
+    this.setState({ spriteIndex, mode: '+' })
   }
 
   drawSprite ({ row, col }) {
-    const { roomIndex, spriteIndex } = this.state
+    const { roomIndex, spriteIndex, mode } = this.state
     const { updateRoom } = this.props
 
     const room = this.getCurrentRoom()
     const newRoom = JSON.parse(JSON.stringify(room))
 
-    newRoom[row][col] = spriteIndex
+    newRoom[row][col] = mode === '+' ? spriteIndex : null
 
     updateRoom({ room: newRoom, index: roomIndex })
   }
@@ -118,8 +135,14 @@ class World extends Component {
     )
   }
 
+  setMode (mode) {
+    this.setState({
+      mode
+    })
+  }
+
   render () {
-    const { spriteIndex } = this.state
+    const { spriteIndex, mode } = this.state
     const room = this.getCurrentRoom()
     return (
       <div
@@ -164,6 +187,29 @@ class World extends Component {
                     this._roomCanvas = _roomCanvas
                   }}
                 />
+              </div>
+              <div className='tools'>
+                <button
+                  className={classNames('button', {
+                    active: mode === '+'
+                  })}
+                  onClick={() => {
+                    this.setMode('+')
+                  }}
+                >
+                  +
+                </button>
+
+                <button
+                  className={classNames('button', {
+                    active: mode === '-'
+                  })}
+                  onClick={() => {
+                    this.setMode('-')
+                  }}
+                >
+                  -
+                </button>
               </div>
             </div>
             <div className='sprites'>
