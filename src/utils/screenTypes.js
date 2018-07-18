@@ -4,6 +4,7 @@ const screenTypes = {
   HELP: 'HELP',
   CODE: 'CODE',
   SPRITE: 'SPRITE',
+  WORLD: 'WORLD',
   SONG: 'SONG',
   CHAIN: 'CHAIN',
   PHRASE: 'PHRASE',

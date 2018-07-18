@@ -266,7 +266,6 @@ class Sprite extends Component {
                 ref={_canvas => {
                   this._canvas = _canvas
                 }}
-                onClick={this.handleCanvasClick}
               />
             </div>
           </div>

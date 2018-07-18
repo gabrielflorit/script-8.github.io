@@ -314,19 +314,43 @@ class Menu extends Component {
 
           <li>
             <button
-              onClick={() => {
-                setScreen(screenTypes.SPRITE)
-              }}
               className={classNames('button', {
                 hide:
                   screen === screenTypes.RUN || screen === screenTypes.SHELF,
-                active: screen === screenTypes.SPRITE
+                active: [screenTypes.SPRITE].includes(screen)
               })}
             >
-              <span className='full'>SPRITE</span>
-              <span className='mid'>spr</span>
-              <span className='small'>sp</span>
+              <span className='full'>ART</span>
+              <span className='mid'>art</span>
+              <span className='small'>ar</span>
             </button>
+            <ul className='dropdown'>
+              <li>
+                <button
+                  onClick={() => {
+                    setScreen(screenTypes.SPRITE)
+                  }}
+                  className={classNames('button', {
+                    active: screen === screenTypes.SPRITE
+                  })}
+                >
+                  SPRITE
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => {
+                    setScreen(screenTypes.WORLD)
+                  }}
+                  className={classNames('button', {
+                    active: screen === screenTypes.WORLD
+                  })}
+                >
+                  WORLD
+                </button>
+              </li>
+            </ul>
           </li>
 
           <li>
