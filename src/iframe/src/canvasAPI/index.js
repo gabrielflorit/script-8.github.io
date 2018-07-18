@@ -20,6 +20,11 @@ const canvasAPI = ({
       polyStroke({ points, args, ctx })
     },
 
+    tile (x, y, roomIndex) {
+      const room = _rooms[roomIndex]
+      return room ? room[y][x] : null
+    },
+
     line (x1, y1, x2, y2, c) {
       line({
         x1: Math.floor(x1),

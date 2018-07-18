@@ -26,6 +26,7 @@ class Help extends Component {
                     <li>func polyStroke(points, [rotate, [x, y]], color)</li>
                     <li>func sprite(x, y, spriteIndex, [brighten])</li>
                     <li>func room(roomIndex)</li>
+                    <li>func tile(x, y, roomIndex)</li>
                     <li>func clear()</li>
                   </ul>
                 </li>

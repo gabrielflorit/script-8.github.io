@@ -3,6 +3,8 @@
     "globals": [
       "StateMachine",
       "sprite",
+      "tile",
+      "room",
       "random",
       "clear",
       "print",
