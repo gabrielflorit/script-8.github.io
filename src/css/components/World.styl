@@ -51,11 +51,28 @@
           width auto
 
         .room
-            border solid $palette-6 2px
-          button
-            &:focus
-              z-index 10
-              position relative
+          position relative
+          width 100%
+          padding 2px
+          border solid $palette-6 2px
+          table
+            position relative
+            z-index 1
+            button
+              &:focus
+                z-index 10
+                position relative
+
+          canvas
+            display block
+            position absolute
+            z-index 0
+            top 2px
+            left 2px
+            width calc(100% - 4px)
+            height calc(100% - 4px)
+            image-rendering -moz-crisp-edges
+            image-rendering pixelated
 
       .sprites
         width 100%

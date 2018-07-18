@@ -79,10 +79,10 @@ class Sprite extends Component {
   }
 
   handleOnMouseDown (e) {
-    const { row, col } = e.target.dataset
     this.setState({
       mouseDown: true
     })
+    const { row, col } = e.target.dataset
     this.drawPixel({ row: +row, col: +col })
   }
 
