@@ -1,17 +1,19 @@
-import clamp from 'lodash/clamp'
 import colors from '../colors.js'
 import circle from './circle.js'
 import line from './line.js'
 import polyStroke from './polyStroke.js'
 import print from './print.js'
+import sprite from './sprite.js'
 
 const canvasAPI = ({
   ctx,
   width: canvasWidth,
   height: canvasHeight,
-  sprites
+  sprites,
+  rooms
 }) => {
   const _sprites = sprites
+  const _rooms = rooms
 
   return {
     polyStroke (points, ...args) {
@@ -48,23 +50,25 @@ const canvasAPI = ({
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
-    sprite (x, y, spriteIndex, darken = 0, flip = false) {
-      if (_sprites[spriteIndex]) {
-        _sprites[spriteIndex].forEach((cells, rowIndex) => {
-          cells.split('').forEach((color, colIndex) => {
-            if (color !== ' ') {
-              const clamped = clamp(+color - darken, 0, 7)
-              ctx.fillStyle = colors.rgb(clamped)
-              ctx.fillRect(
-                Math.floor(x) + (flip ? 7 - colIndex : colIndex),
-                Math.floor(y) + rowIndex,
-                1,
-                1
-              )
-            }
+    room (roomIndex) {
+      const room = _rooms[roomIndex]
+      if (room) {
+        room.forEach((row, rowNumber) => {
+          row.forEach((col, colNumber) => {
+            sprite({
+              x: colNumber * 8,
+              y: rowNumber * 8,
+              spriteIndex: col,
+              sprites: _sprites,
+              ctx
+            })
           })
         })
       }
+    },
+
+    sprite (x, y, spriteIndex, darken = 0, flip = false) {
+      sprite({ x, y, spriteIndex, darken, flip, sprites: _sprites, ctx })
     },
 
     circStroke (x, y, r, c) {

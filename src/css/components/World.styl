@@ -1,0 +1,119 @@
+.World
+
+  .main
+    grid-template-columns auto calc(128 * 3px + 3rem)
+    grid-template-rows auto
+    grid-row-gap 2px
+
+    .WorldEditor
+      border-right solid $palette-6 2px
+      padding 1.5rem
+
+    @media screen and (max-width: $max-width)
+      grid-template-columns auto
+      .WorldEditor
+        grid-column 1 / span 2
+        border-right none
+        padding 0.35rem
+      .Output
+        display none
+
+    .WorldEditor
+      table
+        border-collapse collapse
+        table-layout fixed
+
+        td
+          text-transform uppercase
+          text-align center
+          position relative
+          padding 0
+          button
+            border none
+            width 1.5rem
+            height @width
+            padding 0
+            cursor pointer
+            display block
+            @extend .VT323
+            font-size $font-large
+            &.background-
+              color $palette-6
+              background none
+
+      .room-and-tools
+        display flex
+        justify-content space-between
+        margin-bottom 1.5rem
+        width calc(128px * 3 + 8px)
+        position relative
+
+        .room
+          position relative
+          width 100%
+          padding 2px
+          border solid $palette-6 2px
+          table
+            position relative
+            z-index 1
+            button
+              &:focus
+                z-index 10
+                position relative
+
+          canvas
+            display block
+            position absolute
+            z-index 0
+            top 2px
+            left 2px
+            width calc(100% - 4px)
+            height calc(100% - 4px)
+            image-rendering -moz-crisp-edges
+            image-rendering pixelated
+            
+        .tools
+          margin-left 1.5rem
+
+      .sprites
+        width 100%
+        max-width calc(128px * 3 + 8px)
+        position relative
+        border solid $palette-6 2px
+        padding 2px
+
+        table
+          position relative
+          z-index 1
+          border none
+          td
+            background none
+            &.active
+              outline solid $palette-7 3px
+
+              button
+                outline solid $palette-0 6px
+            button
+              width calc(128px * 3 / 16)
+              height @width
+              background none
+          @media screen and (max-width: 25rem)
+            td
+              &.active
+                outline solid $palette-0 3px
+                button
+                  outline none
+              button
+                width calc(1.5rem - 1px)
+                height @width
+
+        canvas
+          display block
+          position absolute
+          z-index 0
+          top 2px
+          left 2px
+          width calc(100% - 4px)
+          height calc(100% - 4px)
+          image-rendering -moz-crisp-edges
+          image-rendering pixelated

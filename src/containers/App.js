@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import Boot from './Boot.js'
 import Output from './Output.js'
 import Sprite from './Sprite.js'
+import World from './World.js'
 import Phrase from './Phrase.js'
 import Chain from './Chain.js'
 import Song from './Song.js'
@@ -30,6 +31,7 @@ const mapDispatchToProps = () => ({})
 const options = {
   [screenTypes.BOOT]: () => <Boot />,
   [screenTypes.SPRITE]: () => <Sprite />,
+  [screenTypes.WORLD]: () => <World />,
   [screenTypes.PHRASE]: () => <Phrase />,
   [screenTypes.CHAIN]: () => <Chain />,
   [screenTypes.SONG]: () => <Song />,
