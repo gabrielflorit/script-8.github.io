@@ -155,6 +155,7 @@ class Sprite extends Component {
   render () {
     const { spriteIndex, colorIndex, mode } = this.state
     const sprite = this.getCurrentSprite()
+    const isEmpty = !sprite.slice(0, 8).filter(d => d !== '        ').length
     const typeIndex = sprite.length === 8 ? 0 : +sprite[8]
     return (
       <div
@@ -245,7 +246,7 @@ class Sprite extends Component {
                       -
                     </button>
                   </div>
-                  <table className='types'>
+                  <table className={classNames('types', { hide: isEmpty })}>
                     <tbody>
                       <tr>
                         {_.range(4).map(i => {

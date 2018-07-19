@@ -23,7 +23,9 @@ const sprites = handleActions(
       return omitEmpty({
         ...state,
         [payload.index]:
-          sprite && sprite.filter(d => d !== '        ').length ? sprite : null
+          sprite && sprite.slice(0, 8).filter(d => d !== '        ').length
+            ? sprite
+            : null
       })
     }
   },
