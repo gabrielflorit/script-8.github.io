@@ -11,7 +11,7 @@ const sprite = ({
   ctx
 }) => {
   if (sprites[spriteIndex]) {
-    sprites[spriteIndex].forEach((cells, rowIndex) => {
+    sprites[spriteIndex].slice(0, 8).forEach((cells, rowIndex) => {
       cells.split('').forEach((color, colIndex) => {
         if (color !== ' ') {
           const clamped = clamp(+color - darken, 0, 7)

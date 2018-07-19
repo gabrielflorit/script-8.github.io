@@ -57,12 +57,13 @@
               z-index 10
               position relative
 
-        .colors
+        .colors, .types
           border solid $palette-6 2px
           padding 2px
           button
             width calc(2.25rem)
             height @width
+            outline none
           td.active
             outline solid $palette-0 3px
             z-index 1
@@ -74,11 +75,22 @@
               height @width
               min-width 1.5rem
               min-height @min-width
+              
+        .types
+          td.active
+            outline solid $palette-6 3px
+            button
+              background $palette-6
+              color $palette-7
+          button
+            color $palette-6
+            background $palette-7
 
         .tools
-          margin-top 1.5rem
-          color white
-
+          
+          .add-delete
+            margin 1.25rem 0
+          
           button
             width calc(2.25rem)
             height @width

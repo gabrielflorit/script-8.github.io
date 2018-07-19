@@ -23,6 +23,7 @@ class Sprite extends Component {
     super(props)
 
     this.draw = this.draw.bind(this)
+    this.handleTypeClick = this.handleTypeClick.bind(this)
     this.handleColorClick = this.handleColorClick.bind(this)
     this.handleCanvasClick = this.handleCanvasClick.bind(this)
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
@@ -76,6 +77,16 @@ class Sprite extends Component {
 
   handleColorClick (colorIndex) {
     this.setState({ colorIndex, mode: '+' })
+  }
+
+  handleTypeClick (typeIndex) {
+    const { spriteIndex } = this.state
+    const { updateSprite } = this.props
+    const sprite = this.getCurrentSprite()
+
+    const newSprite = [...sprite.slice(0, 8), typeIndex]
+
+    updateSprite({ sprite: newSprite, index: spriteIndex })
   }
 
   handleOnMouseDown (e) {
@@ -144,6 +155,7 @@ class Sprite extends Component {
   render () {
     const { spriteIndex, colorIndex, mode } = this.state
     const sprite = this.getCurrentSprite()
+    const typeIndex = sprite.length === 8 ? 0 : +sprite[8]
     return (
       <div
         onMouseUp={this.handleOnMouseUp}
@@ -210,27 +222,54 @@ class Sprite extends Component {
                   </tbody>
                 </table>
                 <div className='tools'>
-                  <button
-                    className={classNames('button', {
-                      active: mode === '+'
-                    })}
-                    onClick={() => {
-                      this.setMode('+')
-                    }}
-                  >
-                    +
-                  </button>
+                  <div className='add-delete'>
+                    <button
+                      className={classNames('button', {
+                        active: mode === '+'
+                      })}
+                      onClick={() => {
+                        this.setMode('+')
+                      }}
+                    >
+                      +
+                    </button>
 
-                  <button
-                    className={classNames('button', {
-                      active: mode === '-'
-                    })}
-                    onClick={() => {
-                      this.setMode('-')
-                    }}
-                  >
-                    -
-                  </button>
+                    <button
+                      className={classNames('button', {
+                        active: mode === '-'
+                      })}
+                      onClick={() => {
+                        this.setMode('-')
+                      }}
+                    >
+                      -
+                    </button>
+                  </div>
+                  <table className='types'>
+                    <tbody>
+                      <tr>
+                        {_.range(4).map(i => {
+                          return (
+                            <td
+                              key={i}
+                              className={classNames({
+                                active: i === typeIndex
+                              })}
+                            >
+                              <button
+                                onClick={() => this.handleTypeClick(i)}
+                                className={classNames({
+                                  active: i === typeIndex
+                                })}
+                              >
+                                {i}
+                              </button>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
