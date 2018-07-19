@@ -22,7 +22,8 @@ const canvasAPI = ({
 
     tile (x, y, roomIndex) {
       const room = _rooms[roomIndex]
-      return room ? room[y][x] : null
+      const thisTile = room ? room[y][x] : null
+      return thisTile ? _sprites[thisTile] : null
     },
 
     line (x1, y1, x2, y2, c) {

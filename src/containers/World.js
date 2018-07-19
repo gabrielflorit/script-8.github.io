@@ -261,7 +261,9 @@ class World extends Component {
                           return (
                             <td
                               className={classNames({
-                                active: spriteIndex === thisSpriteIndex
+                                active:
+                                  spriteIndex === thisSpriteIndex &&
+                                  mode === '+'
                               })}
                               key={col}
                             >
