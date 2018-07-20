@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import colors from '../colors.js'
 import circle from './circle.js'
 import line from './line.js'
@@ -14,17 +15,16 @@ const canvasAPI = ({
 }) => {
   const _sprites = sprites
   const _rooms = rooms
-  // ctx.save()
+  ctx.save()
 
   return {
     polyStroke (points, ...args) {
       polyStroke({ points, args, ctx })
     },
 
-    tile (x, y, roomIndex) {
-      const room = _rooms[roomIndex]
-      const thisTile = room ? room[y][x] : null
-      return thisTile ? _sprites[thisTile] : null
+    tile (x, y) {
+      const thisTile = get(_rooms, [y, x], null)
+      return thisTile !== null ? _sprites[thisTile] : null
     },
 
     line (x1, y1, x2, y2, c) {
@@ -56,31 +56,30 @@ const canvasAPI = ({
       callback(ctx)
     },
 
-    // camera (x, y) {
-    //   ctx.restore()
-    //   ctx.translate(x, y)
-    // },
+    camera (x) {
+      ctx.restore()
+      ctx.save()
+      ctx.translate(-x, 0)
+      ctx.clearRect(x, 0, 128, 128)
+    },
 
     rectFill (x, y, w, h, c) {
       ctx.fillStyle = colors.rgb(c)
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
-    room (roomIndex) {
-      const room = _rooms[roomIndex]
-      if (room) {
-        room.forEach((row, rowNumber) => {
-          row.forEach((col, colNumber) => {
-            sprite({
-              x: colNumber * 8,
-              y: rowNumber * 8,
-              spriteIndex: col,
-              sprites: _sprites,
-              ctx
-            })
+    map (x = 0, y = 0) {
+      _rooms.slice(y, y + 16).forEach((row, rowNumber) => {
+        row.slice(x, x + 17).forEach((col, colNumber) => {
+          sprite({
+            x: (colNumber + x) * 8,
+            y: rowNumber * 8,
+            spriteIndex: col,
+            sprites: _sprites,
+            ctx
           })
         })
-      }
+      })
     },
 
     sprite (x, y, spriteIndex, darken = 0, flip = false) {

@@ -2,6 +2,8 @@
   "standard": {
     "globals": [
       "StateMachine",
+      "map",
+      "camera",
       "sprite",
       "tile",
       "room",
