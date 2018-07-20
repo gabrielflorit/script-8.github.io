@@ -17,21 +17,7 @@ const rooms = handleActions(
     [actionTypes.NEW_GAME]: () => initialState.rooms,
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       extractGistRooms(action.payload),
-    [actionTypes.UPDATE_ROOM]: (state, { payload }) => {
-      const { room, index } = payload
-      const result = _.omitBy(
-        {
-          ...state,
-          [index]:
-            room &&
-            room.filter(cols => cols.filter(col => col !== null).length).length
-              ? room
-              : null
-        },
-        _.isNull
-      )
-      return result
-    }
+    [actionTypes.UPDATE_ROOM]: (state, action) => action.payload
   },
   initialState.rooms
 )

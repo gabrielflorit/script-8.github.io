@@ -97,22 +97,21 @@
             background none
             &.active
               outline solid $palette-7 3px
-
               button
                 outline solid $palette-0 6px
             button
               width calc(128px * 3 / 16)
               height @width
               background none
-          @media screen and (max-width: 25rem)
-            td
-              &.active
-                outline solid $palette-0 3px
-                button
-                  outline none
-              button
-                width calc(1.5rem - 1px)
-                height @width
+          // @media screen and (max-width: 25rem)
+          //   td
+          //     &.active
+          //       outline solid $palette-0 3px
+          //       button
+          //         outline none
+          //     button
+          //       width calc(1.5rem - 1px)
+          //       height @width
 
         canvas
           display block
@@ -124,3 +123,11 @@
           height calc(100% - 4px)
           image-rendering -moz-crisp-edges
           image-rendering pixelated
+          
+      .rooms
+        table
+          td
+            button
+              width calc(128px * 3 / 8)
+              height @width
+        

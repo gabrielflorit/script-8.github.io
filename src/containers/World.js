@@ -8,7 +8,7 @@ import actions from '../actions/actions.js'
 const mapStateToProps = ({ sprites, rooms }) => ({ sprites, rooms })
 
 const mapDispatchToProps = dispatch => ({
-  updateRoom: ({ room, index }) => dispatch(actions.updateRoom({ room, index }))
+  updateRoom: newRooms => dispatch(actions.updateRoom(newRooms))
 })
 
 class World extends Component {
@@ -59,48 +59,54 @@ class World extends Component {
   }
 
   drawRoom () {
-    const { sprites } = this.props
-    const room = this.getCurrentRoom()
+    const before = Date.now()
+
+    const { sprites, rooms } = this.props
+    const { roomIndex } = this.state
+
     this.roomCanvasAPI = canvasAPI({
       ctx: this._roomCanvas.getContext('2d'),
       width: 128,
       height: 128,
       sprites
     })
+
     this.roomCanvasAPI.clear()
-    room.forEach((row, rowNumber) => {
-      row.forEach((col, colNumber) => {
-        this.roomCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
+    _.range(16).forEach(rowN => {
+      _.range(16).forEach(colN => {
+        const sprite = _.get(rooms, [
+          Math.floor(roomIndex / 8) * 16 + rowN,
+          (roomIndex % 8) * 16 + colN
+        ])
+        this.roomCanvasAPI.sprite(colN * 8, rowN * 8, sprite)
       })
     })
+
+    const after = Date.now()
+    console.log(`this.drawRoom() took: ${after - before}ms`)
   }
 
   drawRooms () {
+    const before = Date.now()
+
     const { rooms, sprites } = this.props
     this.roomsCanvasAPI = canvasAPI({
       ctx: this._roomsCanvas.getContext('2d'),
-      width: 128 * 16,
-      height: 64 * 16,
+      width: 128 * 8,
+      height: 128 * 4,
       sprites,
       rooms
     })
 
     this.roomsCanvasAPI.clear()
-    Object.entries(rooms).forEach(([skey, room]) => {
-      const key = +skey
-      const worldRow = Math.floor(key / 16)
-      const worldCol = key % 16
-
-      room.forEach((row, rowNumber) => {
-        row.forEach((col, colNumber) => {
-          this.roomsCanvasAPI.sprite(
-            colNumber * 8 + worldCol * 128,
-            rowNumber * 8 + worldRow * 128,
-            col
-          )
-        })
+    rooms.forEach((row, rowNumber) => {
+      row.forEach((col, colNumber) => {
+        this.roomsCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
       })
     })
+
+    const after = Date.now()
+    console.log(`this.drawRooms() took: ${after - before}ms`)
   }
 
   componentDidUpdate () {
@@ -154,23 +160,18 @@ class World extends Component {
   drawSprite ({ row, col }) {
     const { roomIndex, spriteIndex, mode } = this.state
     const { updateRoom } = this.props
-
-    const room = this.getCurrentRoom()
-    const newRoom = JSON.parse(JSON.stringify(room))
-
-    newRoom[row][col] = mode === '+' ? spriteIndex : null
-
-    updateRoom({ room: newRoom, index: roomIndex })
+    const rooms = this.getCurrentRoom()
+    const newRooms = JSON.parse(JSON.stringify(rooms))
+    newRooms[Math.floor(roomIndex / 8) * 16 + row][(roomIndex % 8) * 16 + col] =
+      mode === '+' ? spriteIndex : null
+    updateRoom(newRooms)
   }
 
   getCurrentRoom () {
     const { rooms } = this.props
-    const { roomIndex } = this.state
-    return _.get(
-      rooms,
-      roomIndex,
-      _.range(16).map(d => _.range(16).map(d => null))
-    )
+    return rooms.length
+      ? rooms
+      : _.range(64).map(row => _.range(128).map(col => null))
   }
 
   setMode (mode) {
@@ -181,7 +182,7 @@ class World extends Component {
 
   render () {
     const { roomIndex, spriteIndex, mode } = this.state
-    const room = this.getCurrentRoom()
+    const { rooms } = this.props
     return (
       <div
         onMouseUp={this.handleOnMouseUp}
@@ -197,7 +198,10 @@ class World extends Component {
                     {_.range(16).map(row => (
                       <tr key={row}>
                         {_.range(16).map(col => {
-                          const value = _.get(room, [row, col], null)
+                          const sprite = _.get(rooms, [
+                            Math.floor(roomIndex / 8) * 16 + row,
+                            (roomIndex % 8) * 16 + col
+                          ])
                           return (
                             <td key={col}>
                               <button
@@ -209,7 +213,7 @@ class World extends Component {
                                 onTouchMove={this.handleOnTouchMove}
                                 className='background-'
                               >
-                                {value !== null ? '' : 'x'}
+                                {_.isNil(sprite) ? 'x' : ''}
                               </button>
                             </td>
                           )
@@ -290,10 +294,10 @@ class World extends Component {
               <div className='rooms'>
                 <table>
                   <tbody>
-                    {_.range(8).map(row => (
+                    {_.range(4).map(row => (
                       <tr key={row}>
-                        {_.range(16).map(col => {
-                          const thisRoomIndex = row * 16 + col
+                        {_.range(8).map(col => {
+                          const thisRoomIndex = row * 8 + col
                           return (
                             <td
                               className={classNames({
@@ -314,8 +318,8 @@ class World extends Component {
                   </tbody>
                 </table>
                 <canvas
-                  width={128 * 16}
-                  height={64 * 16}
+                  width={128 * 8}
+                  height={128 * 4}
                   ref={_roomsCanvas => {
                     this._roomsCanvas = _roomsCanvas
                   }}

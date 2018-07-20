@@ -14,6 +14,7 @@ const canvasAPI = ({
 }) => {
   const _sprites = sprites
   const _rooms = rooms
+  // ctx.save()
 
   return {
     polyStroke (points, ...args) {
@@ -50,6 +51,15 @@ const canvasAPI = ({
         Math.floor(h) - 1
       )
     },
+
+    _accessCtx (callback) {
+      callback(ctx)
+    },
+
+    // camera (x, y) {
+    //   ctx.restore()
+    //   ctx.translate(x, y)
+    // },
 
     rectFill (x, y, w, h, c) {
       ctx.fillStyle = colors.rgb(c)
