@@ -28,4 +28,17 @@ const sprite = ({
   }
 }
 
+const pixelSprite = ({ x, y, grid, ctx }) => {
+  grid.slice(0, 8).forEach((cells, rowIndex) => {
+    cells.split('').forEach((color, colIndex) => {
+      if (color !== ' ') {
+        ctx.fillStyle = colors.rgb(+color)
+        ctx.fillRect(Math.floor(x) + colIndex, Math.floor(y) + rowIndex, 1, 1)
+      }
+    })
+  })
+}
+
+export { pixelSprite }
+
 export default sprite

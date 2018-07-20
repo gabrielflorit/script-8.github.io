@@ -4,7 +4,7 @@ import circle from './circle.js'
 import line from './line.js'
 import polyStroke from './polyStroke.js'
 import print from './print.js'
-import sprite from './sprite.js'
+import sprite, { pixelSprite } from './sprite.js'
 
 const canvasAPI = ({
   ctx,
@@ -16,6 +16,18 @@ const canvasAPI = ({
   const _sprites = sprites
   const _map = map
   ctx.setTransform(1, 0, 0, 1, 0, 0)
+
+  const _memoryCanvas = document.createElement('canvas')
+  _memoryCanvas.width = canvasWidth
+  _memoryCanvas.height = canvasHeight
+  const _mCtx = _memoryCanvas.getContext('2d')
+
+  Object.entries(_sprites).forEach(([skey, value]) => {
+    const key = +skey
+    const row = Math.floor(key / 16)
+    const col = key % 16
+    pixelSprite({ x: col * 8, y: row * 8, grid: value, ctx: _mCtx })
+  })
 
   return {
     polyStroke (points, ...args) {
@@ -64,17 +76,33 @@ const canvasAPI = ({
     },
 
     map (x = 0, y = 0) {
+      // const before = Date.now()
       _map.slice(y, y + 16).forEach((row, rowNumber) => {
-        row.slice(x, x + 17).forEach((col, colNumber) => {
-          sprite({
-            x: (colNumber + x) * 8,
-            y: rowNumber * 8,
-            spriteIndex: col,
-            sprites: _sprites,
-            ctx
-          })
+        row.slice(x, x + 17).forEach((spriteIndex, colNumber) => {
+          const dx = (colNumber + x) * 8
+          const dy = rowNumber * 8
+          const sWidth = 8
+          const sHeight = 8
+          const sx = (spriteIndex % 16) * 8
+          const sy = Math.floor(spriteIndex / 16) * 8
+          const dWidth = 8
+          const dHeight = 8
+
+          ctx.drawImage(
+            _memoryCanvas,
+            sx,
+            sy,
+            sWidth,
+            sHeight,
+            dx,
+            dy,
+            dWidth,
+            dHeight
+          )
         })
       })
+      // const after = Date.now()
+      // console.log(`map() took: ${after - before}ms`)
     },
 
     sprite (x, y, spriteIndex, darken = 0, flip = false) {
