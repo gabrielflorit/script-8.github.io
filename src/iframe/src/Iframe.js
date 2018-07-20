@@ -90,7 +90,7 @@ class Iframe extends Component {
       fps: null,
       game: '',
       sprites: {},
-      rooms: {},
+      map: {},
       songs: {},
       chains: {},
       phrases: {},
@@ -121,7 +121,7 @@ class Iframe extends Component {
           width: CANVAS_SIZE,
           height: CANVAS_SIZE,
           sprites: this.state.sprites,
-          rooms: this.state.rooms
+          map: this.state.map
         }),
         range,
         flatten,
@@ -188,7 +188,7 @@ class Iframe extends Component {
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
-          rooms: payload.rooms,
+          map: payload.map,
           message,
           run: payload.run,
           isPaused,
@@ -355,7 +355,7 @@ class Iframe extends Component {
       isPaused,
       game,
       sprites,
-      rooms,
+      map,
       timelineIndex,
       actors,
       selectedActors,
@@ -366,8 +366,8 @@ class Iframe extends Component {
       run
     } = state
 
-    // If the sprites or rooms have changed, update the globals.
-    if (!equal(sprites, prevState.sprites) || !equal(rooms, prevState.rooms)) {
+    // If the sprites or map have changed, update the globals.
+    if (!equal(sprites, prevState.sprites) || !equal(map, prevState.map)) {
       this.updateGlobals()
     }
 
@@ -474,7 +474,7 @@ class Iframe extends Component {
         !equal(isPaused, prevState.isPaused) ||
         !equal(game, prevState.game) ||
         !equal(sprites, prevState.sprites) ||
-        !equal(rooms, prevState.rooms) ||
+        !equal(map, prevState.map) ||
         !equal(timelineIndex, prevState.timelineIndex) ||
         !equal(selectedActors, prevState.selectedActors)
       ) {

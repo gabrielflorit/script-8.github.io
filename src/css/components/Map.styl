@@ -1,23 +1,23 @@
-.World
+.Map
 
   .main
     grid-template-columns auto calc(128 * 3px + 3rem)
     grid-template-rows auto
     grid-row-gap 2px
 
-    .WorldEditor
+    .MapEditor
       border-right solid $palette-6 2px
       padding 1.5rem
 
     @media screen and (max-width: 1279px)
       grid-template-columns auto
-      .WorldEditor
+      .MapEditor
         grid-column 1 / span 2
         border-right none
       .Output
         display none
 
-    .WorldEditor
+    .MapEditor
       
       width 100%
       overflow hidden
@@ -81,7 +81,7 @@
           width calc(2.25rem)
           height @width
           
-      .sprites, .rooms
+      .sprites, .map
         width 100%
         max-width calc(128px * 3 + 8px)
         position relative
@@ -124,7 +124,7 @@
           image-rendering -moz-crisp-edges
           image-rendering pixelated
           
-      .rooms
+      .map
         table
           td
             button

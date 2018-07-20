@@ -11,11 +11,11 @@ const canvasAPI = ({
   width: canvasWidth,
   height: canvasHeight,
   sprites,
-  rooms
+  map
 }) => {
   const _sprites = sprites
-  const _rooms = rooms
-  ctx.save()
+  const _map = map
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
 
   return {
     polyStroke (points, ...args) {
@@ -23,7 +23,7 @@ const canvasAPI = ({
     },
 
     tile (x, y) {
-      const thisTile = get(_rooms, [y, x], null)
+      const thisTile = get(_map, [y, x], null)
       return thisTile !== null ? _sprites[thisTile] : null
     },
 
@@ -52,13 +52,8 @@ const canvasAPI = ({
       )
     },
 
-    _accessCtx (callback) {
-      callback(ctx)
-    },
-
     camera (x) {
-      ctx.restore()
-      ctx.save()
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.translate(-x, 0)
       ctx.clearRect(x, 0, 128, 128)
     },
@@ -69,7 +64,7 @@ const canvasAPI = ({
     },
 
     map (x = 0, y = 0) {
-      _rooms.slice(y, y + 16).forEach((row, rowNumber) => {
+      _map.slice(y, y + 16).forEach((row, rowNumber) => {
         row.slice(x, x + 17).forEach((col, colNumber) => {
           sprite({
             x: (colNumber + x) * 8,

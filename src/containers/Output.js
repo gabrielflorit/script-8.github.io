@@ -14,7 +14,7 @@ const mapStateToProps = ({
   chains,
   phrases,
   sprites,
-  rooms,
+  map,
   sound,
   gist
 }) => ({
@@ -22,7 +22,7 @@ const mapStateToProps = ({
   chains,
   phrases,
   sprites,
-  rooms,
+  map,
   game: screen === screenTypes.BOOT ? bios : game,
   focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
@@ -81,7 +81,7 @@ class Output extends Component {
       chains,
       phrases,
       sprites,
-      rooms,
+      map,
       screen,
       sound,
       gist
@@ -91,7 +91,7 @@ class Output extends Component {
     const sendPayload = (callbacks = {}) => {
       const channel = new window.MessageChannel()
       if (this._iframe) {
-        const blank = isBlank({ game, sprites, rooms, phrases, chains, songs })
+        const blank = isBlank({ game, sprites, map, phrases, chains, songs })
         const gistIsEmpty = _.isEmpty(gist)
         this._iframe.contentWindow.postMessage(
           {
@@ -101,7 +101,7 @@ class Output extends Component {
             chains,
             phrases,
             sprites,
-            rooms,
+            map,
             run,
             callbacks,
             sound,

@@ -17,7 +17,7 @@ const mapStateToProps = ({
   gist,
   game,
   sprites,
-  rooms,
+  map,
   phrases,
   chains,
   songs,
@@ -30,7 +30,7 @@ const mapStateToProps = ({
   gist,
   game,
   sprites,
-  rooms,
+  map,
   phrases,
   chains,
   songs,
@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
     token,
     gist,
     sprites,
-    rooms,
+    map,
     phrases,
     chains,
     songs,
@@ -63,7 +63,7 @@ const mapDispatchToProps = dispatch => ({
         token,
         gist,
         sprites,
-        rooms,
+        map,
         phrases,
         chains,
         songs,
@@ -105,17 +105,17 @@ class Menu extends Component {
   }
 
   onClose (e) {
-    const { gist, game, sprites, rooms, phrases, chains, songs } = this.props
+    const { gist, game, sprites, map, phrases, chains, songs } = this.props
     const dirty = isDirty({
       gist,
       game,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs
     })
-    const blank = isBlank({ game, sprites, rooms, phrases, chains, songs })
+    const blank = isBlank({ game, sprites, map, phrases, chains, songs })
     if (dirty && !blank) {
       const message = 'Leave site? Changes you made may not be saved.'
       e.returnValue = message
@@ -124,13 +124,13 @@ class Menu extends Component {
   }
 
   onInsertBlankClick () {
-    const { gist, game, sprites, rooms, phrases, chains, songs } = this.props
+    const { gist, game, sprites, map, phrases, chains, songs } = this.props
 
     const dirty = isDirty({
       gist,
       game,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs
@@ -207,7 +207,7 @@ class Menu extends Component {
       saveGist,
       gist,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs
@@ -216,7 +216,7 @@ class Menu extends Component {
       token,
       game,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs,
@@ -232,7 +232,7 @@ class Menu extends Component {
       token,
       game,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs,
@@ -247,17 +247,17 @@ class Menu extends Component {
       gist,
       game,
       sprites,
-      rooms,
+      map,
       phrases,
       chains,
       songs
     })
-    const blank = isBlank({ game, sprites, rooms, phrases, chains, songs })
+    const blank = isBlank({ game, sprites, map, phrases, chains, songs })
 
     const contentIsEmpty =
       _.isEmpty(game) &&
       _.isEmpty(sprites) &&
-      _.isEmpty(rooms) &&
+      _.isEmpty(map) &&
       _.isEmpty(phrases) &&
       _.isEmpty(chains) &&
       _.isEmpty(songs)
@@ -400,13 +400,13 @@ class Menu extends Component {
               <li>
                 <button
                   onClick={() => {
-                    setScreen(screenTypes.WORLD)
+                    setScreen(screenTypes.MAP)
                   }}
                   className={classNames('button', {
-                    active: screen === screenTypes.WORLD
+                    active: screen === screenTypes.MAP
                   })}
                 >
-                  WORLD
+                  MAP
                 </button>
               </li>
             </ul>

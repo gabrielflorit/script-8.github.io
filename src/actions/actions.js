@@ -22,7 +22,7 @@ const actions = createActions({
   [actionTypes.SAVE_GIST_SUCCESS]: d => d,
   [actionTypes.UPDATE_SFX]: d => d,
   [actionTypes.UPDATE_SPRITE]: d => d,
-  [actionTypes.UPDATE_ROOM]: d => d,
+  [actionTypes.UPDATE_MAP]: d => d,
   [actionTypes.UPDATE_PHRASE]: d => d,
   [actionTypes.UPDATE_CHAIN]: d => d,
   [actionTypes.UPDATE_SONG]: d => d,
@@ -159,7 +159,7 @@ export const saveGist = ({
   token,
   gist,
   sprites,
-  rooms,
+  map,
   phrases,
   chains,
   songs
@@ -186,8 +186,8 @@ export const saveGist = ({
         'sprites.json': {
           content: JSON.stringify(sprites, null, 2)
         },
-        'rooms.json': {
-          content: JSON.stringify(rooms, null, 2)
+        'map.json': {
+          content: JSON.stringify(map, null, 2)
         },
         'phrases.json': {
           content: JSON.stringify(compressPhrases(phrases), null, 2)

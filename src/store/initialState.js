@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../utils/blank.js'
 
@@ -16,7 +15,7 @@ const initialState = {
   nextAction: null,
   sfxs: [],
   sprites: {},
-  rooms: [],
+  map: [],
   phrases: {},
   chains: {},
   songs: {},

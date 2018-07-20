@@ -5,13 +5,13 @@ import classNames from 'classnames'
 import canvasAPI from '../iframe/src/canvasAPI/index.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ sprites, rooms }) => ({ sprites, rooms })
+const mapStateToProps = ({ sprites, map }) => ({ sprites, map })
 
 const mapDispatchToProps = dispatch => ({
-  updateRoom: newRooms => dispatch(actions.updateRoom(newRooms))
+  updateMap: newMap => dispatch(actions.updateMap(newMap))
 })
 
-class World extends Component {
+class Map extends Component {
   constructor (props) {
     super(props)
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
@@ -22,7 +22,7 @@ class World extends Component {
     this.handleRoomClick = this.handleRoomClick.bind(this)
     this.drawSprite = this.drawSprite.bind(this)
     this.drawRoom = this.drawRoom.bind(this)
-    this.drawRooms = this.drawRooms.bind(this)
+    this.drawMap = this.drawMap.bind(this)
     this.getCurrentRoom = this.getCurrentRoom.bind(this)
     this.setMode = this.setMode.bind(this)
 
@@ -37,7 +37,7 @@ class World extends Component {
   componentDidMount () {
     this.drawSprites()
     this.drawRoom()
-    this.drawRooms()
+    this.drawMap()
   }
 
   drawSprites () {
@@ -61,7 +61,7 @@ class World extends Component {
   drawRoom () {
     const before = Date.now()
 
-    const { sprites, rooms } = this.props
+    const { sprites, map } = this.props
     const { roomIndex } = this.state
 
     this.roomCanvasAPI = canvasAPI({
@@ -74,7 +74,7 @@ class World extends Component {
     this.roomCanvasAPI.clear()
     _.range(16).forEach(rowN => {
       _.range(16).forEach(colN => {
-        const sprite = _.get(rooms, [
+        const sprite = _.get(map, [
           Math.floor(roomIndex / 8) * 16 + rowN,
           (roomIndex % 8) * 16 + colN
         ])
@@ -86,32 +86,32 @@ class World extends Component {
     console.log(`this.drawRoom() took: ${after - before}ms`)
   }
 
-  drawRooms () {
+  drawMap () {
     const before = Date.now()
 
-    const { rooms, sprites } = this.props
-    this.roomsCanvasAPI = canvasAPI({
-      ctx: this._roomsCanvas.getContext('2d'),
+    const { map, sprites } = this.props
+    this.mapCanvasAPI = canvasAPI({
+      ctx: this._mapCanvas.getContext('2d'),
       width: 128 * 8,
       height: 128 * 4,
       sprites,
-      rooms
+      map
     })
 
-    this.roomsCanvasAPI.clear()
-    rooms.forEach((row, rowNumber) => {
+    this.mapCanvasAPI.clear()
+    map.forEach((row, rowNumber) => {
       row.forEach((col, colNumber) => {
-        this.roomsCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
+        this.mapCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
       })
     })
 
     const after = Date.now()
-    console.log(`this.drawRooms() took: ${after - before}ms`)
+    console.log(`this.drawMap() took: ${after - before}ms`)
   }
 
   componentDidUpdate () {
     this.drawRoom()
-    this.drawRooms()
+    this.drawMap()
   }
 
   handleOnMouseDown (e) {
@@ -159,18 +159,18 @@ class World extends Component {
 
   drawSprite ({ row, col }) {
     const { roomIndex, spriteIndex, mode } = this.state
-    const { updateRoom } = this.props
-    const rooms = this.getCurrentRoom()
-    const newRooms = JSON.parse(JSON.stringify(rooms))
-    newRooms[Math.floor(roomIndex / 8) * 16 + row][(roomIndex % 8) * 16 + col] =
+    const { updateMap } = this.props
+    const map = this.getCurrentRoom()
+    const newMap = JSON.parse(JSON.stringify(map))
+    newMap[Math.floor(roomIndex / 8) * 16 + row][(roomIndex % 8) * 16 + col] =
       mode === '+' ? spriteIndex : null
-    updateRoom(newRooms)
+    updateMap(newMap)
   }
 
   getCurrentRoom () {
-    const { rooms } = this.props
-    return rooms.length
-      ? rooms
+    const { map } = this.props
+    return map.length
+      ? map
       : _.range(64).map(row => _.range(128).map(col => null))
   }
 
@@ -182,15 +182,15 @@ class World extends Component {
 
   render () {
     const { roomIndex, spriteIndex, mode } = this.state
-    const { rooms } = this.props
+    const { map } = this.props
     return (
       <div
         onMouseUp={this.handleOnMouseUp}
         onTouchEnd={this.handleOnMouseUp}
-        className='World two-rows-and-grid'
+        className='Map two-rows-and-grid'
       >
         <div className='main'>
-          <div className='WorldEditor'>
+          <div className='MapEditor'>
             <div className='room-and-tools'>
               <div className='room'>
                 <table>
@@ -198,7 +198,7 @@ class World extends Component {
                     {_.range(16).map(row => (
                       <tr key={row}>
                         {_.range(16).map(col => {
-                          const sprite = _.get(rooms, [
+                          const sprite = _.get(map, [
                             Math.floor(roomIndex / 8) * 16 + row,
                             (roomIndex % 8) * 16 + col
                           ])
@@ -254,7 +254,7 @@ class World extends Component {
                 </button>
               </div>
             </div>
-            <div className='sprites-and-rooms'>
+            <div className='sprites-and-map'>
               <div className='sprites'>
                 <table>
                   <tbody>
@@ -291,7 +291,7 @@ class World extends Component {
                   }}
                 />
               </div>
-              <div className='rooms'>
+              <div className='map'>
                 <table>
                   <tbody>
                     {_.range(4).map(row => (
@@ -320,8 +320,8 @@ class World extends Component {
                 <canvas
                   width={128 * 8}
                   height={128 * 4}
-                  ref={_roomsCanvas => {
-                    this._roomsCanvas = _roomsCanvas
+                  ref={_mapCanvas => {
+                    this._mapCanvas = _mapCanvas
                   }}
                 />
               </div>
@@ -333,4 +333,4 @@ class World extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(World)
+export default connect(mapStateToProps, mapDispatchToProps)(Map)
