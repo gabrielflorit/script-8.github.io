@@ -67,7 +67,6 @@ const canvasAPI = ({
     camera (x) {
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.translate(-x, 0)
-      ctx.clearRect(x, 0, 128, 128)
     },
 
     rectFill (x, y, w, h, c) {
@@ -79,26 +78,28 @@ const canvasAPI = ({
       // const before = Date.now()
       _map.slice(y, y + 16).forEach((row, rowNumber) => {
         row.slice(x, x + 17).forEach((spriteIndex, colNumber) => {
-          const dx = (colNumber + x) * 8
-          const dy = rowNumber * 8
-          const sWidth = 8
-          const sHeight = 8
-          const sx = (spriteIndex % 16) * 8
-          const sy = Math.floor(spriteIndex / 16) * 8
-          const dWidth = 8
-          const dHeight = 8
+          if (spriteIndex !== null) {
+            const dx = (colNumber + x) * 8
+            const dy = rowNumber * 8
+            const sWidth = 8
+            const sHeight = 8
+            const sx = (spriteIndex % 16) * 8
+            const sy = Math.floor(spriteIndex / 16) * 8
+            const dWidth = 8
+            const dHeight = 8
 
-          ctx.drawImage(
-            _memoryCanvas,
-            sx,
-            sy,
-            sWidth,
-            sHeight,
-            dx,
-            dy,
-            dWidth,
-            dHeight
-          )
+            ctx.drawImage(
+              _memoryCanvas,
+              sx,
+              sy,
+              sWidth,
+              sHeight,
+              dx,
+              dy,
+              dWidth,
+              dHeight
+            )
+          }
         })
       })
       // const after = Date.now()
