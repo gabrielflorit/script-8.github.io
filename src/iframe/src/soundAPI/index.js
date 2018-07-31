@@ -159,7 +159,7 @@ const soundAPI = () => {
           value.subdivision
         )
         value.sequence.loop = loop
-        value.sequence.start()
+        value.sequence.start(settings.startOffset)
         value.disposed = false
       }
     })

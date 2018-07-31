@@ -7,8 +7,9 @@ const settings = {
   matrixLength: 16,
   chainChannels: 4,
   startOffset: '+0.1',
-  bpm: 240,
-  subdivision: '16n'
+  startOffsetDouble: '+0.5',
+  bpm: 200,
+  subdivision: '8n'
 }
 
 export default settings

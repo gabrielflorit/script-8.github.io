@@ -79,7 +79,7 @@ class Phrase extends Component {
     if (isPlaying) {
       this.sequence.stop()
     } else {
-      this.sequence.start()
+      this.sequence.start(settings.startOffset)
     }
     this.setState({
       isPlaying: !isPlaying,
