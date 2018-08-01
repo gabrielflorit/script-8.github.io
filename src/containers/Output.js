@@ -9,6 +9,9 @@ import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 
+const sum = array =>
+  array.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
 const mapStateToProps = ({
   screen,
   game,
@@ -156,8 +159,6 @@ class Output extends Component {
   }
 
   getSize () {
-    const before = Date.now()
-
     const { game, songs, chains, phrases, sprites, map } = this.props
 
     const gameLz = lz.compress(game)
@@ -166,28 +167,24 @@ class Output extends Component {
     const music = JSON.stringify({ phrases, chains, songs })
     const musicLz = lz.compress(music)
 
-    const after = Date.now()
-    console.log(`lz compression took ${after - before}ms`)
+    const sizes = [
+      ['code', game, gameLz],
+      ['art', art, artLz],
+      ['music', music, musicLz]
+    ]
 
     return (
       <ul>
+        {sizes.map((d, i) => (
+          <li key={i}>
+            {d[0]}: {numberWithCommas(d[1].length)}/{numberWithCommas(
+              d[2].length
+            )}
+          </li>
+        ))}
         <li>
-          CODE: {numberWithCommas(game.length)}/{numberWithCommas(
-            gameLz.length
-          )}
-        </li>
-        <li>
-          ART: {numberWithCommas(art.length)}/{numberWithCommas(artLz.length)}
-        </li>
-        <li>
-          MUSIC: {numberWithCommas(music.length)}/{numberWithCommas(
-            musicLz.length
-          )}
-        </li>
-        <li>
-          TOTAL: {numberWithCommas(game.length + art.length + music.length)}/{numberWithCommas(
-            gameLz.length + artLz.length + musicLz.length
-          )}
+          total: {numberWithCommas(sum(sizes.map(d => d[1].length)))}/
+          {numberWithCommas(sum(sizes.map(d => d[2].length)))}
         </li>
       </ul>
     )
