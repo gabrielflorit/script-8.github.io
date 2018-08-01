@@ -373,6 +373,9 @@ class Menu extends Component {
 
           <li>
             <button
+              onClick={() => {
+                setScreen(screenTypes.SPRITE)
+              }}
               className={classNames('button', {
                 hide:
                   screen === screenTypes.RUN || screen === screenTypes.SHELF,
@@ -414,6 +417,9 @@ class Menu extends Component {
 
           <li>
             <button
+              onClick={() => {
+                setScreen(screenTypes.PHRASE)
+              }}
               className={classNames('button', {
                 hide:
                   screen === screenTypes.RUN || screen === screenTypes.SHELF,
