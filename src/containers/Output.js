@@ -1,11 +1,13 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import lz from 'lz-string'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
 import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
+import { numberWithCommas } from '../utils/string.js'
 
 const mapStateToProps = ({
   screen,
@@ -40,10 +42,16 @@ class Output extends Component {
     super(props)
 
     this.evaluate = this.evaluate.bind(this)
+    this.getSize = this.getSize.bind(this)
+    this.handleClickSize = this.handleClickSize.bind(this)
     this.resize = _.debounce(this.resize.bind(this), 100)
     this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
 
     window.addEventListener('resize', this.resize)
+
+    this.state = {
+      showSize: false
+    }
   }
 
   noop () {}
@@ -52,6 +60,12 @@ class Output extends Component {
     if (this.isLoaded) {
       this.evaluate()
     }
+  }
+
+  handleClickSize () {
+    this.setState({
+      showSize: !this.state.showSize
+    })
   }
 
   handleBlur (e) {
@@ -141,7 +155,48 @@ class Output extends Component {
     }
   }
 
+  getSize () {
+    const before = Date.now()
+
+    const { game, songs, chains, phrases, sprites, map } = this.props
+
+    const gameLz = lz.compress(game)
+    const art = JSON.stringify({ sprites, map })
+    const artLz = lz.compress(art)
+    const music = JSON.stringify({ phrases, chains, songs })
+    const musicLz = lz.compress(music)
+
+    const after = Date.now()
+    console.log(`lz compression took ${after - before}ms`)
+
+    return (
+      <ul>
+        <li>
+          CODE: {numberWithCommas(game.length)}/{numberWithCommas(
+            gameLz.length
+          )}
+        </li>
+        <li>
+          ART: {numberWithCommas(art.length)}/{numberWithCommas(artLz.length)}
+        </li>
+        <li>
+          MUSIC: {numberWithCommas(music.length)}/{numberWithCommas(
+            musicLz.length
+          )}
+        </li>
+        <li>
+          TOTAL: {numberWithCommas(game.length + art.length + music.length)}/{numberWithCommas(
+            gameLz.length + artLz.length + musicLz.length
+          )}
+        </li>
+      </ul>
+    )
+  }
+
   render () {
+    const { showSize } = this.state
+    const { run } = this.props
+
     return (
       <div className='Output'>
         <iframe
@@ -157,6 +212,14 @@ class Output extends Component {
             this.evaluate()
           }}
         />
+        {!run ? (
+          <div className='stats'>
+            {showSize ? this.getSize() : null}
+            <button className='button' onClick={this.handleClickSize}>
+              {showSize ? 'hide' : 'show'} cassette size
+            </button>
+          </div>
+        ) : null}
       </div>
     )
   }
