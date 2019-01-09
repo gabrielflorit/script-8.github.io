@@ -41,3 +41,25 @@ SCRIPT-8 was built with [create-react-app](https://github.com/facebook/create-re
 - [Gabriel Florit](https://github.com/gabrielflorit)
 - [Benjamin Philippe Applegate](https://github.com/Camto)
 - [matimati433](https://github.com/matimati433)
+
+## TODO
+- I need to move from Google Cloud. What needs doing?
+- First, let's take an inventory of network requests.
+- REACT_APP_AUTHENTICATOR (https://script-8.herokuapp.com) DONE
+  - used to authenticate user (fetch and store oauth token)
+
+- REACT_APP_NOW (https://script-8.appspot.com)
+
+  - /id DONE
+    - fetch gist if user is not authenticated (no user token)
+      - use non-oauth github to request
+      - if rate-limit exceeded, then use a now.sh service
+
+  - /cassettes
+    - request cassettes for SHELF
+
+  - /unshelve
+    - remove cassette from SHELF
+
+  - /cassette
+    - put cassette on SHELF
