@@ -109,33 +109,17 @@ export const fetchGist = ({ id, token }) => dispatch => {
       )
       .then(json => dispatch(actions.fetchGistSuccess(json)))
   } else {
-    const gh = new GitHub()
-
-    return gh
-      .getGist(id)
-      .read()
-      .then(
-        response => response.data,
-        error => {
-          if (
-            error.response.data.message.startsWith('API rate limit exceeded')
-          ) {
-            console.log(
-              'Rate limit exceeded for non-oauth. Switching to oauth.'
-            )
-            return window
-              .fetch(`${process.env.REACT_APP_NOW}/${id}`)
-              .then(response => response.json())
-          } else {
-            throw error
-          }
-        }
-      )
+    return window
+      .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
+      .then(response => {
+        console.log({ response })
+        return response.json()
+      })
       .then(json => dispatch(actions.fetchGistSuccess(json)))
       .catch(error =>
         throwError({
           error,
-          message: `Could not fetch gist ${id} from GitHub while not using an oauth token, or from the hosted oauth service.`
+          message: `Could not fetch gist ${id} from the hosted oauth service.`
         })
       )
   }
@@ -259,3 +243,36 @@ export const saveGist = ({
     }
   }
 }
+
+// const gh = new GitHub()
+// return gh
+//   .getGist(id)
+//   .read()
+//   .then(
+//     response => response.data,
+//     error => {
+//       if (
+//         error.response.data.message.startsWith('API rate limit exceeded')
+//       ) {
+//         console.log(
+//           'Rate limit exceeded for non-oauth. Switching to oauth.'
+//         )
+//         return window
+//           .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
+//           .then(response => {
+//             console.log({ response })
+//             return response.json()
+//           })
+//       } else {
+//         throw error
+//       }
+//     }
+//   )
+//   .then(json => dispatch(actions.fetchGistSuccess(json)))
+//   .catch(error =>
+//     throwError({
+//       error,
+//       message: `Could not fetch gist ${id} from GitHub while not using an oauth token, or from the hosted oauth service.`
+//     })
+//   )
+// }
