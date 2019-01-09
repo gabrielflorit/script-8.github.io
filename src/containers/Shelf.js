@@ -40,7 +40,7 @@ class Shelf extends Component {
         error =>
           throwError({
             error,
-            message: `Could not request cassettes via appspot service.`
+            message: `Could not request cassettes.`
           })
       )
       .then(cassettes => {
