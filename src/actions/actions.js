@@ -104,22 +104,40 @@ export const fetchGist = ({ id, token }) => dispatch => {
         error =>
           throwError({
             error,
-            message: `Could not fetch gist ${id} from GitHub.`
+            message: `Could not fetch gist ${id} from GitHub while using an oauth token.`
           })
       )
       .then(json => dispatch(actions.fetchGistSuccess(json)))
   } else {
-    return window
-      .fetch(`${process.env.REACT_APP_NOW}/${id}`)
+    const gh = new GitHub()
+
+    return gh
+      .getGist(id)
+      .read()
       .then(
-        response => response.json(),
-        error =>
-          throwError({
-            error,
-            message: `Could not fetch gist ${id} via appspot service.`
-          })
+        response => response.data,
+        error => {
+          if (
+            error.response.data.message.startsWith('API rate limit exceeded')
+          ) {
+            console.log(
+              'Rate limit exceeded for non-oauth. Switching to oauth.'
+            )
+            return window
+              .fetch(`${process.env.REACT_APP_NOW}/${id}`)
+              .then(response => response.json())
+          } else {
+            throw error
+          }
+        }
       )
       .then(json => dispatch(actions.fetchGistSuccess(json)))
+      .catch(error =>
+        throwError({
+          error,
+          message: `Could not fetch gist ${id} from GitHub while not using an oauth token, or from the hosted oauth service.`
+        })
+      )
   }
 }
 
