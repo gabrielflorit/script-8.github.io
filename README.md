@@ -32,6 +32,12 @@ yarn start
 
 This will open SCRIPT-8 on `http://localhost:3000`.
 
+## To deploy
+
+Switch to `dev` branch. Pull latest. Then,
+
+- `yarn deploy`
+
 ## Other information
 
 SCRIPT-8 was built with [create-react-app](https://github.com/facebook/create-react-app). Consult its guide for more instructions (e.g. running tests, building).
