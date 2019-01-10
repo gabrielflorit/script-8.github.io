@@ -36,8 +36,8 @@ This will open SCRIPT-8 on `http://localhost:3000`.
 
 Switch to `dev` branch. Pull latest. Then,
 
-- `yarn version`
-- `yarn deploy`
+- `yarn run version`
+- `yarn run deploy`
 
 ## Other information
 
