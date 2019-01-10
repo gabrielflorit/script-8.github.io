@@ -126,7 +126,7 @@ class Shelf extends Component {
                       </a>
                       <span className='author'>by {d.user}</span>
                     </div>
-                    <ul className='controls'>{unshelve}</ul>
+                    <ul className='controls hide'>{unshelve}</ul>
                   </li>
                 )
               })
