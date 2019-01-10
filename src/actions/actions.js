@@ -46,10 +46,7 @@ export const unshelve = ({ token, gistId }) => dispatch => {
       body: JSON.stringify({
         token: token.value,
         gistId
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      })
     })
     .then(
       response => response.json(),
@@ -74,10 +71,7 @@ export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
         gist,
         cover,
         title
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      })
     })
     .then(
       response => response.json(),
