@@ -495,6 +495,7 @@ class Menu extends Component {
 
           <li
             className={classNames({
+              hide: !isRunShelfOrHome
             })}
           >
             <button
@@ -520,6 +521,38 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
+              <span className='small'>{isRunShelfOrHome ? 'run' : 'ru'}</span>
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.HELP)
+              }}
+              className={classNames('button', {
+                hide: isRunShelfOrHome,
+                active: screen === screenTypes.HELP
+              })}
+            >
+              <span className='full'>HELP</span>
+              <span className='mid'>hel</span>
+              <span className='small'>he</span>
+            </button>
+          </li>
+          
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.SHELF)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.SHELF
+              })}
+            >
+              <span className='full'>SHELF</span>
+              <span className='mid'>{isRunShelfOrHome ? 'shelf' : 'she'}</span>
+              <span className='small'>{isRunShelfOrHome ? 'shelf' : 'sh'}</span>
             </button>
           </li>
 
@@ -532,35 +565,6 @@ class Menu extends Component {
               <span className='full'>sound-{sound ? 'OFF' : 'ON'}</span>
               <span className='mid'>sound-{sound ? 'OFF' : 'ON'}</span>
               <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
-              <span className='small'>{isRunShelfOrHome ? 'run' : 'ru'}</span>
-            </button>
-          </li>
-
-          <li>
-            <button
-              onClick={() => {
-                setScreen(screenTypes.SHELF)
-              }}
-              className={classNames('button', {
-                active: screen === screenTypes.SHELF
-              })}
-            >
-              <span className='full'>SHELF</span>
-            </button>
-          </li>
-
-          <li>
-            <button
-              onClick={() => {
-                setScreen(screenTypes.HELP)
-              }}
-              className={classNames('button', {
-                active: screen === screenTypes.HELP
-              })}
-            >
-              <span className='full'>HELP</span>
-              <span className='mid'>hel</span>
-              <span className='small'>he</span>
             </button>
           </li>
         </ul>
