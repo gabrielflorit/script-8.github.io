@@ -294,6 +294,11 @@ class Menu extends Component {
     // - content is NOT dirty
     const canShelve = currentLogin && currentLogin === gistLogin && !dirty
 
+    const isRunShelfOrHome =
+      screen === screenTypes.RUN ||
+      screen === screenTypes.SHELF ||
+      screen === screenTypes.HOME
+
     return (
       <nav className='Menu'>
         <ul>
@@ -313,7 +318,7 @@ class Menu extends Component {
           </li>
           <li
             className={classNames({
-              hide: screen === screenTypes.RUN || screen === screenTypes.SHELF
+              hide: isRunShelfOrHome
             })}
           >
             <button className='button'>
@@ -375,8 +380,7 @@ class Menu extends Component {
                 setScreen(screenTypes.CODE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: screen === screenTypes.CODE
               })}
             >
@@ -392,8 +396,7 @@ class Menu extends Component {
                 setScreen(screenTypes.SPRITE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: [screenTypes.SPRITE].includes(screen)
               })}
             >
@@ -436,8 +439,7 @@ class Menu extends Component {
                 setScreen(screenTypes.PHRASE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: [
                   screenTypes.SONG,
                   screenTypes.CHAIN,
@@ -493,7 +495,6 @@ class Menu extends Component {
 
           <li
             className={classNames({
-              hide: screen !== screenTypes.RUN && screen !== screenTypes.SHELF
             })}
           >
             <button
@@ -519,11 +520,6 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
-              <span className='small'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'run'
-                  : 'ru'}
-              </span>
             </button>
           </li>
 
@@ -536,6 +532,7 @@ class Menu extends Component {
               <span className='full'>sound-{sound ? 'OFF' : 'ON'}</span>
               <span className='mid'>sound-{sound ? 'OFF' : 'ON'}</span>
               <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
+              <span className='small'>{isRunShelfOrHome ? 'run' : 'ru'}</span>
             </button>
           </li>
 
@@ -549,16 +546,6 @@ class Menu extends Component {
               })}
             >
               <span className='full'>SHELF</span>
-              <span className='mid'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'shelf'
-                  : 'she'}
-              </span>
-              <span className='small'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'shelf'
-                  : 'sh'}
-              </span>
             </button>
           </li>
 
@@ -568,8 +555,6 @@ class Menu extends Component {
                 setScreen(screenTypes.HELP)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
                 active: screen === screenTypes.HELP
               })}
             >
