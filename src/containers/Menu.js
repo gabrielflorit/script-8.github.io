@@ -11,7 +11,6 @@ import actions, {
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
-import Title from './Title.js'
 
 const mapStateToProps = ({
   gist,
@@ -22,6 +21,7 @@ const mapStateToProps = ({
   chains,
   songs,
   token,
+  shelving,
   screen,
   nextAction,
   sound
@@ -35,6 +35,7 @@ const mapStateToProps = ({
   chains,
   songs,
   token,
+  isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
   sound
 })
@@ -238,7 +239,8 @@ class Menu extends Component {
       songs,
       setScreen,
       sound,
-      toggleSound
+      toggleSound,
+      isFetching
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -294,8 +296,21 @@ class Menu extends Component {
 
     return (
       <nav className='Menu'>
-        <Title />
         <ul>
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.HOME)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.HOME
+              })}
+            >
+              <span className='full'>SCRIPT-8</span>
+              <span className='mid'>SCRIPT-8</span>
+              <span className='small'>SCRIPT-8</span>
+            </button>
+          </li>
           <li
             className={classNames({
               hide: screen === screenTypes.RUN || screen === screenTypes.SHELF
@@ -564,9 +579,23 @@ class Menu extends Component {
             </button>
           </li>
         </ul>
+        <ul>
+          <li>
+            <button
+              className={classNames('button', 'title', {
+                'is-fetching': isFetching
+              })}
+            >
+              <span>+</span>
+            </button>
+          </li>
+        </ul>
       </nav>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Menu)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Menu)

@@ -27,8 +27,8 @@ class Boot extends Component {
       fetchGist({ id, token })
     } else {
       // If there is no id,
-      // show shelf.
-      setScreen(screenTypes.SHELF)
+      // show home.
+      setScreen(screenTypes.HOME)
     }
   }
 
@@ -48,4 +48,7 @@ class Boot extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Boot)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Boot)
