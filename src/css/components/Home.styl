@@ -2,13 +2,36 @@
 
   .main
     padding 1.5rem
+    padding-top 2.25rem
     background $palette-7
     color $palette-2
     @extend .VT323
     font-size $font-large
+    max-width calc(512px + 1.5rem * 2)
+    margin 0 auto
 
-  a
-    color $palette-0
-    &:hover
-      background $palette-0
-      color $palette-7
+    a.text
+      color $palette-0
+      &:hover
+        background $palette-0
+        color $palette-7
+
+    img.logo
+      width 100%
+      image-rendering pixelated
+      padding-bottom 0.5rem
+
+    .gifs
+      display flex
+      justify-content space-evenly
+      flex-wrap wrap
+      margin-bottom 4.5rem
+      img
+        width 128px
+        padding-bottom 1.5rem
+
+    .gif
+      image-rendering pixelated
+      &.wide
+        width 100%
+        margin-bottom 4.5rem
