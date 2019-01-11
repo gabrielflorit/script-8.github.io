@@ -1,8 +1,18 @@
+@keyframes pulse {
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
 .Menu
   margin 0
   padding 0
   display flex
   white-space nowrap
+  justify-content space-between
 
   button
     cursor pointer
@@ -30,3 +40,10 @@
   ul li ul li button
     width 100%
     text-align left
+
+  .title
+    display none
+    &.is-fetching
+      display inline-block
+      color $palette-0
+      animation pulse 0.25s infinite alternate

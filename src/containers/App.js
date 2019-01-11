@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import includes from 'lodash/includes'
 import classNames from 'classnames'
 import Boot from './Boot.js'
+import Home from './Home.js'
 import Output from './Output.js'
 import Sprite from './Sprite.js'
 import Map from './Map.js'
@@ -29,6 +30,7 @@ const mapDispatchToProps = () => ({})
 
 const options = {
   [screenTypes.BOOT]: () => <Boot />,
+  [screenTypes.HOME]: () => <Home />,
   [screenTypes.SPRITE]: () => <Sprite />,
   [screenTypes.MAP]: () => <Map />,
   [screenTypes.PHRASE]: () => <Phrase />,
@@ -57,4 +59,7 @@ const App = ({ screen }) => (
   </ErrorBoundary>
 )
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)

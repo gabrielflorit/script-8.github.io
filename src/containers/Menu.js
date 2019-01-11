@@ -11,7 +11,6 @@ import actions, {
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
-import Title from './Title.js'
 
 const mapStateToProps = ({
   gist,
@@ -22,6 +21,7 @@ const mapStateToProps = ({
   chains,
   songs,
   token,
+  shelving,
   screen,
   nextAction,
   sound
@@ -35,6 +35,7 @@ const mapStateToProps = ({
   chains,
   songs,
   token,
+  isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
   sound
 })
@@ -238,7 +239,8 @@ class Menu extends Component {
       songs,
       setScreen,
       sound,
-      toggleSound
+      toggleSound,
+      isFetching
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -292,13 +294,31 @@ class Menu extends Component {
     // - content is NOT dirty
     const canShelve = currentLogin && currentLogin === gistLogin && !dirty
 
+    const isRunShelfOrHome =
+      screen === screenTypes.RUN ||
+      screen === screenTypes.SHELF ||
+      screen === screenTypes.HOME
+
     return (
       <nav className='Menu'>
-        <Title />
         <ul>
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.HOME)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.HOME
+              })}
+            >
+              <span className='full'>SCRIPT-8</span>
+              <span className='mid'>SCRIPT-8</span>
+              <span className='small'>SCRIPT-8</span>
+            </button>
+          </li>
           <li
             className={classNames({
-              hide: screen === screenTypes.RUN || screen === screenTypes.SHELF
+              hide: isRunShelfOrHome
             })}
           >
             <button className='button'>
@@ -360,8 +380,7 @@ class Menu extends Component {
                 setScreen(screenTypes.CODE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: screen === screenTypes.CODE
               })}
             >
@@ -377,8 +396,7 @@ class Menu extends Component {
                 setScreen(screenTypes.SPRITE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: [screenTypes.SPRITE].includes(screen)
               })}
             >
@@ -421,8 +439,7 @@ class Menu extends Component {
                 setScreen(screenTypes.PHRASE)
               }}
               className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
+                hide: isRunShelfOrHome,
                 active: [
                   screenTypes.SONG,
                   screenTypes.CHAIN,
@@ -478,7 +495,7 @@ class Menu extends Component {
 
           <li
             className={classNames({
-              hide: screen !== screenTypes.RUN && screen !== screenTypes.SHELF
+              hide: !isRunShelfOrHome
             })}
           >
             <button
@@ -504,11 +521,38 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
-              <span className='small'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'run'
-                  : 'ru'}
-              </span>
+              <span className='small'>{isRunShelfOrHome ? 'run' : 'ru'}</span>
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.HELP)
+              }}
+              className={classNames('button', {
+                hide: isRunShelfOrHome,
+                active: screen === screenTypes.HELP
+              })}
+            >
+              <span className='full'>HELP</span>
+              <span className='mid'>hel</span>
+              <span className='small'>he</span>
+            </button>
+          </li>
+          
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.SHELF)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.SHELF
+              })}
+            >
+              <span className='full'>SHELF</span>
+              <span className='mid'>{isRunShelfOrHome ? 'shelf' : 'she'}</span>
+              <span className='small'>{isRunShelfOrHome ? 'shelf' : 'sh'}</span>
             </button>
           </li>
 
@@ -523,44 +567,15 @@ class Menu extends Component {
               <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
             </button>
           </li>
-
+        </ul>
+        <ul>
           <li>
             <button
-              onClick={() => {
-                setScreen(screenTypes.SHELF)
-              }}
-              className={classNames('button', {
-                active: screen === screenTypes.SHELF
+              className={classNames('button', 'title', {
+                'is-fetching': isFetching
               })}
             >
-              <span className='full'>SHELF</span>
-              <span className='mid'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'shelf'
-                  : 'she'}
-              </span>
-              <span className='small'>
-                {screen === screenTypes.RUN || screen === screenTypes.SHELF
-                  ? 'shelf'
-                  : 'sh'}
-              </span>
-            </button>
-          </li>
-
-          <li>
-            <button
-              onClick={() => {
-                setScreen(screenTypes.HELP)
-              }}
-              className={classNames('button', {
-                hide:
-                  screen === screenTypes.RUN || screen === screenTypes.SHELF,
-                active: screen === screenTypes.HELP
-              })}
-            >
-              <span className='full'>HELP</span>
-              <span className='mid'>hel</span>
-              <span className='small'>he</span>
+              <span>+</span>
             </button>
           </li>
         </ul>
@@ -569,4 +584,7 @@ class Menu extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Menu)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Menu)
