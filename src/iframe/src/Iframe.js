@@ -15,7 +15,7 @@ import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
-import utilsAPI from './utilsAPI.js'
+import log from './log.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import createReducer from './createReducer.js'
@@ -115,7 +115,8 @@ class Iframe extends Component {
         StateMachine,
         Math,
         Object,
-        ...utilsAPI(),
+        Array,
+        log,
         ...canvasAPI({
           ctx: this._canvas.getContext('2d'),
           width: CANVAS_SIZE,
@@ -490,14 +491,26 @@ class Iframe extends Component {
             let alteredStates = []
             this.store = createStore(this.reducer, this.reduxHistory[0].state)
             alteredStates.push(this.store.getState())
-            this.reduxHistory.forEach(({ state, action }) => {
+
+            this.reduxHistory.forEach(({ state, action }, i) => {
+              if (i === timelineIndex - 1) {
+                // Enable logging only if this is the selected frame.
+                this.updateGlobals({ log })
+              } else {
+                this.updateGlobals({ log: NOOP })
+              }
               this.store.dispatch(action)
               alteredStates.push(this.store.getState())
             })
 
+            // Re-enable logging.
+            this.updateGlobals({ log })
+
             alteredStates = alteredStates.filter(d => !isEmpty(d))
 
-            // If we were previously in play mode,
+            // If we were previously in pause mode,
+            // use the provided timelineIndex.
+            // Otherwise,
             // set the timeline to the max.
             const newTimelineIndex = prevState.isPaused
               ? timelineIndex
@@ -526,8 +539,12 @@ class Iframe extends Component {
                       selectedActors.includes(d.name)
                     )) ||
                   []
+                // Disable logging during window.draw calls.
+                this.updateGlobals({ log: NOOP })
                 window.drawActors &&
                   window.drawActors({ actors: matchingActors }, true)
+                // Re-enable console.log.
+                this.updateGlobals({ log })
               }
             })
 
