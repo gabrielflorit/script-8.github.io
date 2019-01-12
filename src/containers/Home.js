@@ -6,6 +6,7 @@ import breakoutgif from '../images/breakout-lite.gif'
 import brospipegif from '../images/brospipe-lite.gif'
 import livecoding480 from '../images/livecoding480.gif'
 import slider480 from '../images/slider480.gif'
+import pauserewind from '../images/pauserewind.gif'
 
 const mapStateToProps = () => ({})
 
@@ -54,7 +55,14 @@ class Home extends Component {
               a slider to help you tweak numbers without typing.
               <img className='gif wide' src={slider480} alt='slider' />
             </li>
-            <li>a time-traveling tool so you can pause and rewind.</li>
+            <li>
+              <span>a time-traveling tool so you can pause and rewind.</span>
+              <img
+                className='gif wide pauserewind'
+                src={pauserewind}
+                alt='pause and rewind'
+              />
+            </li>
             <li>buttons that show a character's past and future paths.</li>
             <li>
               the ability to combine all the above so you can manipulate time.
