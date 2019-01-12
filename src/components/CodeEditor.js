@@ -25,6 +25,7 @@ class CodeEditor extends Component {
       lineNumbers: true,
       tabSize: 2,
       cursorBlinkRate: 0,
+      scrollbarStyle: null,
       extraKeys: window.CodeMirror.normalizeKeyMap({
         Tab: commands.tab,
         'Cmd-/': commands.comment,
@@ -112,7 +113,7 @@ class CodeEditor extends Component {
       // Position slider centered above token.
       this._slider.style.left = `${middleCoords.left -
         wrapperRect.left +
-        value.length * this.codeMirror.defaultCharWidth() / 2}px`
+        (value.length * this.codeMirror.defaultCharWidth()) / 2}px`
       this._slider.style.top = `${middleCoords.top -
         wrapperRect.top -
         this.codeMirror.defaultTextHeight()}px`

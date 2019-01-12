@@ -4,7 +4,8 @@ import logo from '../images/logo.png'
 import loshermanosbrosgif from '../images/loshermanosbros-lite.gif'
 import breakoutgif from '../images/breakout-lite.gif'
 import brospipegif from '../images/brospipe-lite.gif'
-import bigdemo from '../images/bigdemo.gif'
+import livecoding480 from '../images/livecoding480.gif'
+import slider480 from '../images/slider480.gif'
 
 const mapStateToProps = () => ({})
 
@@ -42,11 +43,23 @@ class Home extends Component {
               <img className='gif' src={brospipegif} alt='the plumber' />
             </a>
           </p>
-          <p>
-            It has tools for editing code, sprites, maps, and music. Edits take
-            place instantly, even if the game is running.
-          </p>
-          <img className='gif wide' src={bigdemo} alt='script-8 tools' />
+          <p>It features:</p>
+          <ul>
+            <li>
+              a livecoding editing environment, where the game changes as you
+              type.
+              <img className='gif wide' src={livecoding480} alt='livecoding' />
+            </li>
+            <li>
+              a slider to help you tweak numbers without typing.
+              <img className='gif wide' src={slider480} alt='slider' />
+            </li>
+            <li>a time-traveling tool so you can pause and rewind.</li>
+            <li>buttons that show a character's past and future paths.</li>
+            <li>
+              the ability to combine all the above so you can manipulate time.
+            </li>
+          </ul>
 
           <p>Each cassette is recorded to a URL you can share with anyone.</p>
           <p>Play cassettes with a keyboard or gamepad.</p>
