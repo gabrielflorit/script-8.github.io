@@ -34,12 +34,12 @@ body
   position absolute
   width 100%
   min-height 100%
-  user-select none
   &.full-height
     height 100%
   display grid
   grid-template-rows 1fr auto
   &.App-BOOT
+    user-select none
     background $palette-7
     grid-template-rows auto
     .Output
@@ -51,6 +51,7 @@ body
     .TopBar
       display none
   &.App-RUN
+    user-select none
     background $palette-7
     grid-template-rows $font-large auto
     .Output
@@ -60,6 +61,7 @@ body
       justify-self center
       align-self center
   &.App-CODE
+    user-select none
     background $palette-7
     grid-template-rows $font-large auto
     .Output
@@ -73,6 +75,7 @@ body
     .main
       height 100%
   &.App-SPRITE
+    user-select none
     background $palette-7
     grid-template-rows $font-large auto
     .Output
@@ -86,6 +89,7 @@ body
     .main
       height 100%
   &.App-MAP
+    user-select none
     background $palette-7
     grid-template-rows $font-large auto
     .Output
@@ -101,6 +105,7 @@ body
   &.App-PHRASE,
   &.App-CHAIN,
   &.App-SONG
+    user-select none
     background $palette-7
     grid-template-rows $font-large auto
   &.App-HELP, &.App-HOME
