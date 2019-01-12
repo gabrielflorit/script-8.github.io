@@ -1,5 +1,5 @@
 # SCRIPT-8
-A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy console.
+A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games.
 
 ## Setup for local development
 
