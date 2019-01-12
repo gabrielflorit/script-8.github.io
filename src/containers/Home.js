@@ -73,6 +73,7 @@ class Home extends Component {
             <li>
               the ability to combine all the above so you can manipulate time.
               <iframe
+                title="Demonstration of SCRIPT-8's time-traveling tool"
                 width='560'
                 height='315'
                 src='https://www.youtube.com/embed/0rg5GGFaIY0'
