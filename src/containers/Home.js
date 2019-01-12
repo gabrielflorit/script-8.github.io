@@ -49,7 +49,7 @@ class Home extends Component {
             </a>
           </p>
           <p>
-            SCRIPT-8 is designed to encourage play - the kind of wonder-filled
+            SCRIPT-8 is designed to encourage play — the kind of wonder-filled
             play children experience as they explore and learn about the world.
             In order to support this goal, everything in SCRIPT-8 has immediate
             feedback. It is what some call a "livecoding" environment.
