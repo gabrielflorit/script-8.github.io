@@ -6,6 +6,7 @@ import screenTypes from '../utils/screenTypes.js'
 import isDirty from '../utils/isDirty.js'
 import isBlank from '../utils/isBlank.js'
 import areYouSure from '../utils/areYouSure.js'
+import { version } from '../iframe/package.json'
 import actions, {
   saveGist,
   fetchToken,
@@ -540,7 +541,7 @@ class Menu extends Component {
               <span className='small'>he</span>
             </button>
           </li>
-          
+
           <li>
             <button
               onClick={() => {
@@ -569,6 +570,15 @@ class Menu extends Component {
           </li>
         </ul>
         <ul>
+          <li>
+            <button
+              className={classNames('button', 'version', {
+                hide: screen !== screenTypes.HOME
+              })}
+            >
+              <span>{version}</span>
+            </button>
+          </li>
           <li>
             <button
               className={classNames('button', 'title', {
