@@ -8,6 +8,9 @@ import livecoding480 from '../images/livecoding480.gif'
 import slider480 from '../images/slider480.gif'
 import pauserewind from '../images/pauserewind.gif'
 import toggle from '../images/toggle.gif'
+import spritedemo from '../images/spritedemo.gif'
+import mapdemo from '../images/mapdemo.gif'
+import musicdemo from '../images/musicdemo.gif'
 
 const mapStateToProps = () => ({})
 
@@ -81,6 +84,34 @@ class Home extends Component {
                 allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
                 allowFullScreen
               />{' '}
+            </li>
+            <li>
+              <span>
+                a sprite editor where the game instantly displays your edits.
+              </span>
+              <img
+                className='gif wide single'
+                src={spritedemo}
+                alt='sprite demo'
+              />
+            </li>
+            <li>
+              <span>
+                a map editor where changes alter the game's behavior, in
+                real-time.
+              </span>
+              <img className='gif wide single' src={mapdemo} alt='map demo' />
+            </li>
+            <li>
+              <span>
+                a music editor where you create phrases, group them into chains,
+                and turn those into songs.
+              </span>
+              <img
+                className='gif wide single'
+                src={musicdemo}
+                alt='music demo'
+              />
             </li>
           </ul>
 
