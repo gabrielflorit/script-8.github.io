@@ -48,11 +48,16 @@ class Home extends Component {
               <img className='gif' src={brospipegif} alt='the plumber' />
             </a>
           </p>
+          <p>
+            SCRIPT-8 is designed to encourage play - the kind of wonder-filled
+            play children experience as they explore and learn about the world.
+            In order to support this goal, everything in SCRIPT-8 has immediate
+            feedback. It is what some call a "livecoding" environment.
+          </p>
           <p>It features:</p>
           <ul>
             <li>
-              a livecoding editing environment, where the game changes as you
-              type.
+              a code editor where the game changes as you type.
               <img className='gif wide' src={livecoding480} alt='livecoding' />
             </li>
             <li>
@@ -121,6 +126,20 @@ class Home extends Component {
             You can inspect any cassette's contents (even if it's not yours),
             change the code, art, or music, and record it to a different
             cassette — a new version.
+          </p>
+          <p>
+            SCRIPT-8 is heavily influenced by Bret Victor's ideas, specifically{' '}
+            <a className='text' href='http://vimeo.com/36579366'>
+              Inventing on principle
+            </a>{' '}
+            and{' '}
+            <a
+              className='text'
+              href='http://worrydream.com/LearnableProgramming/'
+            >
+              Learnable programming
+            </a>
+            .
           </p>
         </div>
       </div>
