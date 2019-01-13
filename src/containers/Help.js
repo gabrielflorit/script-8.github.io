@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
+import lessons from '../utils/lessons.js'
 
 const mapStateToProps = () => ({})
 
 const mapDispatchToProps = dispatch => ({
-  setTutorialMaster: master =>
+  setLessonIndex: lessonIndex =>
     dispatch(
       actions.setTutorialSlide({
-        master,
-        slide: 0
+        lessonIndex,
+        slideIndex: 0
       })
     )
 })
@@ -17,37 +18,30 @@ const mapDispatchToProps = dispatch => ({
 class Help extends Component {
   constructor (props) {
     super(props)
-    this.handleTutorial = this.handleTutorial.bind(this)
+    this.handleLesson = this.handleLesson.bind(this)
   }
 
-  handleTutorial (tutorial) {
-    this.props.setTutorialMaster(tutorial)
+  handleLesson (lessonIndex) {
+    this.props.setLessonIndex(lessonIndex)
   }
 
   render () {
-    const tutorials = [
-      {
-        master: 0,
-        title: 'Hello world!'
-      }
-    ]
-
     return (
       <div className='Help'>
         <div className='main'>
           <ul className='top-list'>
             <li>
-              Tutorials
-              <ul className='second-list'>
-                {tutorials.map((tutorial, i) => (
+              Lessons
+              <ul className='lessons'>
+                {lessons.map((lesson, i) => (
                   <li key={i}>
                     <button
                       className='button'
                       onClick={() => {
-                        this.handleTutorial(tutorial.master)
+                        this.handleLesson(i)
                       }}
                     >
-                      {i} - {tutorial.title}
+                      {i} - {lesson.shortTitle || lesson.title}
                     </button>
                   </li>
                 ))}

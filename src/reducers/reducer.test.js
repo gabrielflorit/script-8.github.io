@@ -13,15 +13,15 @@ describe('tutorial', () => {
     let newState = reducer(
       before,
       actions.setTutorialSlide({
-        master: 0,
-        slide: 0
+        lessonIndex: 0,
+        slideIndex: 0
       })
     )
     expect(newState).toEqual({
       ...before,
       tutorial: {
-        master: 0,
-        slide: 0
+        lessonIndex: 0,
+        slideIndex: 0
       }
     })
   })

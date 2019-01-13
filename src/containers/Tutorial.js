@@ -1,23 +1,8 @@
 import React, { Component } from 'react'
-// import classNames from 'classnames'
 import { connect } from 'react-redux'
+import range from 'lodash/range'
 import actions from '../actions/actions.js'
-// import screenTypes from '../utils/screenTypes.js'
-// import slidesJson from '../utils/tutorial/slides.json'
-
-const tutorials = [
-  {
-    title: 'Hello world!',
-    slides: [
-      [
-        'say hello to reader',
-        'inform this is a tutorial. and that they can close it.',
-        "show what we're going to make",
-        'then start!'
-      ]
-    ]
-  }
-]
+import lessons from '../utils/lessons.js'
 
 // TUTORIAL data is in:
 // - the tutorial reducer
@@ -28,82 +13,86 @@ const mapStateToProps = ({ tutorial }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  // setScreen: screen => dispatch(actions.setScreen(screen)),
-  closeTutorial: () => dispatch(actions.closeTutorial())
+  setScreen: screen => dispatch(actions.setScreen(screen)),
+  closeTutorial: () => dispatch(actions.closeTutorial()),
   // newGame: screen => dispatch(actions.newGame(screen)),
   // updateGame: game => dispatch(actions.updateGame(game)),
-  // setTutorialSlide: slide => dispatch(actions.setTutorialSlide(slide))
+  setTutorialSlide: ({ lessonIndex, slideIndex }) =>
+    dispatch(
+      actions.setTutorialSlide({
+        lessonIndex,
+        slideIndex
+      })
+    )
 })
 
 class Tutorial extends Component {
   constructor (props) {
     super(props)
     this.handleClose = this.handleClose.bind(this)
-    // this.handleNextSlide = this.handleNextSlide.bind(this)
-    // this.handlePreviousSlide = this.handlePreviousSlide.bind(this)
-    // this.handleSlide = this.handleSlide.bind(this)
-    // this.fireActions = this.fireActions.bind(this)
+    this.handlePrevious = this.handlePrevious.bind(this)
+    this.handleNextSlide = this.handleNextSlide.bind(this)
+    this.handleNextLesson = this.handleNextLesson.bind(this)
+    this.handleSlide = this.handleSlide.bind(this)
+    this.fireActions = this.fireActions.bind(this)
+  }
+
+  fireActions ({ lessonIndex, slideIndex }) {
+    const { setScreen } = this.props
+
+    const lesson = lessons[lessonIndex]
+    const slide = lesson.slides[slideIndex]
+    const { screen } = slide
+
+    if (screen) {
+      setScreen(screen)
+    }
+
+    // const { title, slides } = tutorials[master]
+    //   const { newGame, updateGame, setScreen, screen } = this.props
+    //   const { code } = slidesJson[slide - 1]
+    //   if (slide === 1) {
+    //     newGame(screen)
+    //   }
+    //   // If we're not on the CODE screen,
+    //   // set the game, and then switch.
+    //   if (screen !== screenTypes.CODE) {
+    //     updateGame(code)
+    //     setScreen(screenTypes.CODE)
+    //   } else {
+    //     // If we are on the CODE screen,
+    //     // set the game.
+    //     updateGame(`SCRIPT-8 TUTORIAL${code}`)
+    //   }
   }
 
   handleClose () {
     this.props.closeTutorial()
   }
 
-  // fireActions (slide) {
-  //   const { newGame, updateGame, setScreen, screen } = this.props
+  handleSlide ({ lessonIndex, slideIndex }) {
+    this.props.setTutorialSlide({ lessonIndex, slideIndex })
+    this.fireActions({ lessonIndex, slideIndex })
+  }
 
-  //   const { code } = slidesJson[slide - 1]
+  handleNextLesson () {
+    const { lessonIndex } = this.props.tutorial
+    this.handleSlide({ lessonIndex: lessonIndex + 1, slideIndex: 0 })
+  }
 
-  //   if (slide === 1) {
-  //     newGame(screen)
-  //   }
+  handleNextSlide () {
+    const { lessonIndex, slideIndex } = this.props.tutorial
+    this.handleSlide({ lessonIndex, slideIndex: slideIndex + 1 })
+  }
 
-  //   // If we're not on the CODE screen,
-  //   // set the game, and then switch.
-  //   if (screen !== screenTypes.CODE) {
-  //     updateGame(code)
-  //     setScreen(screenTypes.CODE)
-  //   } else {
-  //     // If we are on the CODE screen,
-  //     // set the game.
-  //     updateGame(`SCRIPT-8 TUTORIAL${code}`)
-  //   }
-  // }
-
-  // handleSlide (slide) {
-  //   this.props.setTutorialSlide(slide)
-  //   this.fireActions(slide)
-  // }
-
-  // handleNextSlide () {
-  //   this.handleSlide(this.props.tutorial + 1)
-  // }
-
-  // handlePreviousSlide () {
-  //   this.handleSlide(this.props.tutorial - 1)
-  // }
+  handlePrevious () {
+    const { lessonIndex, slideIndex } = this.props.tutorial
+    this.handleSlide({ lessonIndex, slideIndex: slideIndex - 1 })
+  }
 
   render () {
-    const { master, slide } = this.props.tutorial
-    const { title, slides } = tutorials[master]
-
-    // const previous = (
-    //   <button className='button' onClick={this.handlePreviousSlide}>
-    //     previous
-    //   </button>
-    // )
-
-    // const next = (
-    //   <button className='button' onClick={this.handleNextSlide}>
-    //     {tutorial === 0 ? 'yes' : 'next'}
-    //   </button>
-    // )
-
-    // const close = (
-    //   <button className='button' onClick={this.handleClose}>
-    //     {tutorial === 0 ? 'no' : 'close'}
-    //   </button>
-    // )
+    const { lessonIndex, slideIndex } = this.props.tutorial
+    const { title, slides } = lessons[lessonIndex]
 
     const close = (
       <button className='button' onClick={this.handleClose}>
@@ -111,50 +100,66 @@ class Tutorial extends Component {
       </button>
     )
 
-    const next = (
-      <button className='button' onClick={this.handleClose}>
-        next
-      </button>
-    )
+    const nextSlide =
+      slideIndex < slides.length - 1 ? (
+        <button className='button' onClick={this.handleNextSlide}>
+          next
+        </button>
+      ) : null
 
-    const previous = (
-      <button className='button' onClick={this.handleClose}>
-        previous
-      </button>
-    )
+    const nextLesson =
+      slideIndex === slides.length - 1 && lessonIndex < lessons.length - 1 ? (
+        <button className='button' onClick={this.handleNextLesson}>
+          next lesson
+        </button>
+      ) : null
+
+    const previous =
+      slideIndex > 0 ? (
+        <button className='button' onClick={this.handlePrevious}>
+          previous
+        </button>
+      ) : null
 
     // const texts =
     //   tutorial > 0
     //     ? slidesJson[tutorial - 1].text.split('\n')
     //     : ['HELLO NEW_USER', 'Load tutorial?']
 
-    // const buttons = (
-    //   <div className='buttons'>
-    //     {tutorial > 1 ? previous : null}
-    //     {tutorial < slidesJson.length ? next : null}
-    //     {close}
-    //   </div>
-    // )
-
     const buttons = (
       <div className='buttons'>
         {previous}
-        {next}
+        {nextLesson}
+        {nextSlide}
         {close}
       </div>
     )
 
+    const description =
+      slideIndex === 0 ? (
+        lessonIndex === 0 ? (
+          <p>{title}</p>
+        ) : (
+          <p>
+            Lesson {lessonIndex}: {title}
+          </p>
+        )
+      ) : null
+
+    const progress = range(slides.length)
+      .map(i => (i === slideIndex ? '|' : '.'))
+      .join('')
+
     return (
       <div className='Tutorial'>
-        <div className='top-bar'>
-          <p>
-            Tutorial {master}: {title}
-          </p>
-          {buttons}
-        </div>
-        {slides[slide].map((p, i) => (
+        {description}
+        {slides[slideIndex].text.map((p, i) => (
           <p key={i}>{p}</p>
         ))}
+        <div className='bottom-bar'>
+          {buttons}
+          <p>{progress}</p>
+        </div>
       </div>
     )
 

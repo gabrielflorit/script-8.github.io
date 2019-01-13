@@ -5,6 +5,9 @@
   @extend .VT323
   font-size $font-large
 
+  >p:first-child
+    margin-top 0.5rem
+
   position fixed
   bottom 0
   width 100%
@@ -12,7 +15,7 @@
   z-index 10
   padding 0.75rem
 
-  .top-bar
+  .top-bar, .bottom-bar
     display flex
     justify-content space-between
     p
