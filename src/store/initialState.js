@@ -15,8 +15,10 @@ const initialState = {
   phrases: {},
   chains: {},
   songs: {},
-  tutorial: false,
-  newUser: null,
+  tutorial: {
+    master: 0,
+    slide: 0
+  },
   sound: false,
   shelving: false
 }

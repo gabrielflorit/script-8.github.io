@@ -12,7 +12,6 @@ import phrases from './phrases.js'
 import chains from './chains.js'
 import songs from './songs.js'
 import tutorial from './tutorial.js'
-import newUser from './newUser.js'
 import sound from './sound.js'
 import shelving from './shelving.js'
 
@@ -30,7 +29,6 @@ const reducer = combineReducers({
   chains,
   songs,
   tutorial,
-  newUser,
   sound,
   shelving
 })

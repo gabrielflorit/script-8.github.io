@@ -10,6 +10,7 @@ import Map from './Map.js'
 import Phrase from './Phrase.js'
 import Chain from './Chain.js'
 import Song from './Song.js'
+import Tutorial from './Tutorial.js'
 import Run from './Run.js'
 import Code from './Code.js'
 import Help from './Help.js'
@@ -22,8 +23,9 @@ import '../css/App.css'
 
 console.log(JSON.stringify(`SCRIPT-8 app v ${version}`, null, 2))
 
-const mapStateToProps = ({ screen }) => ({
-  screen
+const mapStateToProps = ({ screen, tutorial }) => ({
+  screen,
+  tutorial
 })
 
 const mapDispatchToProps = () => ({})
@@ -42,7 +44,7 @@ const options = {
   [screenTypes.SHELF]: () => <Shelf />
 }
 
-const App = ({ screen }) => (
+const App = ({ screen, tutorial }) => (
   <ErrorBoundary>
     <div
       className={classNames('App', `App-${screen}`, {
@@ -55,6 +57,7 @@ const App = ({ screen }) => (
       <TopBar />
       {options[screen]()}
       <Output />
+      {tutorial ? <Tutorial /> : null}
     </div>
   </ErrorBoundary>
 )

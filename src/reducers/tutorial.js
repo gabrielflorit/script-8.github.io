@@ -4,8 +4,7 @@ import initialState from '../store/initialState.js'
 
 const tutorial = handleActions(
   {
-    [actionTypes.IS_NEW_USER]: () => 0,
-    [actionTypes.CLOSE_TUTORIAL]: () => false,
+    [actionTypes.CLOSE_TUTORIAL]: () => null,
     [actionTypes.SET_TUTORIAL_SLIDE]: (state, action) => action.payload,
     [actionTypes.NEW_GAME]: state => {
       if (state === 2) {

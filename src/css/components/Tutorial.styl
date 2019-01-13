@@ -4,18 +4,25 @@
   color $palette-3
   @extend .VT323
   font-size $font-large
-  padding 1.5rem
-  p
-    margin 0 0 1.5rem 0
-    padding 0
-    a
-      color $palette-2
-      text-decoration underline
+
+  position fixed
+  bottom 0
+  width 100%
+  min-height 3rem
+  z-index 10
+  padding 0.75rem
+
+  .top-bar
+    display flex
+    justify-content space-between
+    p
+      margin 0
+
   button
     text-decoration underline
 
-  .buttons:before
-    content '>'
-
   .buttons
-    margin-top 1.5rem
+    button
+      padding 0 0.5rem
+    &:before
+      content '>'

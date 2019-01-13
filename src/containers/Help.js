@@ -1,18 +1,63 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import actions from '../actions/actions.js'
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  setTutorialMaster: master =>
+    dispatch(
+      actions.setTutorialSlide({
+        master,
+        slide: 0
+      })
+    )
+})
 
 class Help extends Component {
+  constructor (props) {
+    super(props)
+    this.handleTutorial = this.handleTutorial.bind(this)
+  }
+
+  handleTutorial (tutorial) {
+    this.props.setTutorialMaster(tutorial)
+  }
+
   render () {
+    const tutorials = [
+      {
+        master: 0,
+        title: 'Hello world!'
+      }
+    ]
+
     return (
       <div className='Help'>
         <div className='main'>
           <ul className='top-list'>
             <li>
-              Subroutines
+              Tutorials
+              <ul className='second-list'>
+                {tutorials.map((tutorial, i) => (
+                  <li key={i}>
+                    <button
+                      className='button'
+                      onClick={() => {
+                        this.handleTutorial(tutorial.master)
+                      }}
+                    >
+                      {i} - {tutorial.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ul>
+
+          <ul className='top-list'>
+            <li>
+              Functions
               <ul className='second-list'>
                 <li>
                   Draw
@@ -65,4 +110,7 @@ class Help extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Help)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Help)

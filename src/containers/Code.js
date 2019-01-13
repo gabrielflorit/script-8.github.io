@@ -4,25 +4,16 @@ import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ game, newUser, tutorial }) => ({
+const mapStateToProps = ({ game, tutorial }) => ({
   game,
-  newUser,
   tutorial
 })
 
 const mapDispatchToProps = dispatch => ({
-  // isNewUser: () => dispatch(actions.isNewUser()),
   updateGame: game => dispatch(actions.updateGame(game))
 })
 
 class Code extends Component {
-  componentDidMount () {
-    // const { newUser, isNewUser } = this.props
-    // if (newUser === null) {
-    //   isNewUser()
-    // }
-  }
-
   render () {
     const { game, updateGame, tutorial } = this.props
 
@@ -40,4 +31,7 @@ class Code extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Code)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Code)

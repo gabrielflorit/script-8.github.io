@@ -5,57 +5,57 @@ import screenTypes from '../utils/screenTypes.js'
 import blank from '../utils/blank.js'
 
 describe('tutorial', () => {
-  // if we have a new user, they will be shown the first slide
-  // IS_NEW_USER()
-  // newUser: true
-  // tutorial: 0
-  test('isNewUser', () => {
-    const before = initialState
-    let newState = reducer(before, actions.isNewUser())
+  test('setTutorialSlide', () => {
+    const before = {
+      ...initialState,
+      tutorial: null
+    }
+    let newState = reducer(
+      before,
+      actions.setTutorialSlide({
+        master: 0,
+        slide: 0
+      })
+    )
     expect(newState).toEqual({
       ...before,
-      newUser: true,
-      tutorial: 0
+      tutorial: {
+        master: 0,
+        slide: 0
+      }
     })
   })
 
-  // they can then choose to say no,
-  // which will close the tutorial
-  // NEW_USER_NO_TUTORIAL()
-  // newUser: false
-  // tutorial: false
   test('closeTutorial', () => {
     const before = {
       ...initialState,
-      newUser: true,
-      tutorial: 2
+      tutorial: { a: '1' }
     }
     let newState = reducer(before, actions.closeTutorial())
     expect(newState).toEqual({
       ...before,
-      newUser: false,
-      tutorial: false
+      tutorial: null
     })
   })
 
-  // or they can advance to next slide
-  // SET_TUTORIAL_SLIDE()
-  // tutorial: 1
-  // newUser: false
-  test('setTutorialSlide', () => {
-    const before = {
-      ...initialState,
-      tutorial: 2,
-      newUser: true
-    }
-    let newState = reducer(before, actions.setTutorialSlide(10))
-    expect(newState).toEqual({
-      ...before,
-      tutorial: 10,
-      // screen: screenTypes.SONG,
-      newUser: false
-    })
-  })
+  // // or they can advance to next slide
+  // // SET_TUTORIAL_SLIDE()
+  // // tutorial: 1
+  // // newUser: false
+  // test('setTutorialSlide', () => {
+  //   const before = {
+  //     ...initialState,
+  //     tutorial: 2,
+  //     newUser: true
+  //   }
+  //   let newState = reducer(before, actions.setTutorialSlide(10))
+  //   expect(newState).toEqual({
+  //     ...before,
+  //     tutorial: 10,
+  //     // screen: screenTypes.SONG,
+  //     newUser: false
+  //   })
+  // })
 })
 
 describe('updateSprite', () => {

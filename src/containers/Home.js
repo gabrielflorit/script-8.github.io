@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
+import actions from '../actions/actions.js'
 import logo from '../images/logo.png'
 import loshermanosbrosgif from '../images/loshermanosbros-lite.gif'
 import breakoutgif from '../images/breakout-lite.gif'
@@ -12,11 +14,30 @@ import spritedemo from '../images/spritedemo.gif'
 import mapdemo from '../images/mapdemo.gif'
 import musicdemo from '../images/musicdemo.gif'
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ tutorial }) => ({
+  tutorial
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  startTutorial: () =>
+    dispatch(
+      actions.setTutorialSlide({
+        master: 0,
+        slide: 0
+      })
+    )
+})
 
 class Home extends Component {
+  constructor (props) {
+    super(props)
+    this.handleStartTutorial = this.handleStartTutorial.bind(this)
+  }
+
+  handleStartTutorial () {
+    this.props.startTutorial()
+  }
+
   render () {
     return (
       <div className='Home'>
@@ -47,6 +68,16 @@ class Home extends Component {
             <a href='https://script-8.github.io/?id=7f370bc716aff805f593a3f80008711f'>
               <img className='gif' src={brospipegif} alt='the plumber' />
             </a>
+          </p>
+          <p className='start'>
+            <button
+              className={classNames('button', {
+                invisible: this.props.tutorial
+              })}
+              onClick={this.handleStartTutorial}
+            >
+              > Start here
+            </button>
           </p>
           <p>
             SCRIPT-8 is designed to encourage play — the kind of wonder-filled
