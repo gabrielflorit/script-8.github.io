@@ -33,6 +33,14 @@ const lessons = [
         ]
       }
     ]
+  },
+  {
+    title: 'Hello world!',
+    slides: [
+      {
+        text: ['Coming soon.']
+      }
+    ]
   }
 ]
 

@@ -24,8 +24,8 @@ const mapDispatchToProps = dispatch => ({
   startTutorial: () =>
     dispatch(
       actions.setTutorialSlide({
-        master: 0,
-        slide: 0
+        lessonIndex: 0,
+        slideIndex: 0
       })
     )
 })
