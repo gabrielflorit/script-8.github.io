@@ -14,6 +14,7 @@ import toggle from '../images/toggle.gif'
 import spritedemo from '../images/spritedemo.gif'
 import mapdemo from '../images/mapdemo.gif'
 import musicdemo from '../images/musicdemo.gif'
+import { version } from '../iframe/package.json'
 
 const mapStateToProps = ({ tutorial }) => ({
   tutorial
@@ -46,6 +47,7 @@ class Home extends Component {
           <img className='logo' src={logo} alt='SCRIPT-8 logo' />
           <p className='last-updated'>
             <span>updated {timestamp}</span>
+            <span>v{version}</span>
           </p>
           <p>
             SCRIPT-8 is a fantasy computer for making, sharing, and playing tiny
