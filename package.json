@@ -33,7 +33,7 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
-    "timestamp": "date '+ {\"timestamp\":\"%D\"}' > src/utils/timestamp.json; git commit -m 'timestamp' src/utils/timestamp.json",
+    "timestamp": "date '+ {\"timestamp\":\"%H:%M %d/%m/%y\"}' > src/utils/timestamp.json; git commit -m 'timestamp' src/utils/timestamp.json",
     "version": "npm run timestamp; cd src/iframe; yarn version --patch; git push --follow-tags",
     "iframe-start-js": "cd src/iframe; react-scripts start",
     "iframe-watch-css": "cd src/iframe; stylus src/css/Iframe.styl -o src/css -w",
