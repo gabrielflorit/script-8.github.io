@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 import actions from '../actions/actions.js'
 import logo from '../images/logo.png'
+import { timestamp } from '../utils/timestamp.json'
 import loshermanosbrosgif from '../images/loshermanosbros-lite.gif'
 import breakoutgif from '../images/breakout-lite.gif'
 import brospipegif from '../images/brospipe-lite.gif'
@@ -43,6 +44,9 @@ class Home extends Component {
       <div className='Home'>
         <div className='main'>
           <img className='logo' src={logo} alt='SCRIPT-8 logo' />
+          <p className='last-updated'>
+            <span>updated {timestamp}</span>
+          </p>
           <p>
             SCRIPT-8 is a fantasy computer for making, sharing, and playing tiny
             retro-looking games (called cassettes). It's free and{' '}
