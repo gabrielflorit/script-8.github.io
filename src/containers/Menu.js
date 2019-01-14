@@ -316,11 +316,7 @@ class Menu extends Component {
               <span className='small'>SCRIPT-8</span>
             </button>
           </li>
-          <li
-            className={classNames({
-              hide: isRunShelfOrHome
-            })}
-          >
+          <li>
             <button className='button'>
               <span className='full'>cassette</span>
               <span className='mid'>cas</span>
@@ -380,7 +376,6 @@ class Menu extends Component {
                 setScreen(screenTypes.CODE)
               }}
               className={classNames('button', {
-                hide: isRunShelfOrHome,
                 active: screen === screenTypes.CODE
               })}
             >
@@ -396,7 +391,6 @@ class Menu extends Component {
                 setScreen(screenTypes.SPRITE)
               }}
               className={classNames('button', {
-                hide: isRunShelfOrHome,
                 active: [screenTypes.SPRITE].includes(screen)
               })}
             >
@@ -439,7 +433,6 @@ class Menu extends Component {
                 setScreen(screenTypes.PHRASE)
               }}
               className={classNames('button', {
-                hide: isRunShelfOrHome,
                 active: [
                   screenTypes.SONG,
                   screenTypes.CHAIN,
@@ -493,23 +486,6 @@ class Menu extends Component {
             </ul>
           </li>
 
-          <li
-            className={classNames({
-              hide: !isRunShelfOrHome
-            })}
-          >
-            <button
-              onClick={() => {
-                setScreen(screenTypes.CODE)
-              }}
-              className='button'
-            >
-              <span className='full'>edit</span>
-              <span className='mid'>edit</span>
-              <span className='small'>edit</span>
-            </button>
-          </li>
-
           <li>
             <button
               onClick={() => {
@@ -531,7 +507,6 @@ class Menu extends Component {
                 setScreen(screenTypes.HELP)
               }}
               className={classNames('button', {
-                hide: isRunShelfOrHome,
                 active: screen === screenTypes.HELP
               })}
             >
