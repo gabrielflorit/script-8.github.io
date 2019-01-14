@@ -21,7 +21,8 @@ const lessons = [
       {
         text: [
           "You'll find the list of lessons in HELP.",
-          'Click NEXT to go there.'
+          'To go to HELP, either click EDIT in the top menu, then click HELP,',
+          'or click NEXT below to go there.'
         ]
       },
       {
