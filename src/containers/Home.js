@@ -178,6 +178,21 @@ class Home extends Component {
             </a>
             .
           </p>
+          <p>
+            SCRIPT-8 is written by Gabriel Florit (that's me!). Click{' '}
+            <a className='text' href='https://twitter.com/gabrielflorit'>
+              here
+            </a>{' '}
+            to follow me on twitter. And visit the Github repository{' '}
+            <a
+              className='text'
+              href='https://github.com/script-8/script-8.github.io'
+            >
+              here
+            </a>
+            , where you can keep up with new features and the occasional bug
+            fix.
+          </p>
         </div>
       </div>
     )
