@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
 import every from 'lodash/every'
@@ -12,16 +13,17 @@ const areRequirementsMet = ({ requirements, props }) =>
 // - the tutorial reducer
 // - the tutorial folder
 
-const mapStateToProps = ({ screen, tutorial }) => ({
+const mapStateToProps = ({ screen, tutorial, game }) => ({
   screen,
-  tutorial
+  tutorial,
+  game
 })
 
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
   // newGame: screen => dispatch(actions.newGame(screen)),
-  // updateGame: game => dispatch(actions.updateGame(game)),
+  updateGame: game => dispatch(actions.updateGame(game)),
   setTutorialSlide: ({ lessonIndex, slideIndex }) =>
     dispatch(
       actions.setTutorialSlide({
@@ -43,14 +45,18 @@ class Tutorial extends Component {
   }
 
   fireActions ({ lessonIndex, slideIndex }) {
-    const { setScreen } = this.props
+    const { setScreen, updateGame } = this.props
 
     const lesson = lessons[lessonIndex]
     const slide = lesson.slides[slideIndex]
-    const { screen } = slide
+    const { screen, game } = slide
 
     if (screen) {
       setScreen(screen)
+    }
+
+    if (game) {
+      updateGame(`SCRIPT-8 LESSON${game}`)
     }
 
     // const { title, slides } = tutorials[master]
@@ -80,12 +86,12 @@ class Tutorial extends Component {
     // Check if we're on a slide with requirements,
     // and if those requirements were not previously met,
     // but they are now. And if so, advance.
-    if (
-      requirements &&
-      !areRequirementsMet({ requirements, props: prevProps }) &&
-      areRequirementsMet({ requirements, props: this.props })
-    ) {
-      this.handleNextSlide()
+    if (requirements) {
+      if (!areRequirementsMet({ requirements, props: prevProps })) {
+        if (areRequirementsMet({ requirements, props: this.props })) {
+          this.handleNextSlide()
+        }
+      }
     }
   }
 
@@ -182,7 +188,14 @@ class Tutorial extends Component {
       <div className='Tutorial'>
         {description}
         {slide.text.map((p, i) => (
-          <p key={i}>{p}</p>
+          <p
+            key={i}
+            className={classNames({
+              code: p.startsWith('XX')
+            })}
+          >
+            {p.replace(/^XX/, '')}
+          </p>
         ))}
         <div className='bottom-bar'>
           {buttons}
