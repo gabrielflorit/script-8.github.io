@@ -37,25 +37,6 @@ describe('tutorial', () => {
       tutorial: null
     })
   })
-
-  // // or they can advance to next slide
-  // // SET_TUTORIAL_SLIDE()
-  // // tutorial: 1
-  // // newUser: false
-  // test('setTutorialSlide', () => {
-  //   const before = {
-  //     ...initialState,
-  //     tutorial: 2,
-  //     newUser: true
-  //   }
-  //   let newState = reducer(before, actions.setTutorialSlide(10))
-  //   expect(newState).toEqual({
-  //     ...before,
-  //     tutorial: 10,
-  //     // screen: screenTypes.SONG,
-  //     newUser: false
-  //   })
-  // })
 })
 
 describe('updateSprite', () => {
