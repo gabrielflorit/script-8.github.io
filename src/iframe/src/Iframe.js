@@ -19,6 +19,7 @@ import log from './log.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import createReducer from './createReducer.js'
+import skeleton from './skeleton.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
@@ -238,12 +239,18 @@ class Iframe extends Component {
       this.previousInitialState = window.initialState
       // Eval the supplied game.
       const shadowString = `var ${[...shadows].join(',')}`
+      // eslint-disable-next-line no-unused-vars
+      const innerSkeleton = skeleton
       // eslint-disable-next-line no-eval
       eval(`
       // Shadow variables we don't want available.
       ${shadowString}
       // The inception eval allows the user to declare vars (e.g. screen).
-      eval(game)
+      if (!game) {
+        eval(innerSkeleton)
+      } else {
+        eval(game)
+      }
     `)
     } catch (e) {
       // If any part of this resulted in an error, print it.

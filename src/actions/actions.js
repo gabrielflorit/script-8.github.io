@@ -176,9 +176,11 @@ export const saveGist = ({
       public: true,
       description: 'SCRIPT-8',
       files: {
-        'code.js': {
-          content: game
-        },
+        'code.js': game
+          ? {
+            content: game
+          }
+          : null,
         'sprites.json': {
           content: JSON.stringify(sprites, null, 2)
         },

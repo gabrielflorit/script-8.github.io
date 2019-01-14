@@ -330,7 +330,7 @@ class Menu extends Component {
                   className='button'
                   disabled={!enableInsertBlank}
                 >
-                  Insert blank
+                  Insert new
                 </button>
               </li>
 

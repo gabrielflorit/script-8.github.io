@@ -1,5 +1,5 @@
 import screenTypes from '../utils/screenTypes.js'
-import blank from '../utils/blank.js'
+import blank from '../iframe/src/blank.js'
 
 const initialState = {
   screen: screenTypes.BOOT,
@@ -15,6 +15,10 @@ const initialState = {
   phrases: {},
   chains: {},
   songs: {},
+  // tutorial: {
+  //   lessonIndex: 1,
+  //   slideIndex: 0
+  // },
   tutorial: null,
   sound: false,
   shelving: false

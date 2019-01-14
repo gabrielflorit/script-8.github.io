@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
-import blank from '../utils/blank.js'
+import blank from '../iframe/src/blank.js'
 
 class CodeEditor extends Component {
   constructor (props) {

@@ -2,7 +2,7 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
-import blank from '../utils/blank.js'
+import blank from '../iframe/src/blank.js'
 
 describe('tutorial', () => {
   test('setTutorialSlide', () => {
