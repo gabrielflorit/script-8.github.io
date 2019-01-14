@@ -1,14 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import range from 'lodash/range'
+import every from 'lodash/every'
 import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.js'
+
+const areRequirementsMet = ({ requirements, props }) =>
+  every(requirements, (value, key) => props[key] === value)
 
 // TUTORIAL data is in:
 // - the tutorial reducer
 // - the tutorial folder
 
-const mapStateToProps = ({ tutorial }) => ({
+const mapStateToProps = ({ screen, tutorial }) => ({
+  screen,
   tutorial
 })
 
@@ -66,6 +71,24 @@ class Tutorial extends Component {
     //   }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    const { lessonIndex, slideIndex } = this.props.tutorial
+    const { slides } = lessons[lessonIndex]
+    const slide = slides[slideIndex]
+    const { requirements } = slide
+
+    // Check if we're on a slide with requirements,
+    // and if those requirements were not previously met,
+    // but they are now. And if so, advance.
+    if (
+      requirements &&
+      !areRequirementsMet({ requirements, props: prevProps }) &&
+      areRequirementsMet({ requirements, props: this.props })
+    ) {
+      this.handleNextSlide()
+    }
+  }
+
   handleClose () {
     this.props.closeTutorial()
   }
@@ -93,6 +116,8 @@ class Tutorial extends Component {
   render () {
     const { lessonIndex, slideIndex } = this.props.tutorial
     const { title, slides } = lessons[lessonIndex]
+    const slide = slides[slideIndex]
+    const { requirements } = slide
 
     const close = (
       <button className='button' onClick={this.handleClose}>
@@ -100,9 +125,17 @@ class Tutorial extends Component {
       </button>
     )
 
+    const enableNextSlide = requirements
+      ? areRequirementsMet({ requirements, props: this.props })
+      : true
+
     const nextSlide =
       slideIndex < slides.length - 1 ? (
-        <button className='button' onClick={this.handleNextSlide}>
+        <button
+          className='button'
+          disabled={!enableNextSlide}
+          onClick={this.handleNextSlide}
+        >
           next
         </button>
       ) : null
@@ -120,11 +153,6 @@ class Tutorial extends Component {
           previous
         </button>
       ) : null
-
-    // const texts =
-    //   tutorial > 0
-    //     ? slidesJson[tutorial - 1].text.split('\n')
-    //     : ['HELLO NEW_USER', 'Load tutorial?']
 
     const buttons = (
       <div className='buttons'>
@@ -153,7 +181,7 @@ class Tutorial extends Component {
     return (
       <div className='Tutorial'>
         {description}
-        {slides[slideIndex].text.map((p, i) => (
+        {slide.text.map((p, i) => (
           <p key={i}>{p}</p>
         ))}
         <div className='bottom-bar'>
@@ -162,18 +190,6 @@ class Tutorial extends Component {
         </div>
       </div>
     )
-
-    // return (
-    //   <div
-    //     className={classNames(`Tutorial slide-${tutorial}`, {
-    //       hide: tutorial === false
-    //     })}
-    //   >
-    //     {texts.map((d, i) => (
-    //       <p key={i} dangerouslySetInnerHTML={{ __html: d }} />
-    //     ))}
-    //   </div>
-    // )
   }
 }
 
@@ -181,3 +197,20 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Tutorial)
+
+// const texts =
+//   tutorial > 0
+//     ? slidesJson[tutorial - 1].text.split('\n')
+//     : ['HELLO NEW_USER', 'Load tutorial?']
+
+// return (
+//   <div
+//     className={classNames(`Tutorial slide-${tutorial}`, {
+//       hide: tutorial === false
+//     })}
+//   >
+//     {texts.map((d, i) => (
+//       <p key={i} dangerouslySetInnerHTML={{ __html: d }} />
+//     ))}
+//   </div>
+// )
