@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
+
+const { platform } = window.navigator
 
 class CodeEditor extends Component {
   constructor (props) {
@@ -39,10 +42,16 @@ class CodeEditor extends Component {
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
-      // TODO: Win? Linux?
+      console.log(e.key)
 
-      if (e.key === 'Meta') {
-        this.activateSlider()
+      if (includes(platform, 'Mac')) {
+        if (e.key === 'Meta') {
+          this.activateSlider()
+        }
+      } else {
+        if (e.key === 'Control') {
+          this.activateSlider()
+        }
       }
     })
 
