@@ -294,11 +294,6 @@ class Menu extends Component {
     // - content is NOT dirty
     const canShelve = currentLogin && currentLogin === gistLogin && !dirty
 
-    const isRunShelfOrHome =
-      screen === screenTypes.RUN ||
-      screen === screenTypes.SHELF ||
-      screen === screenTypes.HOME
-
     return (
       <nav className='Menu'>
         <ul>
@@ -313,7 +308,7 @@ class Menu extends Component {
             >
               <span className='full'>SCRIPT-8</span>
               <span className='mid'>SCRIPT-8</span>
-              <span className='small'>SCRIPT-8</span>
+              <span className='small'>S-8</span>
             </button>
           </li>
           <li>
@@ -497,7 +492,7 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
-              <span className='small'>{isRunShelfOrHome ? 'run' : 'ru'}</span>
+              <span className='small'>ru</span>
             </button>
           </li>
 
@@ -526,8 +521,8 @@ class Menu extends Component {
               })}
             >
               <span className='full'>SHELF</span>
-              <span className='mid'>{isRunShelfOrHome ? 'shelf' : 'she'}</span>
-              <span className='small'>{isRunShelfOrHome ? 'shelf' : 'sh'}</span>
+              <span className='mid'>she</span>
+              <span className='small'>sh</span>
             </button>
           </li>
 
