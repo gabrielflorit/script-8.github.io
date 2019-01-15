@@ -42,8 +42,6 @@ class CodeEditor extends Component {
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
-      console.log(e.key)
-
       if (includes(platform, 'Mac')) {
         if (e.key === 'Meta') {
           this.activateSlider()
