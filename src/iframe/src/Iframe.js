@@ -250,6 +250,9 @@ class Iframe extends Component {
         eval(innerSkeleton)
       } else {
         eval(game)
+        if (initialState && typeof initialState === 'function') {
+          initialState = this.previousInitialState
+        }
       }
     `)
     } catch (e) {
