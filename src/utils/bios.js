@@ -1,4 +1,5 @@
 import { version } from '../iframe/package.json'
+import skeleton from '../iframe/src/skeleton.js'
 const boot = `
 
 function random(min, max) {
@@ -58,6 +59,7 @@ update = () => {
   }
 
   if (screen === 'end' && elapsed > 600) {
+    ${skeleton}
     _script8.end()
   }
 }
