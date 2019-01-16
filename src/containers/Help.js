@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
-import lessons from '../utils/lessons.js'
+import lessons from '../utils/lessons.json'
 
 const mapStateToProps = () => ({})
 

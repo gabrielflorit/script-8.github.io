@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import range from 'lodash/range'
 import every from 'lodash/every'
 import actions from '../actions/actions.js'
-import lessons from '../utils/lessons.js'
+import lessons from '../utils/lessons.json'
 
 const areRequirementsMet = ({ requirements, props }) =>
   every(requirements, (value, key) => props[key] === value)

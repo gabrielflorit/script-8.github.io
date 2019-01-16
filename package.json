@@ -5,6 +5,7 @@
   "dependencies": {
     "acorn": "^5.4.1",
     "chokidar": "^2.0.2",
+    "chokidar-cli": "^1.2.1",
     "classnames": "^2.2.5",
     "d3": "^4.13.0",
     "d3-scale": "^2.0.0",
@@ -13,6 +14,7 @@
     "gh-pages": "^1.1.0",
     "github-api": "^3.0.0",
     "javascript-state-machine": "^3.0.1",
+    "js-yaml": "^3.12.1",
     "lodash": "^4.17.5",
     "lz-string": "^1.4.4",
     "npm-run-all": "^4.1.2",
@@ -33,6 +35,8 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
+    "watch-lessons": "chokidar \"src/utils/lessons.yaml\" -c \"npm run parse-lessons\"",
+    "parse-lessons": "rm src/util/lessons.json; js-yaml src/utils/lessons.yaml > src/utils/lessons.json",
     "timestamp": "date '+ {\"timestamp\":\"%H:%M %d/%m/%y\"}' > src/utils/timestamp.json; git commit -m 'timestamp' src/utils/timestamp.json",
     "version": "npm run timestamp; cd src/iframe; yarn version --patch; git push --follow-tags",
     "iframe-start-js": "cd src/iframe; react-scripts start",
@@ -49,7 +53,7 @@
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p start-js watch-css",
+    "start": "npm-run-all -p start-js watch-css watch-lessons",
     "build-js": "react-scripts build",
     "build": "npm-run-all -s build-css build-js iframe",
     "serve": "serve -s build",
