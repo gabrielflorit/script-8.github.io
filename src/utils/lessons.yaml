@@ -254,7 +254,7 @@
     text:
     - Here it is in action, next to the previous `for` code.
     - Much cleaner. No need to keep track of counter variables.
-    - Now, about that slider.
+    - Now, about that magical slider.
     game: |-
       draw = () => {
         clear()
@@ -269,9 +269,9 @@
       }
   - screen: CODE
     text:
-    - Actually before we move on, one last thing.
+    - Actually, just a moment (sorry!).
     - See how the 'Hello World!'s don't go all the way to the bottom?
-    - Let's fix that. Play around with the `range` argument.
+    - Let's fix that. Play around with the `range` argument until the text goes all the way down.
     game: |-
       draw = () => {
         clear()
@@ -297,9 +297,9 @@
   - screen: CODE
     text:
     - Do something for me. Click on the number 10 above.
-    - And then press Control (or Command, if you're on a Mac.)
+    - And then, on your keyboard, hold the Control key (or Command, if you're on a Mac.)
     - You see that slider? With the square in the middle?
-    - Drag that square to the right.
+    - Drag that square to the right. And watch the cassette on the right.
     game: |-
       draw = () => {
         clear()
@@ -312,3 +312,9 @@
     - THE MAGICAL NUMBER SLIDER.
     - This lesson has come to an end.
     - Don't you wish your text editor had magical sliders?
+- title: Nested squares
+  slides:
+  - text:
+    - Coming soon!
+
+    

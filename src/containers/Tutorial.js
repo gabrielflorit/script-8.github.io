@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
+import screenTypes from '../utils/screenTypes.js'
 import range from 'lodash/range'
 import every from 'lodash/every'
 import actions from '../actions/actions.js'
@@ -45,36 +46,26 @@ class Tutorial extends Component {
   }
 
   fireActions ({ lessonIndex, slideIndex }) {
-    const { setScreen, updateGame } = this.props
+    const { setScreen, updateGame, screen } = this.props
 
     const lesson = lessons[lessonIndex]
     const slide = lesson.slides[slideIndex]
-    const { screen, game } = slide
+    const { screen: slideScreen, game } = slide
 
-    if (screen) {
-      setScreen(screen)
-    }
-
+    // If we're not on CODE, set the game with no prefix.
+    // If we are on CODE, use prefix.
     if (game) {
-      updateGame(`SCRIPT-8 LESSON${game}`)
+      if (screen !== screenTypes.CODE) {
+        updateGame(game)
+      } else {
+        updateGame(`SCRIPT-8 LESSON${game}`)
+      }
     }
 
-    // const { title, slides } = tutorials[master]
-    //   const { newGame, updateGame, setScreen, screen } = this.props
-    //   const { code } = slidesJson[slide - 1]
-    //   if (slide === 1) {
-    //     newGame(screen)
-    //   }
-    //   // If we're not on the CODE screen,
-    //   // set the game, and then switch.
-    //   if (screen !== screenTypes.CODE) {
-    //     updateGame(code)
-    //     setScreen(screenTypes.CODE)
-    //   } else {
-    //     // If we are on the CODE screen,
-    //     // set the game.
-    //     updateGame(`SCRIPT-8 TUTORIAL${code}`)
-    //   }
+    // Set the screen, if we have one.
+    if (slideScreen) {
+      setScreen(slideScreen)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -210,20 +201,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Tutorial)
-
-// const texts =
-//   tutorial > 0
-//     ? slidesJson[tutorial - 1].text.split('\n')
-//     : ['HELLO NEW_USER', 'Load tutorial?']
-
-// return (
-//   <div
-//     className={classNames(`Tutorial slide-${tutorial}`, {
-//       hide: tutorial === false
-//     })}
-//   >
-//     {texts.map((d, i) => (
-//       <p key={i} dangerouslySetInnerHTML={{ __html: d }} />
-//     ))}
-//   </div>
-// )
