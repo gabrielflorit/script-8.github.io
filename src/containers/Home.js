@@ -51,14 +51,15 @@ class Home extends Component {
           </p>
           <p>
             SCRIPT-8 is a fantasy computer for making, sharing, and playing tiny
-            retro-looking games (called cassettes). It's free and{' '}
+            retro-looking games (called cassettes). It's free, browser-based,
+            and{' '}
             <a
               className='text'
               href='https://github.com/script-8/script-8.github.io'
             >
               open-source
             </a>
-            .
+            . Cassettes are written in JavaScript.
           </p>
           <p className='gifs'>
             <a href='https://script-8.github.io/?id=cd8d6811adb3afb472aaf7505729cf01'>
