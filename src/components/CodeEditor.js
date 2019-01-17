@@ -47,7 +47,7 @@ class CodeEditor extends Component {
           this.activateSlider()
         }
       } else {
-        if (e.key === 'Control') {
+        if (e.key === 'Shift') {
           this.activateSlider()
         }
       }
