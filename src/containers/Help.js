@@ -49,6 +49,23 @@ class Help extends Component {
             </li>
           </ul>
 
+          <ul className='top-list how'>
+            <li>
+              How do I...
+              <ul className='second-list'>
+                <li>
+                  use the slider?
+                  <ul className='third-list'>
+                    <li>
+                      In CODE, click on a number. Hold the Shift key (or
+                      Command, if you're on a Mac) and move the slider.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
           <ul className='top-list'>
             <li>
               Functions
