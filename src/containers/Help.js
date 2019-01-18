@@ -52,65 +52,115 @@ class Help extends Component {
           <ul className='top-list how'>
             <li>
               How do I...
-              <ul className='second-list'>
-                <li>
-                  use the slider?
-                  <ul className='third-list'>
-                    <li>
-                      In CODE, click on a number. Hold the Shift key (or
-                      Command, if you're on a Mac) and move the slider.
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+              <dl>
+                <dt>use the slider?</dt>
+                <dd>
+                  In CODE, click on a number. Hold the Shift key (or Command, if
+                  you're on a Mac) and move the slider.
+                </dd>
+              </dl>
             </li>
           </ul>
 
           <ul className='top-list'>
             <li>
-              Functions
+              API documentation
               <ul className='second-list'>
                 <li>
-                  Draw
-                  <ul className='third-list'>
-                    <li>func print(x, y, letters, color)</li>
-                    <li>func line(x1, y1, x2, y2, color)</li>
-                    <li>func rectStroke(x, y, width, height, color)</li>
-                    <li>func rectFill(x, y, width, height, color)</li>
-                    <li>func circStroke(x, y, radius, color)</li>
-                    <li>func circFill(x, y, radius, color)</li>
-                    <li>func polyStroke(points, [rotate, [x, y]], color)</li>
-                    <li>func sprite(x, y, spriteIndex, [brighten])</li>
-                    <li>func clear()</li>
-                  </ul>
-                </li>
-
-                <li>
-                  Sound
-                  <ul className='third-list'>
-                    <li>func playPhrase(phrase)</li>
-                    <li>func playSong(song, [loop=false])</li>
-                    <li>func stopSong()</li>
-                  </ul>
+                  Draw (not stable)
+                  <dl>
+                    <dt>print(x, y, letters, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>line(x1, y1, x2, y2, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>rectStroke(x, y, width, height, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>rectFill(x, y, width, height, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>circStroke(x, y, radius, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>circFill(x, y, radius, color)</dt>
+                    <dd>TODO</dd>
+                    <dt>polyStroke(points, [rotate, [x, y]], color)</dt>
+                    <dd>TODO</dd>
+                    <dt>sprite(x, y, spriteIndex, [brighten])</dt>
+                    <dd>TODO</dd>
+                    <dt>clear()</dt>
+                    <dd>TODO</dd>
+                  </dl>
                 </li>
 
                 <li>
                   Utility
-                  <ul className='third-list'>
-                    <li>func log(message)</li>
-                    <li>func range([start=0], end, [step=1])</li>
-                    <li>func flatten(array)</li>
-                    <li>func random([lower=0], [upper=1], [floating])</li>
-                    <li>func clamp(number, [lower], upper)</li>
-                  </ul>
+                  <dl>
+                    <dt>range([start=0], end, [step=1])</dt>
+                    <dd>
+                      Creates an array of numbers from `start` up to `end`, not
+                      inclusive.{' '}
+                      <a
+                        className='text'
+                        href='https://lodash.com/docs/4.17.11#range'
+                      >
+                        By Lodash
+                      </a>
+                      .
+                    </dd>
+                    <dt>flatten(array)</dt>
+                    <dd>
+                      Flattens `array` a single level deep.{' '}
+                      <a
+                        className='text'
+                        href='https://lodash.com/docs/4.17.11#flatten'
+                      >
+                        By Lodash
+                      </a>
+                      .
+                    </dd>
+                    <dt>random([lower=0], [upper=1])</dt>
+                    <dd>
+                      Returns a random number between `lower` and `upper`.{' '}
+                      <a
+                        className='text'
+                        href='https://lodash.com/docs/4.17.11#random'
+                      >
+                        By Lodash
+                      </a>
+                      .
+                    </dd>
+                    <dt>clamp(number, [lower], upper)</dt>
+                    <dd>
+                      Clamps `number` between inclusive `lower` and `upper`.{' '}
+                      <a
+                        className='text'
+                        href='https://lodash.com/docs/4.17.11#clamp'
+                      >
+                        By Lodash
+                      </a>
+                      .
+                    </dd>
+                    <dt>log(message)</dt>
+                    <dd>Prints `message` to browser console.</dd>
+                  </dl>
                 </li>
 
                 <li>
-                  System
-                  <ul className='third-list'>
-                    <li>obj Math</li>
-                    <li>obj Object</li>
-                  </ul>
+                  Sound (not stable)
+                  <dl>
+                    <dt>playPhrase(phrase)</dt>
+                    <dd>TODO</dd>
+                    <dt>playSong(song, [loop=false])</dt>
+                    <dd>TODO</dd>
+                    <dt>stopSong()</dt>
+                    <dd>TODO</dd>
+                  </dl>
+                </li>
+
+                <li>
+                  Camera (not stable)
+                  <dl>
+                    <dt>camera()</dt>
+                    <dd>TODO</dd>
+                  </dl>
                 </li>
               </ul>
             </li>
