@@ -7,3 +7,5 @@ yarn-debug.log*
 yarn-error.log*
 
 src/utils/sandbox/code.js
+
+src/utils/lessons.json
