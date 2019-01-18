@@ -67,6 +67,19 @@ class Help extends Component {
               API documentation
               <ul className='second-list'>
                 <li>
+                  Game loop (not stable)
+                  <dl>
+                    <dt>initialState</dt>
+                    <dd>TODO</dd>
+                    <dt>update(state, input, elapsed)</dt>
+                    <dd>TODO</dd>
+                    <dt>drawActors(state, fade)</dt>
+                    <dd>TODO</dd>
+                    <dt>draw(state)</dt>
+                    <dd>TODO</dd>
+                  </dl>
+                </li>
+                <li>
                   Draw (not stable)
                   <dl>
                     <dt>print(x, y, letters, color)</dt>
