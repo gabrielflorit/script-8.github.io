@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.json'
 import apiDocs from '../utils/apiDocs.json'
+import howTo from '../utils/howTo.json'
 
 const mapStateToProps = () => ({})
 
@@ -54,29 +55,12 @@ class Help extends Component {
             <li>
               FAQ
               <dl>
-                <dt>What is SCRIPT-8's resolution?</dt>
-                <dd>128 pixels by 128 pixels.</dd>
-                <dt>How do I use colors?</dt>
-                <dd>
-                  There are 8 colors, from 0 (brightest) to 7 (darkest). But
-                  they wrap around: 8 is 0 is 16, etc.
-                </dd>
-                <dt>What is the frame rate?</dt>
-                <dd>
-                  SCRIPT-8 tries to draw at 60fps, or a new frame every 16.6ms.
-                  This might vary due to many factors: device capabilities, game
-                  code, battery status, etc.
-                </dd>
-                <dt>How do I use the slider?</dt>
-                <dd>
-                  In CODE, click on a number. Hold the Shift key (or Command, if
-                  you're on a Mac) and move the slider.
-                </dd>
-                <dt>How do I display my cassette's title in SHELF?</dt>
-                <dd>
-                  In CODE, set the first line as `// title: My Title`. Once you
-                  put the cassette on SHELF, your title will show up.
-                </dd>
+                {howTo.map(([dt, dd], i) => (
+                  <Fragment key={i}>
+                    <dt>{dt}</dt>
+                    <dd dangerouslySetInnerHTML={{ __html: dd }} />
+                  </Fragment>
+                ))}
               </dl>
             </li>
           </ul>
