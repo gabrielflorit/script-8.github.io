@@ -61,6 +61,12 @@ class Help extends Component {
                   There are 8 colors, from 0 (brightest) to 7 (darkest). But
                   they wrap around: 8 is 0 is 16, etc.
                 </dd>
+                <dt>What is the frame rate?</dt>
+                <dd>
+                  SCRIPT-8 tries to draw at 60fps, or a new frame every 16.6ms.
+                  This might vary due to many factors: device capabilities, game
+                  code, battery status, etc.
+                </dd>
                 <dt>How do I use the slider?</dt>
                 <dd>
                   In CODE, click on a number. Hold the Shift key (or Command, if

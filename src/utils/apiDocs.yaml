@@ -1,17 +1,22 @@
-- title: Game loop (not stable)
+- title: Game loop
   dl:
   -
     - initialState
-    - docs coming
+    - Assign your game's initial state to this. It can be anything serializable, e.g. an object, a string, an array, etc. Not a function. Do not modify this unless you want unpredictable behavior.
   -
     - update(state, input, elapsed)
-    - docs coming
-  -
-    - drawActors(state, fade)
-    - docs coming
+    - "This function is called before `draw`. `state` is your game's state. Mutate state here. Note that you should not assign a new variable to `state`. Instead, assign individual properties. For example, don't do this: `state = { lives: 0}`. Do this: `state.lives = 0`. `elapsed` is time passed since last `update` call. See below for an explanation of `input`."
+  # -
+  #   - drawActors(state, fade)
+  #   - docs coming
   -
     - draw(state)
-    - docs coming
+    - This function is called after `draw`. `state` is your game's state.
+- title: Input
+  dl:
+  -
+    - ''
+    - "The `update` function receives `input` as its second parameter. It's an object of booleans, each representing whether a button is pressed or not: up, right, down, left, a, b, start, select. On keyboards, the last two are `Enter` and `space`, respectively. For example, if you're holding right and up, `input` will be { right: true, up: true }."
 - title: Draw
   note: non-integers are rounded down
   dl:
@@ -42,15 +47,15 @@
   -
     - clear()
     - Clears the screen.
-  -
-    - tile()
-    - coming
-  -
-    - map()
-    - coming
-  -
-    - camera()
-    - coming
+  # -
+  #   - tile()
+  #   - coming
+  # -
+  #   - map()
+  #   - coming
+  # -
+  #   - camera()
+  #   - coming
 - title: Utility
   dl:
   -
