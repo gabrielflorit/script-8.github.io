@@ -72,6 +72,11 @@ class Help extends Component {
                   In CODE, click on a number. Hold the Shift key (or Command, if
                   you're on a Mac) and move the slider.
                 </dd>
+                <dt>How do I display my cassette's title in SHELF?</dt>
+                <dd>
+                  In CODE, set the first line as `// title: My Title`. Once you
+                  put the cassette on SHELF, your title will show up.
+                </dd>
               </dl>
             </li>
           </ul>
