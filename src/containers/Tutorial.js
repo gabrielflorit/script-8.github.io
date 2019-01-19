@@ -172,7 +172,7 @@ class Tutorial extends Component {
       .join('')
 
     return (
-      <div className='Tutorial'>
+      <div className='Tutorial' ref={this.props.tutorialRef}>
         {description}
         {slide.text.map((p, i) => (
           <p

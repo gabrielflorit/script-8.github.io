@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import includes from 'lodash/includes'
 import classNames from 'classnames'
@@ -44,23 +44,47 @@ const options = {
   [screenTypes.SHELF]: () => <Shelf />
 }
 
-const App = ({ screen, tutorial }) => (
-  <ErrorBoundary>
-    <div
-      className={classNames('App', `App-${screen}`, {
-        'full-height': includes(
-          [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
-          screen
-        )
-      })}
-    >
-      <TopBar />
-      {options[screen]()}
-      <Output />
-      {tutorial ? <Tutorial /> : null}
-    </div>
-  </ErrorBoundary>
-)
+class App extends Component {
+  constructor (props) {
+    super(props)
+    this.tutorialElement = React.createRef()
+    this.appElement = null
+    this.setAppElementRef = e => {
+      this.appElement = e
+    }
+  }
+  componentDidUpdate (prevProps, prevState) {
+    // Get the tutorial's height and set App's padding-bottom to this.
+    if (this.tutorialElement && this.tutorialElement.current) {
+      const { clientHeight } = this.tutorialElement.current
+      this.appElement.style.paddingBottom = `${clientHeight}px`
+    } else {
+      this.appElement.style.paddingBottom = '0'
+    }
+  }
+
+  render () {
+    const { screen, tutorial } = this.props
+    return (
+      <ErrorBoundary>
+        <div
+          ref={this.setAppElementRef}
+          className={classNames('App', `App-${screen}`, {
+            'full-height': includes(
+              [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
+              screen
+            )
+          })}
+        >
+          <TopBar />
+          {options[screen]()}
+          <Output />
+          {tutorial ? <Tutorial tutorialRef={this.tutorialElement} /> : null}
+        </div>
+      </ErrorBoundary>
+    )
+  }
+}
 
 export default connect(
   mapStateToProps,
