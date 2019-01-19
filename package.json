@@ -35,6 +35,8 @@
   },
   "homepage": "http://script-8.github.io",
   "scripts": {
+    "watch-howTo": "chokidar \"src/utils/howTo.yaml\" -c \"npm run parse-howTo\"",
+    "parse-howTo": "js-yaml src/utils/howTo.yaml > src/utils/howTo.json",
     "watch-apiDocs": "chokidar \"src/utils/apiDocs.yaml\" -c \"npm run parse-apiDocs\"",
     "parse-apiDocs": "js-yaml src/utils/apiDocs.yaml > src/utils/apiDocs.json",
     "watch-lessons": "chokidar \"src/utils/lessons.yaml\" -c \"npm run parse-lessons\"",
@@ -55,7 +57,7 @@
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p start-js watch-css watch-lessons watch-apiDocs",
+    "start": "npm-run-all -p start-js watch-css watch-lessons watch-apiDocs watch-howTo",
     "build-js": "react-scripts build",
     "build": "npm-run-all -s build-css build-js iframe",
     "serve": "serve -s build",
