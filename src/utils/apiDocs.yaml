@@ -46,13 +46,31 @@
   -
     - range([start=0], end, [step=1])
     - Creates an array of numbers from `start` up to `end`, not inclusive. <a class='text' href='https://lodash.com/docs/4.17.11#range'>By Lodash</a>.
+  -
+    - flatten(array)
+    - Flattens `array` a single level deep. <a class='text' href='https://lodash.com/docs/4.17.11#flatten'>By Lodash</a>.
+  -
+    - random([lower=0], [upper=1])
+    - Returns a random number between `lower` and `upper`. <a class='text' href='https://lodash.com/docs/4.17.11#random'>By Lodash</a>.
+  -
+    - clamp(number, [lower], upper)
+    - Clamps `number` between inclusive `lower` and `upper`. <a class='text' href='https://lodash.com/docs/4.17.11#clamp'>By Lodash</a>.
+  -
+    - log(message)
+    - Prints `message` to browser console.
 - title: Sound (not stable)
   dl:
   -
-    - initialState
+    - playPhrase(phrase)
+    - TODO
+  -
+    - playSong(song, [loop=false])
+    - TODO
+  -
+    - stopSong()
     - TODO
 - title: Camera (not stable)
   dl:
   -
-    - initialState
+    - camera()
     - TODO
