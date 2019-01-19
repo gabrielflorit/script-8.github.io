@@ -2,45 +2,46 @@
   dl:
   -
     - initialState
-    - TODO
+    - docs coming
   -
     - update(state, input, elapsed)
-    - TODO
+    - docs coming
   -
     - drawActors(state, fade)
-    - TODO
+    - docs coming
   -
     - draw(state)
-    - TODO
-- title: Draw (not stable)
+    - docs coming
+- title: Draw
+  note: non-integers are rounded down
   dl:
   -
-    - print(x, y, letters, color)
-    - TODO
+    - print(x, y, text, [color=0])
+    - Draws `text` at xy.
   -
-    - line(x1, y1, x2, y2, color)
-    - TODO
+    - line(x1, y1, x2, y2, [color=0])
+    - Draws line from x1y1 to x2y2.
   -
-    - rectStroke(x, y, width, height, color)
-    - TODO
+    - rectStroke(x, y, width, height, [color=0])
+    - Strokes a rectangle at xy.
   -
-    - rectFill(x, y, width, height, color)
-    - TODO
+    - rectFill(x, y, width, height, [color=0])
+    - Fills a rectangle at xy.
   -
-    - circStroke(x, y, radius, color)
-    - TODO
+    - circStroke(x, y, radius, [color=0])
+    - Strokes a circle at xy.
   -
-    - circFill(x, y, radius, color)
-    - TODO
+    - circFill(x, y, radius, [color=0])
+    - Fills a circle at xy.
   -
     - polyStroke(points, [rotate, [x, y]], color)
-    - TODO
+    - "Strokes a polygon as defined by an array of points, each point being a two-element array. For example, to draw a square at 0,0: `polyStroke([[0,0], [4,0], [4,4], [0, 4]], 0)`. `rotate` is in degrees. If `rotate` is supplied, but no xy, rotates the polygon. If `rotate` and `xy` is supplied, rotates the polygon about xy. Note color is not optional."
   -
-    - sprite(x, y, spriteIndex, [brighten])
-    - TODO
+    - sprite(x, y, spriteIndex, [brighten, flip])
+    - Draws the sprite at xy. `spriteIndex` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flip` is true, mirrors the sprite along the y axis.
   -
     - clear()
-    - TODO
+    - Clears the screen.
 - title: Utility
   dl:
   -
@@ -62,15 +63,15 @@
   dl:
   -
     - playPhrase(phrase)
-    - TODO
+    - docs coming
   -
     - playSong(song, [loop=false])
-    - TODO
+    - docs coming
   -
     - stopSong()
-    - TODO
+    - docs coming
 - title: Camera (not stable)
   dl:
   -
     - camera()
-    - TODO
+    - docs coming

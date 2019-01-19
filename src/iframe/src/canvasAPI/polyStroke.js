@@ -14,8 +14,8 @@ const polyStroke = ({ points, args, ctx }) => {
       break
     case 2:
       // polyStroke(points, rotate, color)
-      xRot = Math.cos(args[0] / 180 * Math.PI)
-      yRot = Math.sin(args[0] / 180 * Math.PI)
+      xRot = Math.cos((args[0] / 180) * Math.PI)
+      yRot = Math.sin((args[0] / 180) * Math.PI)
       const xs = points.map(p => p[0])
       const ys = points.map(p => p[1])
       midX = (Math.min.apply(Math, xs) + Math.max.apply(Math, xs)) / 2
@@ -30,8 +30,8 @@ const polyStroke = ({ points, args, ctx }) => {
       throw Error('`polyStroke` found 3 arguments instead of 2, 3, or 5.')
     default:
       // polyStroke(points, rotate, x, y, color)
-      xRot = Math.cos(args[0] / 180 * Math.PI)
-      yRot = Math.sin(args[0] / 180 * Math.PI)
+      xRot = Math.cos((args[0] / 180) * Math.PI)
+      yRot = Math.sin((args[0] / 180) * Math.PI)
       midX = args[1]
       midY = args[2]
       c = args[3]

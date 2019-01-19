@@ -52,9 +52,16 @@ class Help extends Component {
 
           <ul className='top-list how'>
             <li>
-              How do I...
+              FAQ
               <dl>
-                <dt>use the slider?</dt>
+                <dt>What is SCRIPT-8's resolution?</dt>
+                <dd>128 pixels by 128 pixels.</dd>
+                <dt>How do I use colors?</dt>
+                <dd>
+                  There are 8 colors, from 0 (brightest) to 7 (darkest). But
+                  they wrap around: 8 is 0 is 16, etc.
+                </dd>
+                <dt>How do I use the slider?</dt>
                 <dd>
                   In CODE, click on a number. Hold the Shift key (or Command, if
                   you're on a Mac) and move the slider.
@@ -70,6 +77,7 @@ class Help extends Component {
                 {apiDocs.map((section, i) => (
                   <li key={i}>
                     {section.title}
+                    {section.note ? <span> ({section.note})</span> : null}
                     <dl>
                       {section.dl.map(([dt, dd], j) => (
                         <Fragment key={j}>
