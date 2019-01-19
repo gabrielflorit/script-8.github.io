@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
+import { isNil } from 'lodash'
 import { connect } from 'react-redux'
 import screenTypes from '../utils/screenTypes.js'
 import range from 'lodash/range'
@@ -10,10 +11,6 @@ import lessons from '../utils/lessons.json'
 const areRequirementsMet = ({ requirements, props }) =>
   every(requirements, (value, key) => props[key] === value)
 
-// TUTORIAL data is in:
-// - the tutorial reducer
-// - the tutorial folder
-
 const mapStateToProps = ({ screen, tutorial, game }) => ({
   screen,
   tutorial,
@@ -23,7 +20,6 @@ const mapStateToProps = ({ screen, tutorial, game }) => ({
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
-  // newGame: screen => dispatch(actions.newGame(screen)),
   updateGame: game => dispatch(actions.updateGame(game)),
   setTutorialSlide: ({ lessonIndex, slideIndex }) =>
     dispatch(
@@ -54,7 +50,7 @@ class Tutorial extends Component {
 
     // If we're not on CODE, set the game with no prefix.
     // If we are on CODE, use prefix.
-    if (game) {
+    if (!isNil(game)) {
       if (screen !== screenTypes.CODE) {
         updateGame(game)
       } else {

@@ -312,9 +312,287 @@
     - THE MAGICAL NUMBER SLIDER.
     - This lesson has come to an end.
     - Don't you wish your text editor had magical sliders?
-- title: Nested squares
+- title: Spinning squares
+  slides:
+  - text:
+    - In this lesson we will learn how to draw 'Hello World!' KIDDING.
+    - How about something more exciting. How about squares? Spinning squares?
+    - Let's get started.
+  - text:
+    - Before we begin, go to the CODE screen and delete anything there.
+  - text:
+    - SCRIPT-8 has various drawing functions. They're all listed in HELP.
+    - "One of them is `rectStroke`:"
+    - XXrectStroke(x, y, width, height, [color=0])
+    screen: CODE
+    game: ''
+  - text:
+    - Can you use `rectStroke` to draw eight concentric squares?
+    - Try for a bit. If you're stuck, I'll do it for you. Click NEXT.
+  - text:
+    - Oops, sorry! That doesn't look quite right.
+    - There's eight squares, but they all start on the same xy spot.
+    - Can you fix it? I'll also try.
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const width = 8 * i
+          const height = 8 * i
+          const x = 64
+          const y = 64
+          rectStroke(x, y, width, height)
+        })
+      }
+  - text:
+    - Good. Every new square needs to start a bit further up and to the left.
+    - Before we move on, there's a bit of duplication here. You see it?
+    - Let's fix that.
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const width = 8 * i
+          const height = 8 * i
+          const x = 64 - width / 2
+          const y = 64 - height / 2
+          rectStroke(x, y, width, height)
+        })
+      }
+  - text:
+    - Better. One final thing. The colors are all the same.
+    - Can you change that?
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const side = 8 * i
+          const xy = 64 - side / 2
+          rectStroke(xy, xy, side, side)
+        })
+      }
+  - text:
+    - If we would have set color to `i`, the last square would be invisible.
+    - Hence the use of the modulus operator.
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const side = 8 * i
+          const xy = 64 - side / 2
+          const color = i % 7
+          rectStroke(xy, xy, side, side, color)
+        })
+      }
+  - text:
+    - Now, this lesson is titled spinning squares. And we can't rotate a square using `rectStroke`.
+    - "We'll use `polyStroke` for that:"
+    - XXpolyStroke(points, [rotate, [x, y]], color)
+  - text:
+    - "`polyStroke` draws a closed polygon as defined by an array of points."
+    - Let me show you. I'll draw one square using `polyStroke`.
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const side = 8 * i
+          const xy = 64 - side / 2
+          const color = i % 7
+          rectStroke(xy, xy, side, side, color)
+        })
+      }
+  - text:
+    - Note you don't need to go back to the start. `polyStroke` closes the polygon.
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        const topLeft = [36, 36]
+        const topRight = [91, 36]
+        const bottomRight = [91, 91]
+        const bottomLeft = [36, 91]
+        polyStroke([topLeft, topRight, bottomRight, bottomLeft], 0)
+      }
+  - text:
+    - We can rotate a polygon using `polyStroke`.
+    - Set the rotation angle (in degrees) after points.
+    - "For example, I'll rotate this rectangle by 5 degrees:"
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        const topLeft = [36, 36]
+        const topRight = [91, 36]
+        const bottomRight = [91, 91]
+        const bottomLeft = [36, 91]
+        polyStroke([topLeft, topRight, bottomRight, bottomLeft], 0)
+      }
+  - text:
+    - You can also specify a rotation point. We won't go into that, but consult HELP for more information.
+    - Back to our squares. Can you draw eight squares using `polyStroke`?
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        const topLeft = [36, 36]
+        const topRight = [91, 36]
+        const bottomRight = [91, 91]
+        const bottomLeft = [36, 91]
+        const angle = 5
+        polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, 0)
+      }
+  - text:
+    - Looking good. But how do we make the squares spin?
+    - "This is where `update` comes in, another `game loop` function. SCRIPT-8 calls it before `draw`:"
+    - XXupdate(state, input, elapsed)
+    screen: CODE
+    game: |-
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const angle = 5
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - "`elapsed` is how many milliseconds passed since the last `update` call."
+    - Ignore `input` for now. We'll talk about it in a future lesson.
+    - Now, see that `state` parameter?
+    - XXupdate(state, input, elapsed)
+    screen: CODE
+    game: |-
+      update = (state, input, elapsed) => {
+      }
+
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const angle = 5
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - SCRIPT-8 is a state-based engine. You define the game's initial state at the beginning.
+    - Then, during every `update`, modify the state as needed.
+    - And draw your game in `draw`, which receives one parameter, `state`.
+  - text:
+    - That's the game loop! Nothing to it.
+    - Alright. About that initial state. What do we want to hold in state?
+    - How about our squares' rotation angle?
+    screen: CODE
+    game: |-
+      update = (state, input, elapsed) => {
+      }
+
+      draw = () => {
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const angle = 5
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - Notice how we're not declaring `angle` inside `draw`.
+    - Instead, we'll get it from `state`.
+    screen: CODE
+    game: |-
+      initialState = {
+        angle: 5 // the rotation angle
+      }
+
+      update = (state, input, elapsed) => {
+      }
+
+      draw = (state) => {
+        clear()
+        const { angle } = state
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - Ready for the final part?
+    - We need to make them spin. Can you guess how to do that?
+    - "Hint: change the angle in `update`."
+    screen: CODE
+    game: |-
+      initialState = {
+        angle: 5 // the rotation angle
+      }
+
+      update = (state, input, elapsed) => {
+      }
+
+      draw = (state) => {
+        clear()
+        const { angle } = state
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - Ta-dah!
+    - Isn't SCRIPT-8 fun?
+    - See you in the next lesson.
+    screen: CODE
+    game: |-
+      initialState = {
+        angle: 5 // the rotation angle
+      }
+
+      update = (state, input, elapsed) => {
+        state.angle = state.angle + elapsed / 10
+      }
+
+      draw = (state) => {
+        clear()
+        const { angle } = state
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+- title: Swirly squares
   slides:
   - text:
     - Coming soon!
-
-    
