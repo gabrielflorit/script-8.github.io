@@ -42,6 +42,15 @@
   -
     - clear()
     - Clears the screen.
+  -
+    - tile()
+    - coming
+  -
+    - map()
+    - coming
+  -
+    - camera()
+    - coming
 - title: Utility
   dl:
   -
@@ -69,9 +78,4 @@
     - docs coming
   -
     - stopSong()
-    - docs coming
-- title: Camera (not stable)
-  dl:
-  -
-    - camera()
     - docs coming
