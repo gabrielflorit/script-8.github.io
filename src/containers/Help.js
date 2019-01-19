@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.json'
+import apiDocs from '../utils/apiDocs.json'
 
 const mapStateToProps = () => ({})
 
@@ -66,6 +67,19 @@ class Help extends Component {
             <li>
               API documentation
               <ul className='second-list'>
+                {apiDocs.map((section, i) => (
+                  <li key={i}>
+                    {section.title}
+                    <dl>
+                      {section.dl.map(([dt, dd], j) => (
+                        <Fragment key={j}>
+                          <dt>{dt}</dt>
+                          <dd dangerouslySetInnerHTML={{ __html: dd }} />
+                        </Fragment>
+                      ))}
+                    </dl>
+                  </li>
+                ))}
                 <li>
                   Game loop (not stable)
                   <dl>

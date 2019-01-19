@@ -1,0 +1,58 @@
+- title: Game loop (not stable)
+  dl:
+  -
+    - initialState
+    - TODO
+  -
+    - update(state, input, elapsed)
+    - TODO
+  -
+    - drawActors(state, fade)
+    - TODO
+  -
+    - draw(state)
+    - TODO
+- title: Draw (not stable)
+  dl:
+  -
+    - print(x, y, letters, color)
+    - TODO
+  -
+    - line(x1, y1, x2, y2, color)
+    - TODO
+  -
+    - rectStroke(x, y, width, height, color)
+    - TODO
+  -
+    - rectFill(x, y, width, height, color)
+    - TODO
+  -
+    - circStroke(x, y, radius, color)
+    - TODO
+  -
+    - circFill(x, y, radius, color)
+    - TODO
+  -
+    - polyStroke(points, [rotate, [x, y]], color)
+    - TODO
+  -
+    - sprite(x, y, spriteIndex, [brighten])
+    - TODO
+  -
+    - clear()
+    - TODO
+- title: Utility
+  dl:
+  -
+    - range([start=0], end, [step=1])
+    - Creates an array of numbers from `start` up to `end`, not inclusive. <a class='text' href='https://lodash.com/docs/4.17.11#range'>By Lodash</a>.
+- title: Sound (not stable)
+  dl:
+  -
+    - initialState
+    - TODO
+- title: Camera (not stable)
+  dl:
+  -
+    - initialState
+    - TODO

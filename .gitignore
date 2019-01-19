@@ -9,3 +9,5 @@ yarn-error.log*
 src/utils/sandbox/code.js
 
 src/utils/lessons.json
+
+src/utils/apiDocs.json
