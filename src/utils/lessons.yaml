@@ -631,6 +631,7 @@
   - text:
     - This looks good. But each square needs to have the rotation angle based on its position AND time.
     - Let's create a function that does this.
+    - We'll call it `getRotation`.
     screen: CODE
     game: |-
       initialState = {
@@ -670,45 +671,7 @@
 
       // given a number of milliseconds and square index,
       // returns the square's rotation
-      const rotation = (milliseconds, i) => {
-        return milliseconds * i
-      }
-
-      update = (state, input, elapsed) => {
-        state.angle = state.angle + elapsed / 10
-      }
-
-      draw = (state) => {
-        clear()
-        const { angle } = state
-        range(8).forEach(i => {
-          const halfSide = 8 * i / 2
-          const topLeft = [64 - halfSide, 64 - halfSide]
-          const topRight = [64 + halfSide, 64 - halfSide]
-          const bottomRight = [64 + halfSide, 64 + halfSide]
-          const bottomLeft = [64 - halfSide, 64 + halfSide]
-          const color = i % 7
-
-          // add 10 degrees to each successive square.
-          // e.g. the first square gets 0 new degrees, the second one gets 10,
-          // the third one gets 20, etc.
-          const customAngle = angle + i * 10
-          polyStroke([topLeft, topRight, bottomRight, bottomLeft], customAngle, color)
-        })
-      }
-  - text:
-    - We also need a way to keep track of total time passed.
-    - Let's add that to `initialState`.
-    screen: CODE
-    game: |-
-      initialState = {
-        totalElapsed: 0, // total time passed
-        angle: 5 // the rotation angle
-      }
-
-      // given a number of milliseconds and square index,
-      // returns the square's rotation
-      const rotation = (milliseconds, i) => {
+      const getRotation = (milliseconds, i) => {
         return milliseconds * i
       }
 
@@ -736,7 +699,7 @@
       }
   - text:
     - And what good is this `totalElapsed` if we don't change it?
-    - "Let's do that in `update`:"
+    - "Do that in `update`:"
     screen: CODE
     game: |-
       initialState = {
@@ -746,12 +709,12 @@
 
       // given a number of milliseconds and square index,
       // returns the square's rotation
-      const rotation = (milliseconds, i) => {
+      const getRotation = (milliseconds, i) => {
         return milliseconds * i
       }
 
       update = (state, input, elapsed) => {
-          state.angle = state.angle + elapsed / 10
+        state.angle = state.angle + elapsed / 10
       }
 
       draw = (state) => {
@@ -773,7 +736,9 @@
         })
       }
   - text:
-    - new
+    - How should we store each square's rotation?
+    - A good place to do this is your game's state.
+    - "Add a `rotations` array to `initialState`:"
     screen: CODE
     game: |-
       initialState = {
@@ -783,13 +748,13 @@
 
       // given a number of milliseconds and square index,
       // returns the square's rotation
-      const rotation = (milliseconds, i) => {
+      const getRotation = (milliseconds, i) => {
         return milliseconds * i
       }
 
       update = (state, input, elapsed) => {
-          state.totalElapsed += elapsed
-          state.angle = state.angle + elapsed / 10
+        state.angle = state.angle + elapsed / 10
+        state.totalElapsed += elapsed
       }
 
       draw = (state) => {
@@ -810,3 +775,250 @@
           polyStroke([topLeft, topRight, bottomRight, bottomLeft], customAngle, color)
         })
       }
+  - text:
+    - "And finally, update the `rotations` array in `update`:"
+    screen: CODE
+    game: |-
+      initialState = {
+        totalElapsed: 0, // total time passed
+        angle: 5, // the rotation angle
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return milliseconds * i
+      }
+
+      update = (state, input, elapsed) => {
+        state.angle = state.angle + elapsed / 10
+        state.totalElapsed += elapsed
+      }
+
+      draw = (state) => {
+        clear()
+        const { angle } = state
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const customAngle = angle + i * 10
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], customAngle, color)
+        })
+      }
+  - text:
+    - OK. Now we get to draw our squares.
+    - Use `rotations` in `draw`. Each `polyStroke` call should reference this array instead of `angle`.
+    - We'll also get rid of `angle` in state. We don't need it.
+    screen: CODE
+    game: |-
+      initialState = {
+        totalElapsed: 0, // total time passed
+        angle: 5, // the rotation angle
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return milliseconds * i
+      }
+
+      update = (state, input, elapsed) => {
+        state.angle = state.angle + elapsed / 10
+        state.totalElapsed += elapsed
+        state.rotations = range(8).map(i => getRotation(state.totalElapsed, i))
+      }
+
+      draw = (state) => {
+        clear()
+        const { angle } = state
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const customAngle = angle + i * 10
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], customAngle, color)
+        })
+      }
+  - text:
+    - WOW! That is a bit too fast.
+    - Adjust the calculations in `getRotation`.
+    - "Divide by something, e.g. 50:"
+    screen: CODE
+    game: |-
+      initialState = {
+        totalElapsed: 0, // total time passed
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return milliseconds * i
+      }
+
+      update = (state, input, elapsed) => {
+        state.totalElapsed += elapsed
+        state.rotations = range(8).map(i => getRotation(state.totalElapsed, i))
+      }
+
+      draw = (state) => {
+        const { rotations } = state
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const angle = rotations[i]
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - Much better.
+    - Now, here's a neat trick.
+    - "Use a sine function in `getRotation`:"
+    screen: CODE
+    game: |-
+      initialState = {
+        totalElapsed: 0, // total time passed
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return milliseconds * i / 50
+      }
+
+      update = (state, input, elapsed) => {
+        state.totalElapsed += elapsed
+        state.rotations = range(8).map(i => getRotation(state.totalElapsed, i))
+      }
+
+      draw = (state) => {
+        const { rotations } = state
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const angle = rotations[i]
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - This gives it more of an elastic swirly feel. Beautiful!
+    - We need a title. Add it as the first line of your cassette.
+    - I'll show you.
+    screen: CODE
+    game: |-
+      initialState = {
+        totalElapsed: 0, // total time passed
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return Math.sin(milliseconds / 400) * 16 * (i + 1)
+      }
+
+      update = (state, input, elapsed) => {
+        state.totalElapsed += elapsed
+        state.rotations = range(8).map(i => getRotation(state.totalElapsed, i))
+      }
+
+      draw = (state) => {
+        const { rotations } = state
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const angle = rotations[i]
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - Now try putting your cassette on the SHELF.
+    - To do this, first record it by mousing over CASSETTE (on the top menu) and clicking RECORD.
+    - Once that's done, mouse over CASSETTE and click PUT ON SHELF.
+    screen: CODE
+    game: |-
+      // title: Swirly squares
+
+      initialState = {
+        totalElapsed: 0, // total time passed
+        rotations: [] // each rectangle's individual rotation
+      }
+
+      // given a number of milliseconds and square index,
+      // returns the square's rotation
+      const getRotation = (milliseconds, i) => {
+        return Math.sin(milliseconds / 400) * 16 * (i + 1)
+      }
+
+      update = (state, input, elapsed) => {
+        state.totalElapsed += elapsed
+        state.rotations = range(8).map(i => getRotation(state.totalElapsed, i))
+      }
+
+      draw = (state) => {
+        const { rotations } = state
+        clear()
+        range(8).forEach(i => {
+          const halfSide = 8 * i / 2
+          const topLeft = [64 - halfSide, 64 - halfSide]
+          const topRight = [64 + halfSide, 64 - halfSide]
+          const bottomRight = [64 + halfSide, 64 + halfSide]
+          const bottomLeft = [64 - halfSide, 64 + halfSide]
+          const color = i % 7
+
+          // add 10 degrees to each successive square.
+          // e.g. the first square gets 0 new degrees, the second one gets 10,
+          // the third one gets 20, etc.
+          const angle = rotations[i]
+          polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, color)
+        })
+      }
+  - text:
+    - If everything went well (and why shouldn't it?) you'll see your cassette on the SHELF.
+    - The SHELF is a good place to put your cassette for others to see.
+    - Well, that's the end of this lesson. See you later!
