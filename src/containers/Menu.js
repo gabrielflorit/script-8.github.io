@@ -294,6 +294,14 @@ class Menu extends Component {
     // - content is NOT dirty
     const canShelve = currentLogin && currentLogin === gistLogin && !dirty
 
+    const isMusicScreen = [
+      screenTypes.SONG,
+      screenTypes.CHAIN,
+      screenTypes.PHRASE
+    ].includes(screen)
+
+    const isArtScreen = [screenTypes.SPRITE, screenTypes.MAP].includes(screen)
+
     return (
       <nav className='Menu'>
         <ul>
@@ -308,7 +316,9 @@ class Menu extends Component {
             >
               <span className='full'>SCRIPT-8</span>
               <span className='mid'>SCRIPT-8</span>
-              <span className='small'>S-8</span>
+              <span className='small'>
+                {screen === screenTypes.HOME ? 'script-8' : 's-8'}
+              </span>
             </button>
           </li>
           <li>
@@ -375,8 +385,12 @@ class Menu extends Component {
               })}
             >
               <span className='full'>CODE</span>
-              <span className='mid'>cod</span>
-              <span className='small'>co</span>
+              <span className='mid'>
+                {screen === screenTypes.CODE ? 'code' : 'cod'}
+              </span>
+              <span className='small'>
+                {screen === screenTypes.CODE ? 'code' : 'co'}
+              </span>
             </button>
           </li>
 
@@ -386,12 +400,12 @@ class Menu extends Component {
                 setScreen(screenTypes.SPRITE)
               }}
               className={classNames('button', {
-                active: [screenTypes.SPRITE].includes(screen)
+                active: isArtScreen
               })}
             >
               <span className='full'>ART</span>
-              <span className='mid'>art</span>
-              <span className='small'>ar</span>
+              <span className='mid'>ART</span>
+              <span className='small'>{isArtScreen ? 'art' : 'ar'}</span>
             </button>
             <ul className='dropdown'>
               <li>
@@ -428,16 +442,12 @@ class Menu extends Component {
                 setScreen(screenTypes.PHRASE)
               }}
               className={classNames('button', {
-                active: [
-                  screenTypes.SONG,
-                  screenTypes.CHAIN,
-                  screenTypes.PHRASE
-                ].includes(screen)
+                active: isMusicScreen
               })}
             >
               <span className='full'>MUSIC</span>
-              <span className='mid'>mus</span>
-              <span className='small'>mu</span>
+              <span className='mid'>{isMusicScreen ? 'music' : 'mus'}</span>
+              <span className='small'>{isMusicScreen ? 'music' : 'mu'}</span>
             </button>
             <ul className='dropdown'>
               <li>
@@ -492,7 +502,9 @@ class Menu extends Component {
             >
               <span className='full'>RUN</span>
               <span className='mid'>run</span>
-              <span className='small'>ru</span>
+              <span className='small'>
+                {screen === screenTypes.RUN ? 'run' : 'ru'}
+              </span>
             </button>
           </li>
 
@@ -506,8 +518,12 @@ class Menu extends Component {
               })}
             >
               <span className='full'>HELP</span>
-              <span className='mid'>hel</span>
-              <span className='small'>he</span>
+              <span className='mid'>
+                {screen === screenTypes.HELP ? 'help' : 'hel'}
+              </span>
+              <span className='small'>
+                {screen === screenTypes.HELP ? 'help' : 'he'}
+              </span>
             </button>
           </li>
 
@@ -521,8 +537,12 @@ class Menu extends Component {
               })}
             >
               <span className='full'>SHELF</span>
-              <span className='mid'>she</span>
-              <span className='small'>sh</span>
+              <span className='mid'>
+                {screen === screenTypes.SHELF ? 'shelf' : 'she'}
+              </span>
+              <span className='small'>
+                {screen === screenTypes.SHELF ? 'shelf' : 'sh'}
+              </span>
             </button>
           </li>
 
