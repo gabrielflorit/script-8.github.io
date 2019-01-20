@@ -5,6 +5,7 @@ import actionTypes from './actionTypes.js'
 import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 import throwError from '../utils/throwError.js'
+import { parseGistGame } from '../reducers/game.js'
 
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
@@ -171,16 +172,12 @@ export const saveGist = ({
 
   const preparePayload = id => {
     const link = createLink(id)
-    const content = `This is a [SCRIPT-8](https://script-8.github.io) cassette.${link}`
-    const payload = {
+    const README = `This is a [SCRIPT-8](https://script-8.github.io) cassette.${link}`
+
+    let payload = {
       public: true,
       description: 'SCRIPT-8',
       files: {
-        'code.js': game
-          ? {
-            content: game
-          }
-          : null,
         'sprites.json': {
           content: JSON.stringify(sprites, null, 2)
         },
@@ -197,8 +194,24 @@ export const saveGist = ({
           content: JSON.stringify(songs, null, 2)
         },
         'README.md': {
-          content
+          content: README
         }
+      }
+    }
+
+    const gistGame = parseGistGame(gist.data)
+
+    // If game has length, send it.
+    if (game && game.length) {
+      payload.files['code.js'] = {
+        content: game
+      }
+    } else {
+      // If game doesn't exist,
+      // but the previous gist had game,
+      // send 'code.js': null.
+      if (gistGame && gistGame.length) {
+        payload.files['code.js'] = null
       }
     }
 
@@ -239,36 +252,3 @@ export const saveGist = ({
     }
   }
 }
-
-// const gh = new GitHub()
-// return gh
-//   .getGist(id)
-//   .read()
-//   .then(
-//     response => response.data,
-//     error => {
-//       if (
-//         error.response.data.message.startsWith('API rate limit exceeded')
-//       ) {
-//         console.log(
-//           'Rate limit exceeded for non-oauth. Switching to oauth.'
-//         )
-//         return window
-//           .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
-//           .then(response => {
-//             console.log({ response })
-//             return response.json()
-//           })
-//       } else {
-//         throw error
-//       }
-//     }
-//   )
-//   .then(json => dispatch(actions.fetchGistSuccess(json)))
-//   .catch(error =>
-//     throwError({
-//       error,
-//       message: `Could not fetch gist ${id} from GitHub while not using an oauth token, or from the hosted oauth service.`
-//     })
-//   )
-// }
