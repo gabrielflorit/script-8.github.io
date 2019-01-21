@@ -51,8 +51,8 @@
     - tile()
     - docs coming
   -
-    - map()
-    - docs coming
+    - map(mx, my)
+    - Draws the map. `mx` and `my` are in map coordinates, e.g. mx=1, my=1 is the top-left map tile.
   -
     - camera()
     - docs coming

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { isNil } from 'lodash'
-import { connect } from 'react-redux'
-import screenTypes from '../utils/screenTypes.js'
 import range from 'lodash/range'
 import every from 'lodash/every'
+import { connect } from 'react-redux'
+import patcher from '../utils/patcher.js'
+import screenTypes from '../utils/screenTypes.js'
 import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.json'
 
@@ -45,16 +46,18 @@ class Tutorial extends Component {
     const { setScreen, updateGame, screen } = this.props
 
     const lesson = lessons[lessonIndex]
-    const slide = lesson.slides[slideIndex]
+    const { slides } = lesson
+    const slide = slides[slideIndex]
     const { screen: slideScreen, game } = slide
 
     // If we're not on CODE, set the game with no prefix.
     // If we are on CODE, use prefix.
     if (!isNil(game)) {
+      const patchedGame = patcher({ slides, index: slideIndex })
       if (screen !== screenTypes.CODE) {
-        updateGame(game)
+        updateGame(patchedGame)
       } else {
-        updateGame(`SCRIPT-8 LESSON${game}`)
+        updateGame(`SCRIPT-8 LESSON${patchedGame}`)
       }
     }
 
