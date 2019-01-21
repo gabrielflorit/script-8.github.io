@@ -580,3 +580,110 @@
     - If everything went well (and why shouldn't it?) you'll see your cassette on the SHELF.
     - The SHELF is a good place to put your cassette for others to see.
     - Well, that's the end of this lesson. See you later!
+- title: Platformer pt. 1 (basic movement)
+  slides:
+  - text:
+    - In previous lessons we've learned to draw text and make squares move.
+    - Exciting, no doubt.
+    - But you're here to make games!
+  - text:
+    - It's about time we got to that.
+    - In this lesson we'll learn how to make a little plumber move.
+    - Now that is exciting.
+  - text:
+    - First things first. Go to CODE.
+    - Actually, no. Let's go to SPRITE instead (mouse over ART to find it).
+    - We have to draw our plumber.
+    # requirements:
+    #   screen: SPRITE
+  - text:
+    - To draw, click `+`, click a color, and then click (or drag) on the top-left grid.
+    - To delete, click `-`, and then click (or drag) on the top-left grid.
+    - Try it. Or I can do it for you. Click NEXT.
+  - text:
+    - Well isn't that cheerful.
+    - You might have noticed 0-1-2-3 buttons under the `+` and `-`.
+    - These are sprite flags. We'll discuss them in a future lesson.
+    screen: SPRITE
+    sprite:
+      index: 0
+      array:
+      - "        "
+      - "  0  0  "
+      - "  0  0  "
+      - "        "
+      - "        "
+      - "0      0"
+      - " 0    0 "
+      - "  0000  "
+  - text:
+    - This smiley face is pleasant. But I promised a plumber.
+    - Click next.
+    sprite:
+      index: 0
+      array:
+      - "        "
+      - "  0  0  "
+      - "  0  0  "
+      - "        "
+      - "        "
+      - "0      0"
+      - " 0    0 "
+      - "  0000  "
+  - text:
+    - "Doesn't he look familiar? We'll call him Mr. M."
+    - "By the way, these sprites are courtesy of <a class='text' href='https://twitter.com/johanvinet'>Johan Vinet</a>."
+    - We also need something for Mr. M to stand on.
+    screen: SPRITE
+    sprite:
+      index: 0
+      array:
+      - "   2220 "
+      - "   22222"
+      - "  20270 "
+      - "  200220"
+      - "   2000 "
+      - " 221331 "
+      - "0 333351"
+      - "  2   3 "
+  - text:
+    - I'll draw a rock sprite.
+    sprite:
+      index: 32
+      array:
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+  - text:
+    - Feel free to edit these.
+    - When you're ready, go to MAP.
+    - You'll find it by mousing over ART.
+    screen: SPRITE
+    sprite:
+      index: 32
+      array:
+      - "00112112"
+      - "02225223"
+      - "12225225"
+      - "12223225"
+      - "13552112"
+      - "01121223"
+      - "12231225"
+      - "25532555"
+  - text:
+    - To make a map, click a sprite, and then click (or drag) on the top-left grid.
+    - Delete by first clicking on `-`, and then click (or drag) on the top-left grid.
+    - Can you try making a floor for our plumber?
+    screen: MAP
+  - text:
+    - a
+    screen: MAP
+    map:
+      -
+        - null
+        - null

@@ -22,6 +22,13 @@ const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
   updateGame: game => dispatch(actions.updateGame(game)),
+  updateSprite: ({ sprite, index }) =>
+    dispatch(
+      actions.updateSprite({
+        sprite,
+        index
+      })
+    ),
   setTutorialSlide: ({ lessonIndex, slideIndex }) =>
     dispatch(
       actions.setTutorialSlide({
@@ -43,12 +50,12 @@ class Tutorial extends Component {
   }
 
   fireActions ({ lessonIndex, slideIndex }) {
-    const { setScreen, updateGame, screen } = this.props
+    const { setScreen, updateGame, updateSprite, screen } = this.props
 
     const lesson = lessons[lessonIndex]
     const { slides } = lesson
     const slide = slides[slideIndex]
-    const { screen: slideScreen, game } = slide
+    const { screen: slideScreen, game, sprite } = slide
 
     // If we're not on CODE, set the game with no prefix.
     // If we are on CODE, use prefix.
@@ -59,6 +66,11 @@ class Tutorial extends Component {
       } else {
         updateGame(`SCRIPT-8 LESSON${patchedGame}`)
       }
+    }
+
+    // If there are sprites, set them.
+    if (sprite) {
+      updateSprite({ sprite: sprite.array, index: sprite.index })
     }
 
     // Set the screen, if we have one.
@@ -183,9 +195,8 @@ class Tutorial extends Component {
             className={classNames({
               code: p.startsWith('XX')
             })}
-          >
-            {p.replace(/^XX/, '')}
-          </p>
+            dangerouslySetInnerHTML={{ __html: p.replace(/^XX/, '') }}
+          />
         ))}
         <div className='bottom-bar'>
           {buttons}
