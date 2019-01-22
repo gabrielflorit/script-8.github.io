@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import actions from '../actions/actions.js'
+import screenTypes from '../utils/screenTypes.js'
 import logo from '../images/logo.png'
 import { timestamp } from '../utils/timestamp.json'
 import loshermanosbrosgif from '../images/loshermanosbros-lite.gif'
@@ -21,6 +22,7 @@ const mapStateToProps = ({ tutorial }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setScreen: screen => dispatch(actions.setScreen(screen)),
   startTutorial: () =>
     dispatch(
       actions.setTutorialSlide({
@@ -34,10 +36,15 @@ class Home extends Component {
   constructor (props) {
     super(props)
     this.handleStartTutorial = this.handleStartTutorial.bind(this)
+    this.handleSeeLessons = this.handleSeeLessons.bind(this)
   }
 
   handleStartTutorial () {
     this.props.startTutorial()
+  }
+
+  handleSeeLessons () {
+    this.props.setScreen(screenTypes.HELP)
   }
 
   render () {
@@ -83,7 +90,15 @@ class Home extends Component {
               })}
               onClick={this.handleStartTutorial}
             >
-              > Start here
+              > New? Start here
+            </button>
+            <button
+              className={classNames('button', {
+                invisible: this.props.tutorial
+              })}
+              onClick={this.handleSeeLessons}
+            >
+              > See lessons
             </button>
           </p>
           <p>
