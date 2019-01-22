@@ -8,17 +8,20 @@ import patcher from '../utils/patcher.js'
 import screenTypes from '../utils/screenTypes.js'
 import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.json'
+import Map from './Map.js'
 
 const areRequirementsMet = ({ requirements, props }) =>
   every(requirements, (value, key) => props[key] === value)
 
-const mapStateToProps = ({ screen, tutorial, game }) => ({
+const mapStateToProps = ({ screen, tutorial, game, map }) => ({
   screen,
   tutorial,
-  game
+  game,
+  map
 })
 
 const mapDispatchToProps = dispatch => ({
+  updateMap: newMap => dispatch(actions.updateMap(newMap)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
   updateGame: game => dispatch(actions.updateGame(game)),
@@ -50,12 +53,19 @@ class Tutorial extends Component {
   }
 
   fireActions ({ lessonIndex, slideIndex }) {
-    const { setScreen, updateGame, updateSprite, screen } = this.props
+    const {
+      setScreen,
+      updateGame,
+      updateSprite,
+      updateMap,
+      screen,
+      map
+    } = this.props
 
     const lesson = lessons[lessonIndex]
     const { slides } = lesson
     const slide = slides[slideIndex]
-    const { screen: slideScreen, game, sprite } = slide
+    const { screen: slideScreen, game, sprite, map: slideMap } = slide
 
     // If we're not on CODE, set the game with no prefix.
     // If we are on CODE, use prefix.
@@ -71,6 +81,20 @@ class Tutorial extends Component {
     // If there are sprites, set them.
     if (sprite) {
       updateSprite({ sprite: sprite.array, index: sprite.index })
+    }
+
+    if (slideMap) {
+      let newMap
+      if (!map.length) {
+        newMap = Map.createBlankMap()
+      } else {
+        newMap = JSON.parse(JSON.stringify(map))
+      }
+      slideMap.forEach(d => {
+        const [row, col, value] = d.split('-')
+        newMap[+row][+col] = value ? +value : null
+      })
+      updateMap(newMap)
     }
 
     // Set the screen, if we have one.

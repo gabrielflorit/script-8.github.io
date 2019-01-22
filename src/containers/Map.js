@@ -169,9 +169,7 @@ class Map extends Component {
 
   getCurrentRoom () {
     const { map } = this.props
-    return map.length
-      ? map
-      : _.range(64).map(row => _.range(128).map(col => null))
+    return map.length ? map : Map.createBlankMap()
   }
 
   setMode (mode) {
@@ -333,4 +331,9 @@ class Map extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Map)
+Map.createBlankMap = () => _.range(64).map(() => _.range(128).map(() => null))
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Map)
