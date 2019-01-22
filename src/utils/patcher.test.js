@@ -27,6 +27,9 @@ const slides = [
       "REP2-4\n  print(8, 8, 'Hola mundo!', 1)\n  print(16, 16, 'Hola mundo!', 2)"
   },
   {
+    game: 'REP1\n  cleared()'
+  },
+  {
     game: 'reset'
   }
 ]
@@ -62,7 +65,12 @@ describe('patcher', () => {
       "draw = () => {\n  clear()\n  print(8, 8, 'Hola mundo!', 1)\n  print(16, 16, 'Hola mundo!', 2)\n}"
     )
   })
+  test('should replace a line', () => {
+    expect(patcher({ slides, index: 10 })).toEqual(
+      "draw = () => {\n  cleared()\n  print(8, 8, 'Hola mundo!', 1)\n  print(16, 16, 'Hola mundo!', 2)\n}"
+    )
+  })
   test('should accept a reset', () => {
-    expect(patcher({ slides, index: 10 })).toEqual('reset')
+    expect(patcher({ slides, index: 11 })).toEqual('reset')
   })
 })

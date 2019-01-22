@@ -6,6 +6,11 @@ import polyStroke from './polyStroke.js'
 import print from './print.js'
 import sprite, { pixelSprite } from './sprite.js'
 
+// let mapDraws = []
+// let avgDraws = []
+// let draws = 0
+// let skips = 0
+
 const canvasAPI = ({
   ctx,
   width: canvasWidth,
@@ -16,6 +21,10 @@ const canvasAPI = ({
   const _sprites = sprites
   const _map = map
   ctx.setTransform(1, 0, 0, 1, 0, 0)
+
+  let _cameraX = 0
+
+  let _cameraY = 0
 
   const _memoryCanvas = document.createElement('canvas')
   _memoryCanvas.width = canvasWidth
@@ -64,9 +73,11 @@ const canvasAPI = ({
       )
     },
 
-    camera (x) {
+    camera (x = 0, y = 0) {
+      _cameraX = x
+      _cameraY = y
       ctx.setTransform(1, 0, 0, 1, 0, 0)
-      ctx.translate(-x, 0)
+      ctx.translate(-x, -y)
     },
 
     rectFill (x, y, w, h, c = 0) {
@@ -76,34 +87,56 @@ const canvasAPI = ({
 
     map (x = 0, y = 0) {
       // const before = Date.now()
-      _map.slice(y, y + 16).forEach((row, rowNumber) => {
-        row.slice(x, x + 17).forEach((spriteIndex, colNumber) => {
+      _map.forEach((row, rowNumber) => {
+        row.forEach((spriteIndex, colNumber) => {
           if (spriteIndex !== null) {
-            const dx = (colNumber + x) * 8
-            const dy = rowNumber * 8
-            const sWidth = 8
-            const sHeight = 8
             const sx = (spriteIndex % 16) * 8
             const sy = Math.floor(spriteIndex / 16) * 8
+            const sWidth = 8
+            const sHeight = 8
+            const dx = (colNumber + x) * 8
+            const dy = rowNumber * 8
             const dWidth = 8
             const dHeight = 8
 
-            ctx.drawImage(
-              _memoryCanvas,
-              sx,
-              sy,
-              sWidth,
-              sHeight,
-              dx,
-              dy,
-              dWidth,
-              dHeight
-            )
+            if (
+              dx + 7 >= _cameraX &&
+              dx < _cameraX + 128 &&
+              dy + 7 >= _cameraY &&
+              dy < _cameraY + 128
+            ) {
+              // ++draws
+              ctx.drawImage(
+                _memoryCanvas,
+                sx,
+                sy,
+                sWidth,
+                sHeight,
+                dx,
+                dy,
+                dWidth,
+                dHeight
+              )
+            } else {
+              // ++skips
+            }
           }
         })
       })
+
       // const after = Date.now()
-      // console.log(`map() took: ${after - before}ms`)
+      // mapDraws.push(after - before)
+      // if (mapDraws.length > 60) {
+      //   const avg = sum(mapDraws) / mapDraws.length
+      //   // console.log(`map() avg: ${sum(mapDraws) / mapDraws.length}ms`)
+      //   // console.log({ _cameraX, _cameraY })
+      //   mapDraws = []
+      //   avgDraws.push(avg)
+      //   if (avgDraws.length % 10 === 0) {
+      //     console.log(`AVG AVG: ${sum(avgDraws) / avgDraws.length}ms`)
+      //     console.log(`DRAWS/SKIPS: ${draws / skips} (${draws}/${skips})`)
+      //   }
+      // }
     },
 
     sprite (x, y, spriteIndex, darken = 0, flip = false) {
@@ -132,7 +165,12 @@ const canvasAPI = ({
     },
 
     clear () {
+      ctx.save()
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      // Will always clear the right space
+      // ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      ctx.restore()
     }
   }
 }

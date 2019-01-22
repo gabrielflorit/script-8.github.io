@@ -594,12 +594,23 @@
     - First things first. Go to CODE.
     - Actually, no. Let's go to SPRITE instead (mouse over ART to find it).
     - We have to draw our plumber.
-    # requirements:
-    #   screen: SPRITE
+    requirements:
+      screen: SPRITE
   - text:
     - To draw, click `+`, click a color, and then click (or drag) on the top-left grid.
     - To delete, click `-`, and then click (or drag) on the top-left grid.
     - Try it. Or I can do it for you. Click NEXT.
+    sprite:
+      index: 0
+      array:
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
+      - "        "
   - text:
     - Well isn't that cheerful.
     - You might have noticed 0-1-2-3 buttons under the `+` and `-`.
@@ -667,14 +678,14 @@
     sprite:
       index: 32
       array:
-      - "00112112"
-      - "02225223"
-      - "12225225"
-      - "12223225"
-      - "13552112"
-      - "01121223"
-      - "12231225"
-      - "25532555"
+      - "22334334"
+      - "24447445"
+      - "34447447"
+      - "34445447"
+      - "35774334"
+      - "23343445"
+      - "34453447"
+      - "47754777"
   - text:
     - To make a map, click a sprite, and then click (or drag) on the top-left grid.
     - Delete by first clicking on `-`, and then click (or drag) on the top-left grid.
@@ -699,7 +710,9 @@
       '15-15',
     ]
   - text:
-    - a
+    - Good. Now Mr. M has something to walk on.
+    - Alright. We're done with sprites and maps. Time to make him move.
+    - Go to CODE.
     screen: MAP
     map: [
       '15-0-32',
@@ -719,3 +732,167 @@
       '15-14-32',
       '15-15-32',
     ]
+  - text:
+    - First, add a `draw` function. We covered this in previous lessons.
+    - Don't remember? That's OK. I'll do it for you.
+    - Click next.
+    screen: CODE
+    game: ''
+  - text:
+    - Now we need to draw the map. Remember, the one with the floor?
+    - "SCRIPT-8 has a function for this:"
+    - XXmap()
+    screen: CODE
+    game: |-
+      draw = state => {
+        clear()
+      }
+  - text:
+    - "`map` draws the map. Handy."
+    - You can optionally pass it parameters, but we don't need that here.
+    - Consult HELP for more information on `map` and other SCRIPT-8 functions.
+    screen: CODE
+    game: |-
+      ADD2
+        map()
+  - text:
+    - Time to draw the plumber.
+    - "SCRIPT-8 has another function for this:"
+    - XXsprite(x, y, spriteIndex)
+  - text:
+    - There is our plumber. But he's not in the right spot.
+    - Can you make him stand on the floor?
+    - "Tip: the number slider might make this easier."
+    screen: CODE
+    game: |-
+      ADD3
+        sprite(0, 0, 0)
+  - text:
+    - Good.
+    - By the way, the third parameter in `sprite` is the sprite index.
+    - Our plumber is the first sprite on the sprite list. Sprite 0.
+    screen: CODE
+    game: |-
+      REP3
+        sprite(0, 112, 0)
+  - text:
+    - This is good progress.
+    - But what is a platformer without movement?
+    - We need to respond to input (e.g. pressing the right key) and update the sprite's position.
+    screen: CODE
+    game: |-
+      REP3
+        sprite(0, 112, 0)
+  - text:
+    - In SCRIPT-8, the `update` function receives the current input.
+    - Let's add that next.
+  - text:
+    - Time to add input-handling code.
+    - If left is pressed, move the charac... wait a second.
+    - The plumber is being drawn to (0, 112).
+    - Shouldn't we fix that first?
+    screen: CODE
+    game: |-
+      REP0-0
+      update = (state, input) => {
+
+      }
+
+      draw = state => {
+  - text:
+    - Yes, we should. Let's add `initialState` so we can track the plumber's state there.
+    - "Like so:"
+  - text:
+    - And update `draw` so it uses state instead of the hardcoded numbers.
+    screen: CODE
+    game: |-
+      REP0-0
+      initialState = {
+        x: 0,
+        y: 112
+      }
+
+      update = (state, input) => {
+  - text:
+    - Now for the final part. In the `update` function, `input` is an object that contains various booleans indicating if keys are pressed.
+    - For example, `input.left` will be true if the left key is pressed, etc.
+    - Let's first add logic to handle left and right keys.
+    screen: CODE
+    game: |-
+      REP12
+        sprite(state.x, state.y, 0)
+  - text:
+    - And now we can update state appropriately. If left is pressed, decrease x by 1.
+    - And if right is pressed, well, you get the idea.
+    screen: CODE
+    game: |-
+      REP6
+        if (input.left) {
+
+        }
+
+        if (input.right) {
+
+        }
+  - text:
+    - Click on the game (or click RUN if you can't see it, and there, click on the game).
+    - And press the left or right keys.
+    - The plumber moves!
+    screen: CODE
+    game: |-
+      REP6-12
+        if (input.left) {
+          state.x -= 1
+        }
+
+        if (input.right) {
+          state.x += 1
+        }
+  - text:
+    - One last thing.
+    - Pressing left makes Mr. M move back, but he's facing forward.
+    - That isn't right.
+  - text:
+    - "Fortunately for us, `sprite` has two optional parameters:"
+    - XXsprite(x, y, spriteIndex, [brighten, flipX])
+    - "`brighten` brightens or darkens the sprite. And `flipX` flips it left or right."
+  - text:
+    - First, we should add `flip` to `initialState`. We need to keep track of it somehow.
+  - text:
+    - Next, update the input-handling code.
+    - If left is pressed, set flip to true.
+    - If right is pressed, set flip to false.
+    screen: CODE
+    game: |-
+      REP2
+        y: 112,
+        flip: false
+  - text:
+    - Finally, change the sprite call.
+    - Remember to ignore `brighten` for now (the fourth parameter).
+    screen: CODE
+    game: |-
+      REP7-13
+        if (input.left) {
+          state.x -= 1
+          state.flip = true
+        }
+
+        if (input.right) {
+          state.x += 1
+          state.flip = false
+        }
+  - text:
+    - And there you have it. Our plumber faces the right direction.
+    - Exciting!
+    screen: CODE
+    game: |-
+      REP21
+        sprite(state.x, state.y, 0, 0, state.flip)
+  - text:
+    - This has been a long lesson, mostly because I like the sight of my own words.
+    - But pause for a second and look at the amount of code required to make our plumber move.
+    - Not that much.
+  - text:
+    - SCRIPT-8 makes it easy to make games. I hope you agree.
+    - Bye!

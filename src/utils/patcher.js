@@ -12,6 +12,7 @@ const patcher = ({ slides, index }) => {
 
         const deleteOne = current.match(/^DEL(\d+)$/)
         const deleteRange = current.match(/^DEL(\d+)-(\d+)$/)
+        const replaceOne = current.match(/^REP(\d+)/)
         const replaceRange = current.match(/^REP(\d+)-(\d+)/)
         const add = current.match(/^ADD(\d+)/)
         const same = current.match(/^SAME$/)
@@ -43,6 +44,15 @@ const patcher = ({ slides, index }) => {
             ...lines.slice(0, lineNumberToReplaceStart),
             ...current.substring(replaceRange[0].length + 1).split('\n'),
             ...lines.slice(lineNumberToReplaceEnd + 1)
+          ]
+
+          return newLines.join('\n')
+        } else if (replaceOne) {
+          const lineNumberToReplace = +replaceOne[1]
+          const newLines = [
+            ...lines.slice(0, lineNumberToReplace),
+            ...current.substring(replaceOne[0].length + 1).split('\n'),
+            ...lines.slice(lineNumberToReplace + 1)
           ]
 
           return newLines.join('\n')

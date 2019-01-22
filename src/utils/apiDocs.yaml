@@ -42,8 +42,8 @@
     - polyStroke(points, [rotate, [x, y]], color)
     - "Strokes a polygon as defined by an array of points, each point being a two-element array. You do not need to close the polygon. For example, to draw a square at 0,0: `polyStroke([[0,0], [4,0], [4,4], [0, 4]], 0)`. `rotate` is in degrees. If `rotate` is supplied, but no xy, rotates the polygon. If `rotate` and `xy` is supplied, rotates the polygon about xy. Note color is not optional."
   -
-    - sprite(x, y, spriteIndex, [brighten, flip])
-    - Draws the sprite at xy. `spriteIndex` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flip` is true, mirrors the sprite along the y axis.
+    - sprite(x, y, spriteIndex, [brighten, flipX])
+    - Draws the sprite at xy. `spriteIndex` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flipX` is true, mirrors the sprite along the y axis.
   -
     - clear()
     - Clears the screen.
@@ -51,11 +51,11 @@
     - tile()
     - docs coming
   -
-    - map(mx, my)
+    - map([mx=0, my=0])
     - Draws the map. `mx` and `my` are in map coordinates, e.g. mx=1, my=1 is the top-left map tile.
   -
-    - camera()
-    - docs coming
+    - camera([x=0, y=0])
+    - Offsets the top-left corner from subsequent draw coordinates. Call `camera()` to reset it.
 - title: Utility
   dl:
   -
