@@ -13,11 +13,10 @@ import Map from './Map.js'
 const areRequirementsMet = ({ requirements, props }) =>
   every(requirements, (value, key) => props[key] === value)
 
-const mapStateToProps = ({ screen, tutorial, game, map }) => ({
+const mapStateToProps = ({ screen, tutorial, game }) => ({
   screen,
   tutorial,
-  game,
-  map
+  game
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -62,8 +61,7 @@ class Tutorial extends Component {
       updateGame,
       updateSprite,
       updateMap,
-      screen,
-      map
+      screen
     } = this.props
 
     const lesson = lessons[lessonIndex]
