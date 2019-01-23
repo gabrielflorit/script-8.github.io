@@ -34,11 +34,11 @@
     text:
     - 'Enter the following lines:'
     - XXdraw = () => {
-    - XX  print(0, 0, 'Hello world!', 0)
+    - XX  print(42, 60, 'Hello world!', 0)
     - XX}
   - game: |-
       draw = () => {
-        print(0, 0, 'Hello world!', 0)
+        print(42, 60, 'Hello world!', 0)
       }
     screen: CODE
     text:
@@ -53,6 +53,7 @@
       screen: RUN
   - text:
     - This is also what your friends will see when they load your cassette.
+  - text:
     - Speaking of which, save it! This is, after all, the beginning of your story.
     - Mouse over CASSETTE, on the menu, and click RECORD.
   - text:
@@ -82,7 +83,7 @@
   - screen: CODE
     game: |-
       draw = () => {
-        print(0, 0, 'Hello world!', 0)
+        print(42, 60, 'Hello world!', 0)
       }
     text:
     - There are two functions here, 'draw' and 'print'.
@@ -150,8 +151,9 @@
     - This lesson is titled "Hello many worlds!" but we haven't taken care of that.
     - Can you guess how to fill the screen with 'Hello world!'? I'll do it for you.
   - game: |-
-      ADD2
+      draw = () => {
         clear()
+        print(0, 0, 'Hello world!', 0)
         print(8, 8, 'Hello world!', 1)
         print(16, 16, 'Hello world!', 2)
         print(24, 24, 'Hello world!', 3)
@@ -165,6 +167,7 @@
         print(88, 88, 'Hello world!', 0)
         print(96, 102, 'Hello world!', 1)
         print(106, 116, 'Hello world!', 2)
+      }
     screen: CODE
     text:
     - The last ones are a bit odd. Looks like they wrapped down.

@@ -113,9 +113,17 @@ class CodeEditor extends Component {
       // Save token.
       const value = token.string
 
-      this._slider.min = 0
-      this._slider.max = value === '0' ? 10 : +value * 2
-      this._slider.value = +value
+      const valueNumber = +value
+
+      if (valueNumber >= -127 && valueNumber <= 127) {
+        this._slider.min = -127
+        this._slider.max = 127
+        this._slider.value = valueNumber
+      } else {
+        this._slider.min = 0
+        this._slider.max = valueNumber === 0 ? 10 : valueNumber * 2
+        this._slider.value = valueNumber
+      }
 
       // Position slider centered above token.
       this._slider.style.left = `${middleCoords.left -
