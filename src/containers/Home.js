@@ -209,6 +209,24 @@ class Home extends Component {
             , where you can keep up with new features and the occasional bug
             fix.
           </p>
+          <p>
+            SCRIPT-8 nyx8 palette by{' '}
+            <a className='text' href='https://twitter.com/Xavier_Gd'>
+              Javier Guerrero
+            </a>
+            . Sprites in{' '}
+            <a
+              className='text'
+              href='https://script-8.github.io/?id=cd8d6811adb3afb472aaf7505729cf01'
+            >
+              Los Hermanos Bros.
+            </a>{' '}
+            by{' '}
+            <a className='text' href='https://twitter.com/johanvinet'>
+              Johan Vinet
+            </a>
+            .
+          </p>
         </div>
       </div>
     )

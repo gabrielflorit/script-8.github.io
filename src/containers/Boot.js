@@ -38,7 +38,7 @@ class Boot extends Component {
     // If we are done fetching, and we have a gist,
     // AND we are done booting,
     if (!gist.isFetching && gist.data && booted) {
-      // and set the new screen.
+      // set screen to RUN.
       setScreen(screenTypes.RUN)
     }
   }
