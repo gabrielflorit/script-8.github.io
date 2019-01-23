@@ -120,8 +120,8 @@ class CodeEditor extends Component {
         this._slider.max = 127
         this._slider.value = valueNumber
       } else {
-        this._slider.min = 0
-        this._slider.max = valueNumber === 0 ? 10 : valueNumber * 2
+        this._slider.min = -valueNumber * 2
+        this._slider.max = valueNumber * 2
         this._slider.value = valueNumber
       }
 
