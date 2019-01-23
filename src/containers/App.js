@@ -53,6 +53,7 @@ class App extends Component {
       this.appElement = e
     }
   }
+
   componentDidUpdate (prevProps, prevState) {
     // Get the tutorial's height and set App's padding-bottom to this.
     if (this.tutorialElement && this.tutorialElement.current) {
@@ -79,7 +80,14 @@ class App extends Component {
           <TopBar />
           {options[screen]()}
           <Output />
-          {tutorial ? <Tutorial tutorialRef={this.tutorialElement} /> : null}
+          {tutorial ? (
+            <Tutorial
+              className={classNames({
+                'in-RUN': screen === screenTypes.RUN
+              })}
+              tutorialRef={this.tutorialElement}
+            />
+          ) : null}
         </div>
       </ErrorBoundary>
     )

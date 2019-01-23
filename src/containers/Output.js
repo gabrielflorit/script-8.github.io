@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import classNames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import lz from 'lz-string'
@@ -21,7 +22,8 @@ const mapStateToProps = ({
   sprites,
   map,
   sound,
-  gist
+  gist,
+  tutorial
 }) => ({
   songs,
   chains,
@@ -33,7 +35,8 @@ const mapStateToProps = ({
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
   sound,
-  gist
+  gist,
+  tutorial
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -177,9 +180,8 @@ class Output extends Component {
       <ul>
         {sizes.map((d, i) => (
           <li key={i}>
-            {d[0]}: {numberWithCommas(d[1].length)}/{numberWithCommas(
-              d[2].length
-            )}
+            {d[0]}: {numberWithCommas(d[1].length)}/
+            {numberWithCommas(d[2].length)}
           </li>
         ))}
         <li>
@@ -192,10 +194,14 @@ class Output extends Component {
 
   render () {
     const { showSize } = this.state
-    const { run } = this.props
+    const { run, tutorial } = this.props
 
     return (
-      <div className='Output'>
+      <div
+        className={classNames('Output', {
+          'in-tutorial': tutorial && run
+        })}
+      >
         <iframe
           src={process.env.REACT_APP_IFRAME_URL}
           title='SCRIPT-8'
@@ -222,4 +228,7 @@ class Output extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Output)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Output)

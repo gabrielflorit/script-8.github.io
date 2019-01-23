@@ -50,6 +50,10 @@ class Tutorial extends Component {
     this.handleNextLesson = this.handleNextLesson.bind(this)
     this.handleSlide = this.handleSlide.bind(this)
     this.fireActions = this.fireActions.bind(this)
+    this.buttonsElement = null
+    this.setButtonsRef = e => {
+      this.buttonsElement = e
+    }
   }
 
   fireActions ({ lessonIndex, slideIndex }) {
@@ -84,12 +88,7 @@ class Tutorial extends Component {
     }
 
     if (slideMap) {
-      let newMap
-      if (!map.length) {
-        newMap = Map.createBlankMap()
-      } else {
-        newMap = JSON.parse(JSON.stringify(map))
-      }
+      let newMap = Map.createBlankMap()
       slideMap.forEach(d => {
         const [row, col, value] = d.split('-')
         newMap[+row][+col] = value ? +value : null
@@ -104,7 +103,8 @@ class Tutorial extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    const { lessonIndex, slideIndex } = this.props.tutorial
+    const { tutorial, screen } = this.props
+    const { lessonIndex, slideIndex } = tutorial
     const { slides } = lessons[lessonIndex]
     const slide = slides[slideIndex]
     const { requirements } = slide
@@ -118,6 +118,10 @@ class Tutorial extends Component {
           this.handleNextSlide()
         }
       }
+    }
+
+    if (screen === screenTypes.RUN) {
+      this.buttonsElement.scrollIntoView()
     }
   }
 
@@ -146,7 +150,8 @@ class Tutorial extends Component {
   }
 
   render () {
-    const { lessonIndex, slideIndex } = this.props.tutorial
+    const { tutorial, screen, tutorialRef } = this.props
+    const { lessonIndex, slideIndex } = tutorial
     const { title, slides } = lessons[lessonIndex]
     const slide = slides[slideIndex]
     const { requirements } = slide
@@ -187,7 +192,7 @@ class Tutorial extends Component {
       ) : null
 
     const buttons = (
-      <div className='buttons'>
+      <div className='buttons' ref={this.setButtonsRef}>
         {previous}
         {nextLesson}
         {nextSlide}
@@ -211,7 +216,12 @@ class Tutorial extends Component {
       .join('')
 
     return (
-      <div className='Tutorial' ref={this.props.tutorialRef}>
+      <div
+        className={classNames('Tutorial', {
+          'in-run': screen === screenTypes.RUN
+        })}
+        ref={tutorialRef}
+      >
         {description}
         {slide.text.map((p, i) => (
           <p

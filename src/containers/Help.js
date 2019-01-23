@@ -33,6 +33,23 @@ class Help extends Component {
         <div className='main'>
           <ul className='top-list'>
             <li>
+              SCRIPT-8 is written by Gabriel Florit (that's me!). Do you have a
+              question? Or perhaps you found a bug? Tweet me at{' '}
+              <a className='text' href='https://twitter.com/gabrielflorit'>
+                @gabrielflorit
+              </a>{' '}
+              and I'll be glad to help out. And visit the Github repository{' '}
+              <a
+                className='text'
+                href='https://github.com/script-8/script-8.github.io'
+              >
+                here
+              </a>
+              , where you can keep up with new features and the occasional bug
+              fix.
+            </li>
+
+            <li>
               Lessons
               <ul className='lessons'>
                 {lessons.map((lesson, i) => (

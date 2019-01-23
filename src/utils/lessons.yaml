@@ -30,7 +30,6 @@
     - Click CODE in the top menu, and make sure to remove any existing code.
     requirements:
       screen: CODE
-      game: ''
   - screen: CODE
     text:
     - 'Enter the following lines:'
@@ -75,7 +74,6 @@
     - Make sure to remove any existing code.
     requirements:
       screen: CODE
-      game: ''
   - screen: CODE
     text:
     - Alright. Do you remember the 'Hello world!' code?
@@ -94,7 +92,7 @@
   - screen: CODE
     game: SAME
     text:
-    - The other function, 'print', prints text on the screen.
+    - The other function, 'print', prints text to the screen.
     - 'It takes four parameters: x, y, text, and color.'
     - The first two, x and y, can be any integers from 0 to 127.
   - screen: CODE
@@ -106,10 +104,11 @@
   - screen: CODE
     game: SAME
     text:
-    - In fact, let's try that now. Change the numbers to something else.
-    - And if you're on a small screen, remember to click RUN to see your work.
+    - In fact, let's try that now. Change the first two numbers to something else.
+    - If you're on a small screen, remember to click RUN to see your work.
+    - Oh, and if things don't look right... that's OK. I'll explain.
   - text:
-    - WHAT HAPPENED?!
+    - So. Did you try changing the numbers? And did your screen get all garbled?
     - That is probably not what you expected.
     - It looks like the text smeared all over itself. Not good.
     - Go back to CODE so we can fix this.
@@ -142,17 +141,17 @@
     - Change the color. Experiment. Oh. What happens if you enter... a 9?
   - text:
     - It still drew something. Looks like... a 9 is like the color 1.
-    - And 17 is also the color 1. Try it.
+    - And 18 is the color 2. Try it.
   - text:
     - So, the color numbers seem to wrap around, in groups of 8.
     - SCRIPT-8 does this by design. It can be useful in certain situations.
     - This is also known as modular arithmetic.
   - text:
-    - This lesson is getting a bit long!
-    - And the title said "Hello many worlds!" but we haven't taken care of that.
+    - This lesson is titled "Hello many worlds!" but we haven't taken care of that.
     - Can you guess how to fill the screen with 'Hello world!'? I'll do it for you.
   - game: |-
       ADD2
+        clear()
         print(8, 8, 'Hello world!', 1)
         print(16, 16, 'Hello world!', 2)
         print(24, 24, 'Hello world!', 3)
@@ -215,7 +214,7 @@
     - I'll show you one way.
   - screen: CODE
     text:
-    - This code uses a for loop to print 10 lines.
+    - This code uses a `for` loop to print 10 lines.
     - Not bad. We got rid of the duplication.
     - But there's a better way.
     game: |-
@@ -252,7 +251,7 @@
     text:
     - Actually, just a moment (sorry!).
     - See how the 'Hello World!'s don't go all the way to the bottom?
-    - Let's fix that. Play around with the `range` argument until the text goes all the way down.
+    - Let's fix that. Change the 10 (in line 7) until the text goes all the way down.
     game: SAME
   - screen: CODE
     text:
@@ -261,9 +260,9 @@
     - You probably deleted 10, then typed 11. Deleted 11, typed 12.
     - Deleted 12, typed 13. Deleted 13, typed 14. Deleted 14, typed 15.
   - text:
-    - That's also a lot of dupliplication.
+    - That's also a lot of of duplication.
     - All that typing just to find the right integer.
-    - If only there was an easier way to do this.
+    - If only there were an easier way to do this.
   - screen: CODE
     text:
     - Do something for me. Click on the number 10 above.
@@ -371,7 +370,7 @@
         polyStroke([topLeft, topRight, bottomRight, bottomLeft], angle, 0)
   - text:
     - Looking good. But how do we make the squares spin?
-    - "This is where `update` comes in, another `game loop` function. SCRIPT-8 calls it before `draw`:"
+    - "This is where `update` comes in, another `game loop` function. SCRIPT-8 executes it before `draw`:"
     - XXupdate(state, input, elapsed)
     screen: CODE
     game: |-
@@ -580,14 +579,14 @@
     - If everything went well (and why shouldn't it?) you'll see your cassette on the SHELF.
     - The SHELF is a good place to put your cassette for others to see.
     - Well, that's the end of this lesson. See you later!
-- title: Platformer pt. 1 (basic movement)
+- title: "Platformer pt. 1: basic movement"
   slides:
   - text:
     - In previous lessons we've learned to draw text and make squares move.
     - Exciting, no doubt.
     - But you're here to make games!
   - text:
-    - It's about time we got to that.
+    - It's about time we got to it.
     - In this lesson we'll learn how to make a little plumber move.
     - Now that is exciting.
   - text:
@@ -599,7 +598,7 @@
   - text:
     - To draw, click `+`, click a color, and then click (or drag) on the top-left grid.
     - To delete, click `-`, and then click (or drag) on the top-left grid.
-    - Try it. Or I can do it for you. Click NEXT.
+    - Play for a bit, and then I'll draw something. Click NEXT.
     sprite:
       index: 0
       array:
@@ -689,26 +688,9 @@
   - text:
     - To make a map, click a sprite, and then click (or drag) on the top-left grid.
     - Delete by first clicking on `-`, and then click (or drag) on the top-left grid.
-    - Can you try making a floor for our plumber?
+    - Play for a bit. Then I'll try making a floor for our plumber. 
     screen: MAP
-    map: [
-      '15-0',
-      '15-1',
-      '15-2',
-      '15-3',
-      '15-4',
-      '15-5',
-      '15-6',
-      '15-7',
-      '15-8',
-      '15-9',
-      '15-10',
-      '15-11',
-      '15-12',
-      '15-13',
-      '15-14',
-      '15-15',
-    ]
+    map: []
   - text:
     - Good. Now Mr. M has something to walk on.
     - Alright. We're done with sprites and maps. Time to make him move.
@@ -730,7 +712,7 @@
       '15-12-32',
       '15-13-32',
       '15-14-32',
-      '15-15-32',
+      '15-15-32'
     ]
   - text:
     - First, add a `draw` function. We covered this in previous lessons.
@@ -894,5 +876,20 @@
     - But pause for a second and look at the amount of code required to make our plumber move.
     - Not that much.
   - text:
-    - SCRIPT-8 makes it easy to make games. I hope you agree.
-    - Bye!
+    - See you in the next lesson!
+- title: "Platformer pt. 2: sprite cycles (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
+- title: "Platformer pt. 3: jumping (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
+- title: "Platformer pt. 4: wall collisions (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
+- title: "Platformer pt. 5: camera (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
