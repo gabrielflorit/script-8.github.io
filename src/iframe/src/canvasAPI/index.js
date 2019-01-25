@@ -45,7 +45,11 @@ const canvasAPI = ({
 
     tile (x, y) {
       const thisTile = get(_map, [y, x], null)
-      return thisTile !== null ? _sprites[thisTile] : null
+      let result = thisTile !== null ? _sprites[thisTile] : null
+      if (result) {
+        result.type = result[8]
+      }
+      return result
     },
 
     line (x1, y1, x2, y2, c = 0) {
