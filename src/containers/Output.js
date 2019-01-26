@@ -31,7 +31,6 @@ const mapStateToProps = ({
   sprites,
   map,
   game: screen === screenTypes.BOOT ? bios : game,
-  focus: screen === screenTypes.RUN,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
   sound,
@@ -51,7 +50,7 @@ class Output extends Component {
     this.getSize = this.getSize.bind(this)
     this.handleClickSize = this.handleClickSize.bind(this)
     this.resize = _.debounce(this.resize.bind(this), 100)
-    this.handleBlur = this.props.focus ? this.handleBlur.bind(this) : this.noop
+    this.handleBlur = this.handleBlur.bind(this)
 
     window.addEventListener('resize', this.resize)
 
@@ -75,7 +74,9 @@ class Output extends Component {
   }
 
   handleBlur (e) {
-    e.currentTarget.focus()
+    if (this.props.run) {
+      e.currentTarget.focus()
+    }
   }
 
   componentDidMount () {
@@ -83,6 +84,9 @@ class Output extends Component {
   }
 
   componentDidUpdate () {
+    if (this.props.run) {
+      this._iframe.focus()
+    }
     if (this.isLoaded) {
       this.evaluate()
     }
