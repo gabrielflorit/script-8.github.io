@@ -12,5 +12,6 @@ drawActors = (state, fade) => {
 }
 
 draw = state => {
+  camera()
   clear()
 }`
