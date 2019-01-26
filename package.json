@@ -57,7 +57,7 @@
     "build-css": "stylus src/css/App.styl -o src/css",
     "watch-css": "stylus src/css/App.styl -o src/css -w",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p start-js watch-css watch-lessons watch-apiDocs watch-howTo",
+    "start": "npm-run-all -p start-js watch-css parse-lessons watch-lessons parse-apiDocs watch-apiDocs parse-howTo watch-howTo",
     "build-js": "react-scripts build",
     "build": "npm-run-all -s build-css build-js iframe",
     "serve": "serve -s build",
