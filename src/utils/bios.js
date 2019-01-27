@@ -45,7 +45,7 @@ update = (state, input, elapsed) => {
     state.totalElapsed = 0
     state.counter++
   } else if (mode === 'run') {
-    if (input.start) {
+    if (input.__mousedown) {
       ${skeleton}
       _script8.end()
     }
@@ -124,7 +124,7 @@ draw = state => {
     rectFill(48 + 3 * 8, 7, 3, 5, 2)
     rectFill(48 + 3 * 9, 7, 3, 5, 1)
     rectFill(48 + 3 * 10, 7, 3, 5, 0)
-    print(7, 7 * 11, '> press enter', 3)
+    print(7, 7 * 11, '> click to run', 3)
     rectFill(7, 7 * 12, 4, 5, Math.floor(state.counter / 25) % 2 ? 0 : 6)
   }
 }

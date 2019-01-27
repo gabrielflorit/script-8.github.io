@@ -272,12 +272,25 @@ class Iframe extends Component {
     })
 
     // Keep track of what keys we're pressing.
-    document.addEventListener('keydown', ({ key }) => {
+    this.mousedownHandler = () => {
+      this.keys.add('mousedown')
+    }
+    this.mouseupHandler = () => {
+      this.keys.delete('mousedown')
+    }
+    this.keydownHandler = ({ key }) => {
       this.keys.add(key)
-    })
-    document.addEventListener('keyup', ({ key }) => {
+    }
+    this.keyupHandler = ({ key }) => {
       this.keys.delete(key)
-    })
+    }
+
+    document.addEventListener('touchstart', this.mousedownHandler)
+    document.addEventListener('mousedown', this.mousedownHandler)
+    document.addEventListener('touchend', this.mouseupHandler)
+    document.addEventListener('mouseup', this.mouseupHandler)
+    document.addEventListener('keydown', this.keydownHandler)
+    document.addEventListener('keyup', this.keyupHandler)
 
     // Listen for callCode or validateToken parent messages.
     window.addEventListener('message', message => {
@@ -339,6 +352,15 @@ class Iframe extends Component {
         message.ports[0].postMessage(smallCanvas.toDataURL())
       }
     })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('touchstart', this.mousedownHandler)
+    document.removeEventListener('mousedown', this.mousedownHandler)
+    document.removeEventListener('touchend', this.mouseupHandler)
+    document.removeEventListener('mouseup', this.mouseupHandler)
+    document.removeEventListener('keydown', this.keydownHandler)
+    document.removeEventListener('keyup', this.keyupHandler)
   }
 
   evalCode () {
@@ -840,7 +862,7 @@ class Iframe extends Component {
               onTouchStart={this.touchstartEnter}
               onTouchEnd={this.touchendEnter}
             >
-              Enter
+              Start
             </div>
           </div>
           <div

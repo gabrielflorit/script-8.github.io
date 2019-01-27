@@ -2,6 +2,7 @@ const getUserInput = keys => {
   const { buttons } = window.navigator.getGamepads()[0] || {}
 
   return {
+    __mousedown: keys.has('mousedown'),
     up: keys.has('ArrowUp') || (buttons && buttons[12].pressed),
     right: keys.has('ArrowRight') || (buttons && buttons[15].pressed),
     down: keys.has('ArrowDown') || (buttons && buttons[13].pressed),
