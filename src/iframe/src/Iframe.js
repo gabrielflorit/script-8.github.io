@@ -47,23 +47,23 @@ class Iframe extends Component {
   constructor (props) {
     super(props)
 
-    this.keydownArrowUp = this.keydownArrowUp.bind(this)
-    this.keydownArrowRight = this.keydownArrowRight.bind(this)
-    this.keydownArrowDown = this.keydownArrowDown.bind(this)
-    this.keydownArrowLeft = this.keydownArrowLeft.bind(this)
-    this.keydowna = this.keydowna.bind(this)
-    this.keydownb = this.keydownb.bind(this)
-    this.keydownEnter = this.keydownEnter.bind(this)
-    this.keydownSpace = this.keydownSpace.bind(this)
+    this.touchstartArrowUp = this.touchstartArrowUp.bind(this)
+    this.touchstartArrowRight = this.touchstartArrowRight.bind(this)
+    this.touchstartArrowDown = this.touchstartArrowDown.bind(this)
+    this.touchstartArrowLeft = this.touchstartArrowLeft.bind(this)
+    this.touchstarta = this.touchstarta.bind(this)
+    this.touchstartb = this.touchstartb.bind(this)
+    this.touchstartEnter = this.touchstartEnter.bind(this)
+    this.touchstartSpace = this.touchstartSpace.bind(this)
 
-    this.keyupArrowUp = this.keyupArrowUp.bind(this)
-    this.keyupArrowRight = this.keyupArrowRight.bind(this)
-    this.keyupArrowDown = this.keyupArrowDown.bind(this)
-    this.keyupArrowLeft = this.keyupArrowLeft.bind(this)
-    this.keyupa = this.keyupa.bind(this)
-    this.keyupb = this.keyupb.bind(this)
-    this.keyupEnter = this.keyupEnter.bind(this)
-    this.keyupSpace = this.keyupSpace.bind(this)
+    this.touchendArrowUp = this.touchendArrowUp.bind(this)
+    this.touchendArrowRight = this.touchendArrowRight.bind(this)
+    this.touchendArrowDown = this.touchendArrowDown.bind(this)
+    this.touchendArrowLeft = this.touchendArrowLeft.bind(this)
+    this.touchenda = this.touchenda.bind(this)
+    this.touchendb = this.touchendb.bind(this)
+    this.touchendEnter = this.touchendEnter.bind(this)
+    this.touchendSpace = this.touchendSpace.bind(this)
 
     this.updateGlobals = this.updateGlobals.bind(this)
     this.evalCode = this.evalCode.bind(this)
@@ -125,70 +125,54 @@ class Iframe extends Component {
     }
   }
 
-  keydownArrowUp () {
-    console.log('keydownArrowUp')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
+  touchstartArrowUp () {
+    this.keys.add('ArrowUp')
   }
-  keydownArrowRight () {
-    console.log('keydownArrowRight')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }))
+  touchstartArrowRight () {
+    this.keys.add('ArrowRight')
   }
-  keydownArrowDown () {
-    console.log('keydownArrowDown')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
+  touchstartArrowDown () {
+    this.keys.add('ArrowDown')
   }
-  keydownArrowLeft () {
-    console.log('keydownArrowLeft')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }))
+  touchstartArrowLeft () {
+    this.keys.add('ArrowLeft')
   }
-  keydowna () {
-    console.log('keydowna')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }))
+  touchstarta () {
+    this.keys.add('a')
   }
-  keydownb () {
-    console.log('keydownb')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'b' }))
+  touchstartb () {
+    this.keys.add('b')
   }
-  keydownEnter () {
-    console.log('keydownEnter')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
+  touchstartEnter () {
+    this.keys.add('Enter')
   }
-  keydownSpace () {
-    console.log('keydownSpace')
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }))
+  touchstartSpace () {
+    this.keys.add(' ')
   }
 
-  keyupArrowUp () {
-    console.log('keyupArrowUp')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowUp' }))
+  touchendArrowUp () {
+    this.keys.delete('ArrowUp')
   }
-  keyupArrowRight () {
-    console.log('keyupArrowRight')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowRight' }))
+  touchendArrowRight () {
+    this.keys.delete('ArrowRight')
   }
-  keyupArrowDown () {
-    console.log('keyupArrowDown')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowDown' }))
+  touchendArrowDown () {
+    this.keys.delete('ArrowDown')
   }
-  keyupArrowLeft () {
-    console.log('keyupArrowLeft')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowLeft' }))
+  touchendArrowLeft () {
+    this.keys.delete('ArrowLeft')
   }
-  keyupa () {
-    console.log('keyupa')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }))
+  touchenda () {
+    this.keys.delete('a')
   }
-  keyupb () {
-    console.log('keyupb')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }))
+  touchendb () {
+    this.keys.delete('b')
   }
-  keyupEnter () {
-    console.log('keyupEnter')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }))
+  touchendEnter () {
+    this.keys.delete('Enter')
   }
-  keyupSpace () {
-    console.log('keyupSpace')
-    document.dispatchEvent(new KeyboardEvent('keyup', { key: ' ' }))
+  touchendSpace () {
+    this.keys.delete(' ')
   }
 
   updateGlobals (providedGlobals) {
@@ -238,32 +222,12 @@ class Iframe extends Component {
       stopSong: this.soundFunctions.stopSong
     })
 
-    // window.parent.document.addEventListener(
-    //   'keydown',
-    //   function ({ key }) {
-    //     console.log(`keydown in iframe: ${key}`)
-    //     this.keys.add(key)
-    //     console.log(this.keys)
-    //   }.bind(this)
-    // )
-
-    // window.parent.document.addEventListener(
-    //   'keyup',
-    //   function ({ key }) {
-    //     console.log(`keyup in iframe: ${key}`)
-    //     this.keys.delete(key)
-    //     console.log(this.keys)
-    //   }.bind(this)
-    // )
-
     // Keep track of what keys we're pressing.
-    document.addEventListener('keydown', ({ key }) => {
+    document.addEventListener('touchstart', ({ key }) => {
       this.keys.add(key)
-      console.log(this.keys)
     })
-    document.addEventListener('keyup', ({ key }) => {
+    document.addEventListener('touchend', ({ key }) => {
       this.keys.delete(key)
-      console.log(this.keys)
     })
 
     // Listen for callCode or validateToken parent messages.
@@ -394,9 +358,10 @@ class Iframe extends Component {
         this.previousElapsed = elapsed
 
         // Update the redux store.
+        const userInput = getUserInput(this.keys)
         this.store.dispatch({
           type: 'TICK',
-          input: getUserInput(this.keys),
+          input: userInput,
           elapsed: tickLength
         })
 
@@ -762,62 +727,62 @@ class Iframe extends Component {
               hide: !run
             })}
           >
-            <button
-              className='button'
-              onMouseDown={this.keydownArrowUp}
-              onMouseUp={this.keyupArrowUp}
+            <div
+              className='button left'
+              onTouchStart={this.touchstartArrowLeft}
+              onTouchEnd={this.touchendArrowLeft}
             >
-              ArrowUp
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownArrowRight}
-              onMouseUp={this.keyupArrowRight}
+              &lt;
+            </div>
+            <div
+              className='button up'
+              onTouchStart={this.touchstartArrowUp}
+              onTouchEnd={this.touchendArrowUp}
             >
-              ArrowRight
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownArrowDown}
-              onMouseUp={this.keyupArrowDown}
+              <span>&lt;</span>
+            </div>
+            <div
+              className='button right'
+              onTouchStart={this.touchstartArrowRight}
+              onTouchEnd={this.touchendArrowRight}
             >
-              ArrowDown
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownArrowLeft}
-              onMouseUp={this.keyupArrowLeft}
+              &gt;
+            </div>
+            <div
+              className='button a'
+              onTouchStart={this.touchstarta}
+              onTouchEnd={this.touchenda}
             >
-              ArrowLeft
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydowna}
-              onMouseUp={this.keyupa}
+              A
+            </div>
+            <div
+              className='button b'
+              onTouchStart={this.touchstartb}
+              onTouchEnd={this.touchendb}
             >
-              a
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownb}
-              onMouseUp={this.keyupb}
+              B
+            </div>
+            <div
+              className='button down'
+              onTouchStart={this.touchstartArrowDown}
+              onTouchEnd={this.touchendArrowDown}
             >
-              b
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownEnter}
-              onMouseUp={this.keyupEnter}
+              <span>&lt;</span>
+            </div>
+            <div
+              className='button select'
+              onTouchStart={this.touchstartSpace}
+              onTouchEnd={this.touchendSpace}
             >
-              Enter
-            </button>
-            <button
-              className='button'
-              onMouseDown={this.keydownSpace}
-              onMouseUp={this.keyupSpace}
+              Select
+            </div>
+            <div
+              className='button start'
+              onTouchStart={this.touchstartEnter}
+              onTouchEnd={this.touchendEnter}
             >
-              Space
-            </button>
+              Start
+            </div>
           </div>
           <div
             className={classNames('stats', {

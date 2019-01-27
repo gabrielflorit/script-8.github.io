@@ -77,6 +77,63 @@ body {
 .mobile-buttons {
   display: none;
 }
+@media screen and (max-width: 26rem) {
+  .mobile-buttons {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-rows: 1rem 1rem 1rem 1rem 1rem 1rem;
+  }
+  .mobile-buttons div.button {
+    min-height: 1.5rem;
+    user-select: none;
+    cursor: pointer;
+    background: #0f2a3f;
+    color: #997577;
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+  }
+  .mobile-buttons div.button.left,
+  .mobile-buttons div.button.right {
+    grid-row: 1/7;
+  }
+  .mobile-buttons div.button.up {
+    grid-row: 1/4;
+  }
+  .mobile-buttons div.button.up span {
+    transform: rotate(90deg);
+  }
+  .mobile-buttons div.button.down {
+    grid-row: 4/7;
+  }
+  .mobile-buttons div.button.down span {
+    transform: rotate(-90deg);
+  }
+  .mobile-buttons div.button.a,
+  .mobile-buttons div.button.b {
+    grid-row: 1/5;
+  }
+  .mobile-buttons div.button.left {
+    grid-column: 1/1;
+  }
+  .mobile-buttons div.button.right {
+    grid-column: 3/3;
+  }
+  .mobile-buttons div.button.a {
+    grid-column: 4/4;
+  }
+  .mobile-buttons div.button.b {
+    grid-column: 5/5;
+  }
+  .mobile-buttons div.button.select,
+  .mobile-buttons div.button.start {
+    color: #4e495f;
+    font-size: 1rem;
+    grid-row: 5/7;
+  }
+}
 canvas {
   display: block;
   image-rendering: -moz-crisp-edges;

@@ -19,12 +19,48 @@ body
 .mobile-buttons
   display none
 
-// @media screen and (max-width: 26rem)
-//   .mobile-buttons
-//     display block
-//     button
-//       display inline-block
-
+@media screen and (max-width: 26rem)
+  .mobile-buttons
+    display grid
+    grid-template-columns 20% 20% 20% 20% 20%
+    grid-template-rows 1rem 1rem 1rem 1rem 1rem 1rem 
+    // grid-column-gap 4px
+    // grid-row-gap 4px
+    div.button
+      min-height 1.5rem
+      user-select none
+      cursor pointer
+      background $palette-6
+      color $palette-2
+      margin 2px
+      display flex
+      justify-content center
+      align-items center
+      font-size $font-xlarge
+      &.left, &.right
+        grid-row 1/7
+      &.up
+        span
+          transform rotate(90deg)
+        grid-row 1/4
+      &.down
+        span
+          transform rotate(-90deg)
+        grid-row 4/7
+      &.a, &.b
+        grid-row 1/5
+      &.left
+        grid-column 1/1
+      &.right
+        grid-column 3/3
+      &.a
+        grid-column 4/4
+      &.b
+        grid-column 5/5
+      &.select, &.start
+        color $palette-4
+        font-size $font-small
+        grid-row 5/7
 canvas
   display block
   image-rendering -moz-crisp-edges
