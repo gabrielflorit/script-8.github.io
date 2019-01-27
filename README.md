@@ -1,7 +1,13 @@
 # SCRIPT-8
 A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games.
 
-## Setup for local development
+## Setup for development
+
+You can edit the code base in Gitpod, a free online dev environment for GitHub.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/script-8/script-8.github.io)
+
+## Local development
 
 ### 0 - Clone or download this repository
 

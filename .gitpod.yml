@@ -1,0 +1,12 @@
+ports:
+- port: 3000
+  onOpen: open-preview
+- port: 3001
+  onOpen: ignore
+tasks:
+- init: yarn
+  command: yarn iframe-start
+- command: >
+    while ! timeout 1 bash -c "echo >/dev/tcp/localhost/3001"; do sleep 10; done &&
+    yarn start
+  openMode: split-right
