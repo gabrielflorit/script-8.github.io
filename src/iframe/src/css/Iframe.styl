@@ -16,6 +16,15 @@ body
   justify-content center
   align-items center
 
+.mobile-buttons
+  display none
+
+@media screen and (max-width: 26rem)
+  .mobile-buttons
+    display block
+    button
+      display inline-block
+
 canvas
   display block
   image-rendering -moz-crisp-edges

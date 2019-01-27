@@ -47,6 +47,24 @@ class Iframe extends Component {
   constructor (props) {
     super(props)
 
+    this.keydownArrowUp = this.keydownArrowUp.bind(this)
+    this.keydownArrowRight = this.keydownArrowRight.bind(this)
+    this.keydownArrowDown = this.keydownArrowDown.bind(this)
+    this.keydownArrowLeft = this.keydownArrowLeft.bind(this)
+    this.keydowna = this.keydowna.bind(this)
+    this.keydownb = this.keydownb.bind(this)
+    this.keydownEnter = this.keydownEnter.bind(this)
+    this.keydownSpace = this.keydownSpace.bind(this)
+
+    this.keyupArrowUp = this.keyupArrowUp.bind(this)
+    this.keyupArrowRight = this.keyupArrowRight.bind(this)
+    this.keyupArrowDown = this.keyupArrowDown.bind(this)
+    this.keyupArrowLeft = this.keyupArrowLeft.bind(this)
+    this.keyupa = this.keyupa.bind(this)
+    this.keyupb = this.keyupb.bind(this)
+    this.keyupEnter = this.keyupEnter.bind(this)
+    this.keyupSpace = this.keyupSpace.bind(this)
+
     this.updateGlobals = this.updateGlobals.bind(this)
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
@@ -107,6 +125,72 @@ class Iframe extends Component {
     }
   }
 
+  keydownArrowUp () {
+    console.log('keydownArrowUp')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
+  }
+  keydownArrowRight () {
+    console.log('keydownArrowRight')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }))
+  }
+  keydownArrowDown () {
+    console.log('keydownArrowDown')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
+  }
+  keydownArrowLeft () {
+    console.log('keydownArrowLeft')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }))
+  }
+  keydowna () {
+    console.log('keydowna')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }))
+  }
+  keydownb () {
+    console.log('keydownb')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'b' }))
+  }
+  keydownEnter () {
+    console.log('keydownEnter')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
+  }
+  keydownSpace () {
+    console.log('keydownSpace')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }))
+  }
+
+  keyupArrowUp () {
+    console.log('keyupArrowUp')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowUp' }))
+  }
+  keyupArrowRight () {
+    console.log('keyupArrowRight')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowRight' }))
+  }
+  keyupArrowDown () {
+    console.log('keyupArrowDown')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowDown' }))
+  }
+  keyupArrowLeft () {
+    console.log('keyupArrowLeft')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowLeft' }))
+  }
+  keyupa () {
+    console.log('keyupa')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }))
+  }
+  keyupb () {
+    console.log('keyupb')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }))
+  }
+  keyupEnter () {
+    console.log('keyupEnter')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }))
+  }
+  keyupSpace () {
+    console.log('keyupSpace')
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: ' ' }))
+  }
+
   updateGlobals (providedGlobals) {
     // Assign various properties to global scope, for the user.
     let globals
@@ -154,22 +238,32 @@ class Iframe extends Component {
       stopSong: this.soundFunctions.stopSong
     })
 
-    window.parent.document.addEventListener('keydown', ({ key }) => {
-      console.log('handling in iframe')
-      this.keys.add(key)
-    })
+    // window.parent.document.addEventListener(
+    //   'keydown',
+    //   function ({ key }) {
+    //     console.log(`keydown in iframe: ${key}`)
+    //     this.keys.add(key)
+    //     console.log(this.keys)
+    //   }.bind(this)
+    // )
 
-    window.parent.document.addEventListener('keyup', ({ key }) => {
-      console.log('handling in iframe')
-      this.keys.delete(key)
-    })
+    // window.parent.document.addEventListener(
+    //   'keyup',
+    //   function ({ key }) {
+    //     console.log(`keyup in iframe: ${key}`)
+    //     this.keys.delete(key)
+    //     console.log(this.keys)
+    //   }.bind(this)
+    // )
 
     // Keep track of what keys we're pressing.
     document.addEventListener('keydown', ({ key }) => {
       this.keys.add(key)
+      console.log(this.keys)
     })
     document.addEventListener('keyup', ({ key }) => {
       this.keys.delete(key)
+      console.log(this.keys)
     })
 
     // Listen for callCode or validateToken parent messages.
@@ -662,6 +756,69 @@ class Iframe extends Component {
               this._canvas = _canvas
             }}
           />
+
+          <div
+            className={classNames('mobile-buttons', {
+              hide: !run
+            })}
+          >
+            <button
+              className='button'
+              onMouseDown={this.keydownArrowUp}
+              onMouseUp={this.keyupArrowUp}
+            >
+              ArrowUp
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownArrowRight}
+              onMouseUp={this.keyupArrowRight}
+            >
+              ArrowRight
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownArrowDown}
+              onMouseUp={this.keyupArrowDown}
+            >
+              ArrowDown
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownArrowLeft}
+              onMouseUp={this.keyupArrowLeft}
+            >
+              ArrowLeft
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydowna}
+              onMouseUp={this.keyupa}
+            >
+              a
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownb}
+              onMouseUp={this.keyupb}
+            >
+              b
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownEnter}
+              onMouseUp={this.keyupEnter}
+            >
+              Enter
+            </button>
+            <button
+              className='button'
+              onMouseDown={this.keydownSpace}
+              onMouseUp={this.keyupSpace}
+            >
+              Space
+            </button>
+          </div>
           <div
             className={classNames('stats', {
               hide: run
