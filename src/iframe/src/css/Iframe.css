@@ -81,7 +81,7 @@ body {
   .mobile-buttons {
     display: grid;
     margin-top: 0.5rem;
-    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-columns: 15% 20% 15% 10% 20% 20%;
     grid-template-rows: 1rem 1rem 1rem 1rem 1rem 1rem;
   }
   .mobile-buttons div.button {
@@ -121,11 +121,13 @@ body {
   .mobile-buttons div.button.right {
     grid-column: 3/3;
   }
-  .mobile-buttons div.button.a {
-    grid-column: 4/4;
-  }
-  .mobile-buttons div.button.b {
+  .mobile-buttons div.button.a,
+  .mobile-buttons div.button.select {
     grid-column: 5/5;
+  }
+  .mobile-buttons div.button.b,
+  .mobile-buttons div.button.start {
+    grid-column: 6/6;
   }
   .mobile-buttons div.button.select,
   .mobile-buttons div.button.start {

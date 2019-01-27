@@ -23,7 +23,7 @@ body
   .mobile-buttons
     display grid
     margin-top 0.5rem
-    grid-template-columns 20% 20% 20% 20% 20%
+    grid-template-columns 15% 20% 15% 10% 20% 20%
     grid-template-rows 1rem 1rem 1rem 1rem 1rem 1rem 
     div.button
       min-height 1.5rem
@@ -52,10 +52,10 @@ body
         grid-column 1/1
       &.right
         grid-column 3/3
-      &.a
-        grid-column 4/4
-      &.b
+      &.a, &.select
         grid-column 5/5
+      &.b, &.start
+        grid-column 6/6
       &.select, &.start
         color $palette-4
         font-size $font-small
