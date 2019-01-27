@@ -223,10 +223,10 @@ class Iframe extends Component {
     })
 
     // Keep track of what keys we're pressing.
-    document.addEventListener('touchstart', ({ key }) => {
+    document.addEventListener('keydown', ({ key }) => {
       this.keys.add(key)
     })
-    document.addEventListener('touchend', ({ key }) => {
+    document.addEventListener('keyup', ({ key }) => {
       this.keys.delete(key)
     })
 
