@@ -22,15 +22,15 @@ body
 @media screen and (max-width: 26rem)
   .mobile-buttons
     display grid
+    margin-top 0.5rem
     grid-template-columns 20% 20% 20% 20% 20%
     grid-template-rows 1rem 1rem 1rem 1rem 1rem 1rem 
-    // grid-column-gap 4px
-    // grid-row-gap 4px
     div.button
       min-height 1.5rem
       user-select none
       cursor pointer
-      background $palette-6
+      background $palette-7
+      border solid $palette-6 1px
       color $palette-2
       margin 2px
       display flex
@@ -39,13 +39,12 @@ body
       font-size $font-xlarge
       &.left, &.right
         grid-row 1/7
-      &.up
-        span
-          transform rotate(90deg)
-        grid-row 1/4
-      &.down
+      &.up, &.down
         span
           transform rotate(-90deg)
+      &.up
+        grid-row 1/4
+      &.down
         grid-row 4/7
       &.a, &.b
         grid-row 1/5

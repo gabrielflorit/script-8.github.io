@@ -739,7 +739,7 @@ class Iframe extends Component {
               onTouchStart={this.touchstartArrowUp}
               onTouchEnd={this.touchendArrowUp}
             >
-              <span>&lt;</span>
+              <span>&gt;</span>
             </div>
             <div
               className='button right'
