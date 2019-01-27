@@ -28,10 +28,15 @@ body
     div.button
       min-height 1.5rem
       user-select none
+      outline none
       cursor pointer
-      background $palette-7
+      -webkit-tap-highlight-color transparent
       border solid $palette-6 1px
-      color $palette-2
+      background $palette-7
+      color $palette-4
+      &.on
+        background $palette-6
+        color $palette-7
       margin 2px
       display flex
       justify-content center

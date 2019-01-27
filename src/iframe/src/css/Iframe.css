@@ -87,15 +87,21 @@ body {
   .mobile-buttons div.button {
     min-height: 1.5rem;
     user-select: none;
+    outline: none;
     cursor: pointer;
-    background: #08141e;
+    -webkit-tap-highlight-color: transparent;
     border: solid #0f2a3f 1px;
-    color: #997577;
+    background: #08141e;
+    color: #4e495f;
     margin: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
+  }
+  .mobile-buttons div.button.on {
+    background: #0f2a3f;
+    color: #08141e;
   }
   .mobile-buttons div.button.left,
   .mobile-buttons div.button.right {

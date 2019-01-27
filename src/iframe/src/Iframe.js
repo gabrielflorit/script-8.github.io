@@ -47,6 +47,39 @@ class Iframe extends Component {
   constructor (props) {
     super(props)
 
+    this.ArrowUpElement = null
+    this.setArrowUpRef = e => {
+      this.ArrowUpElement = e
+    }
+    this.ArrowRightElement = null
+    this.setArrowRightRef = e => {
+      this.ArrowRightElement = e
+    }
+    this.ArrowDownElement = null
+    this.setArrowDownRef = e => {
+      this.ArrowDownElement = e
+    }
+    this.ArrowLeftElement = null
+    this.setArrowLeftRef = e => {
+      this.ArrowLeftElement = e
+    }
+    this.aElement = null
+    this.setaRef = e => {
+      this.aElement = e
+    }
+    this.bElement = null
+    this.setbRef = e => {
+      this.bElement = e
+    }
+    this.EnterElement = null
+    this.setEnterRef = e => {
+      this.EnterElement = e
+    }
+    this.SpaceElement = null
+    this.setSpaceRef = e => {
+      this.SpaceElement = e
+    }
+
     this.touchstartArrowUp = this.touchstartArrowUp.bind(this)
     this.touchstartArrowRight = this.touchstartArrowRight.bind(this)
     this.touchstartArrowDown = this.touchstartArrowDown.bind(this)
@@ -126,52 +159,68 @@ class Iframe extends Component {
   }
 
   touchstartArrowUp () {
+    this.ArrowUpElement.classList.add('on')
     this.keys.add('ArrowUp')
   }
   touchstartArrowRight () {
+    this.ArrowRightElement.classList.add('on')
     this.keys.add('ArrowRight')
   }
   touchstartArrowDown () {
+    this.ArrowDownElement.classList.add('on')
     this.keys.add('ArrowDown')
   }
   touchstartArrowLeft () {
+    this.ArrowLeftElement.classList.add('on')
     this.keys.add('ArrowLeft')
   }
   touchstarta () {
+    this.aElement.classList.add('on')
     this.keys.add('a')
   }
   touchstartb () {
+    this.bElement.classList.add('on')
     this.keys.add('b')
   }
   touchstartEnter () {
+    this.EnterElement.classList.add('on')
     this.keys.add('Enter')
   }
   touchstartSpace () {
+    this.SpaceElement.classList.add('on')
     this.keys.add(' ')
   }
 
   touchendArrowUp () {
+    this.ArrowUpElement.classList.remove('on')
     this.keys.delete('ArrowUp')
   }
   touchendArrowRight () {
+    this.ArrowRightElement.classList.remove('on')
     this.keys.delete('ArrowRight')
   }
   touchendArrowDown () {
+    this.ArrowDownElement.classList.remove('on')
     this.keys.delete('ArrowDown')
   }
   touchendArrowLeft () {
+    this.ArrowLeftElement.classList.remove('on')
     this.keys.delete('ArrowLeft')
   }
   touchenda () {
+    this.aElement.classList.remove('on')
     this.keys.delete('a')
   }
   touchendb () {
+    this.bElement.classList.remove('on')
     this.keys.delete('b')
   }
   touchendEnter () {
+    this.EnterElement.classList.remove('on')
     this.keys.delete('Enter')
   }
   touchendSpace () {
+    this.SpaceElement.classList.remove('on')
     this.keys.delete(' ')
   }
 
@@ -730,6 +779,7 @@ class Iframe extends Component {
             })}
           >
             <div
+              ref={this.setArrowLeftRef}
               className='button left'
               onTouchStart={this.touchstartArrowLeft}
               onTouchEnd={this.touchendArrowLeft}
@@ -737,6 +787,7 @@ class Iframe extends Component {
               &lt;
             </div>
             <div
+              ref={this.setArrowUpRef}
               className='button up'
               onTouchStart={this.touchstartArrowUp}
               onTouchEnd={this.touchendArrowUp}
@@ -744,6 +795,7 @@ class Iframe extends Component {
               <span>&gt;</span>
             </div>
             <div
+              ref={this.setArrowRightRef}
               className='button right'
               onTouchStart={this.touchstartArrowRight}
               onTouchEnd={this.touchendArrowRight}
@@ -751,6 +803,7 @@ class Iframe extends Component {
               &gt;
             </div>
             <div
+              ref={this.setaRef}
               className='button a'
               onTouchStart={this.touchstarta}
               onTouchEnd={this.touchenda}
@@ -758,6 +811,7 @@ class Iframe extends Component {
               A
             </div>
             <div
+              ref={this.setbRef}
               className='button b'
               onTouchStart={this.touchstartb}
               onTouchEnd={this.touchendb}
@@ -765,6 +819,7 @@ class Iframe extends Component {
               B
             </div>
             <div
+              ref={this.setArrowDownRef}
               className='button down'
               onTouchStart={this.touchstartArrowDown}
               onTouchEnd={this.touchendArrowDown}
@@ -772,6 +827,7 @@ class Iframe extends Component {
               <span>&lt;</span>
             </div>
             <div
+              ref={this.setSpaceRef}
               className='button select'
               onTouchStart={this.touchstartSpace}
               onTouchEnd={this.touchendSpace}
@@ -779,6 +835,7 @@ class Iframe extends Component {
               Select
             </div>
             <div
+              ref={this.setEnterRef}
               className='button start'
               onTouchStart={this.touchstartEnter}
               onTouchEnd={this.touchendEnter}
