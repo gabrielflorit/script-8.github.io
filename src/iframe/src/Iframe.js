@@ -781,7 +781,7 @@ class Iframe extends Component {
               onTouchStart={this.touchstartEnter}
               onTouchEnd={this.touchendEnter}
             >
-              Start
+              Enter
             </div>
           </div>
           <div
