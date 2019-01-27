@@ -154,6 +154,16 @@ class Iframe extends Component {
       stopSong: this.soundFunctions.stopSong
     })
 
+    window.parent.document.addEventListener('keydown', ({ key }) => {
+      console.log('handling in iframe')
+      this.keys.add(key)
+    })
+
+    window.parent.document.addEventListener('keyup', ({ key }) => {
+      console.log('handling in iframe')
+      this.keys.delete(key)
+    })
+
     // Keep track of what keys we're pressing.
     document.addEventListener('keydown', ({ key }) => {
       this.keys.add(key)
