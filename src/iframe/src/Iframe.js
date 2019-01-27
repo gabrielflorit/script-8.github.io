@@ -628,12 +628,14 @@ class Iframe extends Component {
             })
 
             // Draw the timeLineIndex one last, not faded.
-            window.drawActors &&
+            const lastAlteredState = alteredStates[newTimelineIndex]
+            if (window.drawActors && lastAlteredState.actors) {
               window.drawActors({
-                actors: alteredStates[newTimelineIndex].actors.filter(d =>
+                actors: lastAlteredState.actors.filter(d =>
                   selectedActors.includes(d.name)
                 )
               })
+            }
 
             // Finally, set the store to point to the timeLineIndex altered state,
             // so that when we hit play, we can resume right from this point.
