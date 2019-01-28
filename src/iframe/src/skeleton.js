@@ -1,15 +1,13 @@
 export default `initialState = {
-  actors: [
-  ]
 }
 
 update = (state, input, elapsed) => {
 }
 
-drawActors = (state, fade) => {
-  state.actors.forEach(actor => {
-  })
-}
+drawActors = (state, fade) =>
+  state.actors && state.actors.forEach(actor =>
+    sprite(actor.x, actor.y, actor.sprite, fade ? actor.trailBrighten || -3 : 0, actor.flip)
+  )
 
 draw = state => {
   camera()
