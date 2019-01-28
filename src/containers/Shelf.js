@@ -127,7 +127,12 @@ class Shelf extends Component {
                         ) : null}
                       </a>
                       <span className='author'>by {d.user}</span>
-                      <span className='date'>{date.toLocaleString()}</span>
+                      <div className='date-info'>
+                        <span className='date'>
+                          {date.toLocaleDateString()}
+                        </span>
+                        <span className='booted'>ran: {d.counter || 0}</span>
+                      </div>{' '}
                     </div>
                     <ul className='controls hide'>{unshelve}</ul>
                   </li>

@@ -32,11 +32,28 @@ const actions = createActions({
   [actionTypes.CLOSE_TUTORIAL]: () => {},
   [actionTypes.SHELVE_CASSETTE_REQUEST]: () => {},
   [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d,
+  [actionTypes.COUNTER_CASSETTE_REQUEST]: () => {},
+  [actionTypes.COUNTER_CASSETTE_SUCCESS]: d => d,
   [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
   [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d
 })
 
 export default actions
+
+export const counterCassette = ({ id }) => dispatch => {
+  dispatch(actions.counterCassetteRequest())
+
+  return window
+    .fetch(`${process.env.REACT_APP_NOW}/counter/${id}`)
+    .then(response => response.json())
+    .then(json => dispatch(actions.counterCassetteSuccess(json)))
+    .catch(error =>
+      throwError({
+        error,
+        message: `Could not increase counter from the hosted oauth service.`
+      })
+    )
+}
 
 export const unshelve = ({ token, gistId }) => dispatch => {
   dispatch(actions.unshelveCassetteRequest())
@@ -106,10 +123,7 @@ export const fetchGist = ({ id, token }) => dispatch => {
   } else {
     return window
       .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
-      .then(response => {
-        console.log({ response })
-        return response.json()
-      })
+      .then(response => response.json())
       .then(json => dispatch(actions.fetchGistSuccess(json)))
       .catch(error =>
         throwError({

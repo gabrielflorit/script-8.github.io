@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import screenTypes from '../utils/screenTypes.js'
-import actions, { fetchGist } from '../actions/actions.js'
+import actions, { fetchGist, counterCassette } from '../actions/actions.js'
 
 const mapStateToProps = ({ gist, booted, token }) => ({
   gist,
@@ -11,6 +11,7 @@ const mapStateToProps = ({ gist, booted, token }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
+  counterCassette: id => dispatch(counterCassette({ id })),
   fetchGist: ({ id, token }) => dispatch(fetchGist({ id, token }))
 })
 
@@ -33,13 +34,15 @@ class Boot extends Component {
   }
 
   componentDidUpdate () {
-    const { gist, setScreen, booted } = this.props
+    const { gist, setScreen, booted, counterCassette } = this.props
 
     // If we are done fetching, and we have a gist,
     // AND we are done booting,
     if (!gist.isFetching && gist.data && booted) {
-      // set screen to RUN.
+      // set screen to RUN,
       setScreen(screenTypes.RUN)
+      // and increment cassette hit counter.
+      counterCassette(gist.data.id)
     }
   }
 
