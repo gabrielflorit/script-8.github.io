@@ -385,13 +385,10 @@ class Iframe extends Component {
       // Shadow variables we don't want available.
       ${shadowString}
       // The inception eval allows the user to declare vars (e.g. screen).
-      if (!game) {
-        eval(innerSkeleton)
-      } else {
-        eval(game)
-        if (initialState && typeof initialState === 'function') {
-          initialState = this.previousInitialState
-        }
+      eval(innerSkeleton)
+      eval(game)
+      if (initialState && typeof initialState === 'function') {
+        initialState = this.previousInitialState
       }
     `)
     } catch (e) {
