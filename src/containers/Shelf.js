@@ -78,7 +78,7 @@ class Shelf extends Component {
           <ul className='cassettes'>
             {fetching ? <p>Loading latest cassettes.</p> : null}
             {_(cassettes)
-              .sortBy(d => Date.parse(d.updated))
+              .sortBy(d => d.updated)
               .reverse()
               .map((d, i) => {
                 const title = d.title || ''
@@ -88,6 +88,8 @@ class Shelf extends Component {
                   title.substring(0, maxLength).trim(),
                   tooLong ? '…' : ''
                 ].join('')
+
+                const date = new Date(d.updated)
 
                 const unshelve =
                   currentLogin === d.user ? (
@@ -125,6 +127,7 @@ class Shelf extends Component {
                         ) : null}
                       </a>
                       <span className='author'>by {d.user}</span>
+                      <span className='date'>{date.toLocaleString()}</span>
                     </div>
                     <ul className='controls hide'>{unshelve}</ul>
                   </li>
@@ -138,4 +141,7 @@ class Shelf extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Shelf)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Shelf)
