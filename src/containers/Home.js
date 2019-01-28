@@ -210,6 +210,14 @@ class Home extends Component {
             fix.
           </p>
           <p>
+            If you have any questions, come join us on the{' '}
+            <a className='text' href='https://discord.gg/HA68FNX'>
+              Fantasy Consoles Discord server
+            </a>
+            , a friendly place to chat about these sophisticated, cutting-edge
+            computers. The server has a dedicated SCRIPT-8 room.
+          </p>
+          <p>
             SCRIPT-8 nyx8 palette by{' '}
             <a className='text' href='https://twitter.com/Xavier_Gd'>
               Javier Guerrero

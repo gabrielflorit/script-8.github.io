@@ -50,6 +50,15 @@ class Help extends Component {
             </li>
 
             <li>
+              If you have any questions, come join us on the{' '}
+              <a className='text' href='https://discord.gg/HA68FNX'>
+                Fantasy Consoles Discord server
+              </a>
+              , a friendly place to chat about these sophisticated, cutting-edge
+              computers. The server has a dedicated SCRIPT-8 room.
+            </li>
+
+            <li>
               Lessons
               <ul className='lessons'>
                 {lessons.map((lesson, i) => (
