@@ -47,10 +47,11 @@ const trimCanvas = ({ ctx, width, height }) => {
   const copy = copyCanvas.getContext('2d')
   const trimHeight = bound.bottom - bound.top
   const trimWidth = bound.right - bound.left
+  const side = Math.max(trimWidth, trimHeight)
   const trimmed = ctx.getImageData(bound.left, bound.top, trimWidth, trimHeight)
 
-  copy.canvas.width = trimWidth
-  copy.canvas.height = trimHeight
+  copy.canvas.width = side
+  copy.canvas.height = side
   copy.putImageData(trimmed, 0, 0)
   return copyCanvas
 }
