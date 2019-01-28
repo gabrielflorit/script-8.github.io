@@ -45,8 +45,8 @@
     - sprite(x, y, spriteIndex, [brighten, flipX])
     - Draws the sprite at xy. `spriteIndex` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flipX` is true, mirrors the sprite along the y axis.
   -
-    - clear()
-    - Clears the screen.
+    - clear([c])
+    - Clears the screen. Optionally pass in a color to draw the entire screen with that color.
   -
     - tile(mx, my)
     - If found, returns the sprite at this location. `mx` and `my` are in map coordinates. The result is an array, with a `type` property indicating the sprite type (0-1-2-3).

@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, isNil } from 'lodash'
 import colors from '../colors.js'
 import circle from './circle.js'
 import line from './line.js'
@@ -168,12 +168,15 @@ const canvasAPI = ({
       })
     },
 
-    clear () {
+    clear (c) {
       ctx.save()
       ctx.setTransform(1, 0, 0, 1, 0, 0)
-      // Will always clear the right space
-      // ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      if (!isNil(c)) {
+        ctx.fillStyle = colors.rgb(c)
+        ctx.fillRect(0, 0, 128, 128)
+      } else {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      }
       ctx.restore()
     }
   }
