@@ -1,6 +1,10 @@
 # SCRIPT-8
 A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games.
 
+## Discord channel
+
+There is a dedicated SCRIPT-8 room in the [Fantasy Consoles discord server](https://discord.gg/HA68FNX). Come join us.
+
 ## Setup for local development
 
 ### 0 - Clone or download this repository
