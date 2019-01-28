@@ -50,7 +50,7 @@ class Help extends Component {
             </li>
 
             <li>
-              If you have any questions, come join us on the{' '}
+              If you have any further questions, come join us on the{' '}
               <a className='text' href='https://discord.gg/HA68FNX'>
                 Fantasy Consoles Discord server
               </a>
