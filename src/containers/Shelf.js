@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
 import actions, { unshelve } from '../actions/actions.js'
+import ShelfCassettes from '../components/ShelfCassettes.js'
 
 const mapStateToProps = ({ gist, token, shelving }) => ({
   gist,
@@ -24,7 +25,8 @@ class Shelf extends Component {
     this.handleOnUnshelve = this.handleOnUnshelve.bind(this)
     this.state = {
       fetching: true,
-      cassettes: []
+      popularCassettes: [],
+      recentCassettes: []
     }
   }
 
@@ -43,8 +45,27 @@ class Shelf extends Component {
             message: `Could not request cassettes.`
           })
       )
-      .then(cassettes => {
-        this.setState({ cassettes, fetching: false })
+      .then(value => {
+        const cassettes = value.map(cassette => ({
+          ...cassette,
+          counter: +cassette.counter || 0
+        }))
+
+        const popularCassettes = _(cassettes)
+          .sortBy(cassette => +cassette.counter)
+          .reverse()
+          .value()
+
+        const recentCassettes = _(cassettes)
+          .sortBy(cassette => +cassette.updated)
+          .reverse()
+          .value()
+
+        this.setState({
+          popularCassettes,
+          recentCassettes,
+          fetching: false
+        })
       })
   }
 
@@ -68,78 +89,29 @@ class Shelf extends Component {
   }
 
   render () {
-    const { cassettes, fetching } = this.state
-    const { token } = this.props
-    const currentLogin = _.get(token, 'user.login', null)
+    const { popularCassettes, recentCassettes, fetching } = this.state
+    // const { token } = this.props
+    // const currentLogin = _.get(token, 'user.login', null)
 
     return (
       <div className='Shelf'>
         <div className='main'>
-          <ul className='cassettes'>
-            {fetching ? <p>Loading latest cassettes.</p> : null}
-            {_(cassettes)
-              .sortBy(d => d.updated)
-              .reverse()
-              .map((d, i) => {
-                const title = d.title || ''
-                const maxLength = 16
-                const tooLong = title.length > maxLength
-                const finalTitle = [
-                  title.substring(0, maxLength).trim(),
-                  tooLong ? '…' : ''
-                ].join('')
-
-                const date = new Date(d.updated)
-
-                const unshelve =
-                  currentLogin === d.user ? (
-                    <li>
-                      <button
-                        onClick={() => {
-                          this.handleOnUnshelve(d.gist)
-                        }}
-                        className='button'
-                      >
-                        unshelve
-                      </button>
-                    </li>
-                  ) : null
-
-                return (
-                  <li key={i} className='cassette'>
-                    <div className='img'>
-                      <span className='title'>{finalTitle || ' '}</span>
-                      <a
-                        href={`/?id=${d.gist}`}
-                        onClick={e => {
-                          this.handleOnClick({ e, id: d.gist })
-                        }}
-                        target='_blank'
-                      >
-                        <img
-                          className='background'
-                          alt=''
-                          src='./cassette-bg.png'
-                        />
-                        <span className='load'>load cassette</span>
-                        {d.cover ? (
-                          <img className='cover' src={d.cover} alt='' />
-                        ) : null}
-                      </a>
-                      <span className='author'>by {d.user}</span>
-                      <div className='date-info'>
-                        <span className='date'>
-                          {date.toLocaleDateString()}
-                        </span>
-                        <span className='booted'>ran: {d.counter || 0}</span>
-                      </div>{' '}
-                    </div>
-                    <ul className='controls hide'>{unshelve}</ul>
-                  </li>
-                )
-              })
-              .value()}
-          </ul>
+          {fetching ? (
+            <p className='loading'>loading cassettes...</p>
+          ) : (
+            <Fragment>
+              <ShelfCassettes
+                handleOnClick={this.handleOnClick}
+                cassettes={popularCassettes}
+                title='Popular'
+              />
+              <ShelfCassettes
+                handleOnClick={this.handleOnClick}
+                cassettes={recentCassettes}
+                title='Recent'
+              />
+            </Fragment>
+          )}
         </div>
       </div>
     )
