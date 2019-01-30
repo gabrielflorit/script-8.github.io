@@ -116,8 +116,7 @@ class Menu extends Component {
       chains,
       songs
     })
-    const blank = isBlank({ game, sprites, map, phrases, chains, songs })
-    if (dirty && !blank) {
+    if (dirty) {
       const message = 'Leave site? Changes you made may not be saved.'
       e.returnValue = message
       return message
