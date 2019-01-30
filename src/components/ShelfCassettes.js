@@ -88,6 +88,10 @@ class ShelfCassettes extends Component {
           >
             &gt;
           </button>
+          <span className='count'>
+            {index + 1} - {Math.min(index + STEP, cassettes.length)} (
+            {cassettes.length} total)
+          </span>
         </div>
         <ul className='cassettes'>
           {_(cassettes)

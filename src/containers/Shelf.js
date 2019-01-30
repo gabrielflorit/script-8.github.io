@@ -35,6 +35,9 @@ class Shelf extends Component {
   }
 
   fetchCassettes () {
+    const { token } = this.props
+    const currentLogin = _.get(token, 'user.login', null)
+
     window
       .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
       .then(
@@ -61,9 +64,14 @@ class Shelf extends Component {
           .reverse()
           .value()
 
+        const yoursCassettes = currentLogin
+          ? recentCassettes.filter(cassette => cassette.user === currentLogin)
+          : []
+
         this.setState({
           popularCassettes,
           recentCassettes,
+          yoursCassettes,
           fetching: false
         })
       })
@@ -89,9 +97,12 @@ class Shelf extends Component {
   }
 
   render () {
-    const { popularCassettes, recentCassettes, fetching } = this.state
-    // const { token } = this.props
-    // const currentLogin = _.get(token, 'user.login', null)
+    const {
+      popularCassettes,
+      recentCassettes,
+      yoursCassettes,
+      fetching
+    } = this.state
 
     return (
       <div className='Shelf'>
@@ -100,6 +111,13 @@ class Shelf extends Component {
             <p className='loading'>loading cassettes...</p>
           ) : (
             <Fragment>
+              {yoursCassettes.length ? (
+                <ShelfCassettes
+                  handleOnClick={this.handleOnClick}
+                  cassettes={yoursCassettes}
+                  title='Yours'
+                />
+              ) : null}
               <ShelfCassettes
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
