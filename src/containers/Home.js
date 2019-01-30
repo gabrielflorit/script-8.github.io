@@ -181,7 +181,7 @@ class Home extends Component {
             cassette — a new version.
           </p>
           <p>
-            SCRIPT-8 is heavily influenced by Bret Victor's ideas, specifically{' '}
+            SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically{' '}
             <a className='text' href='http://vimeo.com/36579366'>
               Inventing on principle
             </a>{' '}
@@ -192,7 +192,11 @@ class Home extends Component {
             >
               Learnable programming
             </a>
-            .
+            ) and Joseph White's{' '}
+            <a className='text' href='https://www.lexaloffle.com/pico-8.php'>
+              PICO-8
+            </a>
+            , the best of all fantasy consoles.
           </p>
           <p>
             SCRIPT-8 is written by Gabriel Florit (that's me!). Click{' '}
