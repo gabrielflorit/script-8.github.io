@@ -26,8 +26,14 @@
     - This might not be too exciting, but all good stories start at the beginning.
     - So let's begin.
   - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
+  - game: ''
+    text:
     - We need to go to the CODE screen to write our code.
-    - Click CODE in the top menu, and make sure to remove any existing code.
+    - Click CODE in the top menu.
     requirements:
       screen: CODE
   - screen: CODE
@@ -70,9 +76,14 @@
     - In the previous lesson we learned how to draw letters.
     - Let's try to understand the code a bit. Then we can do more.
   - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
+  - game: ''
+    text:
     - Let's go over to the CODE screen.
     - Click CODE in the top menu.
-    - Make sure to remove any existing code.
     requirements:
       screen: CODE
   - screen: CODE
@@ -182,8 +193,13 @@
   - text:
     - This lesson has a promising name, don't you think?
     - But first we must take care of something important.
-    - Let's go over to CODE, if you're not there already.
-  - screen: CODE
+  - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
+  - game: ''
+    screen: CODE
     text:
     - Do you remember the last slide from our previous lesson? With all the 'Hello World!'s?
     - See if you can add that code here.
@@ -284,7 +300,10 @@
     - How about something more exciting. How about squares? Spinning squares?
     - Let's get started.
   - text:
-    - Before we begin, go to the CODE screen and delete anything there.
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
   - text:
     - SCRIPT-8 has various drawing functions. They're all listed in HELP.
     - "One of them is `rectStroke`:"
@@ -457,6 +476,13 @@
   - text:
     - Let's make them swirl instead. We'll also add a title to our cassette.
     - And we'll put it on the SHELF!
+  - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
+  - game: ''
+    text:
     - Let's get started. Go to CODE. I'll load the squares for us.
   - text:
     - We need to give each square its own rotation angle.
@@ -593,6 +619,12 @@
     - In this lesson we'll learn how to make a little plumber move.
     - Now that is exciting.
   - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click next when you're ready.
+    newGameOnNext: true
+  - game: ''
+    text:
     - First things first. Go to CODE.
     - Actually, no. Let's go to SPRITE instead (mouse over ART to find it).
     - We have to draw our plumber.

@@ -20,6 +20,7 @@ const mapStateToProps = ({ screen, tutorial, game }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  newGame: () => dispatch(actions.newGame()),
   updateMap: newMap => dispatch(actions.updateMap(newMap)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
@@ -139,6 +140,10 @@ class Tutorial extends Component {
 
   handleNextSlide () {
     const { lessonIndex, slideIndex } = this.props.tutorial
+    const { newGameOnNext } = lessons[lessonIndex].slides[slideIndex]
+    if (newGameOnNext) {
+      this.props.newGame(this.props.screen)
+    }
     this.handleSlide({ lessonIndex, slideIndex: slideIndex + 1 })
   }
 
