@@ -218,6 +218,7 @@ class Output extends Component {
             this.isLoaded = true
             this.evaluate()
           }}
+          scrolling='no'
         />
         {!run ? (
           <div className='stats'>
