@@ -993,7 +993,7 @@
           state.x -= 1
           state.flip = true
         }
-
+        
         if (input.right) {
           state.x += 1
           state.flip = false
@@ -1015,7 +1015,7 @@
     - You knew that was coming, right?
     - Click NEXT.
   - text:
-    - Here's our 6 walking sprites.
+    - Here are our 6 walking sprites.
     - Beautiful.
     - "By the way, these sprites are courtesy of <a class='text' href='https://twitter.com/johanvinet'>Johan Vinet</a>."
     screen: SPRITE
@@ -1087,7 +1087,8 @@
         - " 333335 "
         - "      2 "
   - text:
-    - Now, before we move on, we need to track what sprite we're using.
+    - OK. We now have 1 standing sprite and 6 walking sprites.
+    - We'll need to track what sprite to draw.
     - "Let's add `sprite` to our `initialState`."
     screen: CODE
   - text:
@@ -1098,23 +1099,127 @@
         sprite: 0,
     screen: CODE
   - text:
-    - a
+    - Now for the interesting part.
+    - If we're pressing left or right we'll use the walking sprites.
     screen: CODE
     game: |-
       REP22
         sprite(state.x, state.y, state.sprite, 0, state.flip)
-# - title: "Platformer pt. 3: jumping (coming soon)"
-#   slides:
-#   - text:
-#     - Coming soon.
-# - title: "Platformer pt. 4: wall collisions (coming soon)"
-#   slides:
-#   - text:
-#     - Coming soon.
-# - title: "Platformer pt. 5: camera (coming soon)"
-#   slides:
-#   - text:
-#     - Coming soon.
-#     - Or in pseudocode, when we are pressing either left or right, use the walking sprites.
-#     - Otherwise use the standing sprite.
-#     - How about this approach?
+  - text:
+    - And if we're not pressing either left or right we'll use the standing sprite. 
+    screen: CODE
+    game: |-
+      REP16
+        }
+
+        if (input.left || input.right) {
+          state.sprite = 1
+        }
+  - text:
+    - OK let's try it.
+    - Click on the preview screen and move our plumber (or go to RUN).
+    - Does it look right?
+    screen: CODE
+    game: |-
+      REP20
+        } else {
+          state.sprite = 0
+        }
+  - text:
+    - That was a trick question. It doesn't look right.
+    - Mr. M is still gliding because we are not cycling through the walking sprites.
+  - text:
+    - When he starts walking we should use sprite 1.
+    - Then the next time we execute the `draw` function we should use sprite 2.
+    - And so on until we reach the end of the walking sprites.
+  - text:
+    - At that point, if we're still walking, we'll go back to sprite 1.
+    - And continue cycling through.
+  - text:
+    - I hope this makes sense to you.
+    - OK then!
+    - First we need to make an array of the walking sprites.
+  - text:
+    - Next add a `counter` to `initialState`. 
+    screen: CODE
+    game: |-
+      REP5-7
+      }
+
+      const walkCycle = [1, 2, 3, 4, 5, 6]
+
+      update = (state, input) => {
+  - text:
+    - We'll increment this every time we're walking.
+    - Watch line 24.
+    screen: CODE
+    game: |-
+      ADD4
+        counter: 0,
+  - text:
+    - If we stop walking, we'll reset the counter to 0.
+    screen: CODE
+    game: |-
+      ADD23
+          state.counter++
+  - text:
+    - Finally, if we're walking, use the counter to set the sprite.
+    - I'll do this in line 23.
+    - Notice the use of modulus arithmetic.
+    screen: CODE
+    game: |-
+      ADD26
+          state.counter = 0
+  - text:
+    - Time to test it.
+    - Click on the preview screen and make Mr. M move.
+    - What do you think?
+    screen: CODE
+    game: |-
+      REP22
+          state.sprite = walkCycle[state.counter % 6]
+  - text:
+    - It worked!
+    - But... his legs are moving way too fast.
+    - We're cycling through the walking sprites too fast.
+  - text:
+    - This is an easy fix.
+    - Let's a create a `slowCounter`.
+    - I'll put it right above the modulus arithmetic line.
+  - text:
+    - Next we'll use it in the line below.
+    screen: CODE
+    game: |-
+      ADD22
+          const slowCounter = state.counter
+  - text:
+    - And finally, time to slooow the counter.
+    - Divide by something and make sure to round the number down.
+    - We need `slowCounter` to stay an integer.
+    screen: CODE
+    game: |-
+      REP23
+          state.sprite = walkCycle[slowCounter % 6]
+  - text:
+    - Try it.
+    - Not bad!
+    screen: CODE
+    game: |-
+      REP22
+          const slowCounter = Math.floor(state.counter / 5)
+  - text:
+    - There you have it, a walking animation.
+    - It wouldn't do to have a gliding plumber. Nope.
+    - See you next time!
+- title: "Platformer pt. 3: jumping (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
+- title: "Platformer pt. 4: wall collisions (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
+- title: "Platformer pt. 5: camera (coming soon)"
+  slides:
+  - text:
+    - Coming soon.
