@@ -59,7 +59,9 @@ class ShelfCassettes extends Component {
           <span className='author'>by {cassette.user}</span>
           <div className='date-info'>
             <span className='date'>{timeAgo({ now, before: date })}</span>
-            <span className='booted'>ran: {cassette.counter || 0}</span>
+            <span className='booted'>
+              {cassette.counter || 0} play{cassette.counter === 1 ? '' : 's'}
+            </span>
           </div>{' '}
         </div>
         <ul className='controls hide'>unshelve</ul>
