@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
+import timeAgo from '../utils/timeAgo.js'
 
 const STEP = 5
 
@@ -26,7 +27,7 @@ class ShelfCassettes extends Component {
     })
   }
 
-  renderCassette ({ cassette, i }) {
+  renderCassette ({ cassette, i, now }) {
     const { handleOnClick } = this.props
     const title = cassette.title || ''
     const maxLength = 16
@@ -57,7 +58,7 @@ class ShelfCassettes extends Component {
           </a>
           <span className='author'>by {cassette.user}</span>
           <div className='date-info'>
-            <span className='date'>{date.toLocaleDateString()}</span>
+            <span className='date'>{timeAgo({ now, before: date })}</span>
             <span className='booted'>ran: {cassette.counter || 0}</span>
           </div>{' '}
         </div>
@@ -69,6 +70,7 @@ class ShelfCassettes extends Component {
   render () {
     const { cassettes, title } = this.props
     const { index } = this.state
+    const now = new Date()
 
     return (
       <div className='ShelfCassettes'>
@@ -96,7 +98,7 @@ class ShelfCassettes extends Component {
         <ul className='cassettes'>
           {_(cassettes)
             .slice(index, index + STEP)
-            .map((d, i) => this.renderCassette({ cassette: d, i }))
+            .map((d, i) => this.renderCassette({ cassette: d, i, now }))
             .value()}
         </ul>
       </div>
