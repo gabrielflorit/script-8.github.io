@@ -68,7 +68,7 @@ class Tutorial extends Component {
     const lesson = lessons[lessonIndex]
     const { slides } = lesson
     const slide = slides[slideIndex]
-    const { screen: slideScreen, game, sprite, map: slideMap } = slide
+    const { screen: slideScreen, game, sprites, map: slideMap } = slide
 
     // If we're not on CODE, set the game with no prefix.
     // If we are on CODE, use prefix.
@@ -82,8 +82,11 @@ class Tutorial extends Component {
     }
 
     // If there are sprites, set them.
-    if (sprite) {
-      updateSprite({ sprite: sprite.array, index: sprite.index })
+    if (sprites) {
+      // console.log(sprites)
+      sprites.forEach(({ array, index }) =>
+        updateSprite({ sprite: array, index })
+      )
     }
 
     if (slideMap) {

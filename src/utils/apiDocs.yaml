@@ -73,6 +73,9 @@
   -
     - log(message)
     - Prints `message` to browser console.
+  -
+    - new StateMachine({ init, transitions })
+    - Creates a state machine. By <a href='https://github.com/jakesgordon/javascript-state-machine'>Jake Gordon</a>. Consult its documentation.
 - title: Sound (not stable)
   dl:
   -

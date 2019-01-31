@@ -28,7 +28,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - game: ''
     text:
@@ -78,7 +78,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - game: ''
     text:
@@ -196,7 +196,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - game: ''
     screen: CODE
@@ -302,7 +302,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - text:
     - SCRIPT-8 has various drawing functions. They're all listed in HELP.
@@ -479,7 +479,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - game: ''
     text:
@@ -621,7 +621,7 @@
   - text:
     - "Before we get going: make sure to record any unsaved changes."
     - The lesson will insert a blank cassette.
-    - Click next when you're ready.
+    - Click NEXT when you're ready.
     newGameOnNext: true
   - game: ''
     text:
@@ -634,92 +634,98 @@
     - To draw, click `+`, click a color, and then click (or drag) on the top-left grid.
     - To delete, click `-`, and then click (or drag) on the top-left grid.
     - Play for a bit, and then I'll draw something. Click NEXT.
-    sprite:
-      index: 0
-      array:
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
+    sprites:
+      -
+        index: 0
+        array:
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
   - text:
     - Well isn't that cheerful.
     - You might have noticed 0-1-2-3 buttons under the `+` and `-`.
     - These are sprite flags. We'll discuss them in a future lesson.
     screen: SPRITE
-    sprite:
-      index: 0
-      array:
-      - "        "
-      - "  0  0  "
-      - "  0  0  "
-      - "        "
-      - "        "
-      - "0      0"
-      - " 0    0 "
-      - "  0000  "
+    sprites:
+      -
+        index: 0
+        array:
+        - "        "
+        - "  0  0  "
+        - "  0  0  "
+        - "        "
+        - "        "
+        - "0      0"
+        - " 0    0 "
+        - "  0000  "
   - text:
     - This smiley face is pleasant. But I promised a plumber.
-    - Click next.
-    sprite:
-      index: 0
-      array:
-      - "        "
-      - "  0  0  "
-      - "  0  0  "
-      - "        "
-      - "        "
-      - "0      0"
-      - " 0    0 "
-      - "  0000  "
+    - Click NEXT.
+    sprites:
+      -
+        index: 0
+        array:
+        - "        "
+        - "  0  0  "
+        - "  0  0  "
+        - "        "
+        - "        "
+        - "0      0"
+        - " 0    0 "
+        - "  0000  "
   - text:
     - "Doesn't he look familiar? We'll call him Mr. M."
     - "By the way, these sprites are courtesy of <a class='text' href='https://twitter.com/johanvinet'>Johan Vinet</a>."
     - We also need something for Mr. M to stand on.
     screen: SPRITE
-    sprite:
-      index: 0
-      array:
-      - "   2220 "
-      - "   22222"
-      - "  20270 "
-      - "  200220"
-      - "   2000 "
-      - " 221331 "
-      - "0 333351"
-      - "  2   3 "
+    sprites:
+      -
+        index: 0
+        array:
+        - "   2220 "
+        - "   22222"
+        - "  20270 "
+        - "  200220"
+        - "   2000 "
+        - " 221331 "
+        - "0 333351"
+        - "  2   3 "
   - text:
     - I'll draw a rock sprite.
-    sprite:
-      index: 32
-      array:
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
-      - "        "
+    sprites:
+      -
+        index: 32
+        array:
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
+        - "        "
   - text:
     - Feel free to edit these.
     - When you're ready, go to MAP.
     - You'll find it by mousing over ART.
     screen: SPRITE
-    sprite:
-      index: 32
-      array:
-      - "22334334"
-      - "24447445"
-      - "34447447"
-      - "34445447"
-      - "35774334"
-      - "23343445"
-      - "34453447"
-      - "47754777"
+    sprites:
+      -
+        index: 32
+        array:
+        - "22334334"
+        - "24447445"
+        - "34447447"
+        - "34445447"
+        - "35774334"
+        - "23343445"
+        - "34453447"
+        - "47754777"
   - text:
     - To make a map, click a sprite, and then click (or drag) on the top-left grid.
     - Delete by first clicking on `-`, and then click (or drag) on the top-left grid.
@@ -752,7 +758,7 @@
   - text:
     - First, add a `draw` function. We covered this in previous lessons.
     - Don't remember? That's OK. I'll do it for you.
-    - Click next.
+    - Click NEXT.
     screen: CODE
     game: ''
   - text:
@@ -852,7 +858,7 @@
 
         }
   - text:
-    - Click on the game (or click RUN if you can't see it, and there, click on the game).
+    - Click on the game (or click RUN if you can't see it).
     - And press the left or right keys.
     - The plumber moves!
     screen: CODE
@@ -875,6 +881,7 @@
     - "`brighten` brightens or darkens the sprite. And `flipX` flips it left or right."
   - text:
     - First, we should add `flip` to `initialState`. We need to keep track of it somehow.
+    screen: CODE
   - text:
     - Next, update the input-handling code.
     - If left is pressed, set flip to true.
@@ -912,10 +919,298 @@
     - Not that much.
   - text:
     - See you in the next lesson!
-- title: "Platformer pt. 2: sprite cycles (coming soon)"
+- title: "Platformer pt. 2: walking animation"
   slides:
   - text:
-    - Coming soon.
+    - In the previous lesson we drew Mr. M, our plumber.
+    - A solid first platformer lesson.
+    - Shall we do more?
+  - text:
+    - "Before we get going: make sure to record any unsaved changes."
+    - The lesson will insert a blank cassette.
+    - Click NEXT when you're ready.
+    newGameOnNext: true
+  - game: ''
+    text:
+    - OK. As I was saying, we made Mr. M move.
+    - He's a fast walker.
+    - Very fast. I'll load up last lesson's code to explain.
+  - text:
+    - Click on the game in the preview window (or go to RUN if you can't see it).
+    - And move a bit. Press left, then right.
+    - Fast walker huh? He's so fast, his legs... don't move! They glide!
+    screen: CODE
+    map: [
+      '15-0-32',
+      '15-1-32',
+      '15-2-32',
+      '15-3-32',
+      '15-4-32',
+      '15-5-32',
+      '15-6-32',
+      '15-7-32',
+      '15-8-32',
+      '15-9-32',
+      '15-10-32',
+      '15-11-32',
+      '15-12-32',
+      '15-13-32',
+      '15-14-32',
+      '15-15-32'
+    ]
+    sprites:
+      -
+        index: 0
+        array:
+        - "   2220 "
+        - "   22222"
+        - "  20270 "
+        - "  200220"
+        - "   2000 "
+        - " 221331 "
+        - "0 333351"
+        - "  2   3 "
+      -
+        index: 32
+        array:
+        - "22334334"
+        - "24447445"
+        - "34447447"
+        - "34445447"
+        - "35774334"
+        - "23343445"
+        - "34453447"
+        - "47754777"
+    game: |-
+      initialState = {
+        x: 0,
+        y: 112,
+        flip: false
+      }
+
+      update = (state, input) => {
+        if (input.left) {
+          state.x -= 1
+          state.flip = true
+        }
+        
+        if (input.right) {
+          state.x += 1
+          state.flip = false
+        }
+      }
+
+      draw = state => {
+        clear()
+        map()
+        sprite(state.x, state.y, 0, 0, state.flip)
+      }
+  - text:
+    - We're using the same sprite whether he's standing or walking.
+    - That's a problem.
+    - We need to draw a set of walking sprites.
+  - screen: SPRITE
+    text:
+    - You can try for a bit. But I'll do it for us.
+    - You knew that was coming, right?
+    - Click NEXT.
+  - text:
+    - Here are our 6 walking sprites.
+    - Beautiful.
+    - "By the way, these sprites are courtesy of <a class='text' href='https://twitter.com/johanvinet'>Johan Vinet</a>."
+    screen: SPRITE
+    sprites:
+      -
+        index: 1
+        array:
+        - "   2220 "
+        - "   22222"
+        - "  20270 "
+        - "  200220"
+        - "   2000 "
+        - "  22135 "
+        - "  20335 "
+        - "   223  "
+      -
+        index: 2
+        array:
+        - "   2222 "
+        - "   22222"
+        - "  22027 "
+        - "  220022"
+        - "   2200 "
+        - "  32215 "
+        - "  33220 "
+        - "  2  3  "
+      -
+        index: 3
+        array:
+        - "   2222 "
+        - "   22222"
+        - "  22027 "
+        - "  220022"
+        - "   2200 "
+        - "  322150"
+        - " 233322 "
+        - "      3 "
+      -
+        index: 4
+        array:
+        - "   2220 "
+        - "   22222"
+        - "  20270 "
+        - "  200220"
+        - "   2000 "
+        - "  22135 "
+        - "  20335 "
+        - "   223  "
+      -
+        index: 5
+        array:
+        - "   2202 "
+        - "   22222"
+        - "  02707 "
+        - "  002202"
+        - "   0000 "
+        - " 221331 "
+        - "0 333351"
+        - "  3  2  "
+      -
+        index: 6
+        array:
+        - "   2202 "
+        - "   22222"
+        - "  02707 "
+        - "  002202"
+        - " 220000 "
+        - "0 213310"
+        - " 333335 "
+        - "      2 "
+  - text:
+    - OK. We now have 1 standing sprite and 6 walking sprites.
+    - We'll need to track what sprite to draw.
+    - "Let's add `sprite` to our `initialState`."
+    screen: CODE
+  - text:
+    - Good. And we might as well update our `draw` function.
+    - Use `state.sprite` in the `sprite()` call.
+    game: |-
+      ADD3
+        sprite: 0,
+    screen: CODE
+  - text:
+    - Now for the interesting part.
+    - If we're pressing left or right we'll use the walking sprites.
+    screen: CODE
+    game: |-
+      REP22
+        sprite(state.x, state.y, state.sprite, 0, state.flip)
+  - text:
+    - And if we're not pressing either left or right we'll use the standing sprite. 
+    screen: CODE
+    game: |-
+      REP16
+        }
+
+        if (input.left || input.right) {
+          state.sprite = 1
+        }
+  - text:
+    - OK let's try it.
+    - Click on the preview screen and move our plumber (or go to RUN).
+    - Does it look right?
+    screen: CODE
+    game: |-
+      REP20
+        } else {
+          state.sprite = 0
+        }
+  - text:
+    - That was a trick question. It doesn't look right.
+    - Mr. M is still gliding because we are not cycling through the walking sprites.
+  - text:
+    - When he starts walking we should use sprite 1.
+    - Then the next time we execute the `draw` function we should use sprite 2.
+    - And so on until we reach the end of the walking sprites.
+  - text:
+    - At that point, if we're still walking, we'll go back to sprite 1.
+    - And continue cycling through.
+  - text:
+    - I hope this makes sense to you.
+    - OK then!
+    - First we need to make an array of the walking sprites.
+  - text:
+    - Next add a `counter` to `initialState`. 
+    screen: CODE
+    game: |-
+      REP5-7
+      }
+
+      const walkCycle = [1, 2, 3, 4, 5, 6]
+
+      update = (state, input) => {
+  - text:
+    - We'll increment this every time we're walking.
+    - Watch line 24.
+    screen: CODE
+    game: |-
+      ADD4
+        counter: 0,
+  - text:
+    - If we stop walking, we'll reset the counter to 0.
+    screen: CODE
+    game: |-
+      ADD23
+          state.counter++
+  - text:
+    - Finally, if we're walking, use the counter to set the sprite.
+    - I'll do this in line 23.
+    - Notice the use of modulus arithmetic.
+    screen: CODE
+    game: |-
+      ADD26
+          state.counter = 0
+  - text:
+    - Time to test it.
+    - Click on the preview screen and make Mr. M move.
+    - What do you think?
+    screen: CODE
+    game: |-
+      REP22
+          state.sprite = walkCycle[state.counter % 6]
+  - text:
+    - It worked!
+    - But... his legs are moving way too fast.
+    - We're cycling through the walking sprites too fast.
+  - text:
+    - This is an easy fix.
+    - Let's a create a `slowCounter`.
+    - I'll put it right above the modulus arithmetic line.
+  - text:
+    - Next we'll use it in the line below.
+    screen: CODE
+    game: |-
+      ADD22
+          const slowCounter = state.counter
+  - text:
+    - And finally, time to slooow the counter.
+    - Divide by something and make sure to round the number down.
+    - We need `slowCounter` to stay an integer.
+    screen: CODE
+    game: |-
+      REP23
+          state.sprite = walkCycle[slowCounter % 6]
+  - text:
+    - Try it.
+    - Not bad!
+    screen: CODE
+    game: |-
+      REP22
+          const slowCounter = Math.floor(state.counter / 5)
+  - text:
+    - There you have it, a walking animation.
+    - It wouldn't do to have a gliding plumber. Nope.
+    - See you next time!
 - title: "Platformer pt. 3: jumping (coming soon)"
   slides:
   - text:
