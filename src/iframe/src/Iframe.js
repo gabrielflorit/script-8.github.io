@@ -354,7 +354,7 @@ class Iframe extends Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     document.removeEventListener('touchstart', this.mousedownHandler)
     document.removeEventListener('mousedown', this.mousedownHandler)
     document.removeEventListener('touchend', this.mouseupHandler)
