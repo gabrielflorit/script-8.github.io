@@ -252,9 +252,28 @@ export const saveGist = ({
       )
       .then(data => dispatch(actions.saveGistSuccess(data)))
 
-  // If there is no gist or we want to record to blank, create it.
-  if (!gist.data || toBlank) {
+  const forkGist = () =>
+    gh
+      .getGist(gist.data.id)
+      .fork()
+      .then(
+        response => response.data,
+        error => throwError({ error, message: 'Could not fork gist.' })
+      )
+      .then(data => dispatch(actions.saveGistSuccess(data)))
+
+  // If there is no gist, create it.
+  if (!gist.data) {
     return createGist()
+  } else if (toBlank) {
+    // If we want to record to blank,
+    // if it's ours, create a new one.
+    if (_.get(gist, 'data.owner.login', null) === token.user.login) {
+      return createGist()
+    } else {
+      // If it's not ours, fork it.
+      return forkGist()
+    }
   } else {
     // If there is a gist, and it is ours,
     if (_.get(gist, 'data.owner.login', null) === token.user.login) {
