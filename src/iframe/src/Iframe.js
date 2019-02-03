@@ -157,15 +157,16 @@ class Iframe extends Component {
   }
 
   logger ({ type, error = null }) {
+    const { message } = this.state
     // If we have an error,
     if (error) {
-      const { message } = error
+      const errorMessage = error.message
       // and it is different than the previous one,
-      if (this.loggerErrors[type] !== message) {
+      if (this.loggerErrors[type] !== errorMessage) {
         // update the loggerErrors,
-        this.loggerErrors[type] = message
-        // and print.
-        console.log(JSON.stringify(this.loggerErrors, null, 2))
+        this.loggerErrors[type] = errorMessage
+        // and send to parent.
+        message.ports[0].postMessage({ error: this.loggerErrors })
       }
     } else {
       // If we don't have an error,
@@ -173,8 +174,8 @@ class Iframe extends Component {
       if (this.loggerErrors[type]) {
         // update the loggerErrors for this type,
         this.loggerErrors[type] = null
-        // and print.
-        console.log(JSON.stringify(this.loggerErrors, null, 2))
+        // and send to parent.
+        message.ports[0].postMessage({ error: this.loggerErrors })
       }
     }
   }
