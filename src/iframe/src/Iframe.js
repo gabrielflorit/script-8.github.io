@@ -166,7 +166,7 @@ class Iframe extends Component {
         // update the loggerErrors,
         this.loggerErrors[type] = errorMessage
         // and send to parent.
-        message.ports[0].postMessage({ error: this.loggerErrors })
+        message.ports[0].postMessage({ errors: this.loggerErrors })
       }
     } else {
       // If we don't have an error,
@@ -175,7 +175,7 @@ class Iframe extends Component {
         // update the loggerErrors for this type,
         this.loggerErrors[type] = null
         // and send to parent.
-        message.ports[0].postMessage({ error: this.loggerErrors })
+        message.ports[0].postMessage({ errors: this.loggerErrors })
       }
     }
   }
