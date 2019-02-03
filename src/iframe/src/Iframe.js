@@ -25,10 +25,6 @@ import { version } from '../package.json'
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
-const logError = e => {
-  console.warn(e)
-}
-
 window.initialState = null
 window.update = null
 window.drawActors = null
@@ -105,6 +101,8 @@ class Iframe extends Component {
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
     this.handleRestartClick = this.handleRestartClick.bind(this)
+    this.logger = this.logger.bind(this)
+    this.loggerErrors = {}
 
     this.heightSent = 0
 
@@ -116,7 +114,7 @@ class Iframe extends Component {
     this.previousElapsed = 0
     this.fpsValues = []
 
-    this.reducer = createReducer()
+    this.reducer = createReducer(this.logger)
     this.store = null
     this.previousInitialState = null
     this.reduxHistory = []
@@ -155,6 +153,30 @@ class Iframe extends Component {
       alteredStates: [],
       run: true,
       sound: false
+    }
+  }
+
+  logger ({ type, error = null }) {
+    const { message } = this.state
+    // If we have an error,
+    if (error) {
+      const errorMessage = error.message
+      // and it is different than the previous one,
+      if (this.loggerErrors[type] !== errorMessage) {
+        // update the loggerErrors,
+        this.loggerErrors[type] = errorMessage
+        // and send to parent.
+        message.ports[0].postMessage({ errors: this.loggerErrors })
+      }
+    } else {
+      // If we don't have an error,
+      // and we had one before,
+      if (this.loggerErrors[type]) {
+        // update the loggerErrors for this type,
+        this.loggerErrors[type] = null
+        // and send to parent.
+        message.ports[0].postMessage({ errors: this.loggerErrors })
+      }
     }
   }
 
@@ -310,8 +332,8 @@ class Iframe extends Component {
           isPaused = false
         }
 
-        // If we're paused, and this is a new cassette, and it wasn't new before,
-        // resume.
+        // If we're paused, and this is a new cassette,
+        // and it wasn't new before, resume.
         if (this.state.isPaused && payload.isNew && !this.state.isNew) {
           this.handlePauseClick()
           isPaused = false
@@ -391,9 +413,9 @@ class Iframe extends Component {
         initialState = this.previousInitialState
       }
     `)
+      this.logger({ type: 'evalCode' })
     } catch (e) {
-      // If any part of this resulted in an error, print it.
-      logError(e)
+      this.logger({ type: 'evalCode', error: e })
     }
   }
 
@@ -442,8 +464,9 @@ class Iframe extends Component {
             fps: newFps
           })
         }
+        this.logger({ type: 'startTimer' })
       } catch (e) {
-        logError(e)
+        this.logger({ type: 'startTimer', error: e })
       }
     }
     if (this.timer) {
@@ -715,8 +738,9 @@ class Iframe extends Component {
               timelineIndex: newTimelineIndex
             })
           }
+          this.logger({ type: 'isPaused' })
         } catch (e) {
-          logError(e)
+          this.logger({ type: 'isPaused', error: e })
         }
       } else {
         // If the ul buttons don't have any canvases, add them!

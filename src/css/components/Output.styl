@@ -30,19 +30,22 @@
     border none
     width 100%
 
-  .stats
+  .errors-and-stats
     width 100%
     @extend .VT323
     color $palette-5
     text-transform uppercase
     font-size $font-medium
     overflow hidden
-    button
-      color $palette-5
-      font-size $font-medium
-      padding 0
-    li
-      float left
-      width 50%
-      &:nth-child(even)
-        text-align right
+    .errors
+      color $palette-1
+    .stats
+      button
+        color $palette-5
+        font-size $font-medium
+        padding 0
+      li
+        float left
+        width 50%
+        &:nth-child(even)
+          text-align right
