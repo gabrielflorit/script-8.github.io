@@ -78,7 +78,13 @@ export const unshelve = ({ token, gistId }) => dispatch => {
     .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
-export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
+export const putOnShelf = ({
+  user,
+  gist,
+  cover,
+  title,
+  isFork
+}) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
   return window
@@ -88,7 +94,8 @@ export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
         user,
         gist,
         cover,
-        title
+        title,
+        isFork
       })
     })
     .then(
