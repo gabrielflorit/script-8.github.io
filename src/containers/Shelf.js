@@ -69,8 +69,8 @@ class Shelf extends Component {
           : []
 
         this.setState({
-          popularCassettes,
-          recentCassettes,
+          popularCassettes: popularCassettes.filter(d => !d.isFork),
+          recentCassettes: recentCassettes.filter(d => !d.isFork),
           yoursCassettes,
           fetching: false
         })
