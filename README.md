@@ -35,7 +35,7 @@ Play cassettes with a keyboard or gamepad.
 
 You can inspect any cassette's contents (even if it's not yours), change the code, art, or music, and record it to a different cassette — a new version.
 
-SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically Inventing on principle and Learnable programming) and Joseph White's PICO-8, the best of all fantasy consoles.
+SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically [Inventing on principle](http://vimeo.com/36579366) and [Learnable programming](http://worrydream.com/LearnableProgramming/)) and Joseph White's [PICO-8](https://www.lexaloffle.com/pico-8.php), the best of all fantasy consoles.
 
 If you have any questions, come join us on the [Fantasy Consoles discord server](https://discord.gg/HA68FNX), a friendly place to chat about these sophisticated, cutting-edge computers. The server has a dedicated SCRIPT-8 room.
 
