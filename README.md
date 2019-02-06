@@ -1,5 +1,47 @@
 # SCRIPT-8
-A JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games.
+SCRIPT-8 is a JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games (called cassettes). It's free, browser-based, and open-source. Cassettes are written in JavaScript.
+
+SCRIPT-8 is designed to encourage play — the kind of wonder-filled play children experience as they explore and learn about the world. In order to support this goal, everything in SCRIPT-8 has immediate feedback. It is what some call a "livecoding" environment.
+
+It features:
+
+- a code editor where the game changes as you type  
+![a code editor where the game changes as you type](https://script-8.github.io/static/media/livecoding480.20d1866a.gif)
+
+- a slider to help you tweak numbers without typing  
+![a slider to help you tweak numbers without typing](https://script-8.github.io/static/media/slider480.dc4d8c4b.gif)
+
+- a time-traveling tool so you can pause and rewind  
+![a time-traveling tool so you can pause and rewind](https://script-8.github.io/static/media/pauserewind.741e69fa.gif)
+
+- buttons that show a character's past and future paths  
+![buttons that show a character's past and future paths](https://script-8.github.io/static/media/toggle.4ab6d6b6.gif)
+
+- the ability to combine all the above so you can manipulate time  
+![the ability to combine all the above so you can manipulate time]
+
+- a sprite editor where the game instantly displays your edits  
+![a sprite editor where the game instantly displays your edits](https://script-8.github.io/static/media/spritedemo.76159464.gif)
+
+- a map editor where changes alter the game's behavior, in real-time  
+![a map editor where changes alter the game's behavior, in real-time](https://script-8.github.io/static/media/mapdemo.23680514.gif)
+
+- a music editor where you create phrases, group them into chains, and turn those into songs  
+![a music editor where you create phrases, group them into chains, and turn those into songs](https://script-8.github.io/static/media/musicdemo.c1b0f3bd.gif)
+
+Each cassette is recorded to a URL you can share with anyone.
+
+Play cassettes with a keyboard or gamepad.
+
+You can inspect any cassette's contents (even if it's not yours), change the code, art, or music, and record it to a different cassette — a new version.
+
+SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically Inventing on principle and Learnable programming) and Joseph White's PICO-8, the best of all fantasy consoles.
+
+SCRIPT-8 is written by Gabriel Florit (that's me!). Click here to follow me on twitter. And visit the Github repository here, where you can keep up with new features and the occasional bug fix.
+
+If you have any questions, come join us on the Fantasy Consoles Discord server, a friendly place to chat about these sophisticated, cutting-edge computers. The server has a dedicated SCRIPT-8 room.
+
+SCRIPT-8 nyx8 palette by Javier Guerrero. Sprites in Los Hermanos Bros. by Johan Vinet.
 
 ## Discord channel
 
