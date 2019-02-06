@@ -1,4 +1,4 @@
-# SCRIPT-8
+![SCRIPT-8](https://github.com/script-8/script-8.github.io/raw/dev/public/logo.png)  
 SCRIPT-8 is a JavaScript-based ([React](https://reactjs.org/) + [Redux](https://redux.js.org/)) fantasy computer for making, sharing, and playing tiny retro-looking games (called cassettes). It's free, browser-based, and open-source. Cassettes are written in JavaScript.
 
 SCRIPT-8 is designed to encourage play — the kind of wonder-filled play children experience as they explore and learn about the world. In order to support this goal, everything in SCRIPT-8 has immediate feedback. It is what some call a "livecoding" environment.
@@ -37,15 +37,9 @@ You can inspect any cassette's contents (even if it's not yours), change the cod
 
 SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically Inventing on principle and Learnable programming) and Joseph White's PICO-8, the best of all fantasy consoles.
 
-SCRIPT-8 is written by Gabriel Florit (that's me!). Click here to follow me on twitter. And visit the Github repository here, where you can keep up with new features and the occasional bug fix.
+If you have any questions, come join us on the [Fantasy Consoles discord server](https://discord.gg/HA68FNX), a friendly place to chat about these sophisticated, cutting-edge computers. The server has a dedicated SCRIPT-8 room.
 
-If you have any questions, come join us on the Fantasy Consoles Discord server, a friendly place to chat about these sophisticated, cutting-edge computers. The server has a dedicated SCRIPT-8 room.
-
-SCRIPT-8 nyx8 palette by Javier Guerrero. Sprites in Los Hermanos Bros. by Johan Vinet.
-
-## Discord channel
-
-There is a dedicated SCRIPT-8 room in the [Fantasy Consoles discord server](https://discord.gg/HA68FNX). Come join us.
+SCRIPT-8 nyx8 palette by [Javier Guerrero](https://twitter.com/Xavier_Gd). Sprites in Los Hermanos Bros. by [Johan Vinet](https://twitter.com/johanvinet).
 
 ## Setup for local development
 
