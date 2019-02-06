@@ -18,7 +18,7 @@ It features:
 ![buttons that show a character's past and future paths](https://script-8.github.io/static/media/toggle.4ab6d6b6.gif)
 
 - the ability to combine all the above so you can manipulate time  
-[![the ability to combine all the above so you can manipulate time](https://github.com/script-8/script-8.github.io/raw/dev/public/youtubepromo.jpg)])(https://www.youtube.com/watch?v=0rg5GGFaIY0)
+[![the ability to combine all the above so you can manipulate time](https://github.com/script-8/script-8.github.io/raw/dev/public/youtubepromo.jpg)](https://www.youtube.com/watch?v=0rg5GGFaIY0)
 
 - a sprite editor where the game instantly displays your edits  
 ![a sprite editor where the game instantly displays your edits](https://script-8.github.io/static/media/spritedemo.76159464.gif)
