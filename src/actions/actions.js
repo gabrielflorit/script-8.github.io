@@ -263,11 +263,18 @@ export const saveGist = ({
     gh
       .getGist(gist.data.id)
       .fork()
-      .then(
-        response => response.data,
-        error => throwError({ error, message: 'Could not fork gist.' })
-      )
+      .then(response => response.data.id)
+      .then(id => gh.getGist(id).read())
+      .then(response => response.data)
       .then(data => dispatch(actions.saveGistSuccess(data)))
+      .catch(error =>
+        throwError({
+          error,
+          message: `Could not fork gist ${
+            gist.data.id
+          } from the hosted oauth service.`
+        })
+      )
 
   // If there is no gist, create it.
   if (!gist.data) {
