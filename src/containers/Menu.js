@@ -552,9 +552,9 @@ class Menu extends Component {
             })}
           >
             <button onClick={toggleSound} className='button'>
-              <span className='full'>sound-{sound ? 'OFF' : 'ON'}</span>
-              <span className='mid'>sound-{sound ? 'OFF' : 'ON'}</span>
-              <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
+              <span className='full'>{sound ? '' : 'un'}mute</span>
+              <span className='mid'>{sound ? '' : 'un'}mute</span>
+              <span className='small'>{sound ? '' : 'un'}mute</span>
             </button>
           </li>
         </ul>
