@@ -4,6 +4,7 @@ import equal from 'deep-equal'
 import * as Tone from 'tone'
 import { interval } from 'd3-timer'
 import { createStore, applyMiddleware } from 'redux'
+import _ from 'lodash'
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
 import random from 'lodash/random'
@@ -24,6 +25,14 @@ import './css/Iframe.css'
 import { version } from '../package.json'
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
+
+const getUniqueErrorMessages = errors =>
+  _(errors)
+    .map((message, type) => ({ type, message }))
+    .filter(d => d.message && d.type)
+    .sortBy('type')
+    .uniqBy('message')
+    .value()
 
 window.initialState = null
 window.update = null
@@ -157,7 +166,7 @@ class Iframe extends Component {
   }
 
   logger ({ type, error = null }) {
-    const { message } = this.state
+    const { message, run } = this.state
     // If we have an error,
     if (error) {
       const errorMessage = error.message
@@ -166,7 +175,9 @@ class Iframe extends Component {
         // update the loggerErrors,
         this.loggerErrors[type] = errorMessage
         // and send to parent.
-        message.ports[0].postMessage({ errors: this.loggerErrors })
+        message.ports[0].postMessage({
+          errors: getUniqueErrorMessages(this.loggerErrors)
+        })
       }
     } else {
       // If we don't have an error,
@@ -175,7 +186,26 @@ class Iframe extends Component {
         // update the loggerErrors for this type,
         this.loggerErrors[type] = null
         // and send to parent.
-        message.ports[0].postMessage({ errors: this.loggerErrors })
+        message.ports[0].postMessage({
+          errors: getUniqueErrorMessages(this.loggerErrors)
+        })
+      }
+    }
+
+    // If we're on run mode,
+    if (run) {
+      // create one string with all the unique error messages.
+      const errorMessages = getUniqueErrorMessages(this.loggerErrors)
+        .map(({ message }) => `error: ${message}`)
+        .join('. ')
+
+      if (errorMessages.length) {
+        // Print the error message in black, offset.
+        range(5).forEach(x =>
+          range(5).forEach(y => window.print(-2 + x, -2 + y, errorMessages, 7))
+        )
+        // Now print the error message in white.
+        window.print(0, 0, errorMessages, 0)
       }
     }
   }

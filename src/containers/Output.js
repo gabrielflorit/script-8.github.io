@@ -56,7 +56,7 @@ class Output extends Component {
 
     this.state = {
       showSize: false,
-      errors: {}
+      errors: []
     }
   }
 
@@ -204,13 +204,6 @@ class Output extends Component {
     const { showSize, errors } = this.state
     const { run, tutorial } = this.props
 
-    const errorArray = _(errors)
-      .map((message, type) => ({ type, message }))
-      .filter(d => d.message && d.type)
-      .sortBy('type')
-      .uniqBy('message')
-      .value()
-
     return (
       <div
         className={classNames('Output', {
@@ -233,7 +226,7 @@ class Output extends Component {
         {!run ? (
           <div className='errors-and-stats'>
             <ul className='errors'>
-              {errorArray.map(({ type, message }) => (
+              {errors.map(({ type, message }) => (
                 <li key={type}>error: {message}</li>
               ))}
             </ul>
@@ -250,4 +243,7 @@ class Output extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Output)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Output)
