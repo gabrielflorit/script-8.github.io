@@ -32,7 +32,8 @@ class CodeEditor extends Component {
       extraKeys: window.CodeMirror.normalizeKeyMap({
         Tab: commands.tab,
         'Cmd-/': commands.comment,
-        'Ctrl-/': commands.comment
+        'Ctrl-/': commands.comment,
+        Esc: 'clearSearch'
       })
     })
 
