@@ -1,4 +1,4 @@
-const createReducer = () => {
+const createReducer = logger => {
   // Create the reducer, with the script8 state or an empty object.
   const reducer = (state = window.initialState || {}, action) => {
     switch (action.type) {
@@ -14,11 +14,12 @@ const createReducer = () => {
                 actor => !actor.name
               )
               if (namelessActors.length) {
-                console.warn('Error: actors must have a name property.')
+                throw new Error('Actors must have a name property.')
               }
             }
-          } catch (e) {
-            console.warn(e.message)
+            logger({ type: 'reducerError' })
+          } catch (error) {
+            logger({ type: 'reducerError', error })
             return state
           }
           return newState

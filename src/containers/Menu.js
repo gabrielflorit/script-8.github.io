@@ -45,8 +45,8 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
-  putOnShelf: ({ user, gist, cover, title }) =>
-    dispatch(putOnShelf({ user, gist, cover, title })),
+  putOnShelf: ({ user, gist, cover, title, isFork }) =>
+    dispatch(putOnShelf({ user, gist, cover, title, isFork })),
   saveGist: ({
     game,
     token,
@@ -146,6 +146,7 @@ class Menu extends Component {
 
     const gistUser = _.get(gist, 'data.owner.login', null)
     const gistId = _.get(gist, 'data.id', null)
+    const isFork = !!_.get(gist, 'data.fork_of', null)
 
     let title
     const match = game.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
@@ -153,7 +154,7 @@ class Menu extends Component {
       title = match[1].trim()
     }
 
-    const payload = { user: gistUser, gist: gistId, title }
+    const payload = { user: gistUser, gist: gistId, title, isFork }
 
     const iframe = document.querySelector('iframe')
 
@@ -551,9 +552,9 @@ class Menu extends Component {
             })}
           >
             <button onClick={toggleSound} className='button'>
-              <span className='full'>sound-{sound ? 'OFF' : 'ON'}</span>
-              <span className='mid'>sound-{sound ? 'OFF' : 'ON'}</span>
-              <span className='small'>sound-{sound ? 'OFF' : 'ON'}</span>
+              <span className='full'>{sound ? '' : 'un'}mute</span>
+              <span className='mid'>{sound ? '' : 'un'}mute</span>
+              <span className='small'>{sound ? '' : 'un'}mute</span>
             </button>
           </li>
         </ul>

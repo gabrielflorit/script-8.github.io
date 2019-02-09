@@ -15,12 +15,13 @@ const initialState = {
   phrases: {},
   chains: {},
   songs: {},
+  scrollInfo: {},
   // tutorial: {
   //   lessonIndex: 1,
   //   slideIndex: 0
   // },
   tutorial: null,
-  sound: false,
+  sound: true,
   shelving: false
 }
 

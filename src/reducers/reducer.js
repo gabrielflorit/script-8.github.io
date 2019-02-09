@@ -14,6 +14,7 @@ import songs from './songs.js'
 import tutorial from './tutorial.js'
 import sound from './sound.js'
 import shelving from './shelving.js'
+import scrollInfo from './scrollInfo.js'
 
 const reducer = combineReducers({
   screen,
@@ -30,7 +31,8 @@ const reducer = combineReducers({
   songs,
   tutorial,
   sound,
-  shelving
+  shelving,
+  scrollInfo
 })
 
 export default reducer

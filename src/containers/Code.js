@@ -4,18 +4,20 @@ import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
 
-const mapStateToProps = ({ game, tutorial }) => ({
+const mapStateToProps = ({ game, tutorial, scrollInfo }) => ({
   game,
-  tutorial
+  tutorial,
+  scrollInfo
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateGame: game => dispatch(actions.updateGame(game))
+  updateGame: game => dispatch(actions.updateGame(game)),
+  setScrollInfo: scrollInfo => dispatch(actions.setScrollInfo(scrollInfo))
 })
 
 class Code extends Component {
   render () {
-    const { game, updateGame, tutorial } = this.props
+    const { game, updateGame, tutorial, scrollInfo, setScrollInfo } = this.props
 
     return (
       <div
@@ -24,14 +26,16 @@ class Code extends Component {
         })}
       >
         <div className='main'>
-          <CodeEditor game={game} updateGame={updateGame} />
+          <CodeEditor
+            game={game}
+            updateGame={updateGame}
+            scrollInfo={scrollInfo}
+            setScrollInfo={setScrollInfo}
+          />
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Code)
+export default connect(mapStateToProps, mapDispatchToProps)(Code)

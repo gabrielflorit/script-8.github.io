@@ -420,6 +420,7 @@ test('saveGistRequest', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {
+      data: 'my-data',
       isFetching: true
     }
   })

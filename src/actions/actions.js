@@ -35,7 +35,8 @@ const actions = createActions({
   [actionTypes.COUNTER_CASSETTE_REQUEST]: () => {},
   [actionTypes.COUNTER_CASSETTE_SUCCESS]: d => d,
   [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
-  [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d
+  [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d,
+  [actionTypes.SET_SCROLL_INFO]: d => d
 })
 
 export default actions
@@ -78,7 +79,13 @@ export const unshelve = ({ token, gistId }) => dispatch => {
     .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
-export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
+export const putOnShelf = ({
+  user,
+  gist,
+  cover,
+  title,
+  isFork
+}) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
   return window
@@ -88,7 +95,8 @@ export const putOnShelf = ({ user, gist, cover, title }) => dispatch => {
         user,
         gist,
         cover,
-        title
+        title,
+        isFork
       })
     })
     .then(
@@ -252,9 +260,35 @@ export const saveGist = ({
       )
       .then(data => dispatch(actions.saveGistSuccess(data)))
 
-  // If there is no gist or we want to record to blank, create it.
-  if (!gist.data || toBlank) {
+  const forkGist = () =>
+    gh
+      .getGist(gist.data.id)
+      .fork()
+      .then(response => response.data.id)
+      .then(id => gh.getGist(id).read())
+      .then(response => response.data)
+      .then(data => dispatch(actions.saveGistSuccess(data)))
+      .catch(error =>
+        throwError({
+          error,
+          message: `Could not fork gist ${
+            gist.data.id
+          } from the hosted oauth service.`
+        })
+      )
+
+  // If there is no gist, create it.
+  if (!gist.data) {
     return createGist()
+  } else if (toBlank) {
+    // If we want to record to blank,
+    // if it's ours, create a new one.
+    if (_.get(gist, 'data.owner.login', null) === token.user.login) {
+      return createGist()
+    } else {
+      // If it's not ours, fork it.
+      return forkGist()
+    }
   } else {
     // If there is a gist, and it is ours,
     if (_.get(gist, 'data.owner.login', null) === token.user.login) {

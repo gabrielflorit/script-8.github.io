@@ -12,7 +12,8 @@ const gist = handleActions(
       isFetching: false,
       data: action.payload
     }),
-    [actionTypes.SAVE_GIST_REQUEST]: () => ({
+    [actionTypes.SAVE_GIST_REQUEST]: state => ({
+      data: state.data,
       isFetching: true
     }),
     [actionTypes.SAVE_GIST_SUCCESS]: (state, action) => ({

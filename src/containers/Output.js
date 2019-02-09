@@ -55,7 +55,8 @@ class Output extends Component {
     window.addEventListener('resize', this.resize)
 
     this.state = {
-      showSize: false
+      showSize: false,
+      errors: []
     }
   }
 
@@ -138,9 +139,12 @@ class Output extends Component {
           if (e.data.callback === 'finishBoot') {
             finishBoot()
           }
-          const { height } = e.data
+          const { height, errors } = e.data
           if (height && this._iframe) {
             this._iframe.height = height
+          }
+          if (errors) {
+            this.setState({ errors })
           }
         }
       }
@@ -197,7 +201,7 @@ class Output extends Component {
   }
 
   render () {
-    const { showSize } = this.state
+    const { showSize, errors } = this.state
     const { run, tutorial } = this.props
 
     return (
@@ -220,11 +224,18 @@ class Output extends Component {
           }}
         />
         {!run ? (
-          <div className='stats'>
-            {showSize ? this.getSize() : null}
-            <button className='button' onClick={this.handleClickSize}>
-              {showSize ? 'hide' : 'show'} cassette size
-            </button>
+          <div className='errors-and-stats'>
+            <ul className='errors'>
+              {errors.map(({ type, message }) => (
+                <li key={type}>error: {message}</li>
+              ))}
+            </ul>
+            <div className='stats'>
+              {showSize ? this.getSize() : null}
+              <button className='button' onClick={this.handleClickSize}>
+                {showSize ? 'hide' : 'show'} cassette size
+              </button>
+            </div>
           </div>
         ) : null}
       </div>
