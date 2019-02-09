@@ -53,14 +53,12 @@ class CodeEditor extends Component {
       }
     })
 
-    // add this eventlistener to window
+    // Add this eventlistener to window.
     window.addEventListener('keyup', this.hideSlider)
 
-    // This timeout is to force CodeMirror to set
-    // its layout correctly, so it knows how to draw cursors.
-    setTimeout(() => {
-      this.setContents(this.props.game || '')
-    }, 1000)
+    // If found, restore scroll position.
+    const { scrollInfo } = this.props
+    this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
   }
 
   hideSlider () {
@@ -128,7 +126,7 @@ class CodeEditor extends Component {
       // Position slider centered above token.
       this._slider.style.left = `${middleCoords.left -
         wrapperRect.left +
-        (value.length * this.codeMirror.defaultCharWidth()) / 2}px`
+        value.length * this.codeMirror.defaultCharWidth() / 2}px`
       this._slider.style.top = `${middleCoords.top -
         wrapperRect.top -
         this.codeMirror.defaultTextHeight()}px`
@@ -182,6 +180,8 @@ class CodeEditor extends Component {
 
   componentWillUnmount () {
     window.removeEventListener('keyup', this.hideSlider)
+    const scrollInfo = this.codeMirror.getScrollInfo()
+    this.props.setScrollInfo(scrollInfo)
   }
 
   shouldComponentUpdate () {
