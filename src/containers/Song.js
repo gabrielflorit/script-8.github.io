@@ -8,7 +8,7 @@ import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../iframe/src/settings.js'
 
-const synths = _.range(settings.chainChannels).map(createSynth)
+const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
@@ -222,7 +222,9 @@ class Song extends Component {
                         key={col}
                         className={classNames({
                           highlight:
-                            col === playingIndex && isPlaying && !_.isNil(chain)
+                            col === playingIndex &&
+                            isPlaying &&
+                            !_.isNil(chain)
                         })}
                         onClick={() => this.handleChainClick({ col })}
                       >
@@ -245,4 +247,7 @@ class Song extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Song)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Song)

@@ -4,8 +4,13 @@ import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
 import settings from '../settings.js'
 
-const createSynth = () => {
-  const synth = new Tone.Synth().toMaster()
+const createSynth = volumeNode => {
+  const synth = new Tone.Synth()
+  if (volumeNode) {
+    synth.chain(volumeNode, Tone.Master)
+  } else {
+    synth.chain(Tone.Master)
+  }
   return synth
 }
 
@@ -33,38 +38,50 @@ const playNote = ({
   }
 }
 
-const soundAPI = () => {
-  const chainSynths = _.range(settings.chainChannels).map(createSynth)
-  const phraseSynth = createSynth()
+const soundAPI = volumeNode => {
+  const chainSynths = _.range(settings.chainChannels).map(() =>
+    createSynth(volumeNode)
+  )
+  const phraseSynth = createSynth(volumeNode)
 
   Tone.Transport.bpm.value = settings.bpm
   Tone.Transport.start(settings.startOffset)
 
-  let sequences = {}
+  let songContainers = {}
   let localPhrases = {}
   let phrasePool = []
 
   const stopSong = () => {
     // Stop all sequences.
-    _.forEach(sequences, (value, key) => {
-      if (value.sequence && !value.disposed) {
-        value.sequence.dispose()
-        value.disposed = true
+    // console.log('soundAPI.stopSong() BEGIN----------')
+    // const before = Date.now()
+    _.forEach(songContainers, ({ sequence }, key) => {
+      if (sequence) {
+        sequence.stop()
+        // console.log(`stopping song with key: ${key}`)
       }
     })
+    // const after = Date.now()
+    // console.log(`soundAPI.stopSong() END ${after - before}ms`)
   }
 
   const makeSongs = ({ songs, chains, phrases }) => {
+    // console.log(`soundAPI.makeSongs() BEGIN----------`)
+    // const before = Date.now()
     stopSong()
     localPhrases = phrases
-    sequences = _.mapValues(songs, song =>
-      makeSequence({ song, chains, phrases })
+    songContainers = _.mapValues(songs, song =>
+      makeSongContainer({ song, chains, phrases })
     )
+    // const after = Date.now()
+    // console.log(`soundAPI.makeSongs() END ${after - before}ms`)
   }
 
-  const makeSequence = ({ song, chains, phrases }) => {
-    // create an array of note positions. There's a lot going on here,
-    // but the gist: create an array of all the notes, but remove nulls from the end,
+  const makeSongContainer = ({ song, chains, phrases }) => {
+    // const before = Date.now()
+    // Create an array of note positions.
+    // There's a lot going on here, but the gist:
+    // create an array of all the notes, but remove nulls from the end,
     // so that we can make a Tone Sequence that is the right length and no more.
     // This is good for performance.
 
@@ -139,6 +156,9 @@ const soundAPI = () => {
 
     const subdivision = settings.subdivision
 
+    // const after = Date.now()
+    // console.log(`soundAPI.makeSongContainer() took ${after - before}ms`)
+
     return {
       callback,
       events,
@@ -148,11 +168,14 @@ const soundAPI = () => {
   }
 
   const playSong = (number, loop = false) => {
+    // console.log(`soundAPI.playSong() BEGIN----------`)
+    // const before = Date.now()
     stopSong()
 
-    _.forEach(sequences, (value, key) => {
+    // console.log(`going to play song with key ${number}`)
+    _.forEach(songContainers, (value, key) => {
       if (+key === number) {
-        // const before = Date.now()
+        // console.log(`found one: key ${key}`)
         value.sequence = new Tone.Sequence(
           value.callback,
           value.events,
@@ -160,9 +183,10 @@ const soundAPI = () => {
         )
         value.sequence.loop = loop
         value.sequence.start(settings.startOffset)
-        value.disposed = false
       }
     })
+    // const after = Date.now()
+    // console.log(`soundAPI.playSong() END took ${after - before}ms`)
   }
 
   const playPhrase = number => {
@@ -178,6 +202,8 @@ const soundAPI = () => {
         (time, index) => {
           const value = phrase[index]
           if (value) {
+            // console.log(`phraseSynth volume`)
+            // console.log({ volume: phraseSynth.volume.value })
             playNote({ ...value, time, synth: phraseSynth })
           }
         },
@@ -186,8 +212,9 @@ const soundAPI = () => {
       )
       sequence.loop = false
       sequence.start()
-      // console.log(`starting this phrase took ${Date.now() - before}ms`)
       phrasePool.push(sequence)
+      // const after = Date.now()
+      // console.log(`soundAPI.playPhrase() took ${after - before}ms`)
     }
   }
   return {

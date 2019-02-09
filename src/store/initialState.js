@@ -20,7 +20,7 @@ const initialState = {
   //   slideIndex: 0
   // },
   tutorial: null,
-  sound: false,
+  sound: true,
   shelving: false
 }
 

@@ -123,6 +123,8 @@ class Iframe extends Component {
     this.previousElapsed = 0
     this.fpsValues = []
 
+    this.volumeNode = new Tone.Volume()
+
     this.reducer = createReducer(this.logger)
     this.store = null
     this.previousInitialState = null
@@ -161,7 +163,7 @@ class Iframe extends Component {
       isPaused: true,
       alteredStates: [],
       run: true,
-      sound: false
+      sound: true
     }
   }
 
@@ -314,12 +316,11 @@ class Iframe extends Component {
   }
 
   componentDidMount () {
-    Tone.Master.mute = true
     this.updateGlobals()
-    this.soundFunctions = soundAPI()
+    this.soundFunctions = soundAPI(this.volumeNode)
     this.updateGlobals({
-      playSong: NOOP,
-      playPhrase: NOOP,
+      playSong: this.soundFunctions.playSong,
+      playPhrase: this.soundFunctions.playPhrase,
       stopSong: this.soundFunctions.stopSong
     })
 
@@ -422,6 +423,9 @@ class Iframe extends Component {
     try {
       // Make available an end function, and call the callback once.
       window._script8.end = once(() => {
+        if (Tone.context.state !== 'running') {
+          Tone.start()
+        }
         message.ports[0].postMessage({
           callback: callbacks.endCallback
         })
@@ -576,43 +580,33 @@ class Iframe extends Component {
     // toggle volume.
     // Also resume AudioContext IF it's not running.
     if (!equal(sound, prevState.sound)) {
-      if (Tone.context.state !== 'running') {
-        Tone.context.resume()
-      }
       Tone.Master.mute = !sound
+    }
+
+    // If the music data changed,
+    if (
+      !equal(songs, prevState.songs) ||
+      !equal(chains, prevState.chains) ||
+      !equal(phrases, prevState.phrases)
+    ) {
+      // make sequences,
+      this.soundFunctions.makeSongs({
+        songs,
+        chains,
+        phrases
+      })
+      // and restart game.
+      this.handleRestartClick()
     }
 
     // If we are not on a run screen,
     if (!run) {
-      // stop the song,
-      this.soundFunctions.stopSong()
-      // and set playSong to NOOP
-      this.updateGlobals({
-        playSong: NOOP,
-        playPhrase: NOOP
-      })
+      // mute the volume node.
+      this.volumeNode.mute = true
     } else {
-      // If we are on a run screen,
-      // and if the music data changed, or the previous screen was NOT a run screen,
-      // make sequences.
-      if (
-        !equal(songs, prevState.songs) ||
-        !equal(chains, prevState.chains) ||
-        !equal(phrases, prevState.phrases) ||
-        !prevState.run
-      ) {
-        this.soundFunctions.makeSongs({
-          songs,
-          chains,
-          phrases
-        })
-      }
-      // Also, since we are on a run screen,
-      // set the playSong correctly.
-      this.updateGlobals({
-        playSong: this.soundFunctions.playSong,
-        playPhrase: this.soundFunctions.playPhrase
-      })
+      // If we are on the run screen,
+      // unmute the volume node.
+      this.volumeNode.mute = false
     }
 
     // If we're playing,
