@@ -8,7 +8,7 @@ import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../iframe/src/settings.js'
 
-const synths = _.range(settings.chainChannels).map(createSynth)
+const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
@@ -239,4 +239,7 @@ class Chain extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chain)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Chain)
