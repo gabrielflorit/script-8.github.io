@@ -584,17 +584,19 @@ class Iframe extends Component {
     }
 
     // If the music data changed,
-    // make sequences.
     if (
       !equal(songs, prevState.songs) ||
       !equal(chains, prevState.chains) ||
       !equal(phrases, prevState.phrases)
     ) {
+      // make sequences,
       this.soundFunctions.makeSongs({
         songs,
         chains,
         phrases
       })
+      // and restart game.
+      this.handleRestartClick()
     }
 
     // If we are not on a run screen,
