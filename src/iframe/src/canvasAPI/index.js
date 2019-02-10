@@ -64,7 +64,13 @@ const canvasAPI = ({
     },
 
     print (x, y, letters, c = 0) {
-      print({ x, y, letters, c, ctx })
+      print({
+        x: x - _cameraX,
+        y: y - _cameraY,
+        letters,
+        c,
+        ctx
+      })
     },
 
     rectStroke (x, y, w, h, c = 0) {

@@ -12,24 +12,20 @@ const print = ({ x, y, letters, c, ctx }) => {
     .map(letter => {
       const pixels = alphabet[letter.toLowerCase()]
       return {
+        // If we found a matching letter in the alphabet,
+        // return its width.
+        // Otherwise if the user tries to print a character
+        // we haven't defined, just return 3.
         width: pixels ? pixels.length / 6 : 3,
         letter,
         pixels
       }
     })
     // Calculate running offsets.
-    .reduce((acc, current, index, array) => {
+    .reduce((acc, current, index) => {
       const previous = acc[index - 1]
-      let xOffset = previous ? previous.width + 1 + previous.xOffset : 0
-
-      let yOffset = previous ? previous.yOffset : 0
-      // Do we have space to draw this letter?
-      if (x + xOffset + current.width > 128) {
-        // If not,
-        // go to the beginning of the next line.
-        yOffset += 7
-        xOffset = 0
-      }
+      const xOffset = previous ? previous.width + 1 + previous.xOffset : 0
+      const yOffset = previous ? previous.yOffset : 0
 
       return [
         ...acc,
