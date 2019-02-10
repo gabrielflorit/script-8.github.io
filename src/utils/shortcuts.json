@@ -1,0 +1,18 @@
+[
+  [
+    "Ctrl-F / Cmd-F",
+    "Start searching"
+  ],
+  [
+    "Ctrl-G / Cmd-G",
+    "Find next"
+  ],
+  [
+    "Shift-Ctrl-G / Shift-Cmd-G",
+    "Find previous"
+  ],
+  [
+    "Shift-Ctrl-R / Shift-Cmd-Option-F",
+    "Replace all"
+  ]
+]

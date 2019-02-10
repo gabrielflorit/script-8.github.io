@@ -4,6 +4,7 @@ import actions from '../actions/actions.js'
 import lessons from '../utils/lessons.json'
 import apiDocs from '../utils/apiDocs.json'
 import howTo from '../utils/howTo.json'
+import shortcuts from '../utils/shortcuts.json'
 
 const mapStateToProps = () => ({})
 
@@ -93,6 +94,20 @@ class Help extends Component {
 
           <ul className='top-list'>
             <li>
+              Keyboard shortcuts
+              <dl>
+                {shortcuts.map(([dt, dd], i) => (
+                  <Fragment key={i}>
+                    <dt>{dt}</dt>
+                    <dd dangerouslySetInnerHTML={{ __html: dd }} />
+                  </Fragment>
+                ))}
+              </dl>
+            </li>
+          </ul>
+
+          <ul className='top-list'>
+            <li>
               API documentation
               <ul className='second-list'>
                 {apiDocs.map((section, i) => (
@@ -118,7 +133,4 @@ class Help extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Help)
+export default connect(mapStateToProps, mapDispatchToProps)(Help)
