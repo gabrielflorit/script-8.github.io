@@ -1,0 +1,35 @@
+.CodeMirror-dialog {
+  position: absolute;
+  left: 0; right: 0;
+  background: inherit;
+  z-index: 15;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  color: inherit;
+  font-size: 1.25rem;
+}
+
+.CodeMirror-dialog-top {
+  border-bottom: 1px solid #816271;
+  top: 0;
+}
+
+.CodeMirror-dialog input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 20em;
+  color: inherit;
+  font-family: 'VT323', monospace;
+  color: #f6d6bd;
+  color: #c3a38a;
+  font-size: 1.25rem;
+}
+
+.CodeMirror-search-label {
+  text-transform: uppercase;
+}
+
+.CodeMirror-search-hint {
+  display: none;
+}
