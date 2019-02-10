@@ -1,11 +1,11 @@
-$cm-line-selection   = red
+$cm-line-selection   = $palette-5
+$cm-selected         = $palette-5 // selected
 $cm-gutters-subtles  = $palette-6
 $cm-active-line      = red
 $cm-matching-bracket = red
 
 $cm-background       = $palette-7 // background
 $cm-gutters          = $palette-7
-$cm-selected         = $palette-6 // selected
 $cm-comment          = $palette-4 // comment
 $cm-foreground       = $palette-4 // punctuation bits
 $cm-cursor           = $palette-5 // cursor
@@ -102,3 +102,6 @@ $cm-object           = $palette-0 // createPathAnchors inside braces
 .cm-s-nyx8 .CodeMirror-matchingbracket
   text-decoration underline
   color $cm-matching-bracket !important
+
+.cm-s-nyx8 span.cm-searching.cm-overlay
+  border-bottom solid $palette-0 2px
