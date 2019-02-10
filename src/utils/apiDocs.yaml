@@ -7,8 +7,8 @@
     - update(state, input, elapsed)
     - "This function is called before `draw`. `state` is your game's state. Mutate state here. Note that you should not assign a new variable to `state`. Instead, assign individual properties. For example, don't do this: `state = { lives: 0}`. Do this: `state.lives = 0`. `elapsed` is time passed since last `update` call. See below for an explanation of `input`."
   -
-    - drawActors(state, fade)
-    - docs coming
+    - drawActors(state)
+    - Draws `actors` in `initialState`. Internally this function calls `sprite` per actor. So make sure your actors each have at least `x`, `y`, and `sprite` properties.
   -
     - draw(state)
     - This function is called after `draw`. `state` is your game's state.
@@ -42,8 +42,8 @@
     - polyStroke(points, [rotate, [x, y]], color)
     - "Strokes a polygon as defined by an array of points, each point being a two-element array. You do not need to close the polygon. For example, to draw a square at 0,0: `polyStroke([[0,0], [4,0], [4,4], [0, 4]], 0)`. `rotate` is in degrees. If `rotate` is supplied, but no xy, rotates the polygon. If `rotate` and `xy` is supplied, rotates the polygon about xy. Note color is not optional."
   -
-    - sprite(x, y, spriteIndex, [brighten, flipX])
-    - Draws the sprite at xy. `spriteIndex` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flipX` is true, mirrors the sprite along the y axis.
+    - sprite(x, y, sprite, [brighten, flip])
+    - Draws the sprite at xy. `sprite` is an integer between 0 and 127. The optional integer `brighten` will draw the sprite's pixels brighter by the specified amount. Negative values darken the sprite. If `flip` is true, mirrors the sprite along the y axis.
   -
     - clear([c])
     - Clears the screen. Optionally pass in a color to draw the entire screen with that color.

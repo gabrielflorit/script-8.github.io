@@ -6,7 +6,7 @@ update = (state, input, elapsed) => {
 
 drawActors = (state, fade) =>
   state.actors && state.actors.forEach(actor =>
-    sprite(actor.x, actor.y, actor.sprite, fade ? actor.trailBrighten || -3 : 0, actor.flip)
+    sprite(actor.x, actor.y, actor.sprite, fade ? actor.trailBrighten || -3 : actor.brighten, actor.flip)
   )
 
 draw = state => {
