@@ -19,6 +19,7 @@
     "lz-string": "^1.4.4",
     "npm-run-all": "^4.1.2",
     "omit-empty": "^0.4.1",
+    "prettier": "^1.16.4",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
