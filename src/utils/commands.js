@@ -18,7 +18,9 @@ const commands = {
       plugins: {
         babel: prettierParser
       },
-      cursorOffset
+      cursorOffset,
+      semi: false,
+      singleQuote: true
     })
 
     const { formatted, cursorOffset } = prettier.formatWithCursor(
