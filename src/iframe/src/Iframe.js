@@ -772,8 +772,12 @@ class Iframe extends Component {
         const canvases = [...this._ul.querySelectorAll('canvas')]
 
         if (buttons.length !== canvases.length) {
+          let tempCtx = this._canvas.getContext('2d')
           actors.forEach((actor, i) => {
-            window.clear()
+            tempCtx.save()
+            tempCtx.setTransform(1, 0, 0, 1, 0, 0)
+            tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+
             // For each actor,
             // draw it on the canvas,
             window.drawActors({
@@ -798,6 +802,7 @@ class Iframe extends Component {
           })
 
           window.draw(this.store.getState())
+          tempCtx.restore()
         }
       }
     }
