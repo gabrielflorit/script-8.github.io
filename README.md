@@ -82,10 +82,3 @@ Switch to `dev` branch. Pull latest. Then,
 ## Other information
 
 SCRIPT-8 was built with [create-react-app](https://github.com/facebook/create-react-app). Consult its guide for more instructions (e.g. running tests, building).
-
-## Contributors
-
-- [Gabriel Florit](https://github.com/gabrielflorit)
-- [Benjamin Philippe Applegate](https://github.com/Camto)
-- [matimati433](https://github.com/matimati433)
-- [Grant Herman](https://github.com/grantlouisherman)
