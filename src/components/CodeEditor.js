@@ -4,8 +4,6 @@ import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
-import prettierParser from 'prettier/parser-babylon'
-import prettier from 'prettier/standalone'
 
 const { platform } = window.navigator
 
@@ -31,12 +29,13 @@ class CodeEditor extends Component {
       tabSize: 2,
       cursorBlinkRate: 0,
       scrollbarStyle: null,
-      extraKeys: window.CodeMirror.normalizeKeyMap({
+      extraKeys: {
         Tab: commands.tab,
         'Cmd-/': commands.comment,
         'Ctrl-/': commands.comment,
+        'Alt-P': cm => commands.format(cm, this.setContents),
         Esc: 'clearSearch'
-      })
+      }
     })
 
     this.codeMirror.on('change', cm => {
@@ -55,29 +54,6 @@ class CodeEditor extends Component {
         }
       }
     })
-
-    const prettierOpts = cursorOffset => ({
-      parser: "babel",
-      plugins: {
-        babel: prettierParser
-      },
-      cursorOffset
-    });
-
-    this.codeMirror.addKeyMap({
-      "Alt-P": () => {
-        const oldCode = this.codeMirror.getValue()
-        const index = this.codeMirror.indexFromPos(this.codeMirror.getCursor())
-        const {formatted, cursorOffset} = prettier.formatWithCursor(
-          oldCode,
-          prettierOpts(index)
-        )
-        this.setContents(formatted)
-
-        const newCursor = this.codeMirror.posFromIndex(cursorOffset)
-        this.codeMirror.setCursor(newCursor)
-      }
-    });
 
     // Add this eventlistener to window.
     window.addEventListener('keyup', this.hideSlider)
@@ -152,7 +128,7 @@ class CodeEditor extends Component {
       // Position slider centered above token.
       this._slider.style.left = `${middleCoords.left -
         wrapperRect.left +
-        value.length * this.codeMirror.defaultCharWidth() / 2}px`
+        (value.length * this.codeMirror.defaultCharWidth()) / 2}px`
       this._slider.style.top = `${middleCoords.top -
         wrapperRect.top -
         this.codeMirror.defaultTextHeight()}px`
