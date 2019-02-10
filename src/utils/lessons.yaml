@@ -176,15 +176,13 @@
         print(72, 72, 'Hello world!', 2)
         print(80, 80, 'Hello world!', 1)
         print(88, 88, 'Hello world!', 0)
-        print(96, 102, 'Hello world!', 1)
-        print(106, 116, 'Hello world!', 2)
+        print(96, 96, 'Hello world!', 1)
+        print(104, 104, 'Hello world!', 2)
+        print(112, 112, 'Hello world!', 3)
+        print(120, 120, 'Hello world!', 4)
       }
     screen: CODE
     text:
-    - The last ones are a bit odd. Looks like they wrapped down.
-    - That's because SCRIPT-8 will try to fit your text onto the screen.
-    - This is a handy feature.
-  - text:
     - OK. We have reached the end. I hope you learned something new.
     - The next lesson will be about SCRIPT-8's magical number slider.
     - Are you curious? I would be. See you in the next one!
@@ -220,8 +218,10 @@
         print(72, 72, 'Hello world!', 2)
         print(80, 80, 'Hello world!', 1)
         print(88, 88, 'Hello world!', 0)
-        print(96, 102, 'Hello world!', 1)
-        print(106, 116, 'Hello world!', 2)
+        print(96, 96, 'Hello world!', 1)
+        print(104, 104, 'Hello world!', 2)
+        print(112, 112, 'Hello world!', 3)
+        print(120, 120, 'Hello world!', 4)
       }
     text:
     - Pay close attention to all the `print` lines.
@@ -274,10 +274,10 @@
     game: SAME
   - screen: CODE
     text:
-    - You probably chose 15, right?
+    - You probably chose 16, right?
     - And how exactly did you do that?
     - You probably deleted 10, then typed 11. Deleted 11, typed 12.
-    - Deleted 12, typed 13. Deleted 13, typed 14. Deleted 14, typed 15.
+    - Deleted 12, typed 13. Deleted 13, typed 14. Deleted 14, typed 15. Deleted 15, typed 16.
   - text:
     - That's also a lot of of duplication.
     - All that typing just to find the right integer.
