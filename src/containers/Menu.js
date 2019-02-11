@@ -76,7 +76,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Menu extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
@@ -88,7 +88,7 @@ class Menu extends Component {
     window.addEventListener('beforeunload', this.onClose)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const { token, nextAction, clearNextAction } = this.props
     if (token.value && nextAction) {
       clearNextAction()
@@ -101,11 +101,11 @@ class Menu extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onClose)
   }
 
-  onClose (e) {
+  onClose(e) {
     const { gist, game, sprites, map, phrases, chains, songs } = this.props
     const dirty = isDirty({
       gist,
@@ -123,7 +123,7 @@ class Menu extends Component {
     }
   }
 
-  onInsertBlankClick () {
+  onInsertBlankClick() {
     const { gist, game, sprites, map, phrases, chains, songs } = this.props
 
     const dirty = isDirty({
@@ -141,7 +141,7 @@ class Menu extends Component {
     }
   }
 
-  onPutOnShelfClick () {
+  onPutOnShelfClick() {
     const { putOnShelf, gist, game } = this.props
 
     const gistUser = _.get(gist, 'data.owner.login', null)
@@ -179,7 +179,7 @@ class Menu extends Component {
     }
   }
 
-  onRecordClick (toBlank) {
+  onRecordClick(toBlank) {
     const { token, setNextAction } = this.props
 
     // If we're not logged in,
@@ -201,7 +201,7 @@ class Menu extends Component {
     }
   }
 
-  record (toBlank) {
+  record(toBlank) {
     const {
       token,
       game,
@@ -226,7 +226,7 @@ class Menu extends Component {
     })
   }
 
-  render () {
+  render() {
     const {
       screen,
       gist,
@@ -303,7 +303,7 @@ class Menu extends Component {
     const isArtScreen = [screenTypes.SPRITE, screenTypes.MAP].includes(screen)
 
     return (
-      <nav className='Menu'>
+      <nav className="Menu">
         <ul>
           <li>
             <button
@@ -314,25 +314,25 @@ class Menu extends Component {
                 active: screen === screenTypes.HOME
               })}
             >
-              <span className='full'>SCRIPT-8</span>
-              <span className='mid'>SCRIPT-8</span>
-              <span className='small'>
+              <span className="full">SCRIPT-8</span>
+              <span className="mid">SCRIPT-8</span>
+              <span className="small">
                 {screen === screenTypes.HOME ? 'script-8' : 's-8'}
               </span>
             </button>
           </li>
           <li>
-            <button className='button'>
-              <span className='full'>cassette</span>
-              <span className='mid'>cas</span>
-              <span className='small'>ca</span>
+            <button className="button">
+              <span className="full">cassette</span>
+              <span className="mid">cas</span>
+              <span className="small">ca</span>
               <span className={classNames({ invisible: !dirty })}>*</span>
             </button>
-            <ul className='dropdown'>
+            <ul className="dropdown">
               <li>
                 <button
                   onClick={this.onInsertBlankClick}
-                  className='button'
+                  className="button"
                   disabled={!enableInsertBlank}
                 >
                   Insert new
@@ -344,7 +344,7 @@ class Menu extends Component {
                   onClick={() => {
                     this.onRecordClick(false)
                   }}
-                  className='button'
+                  className="button"
                   disabled={!enableRecord}
                 >
                   Record
@@ -356,7 +356,7 @@ class Menu extends Component {
                   onClick={() => {
                     this.onRecordClick(true)
                   }}
-                  className='button'
+                  className="button"
                   disabled={!enableRecordToBlank}
                 >
                   Record to blank
@@ -367,7 +367,7 @@ class Menu extends Component {
                 <button
                   onClick={this.onPutOnShelfClick}
                   disabled={!canShelve}
-                  className='button'
+                  className="button"
                 >
                   Put on shelf
                 </button>
@@ -384,11 +384,11 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              <span className='full'>CODE</span>
-              <span className='mid'>
+              <span className="full">CODE</span>
+              <span className="mid">
                 {screen === screenTypes.CODE ? 'code' : 'cod'}
               </span>
-              <span className='small'>
+              <span className="small">
                 {screen === screenTypes.CODE ? 'code' : 'co'}
               </span>
             </button>
@@ -403,11 +403,11 @@ class Menu extends Component {
                 active: isArtScreen
               })}
             >
-              <span className='full'>ART</span>
-              <span className='mid'>ART</span>
-              <span className='small'>{isArtScreen ? 'art' : 'ar'}</span>
+              <span className="full">ART</span>
+              <span className="mid">ART</span>
+              <span className="small">{isArtScreen ? 'art' : 'ar'}</span>
             </button>
-            <ul className='dropdown'>
+            <ul className="dropdown">
               <li>
                 <button
                   onClick={() => {
@@ -445,11 +445,11 @@ class Menu extends Component {
                 active: isMusicScreen
               })}
             >
-              <span className='full'>MUSIC</span>
-              <span className='mid'>{isMusicScreen ? 'music' : 'mus'}</span>
-              <span className='small'>{isMusicScreen ? 'music' : 'mu'}</span>
+              <span className="full">MUSIC</span>
+              <span className="mid">{isMusicScreen ? 'music' : 'mus'}</span>
+              <span className="small">{isMusicScreen ? 'music' : 'mu'}</span>
             </button>
-            <ul className='dropdown'>
+            <ul className="dropdown">
               <li>
                 <button
                   onClick={() => {
@@ -500,9 +500,9 @@ class Menu extends Component {
                 active: screen === screenTypes.RUN
               })}
             >
-              <span className='full'>RUN</span>
-              <span className='mid'>run</span>
-              <span className='small'>
+              <span className="full">RUN</span>
+              <span className="mid">run</span>
+              <span className="small">
                 {screen === screenTypes.RUN ? 'run' : 'ru'}
               </span>
             </button>
@@ -517,11 +517,11 @@ class Menu extends Component {
                 active: screen === screenTypes.HELP
               })}
             >
-              <span className='full'>HELP</span>
-              <span className='mid'>
+              <span className="full">HELP</span>
+              <span className="mid">
                 {screen === screenTypes.HELP ? 'help' : 'hel'}
               </span>
-              <span className='small'>
+              <span className="small">
                 {screen === screenTypes.HELP ? 'help' : 'he'}
               </span>
             </button>
@@ -536,11 +536,11 @@ class Menu extends Component {
                 active: screen === screenTypes.SHELF
               })}
             >
-              <span className='full'>SHELF</span>
-              <span className='mid'>
+              <span className="full">SHELF</span>
+              <span className="mid">
                 {screen === screenTypes.SHELF ? 'shelf' : 'she'}
               </span>
-              <span className='small'>
+              <span className="small">
                 {screen === screenTypes.SHELF ? 'shelf' : 'sh'}
               </span>
             </button>
@@ -551,10 +551,10 @@ class Menu extends Component {
               hide: screen !== screenTypes.RUN
             })}
           >
-            <button onClick={toggleSound} className='button'>
-              <span className='full'>{sound ? '' : 'un'}mute</span>
-              <span className='mid'>{sound ? '' : 'un'}mute</span>
-              <span className='small'>{sound ? '' : 'un'}mute</span>
+            <button onClick={toggleSound} className="button">
+              <span className="full">{sound ? '' : 'un'}mute</span>
+              <span className="mid">{sound ? '' : 'un'}mute</span>
+              <span className="small">{sound ? '' : 'un'}mute</span>
             </button>
           </li>
         </ul>
