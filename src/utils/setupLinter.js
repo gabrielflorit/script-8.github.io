@@ -1,5 +1,5 @@
 import * as acorn from 'acorn'
-import * as walk from 'acorn/dist/walk'
+import * as walk from 'acorn-walk'
 
 const parseOptions = {
   ecmaVersion: 9,
@@ -8,7 +8,7 @@ const parseOptions = {
 }
 
 class InvalidTokenError extends Error {
-  constructor ({ loc, raisedAt, message }) {
+  constructor({ loc, raisedAt, message }) {
     super(message)
     this.name = 'InvalidTokenError'
     this.loc = loc
@@ -37,7 +37,7 @@ const getLintErrors = async ({ text }) => {
     const parsed = acorn.parse(text, parseOptions)
     let nodes = []
     walk.simple(parsed, {
-      Identifier (node) {
+      Identifier(node) {
         nodes.push(node)
       }
     })
