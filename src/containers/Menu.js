@@ -12,6 +12,7 @@ import actions, {
   putOnShelf
 } from '../actions/actions.js'
 
+
 const mapStateToProps = ({
   gist,
   game,
