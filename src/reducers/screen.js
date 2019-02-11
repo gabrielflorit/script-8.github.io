@@ -19,7 +19,12 @@ const screen = handleActions(
           action.payload
         )
       ) {
-        if (Tone.context.state !== 'running') {
+        if (
+          Tone &&
+          Tone.context &&
+          Tone.context.state &&
+          Tone.context.state !== 'running'
+        ) {
           Tone.start()
         }
       }
