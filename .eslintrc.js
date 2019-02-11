@@ -1,6 +1,14 @@
 module.exports = {
-  "extends": ["standard", "standard-react"],
-  "rules": {
-    "react/prop-types": [0]
-  }
-};
+  parserOptions: {
+    ecmaVersion: 10,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
+  'extends': ['plugin:prettier/recommended']
+  // plugins: ['prettier'],
+  // rules: {
+  //   'prettier/prettier': 'error'
+  // }
+}
