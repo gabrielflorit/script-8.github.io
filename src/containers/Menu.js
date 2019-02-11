@@ -24,7 +24,8 @@ const mapStateToProps = ({
   shelving,
   screen,
   nextAction,
-  sound
+  sound,
+  codeTab
 }) => ({
   screen,
   gist,
@@ -37,7 +38,8 @@ const mapStateToProps = ({
   token,
   isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
-  sound
+  sound,
+  codeTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -240,7 +242,8 @@ class Menu extends Component {
       setScreen,
       sound,
       toggleSound,
-      isFetching
+      isFetching,
+      codeTab
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -384,14 +387,35 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              <span className='full'>CODE</span>
+              <span className='full'>CODE-{codeTab}</span>
               <span className='mid'>
-                {screen === screenTypes.CODE ? 'code' : 'cod'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTab}`
+                  : `cod${codeTab}`}
               </span>
               <span className='small'>
-                {screen === screenTypes.CODE ? 'code' : 'co'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTab}`
+                  : `co${codeTab}`}
               </span>
             </button>
+            <ul className='dropdown'>
+              <li>
+                <button className='button'>CODE-0</button>
+              </li>
+
+              <li>
+                <button className='button'>CODE-1</button>
+              </li>
+
+              <li>
+                <button className='button'>CODE-2</button>
+              </li>
+
+              <li>
+                <button className='button'>CODE-3</button>
+              </li>
+            </ul>
           </li>
 
           <li>
