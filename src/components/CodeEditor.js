@@ -33,7 +33,7 @@ class CodeEditor extends Component {
         Tab: commands.tab,
         'Cmd-/': commands.comment,
         'Ctrl-/': commands.comment,
-        'Alt-P': cm => commands.format(cm, this.setContents),
+        'Alt-F': cm => commands.format(cm, this.setContents),
         Esc: 'clearSearch'
       }
     })
