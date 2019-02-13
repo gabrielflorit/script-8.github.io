@@ -952,7 +952,7 @@ class Iframe extends Component {
               value={timelineIndex}
               min={0}
               max={alteredStates.length - 1}
-              onInput={this.handleTimelineInput}
+              onChange={this.handleTimelineInput}
             />
             <ul
               ref={_ul => {
