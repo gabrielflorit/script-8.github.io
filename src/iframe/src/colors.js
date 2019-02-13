@@ -21,6 +21,17 @@ const triplets = [
   [8, 20, 30]
 ]
 
+const lookup = {
+  '246, 214, 189': 0,
+  '195, 163, 138': 1,
+  '153, 117, 119': 2,
+  '129, 98, 113': 3,
+  '78, 73, 95': 4,
+  '32, 57, 79': 5,
+  '15, 42, 63': 6,
+  '8, 20, 30': 7
+};
+
 // const hexes = [
 //   '#f6d6bd',
 //   '#c3a38a',
@@ -38,6 +49,10 @@ const colors = {
   },
   triplet (i) {
     return triplets[i % triplets.length]
+  },
+  // NOTE: if triplet isn't a color in the pallet, this will return undefined.
+  lookup (triplet) {
+    return lookup[triplet]
   }
 }
 
