@@ -16,6 +16,7 @@ import sound from './sound.js'
 import shelving from './shelving.js'
 import scrollInfo from './scrollInfo.js'
 import codeTab from './codeTab.js'
+import docHistories from './docHistories.js'
 
 const reducer = combineReducers({
   screen,
@@ -34,7 +35,8 @@ const reducer = combineReducers({
   sound,
   shelving,
   scrollInfo,
-  codeTab
+  codeTab,
+  docHistories
 })
 
 export default reducer

@@ -4,7 +4,7 @@ import initialState from '../store/initialState.js'
 
 const codeTab = handleActions(
   {
-    [actionTypes.NEW_GAME]: () => 0,
+    [actionTypes.NEW_GAME]: () => initialState.codeTab,
     [actionTypes.SET_CODE_TAB]: (state, action) => action.payload
   },
   initialState.codeTab

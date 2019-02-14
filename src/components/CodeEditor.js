@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
@@ -38,6 +39,18 @@ class CodeEditor extends Component {
       }
     })
 
+    const docHistory = get(
+      this.props.docHistories,
+      `[${this.props.codeTab}]`,
+      null
+    )
+
+    if (docHistory) {
+      this.codeMirror.getDoc().setHistory(docHistory)
+    } else {
+      this.codeMirror.getDoc().clearHistory()
+    }
+
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
       this.props.updateGame(content)
@@ -61,6 +74,9 @@ class CodeEditor extends Component {
     // If found, restore scroll position.
     const { scrollInfo } = this.props
     this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+
+    // Give editor focus.
+    this.codeMirror.focus()
   }
 
   hideSlider () {
@@ -171,6 +187,7 @@ class CodeEditor extends Component {
     // set CodeMirror's value to ''.
     if (nextProps.game === 'SCRIPT-8 NEW') {
       this.setContents(blank)
+      this.codeMirror.getDoc().clearHistory()
     }
     if (nextProps.game.startsWith('SCRIPT-8 LESSON')) {
       this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
@@ -184,6 +201,10 @@ class CodeEditor extends Component {
     window.removeEventListener('keyup', this.hideSlider)
     const scrollInfo = this.codeMirror.getScrollInfo()
     this.props.setScrollInfo(scrollInfo)
+    this.props.updateHistory({
+      index: this.props.codeTab,
+      history: this.codeMirror.getDoc().getHistory()
+    })
   }
 
   shouldComponentUpdate () {

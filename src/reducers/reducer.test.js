@@ -4,6 +4,48 @@ import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
 
+describe('docHistories', () => {
+  test('newGame', () => {
+    const before = {
+      ...initialState,
+      docHistories: {
+        0: 'something'
+      }
+    }
+    let newState = reducer(before, actions.newGame())
+    expect(newState).toEqual({
+      ...before,
+      docHistories: {}
+    })
+  })
+  test('updateHistory', () => {
+    const before = {
+      ...initialState,
+      docHistories: {
+        0: 'something'
+      }
+    }
+    let newState = reducer(
+      before,
+      actions.updateHistory({
+        index: 2,
+        history: {
+          name: 'gabriel'
+        }
+      })
+    )
+    expect(newState).toEqual({
+      ...before,
+      docHistories: {
+        0: 'something',
+        2: {
+          name: 'gabriel'
+        }
+      }
+    })
+  })
+})
+
 describe('tutorial', () => {
   test('setTutorialSlide', () => {
     const before = {

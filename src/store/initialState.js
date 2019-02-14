@@ -17,6 +17,7 @@ const initialState = {
   songs: {},
   scrollInfo: {},
   codeTab: 0,
+  docHistories: {},
   // tutorial: {
   //   lessonIndex: 1,
   //   slideIndex: 0

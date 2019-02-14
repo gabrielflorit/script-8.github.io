@@ -37,7 +37,8 @@ const actions = createActions({
   [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
   [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d,
   [actionTypes.SET_SCROLL_INFO]: d => d,
-  [actionTypes.SET_CODE_TAB]: d => d
+  [actionTypes.SET_CODE_TAB]: d => d,
+  [actionTypes.UPDATE_HISTORY]: d => d
 })
 
 export default actions
