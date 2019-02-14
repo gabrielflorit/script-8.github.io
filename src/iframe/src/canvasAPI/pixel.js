@@ -12,8 +12,8 @@ const getPixel = ({ x, y, ctx }) => {
   }
 
   // If color wasn't recognized, return default.
-  const color = colors.lookup(pixel)
-  if (!color) {
+  const color = colors.lookup([r, g, b, alpha])
+  if (color === null) {
     return backgroundColor
   }
 
