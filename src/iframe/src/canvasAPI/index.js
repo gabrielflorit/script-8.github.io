@@ -5,6 +5,7 @@ import line from './line.js'
 import polyStroke from './polyStroke.js'
 import print from './print.js'
 import sprite, { pixelSprite } from './sprite.js'
+import { getPixel, setPixel } from './pixel.js'
 
 // let mapDraws = []
 // let avgDraws = []
@@ -184,6 +185,23 @@ const canvasAPI = ({
         ctx.clearRect(0, 0, canvasWidth, canvasHeight)
       }
       ctx.restore()
+    },
+
+    getPixel (x, y) {
+      return getPixel({
+        x: Math.floor(x),
+        y: Math.floor(y),
+        ctx
+      })
+    },
+
+    setPixel (x, y, c = 0) {
+      setPixel({
+        x: Math.floor(x),
+        y: Math.floor(y),
+        ctx,
+        color: colors.rgb(c)
+      })
     }
   }
 }
