@@ -1,18 +1,23 @@
 import colors from '../colors.js'
 
+const backgroundColor = 7
+
 const getPixel = ({ x, y, ctx }) => {
   x = x % 128
   y = y % 128
+
+  // pixel: [r, g, b, a]
   let pixel = ctx.getImageData(x, y, 1, 1).data
-  let triplet = [
-    pixel[0],
-    pixel[1],
-    pixel[2]
-  ]
-  let color = colors.lookup(triplet)
+
+  // If pixel isn't opaque default
+  if (pixel[3] !== 255) return backgroundColor
+
+  let color = colors.lookup(pixel)
+  // If color wasn't recognized return default
   if (typeof color === "undefined") {
-    return 7
+    return backgroundColor
   }
+
   return color
 }
 
