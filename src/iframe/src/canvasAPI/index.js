@@ -40,11 +40,11 @@ const canvasAPI = ({
   })
 
   return {
-    polyStroke (points, ...args) {
+    polyStroke(points, ...args) {
       polyStroke({ points, args, ctx })
     },
 
-    tile (x, y) {
+    tile(x, y) {
       const thisTile = get(_map, [y, x], null)
       let result = thisTile !== null ? _sprites[thisTile] : null
       if (result) {
@@ -53,7 +53,7 @@ const canvasAPI = ({
       return result
     },
 
-    line (x1, y1, x2, y2, c = 0) {
+    line(x1, y1, x2, y2, c = 0) {
       line({
         x1: Math.floor(x1),
         y1: Math.floor(y1),
@@ -64,7 +64,7 @@ const canvasAPI = ({
       })
     },
 
-    print (x, y, letters, c = 0) {
+    print(x, y, letters, c = 0) {
       print({
         x: x - _cameraX,
         y: y - _cameraY,
@@ -74,7 +74,7 @@ const canvasAPI = ({
       })
     },
 
-    rectStroke (x, y, w, h, c = 0) {
+    rectStroke(x, y, w, h, c = 0) {
       ctx.strokeStyle = colors.rgb(c)
       ctx.strokeRect(
         Math.floor(x) + 0.5,
@@ -84,19 +84,19 @@ const canvasAPI = ({
       )
     },
 
-    camera (x = 0, y = 0) {
+    camera(x = 0, y = 0) {
       _cameraX = x
       _cameraY = y
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.translate(-x, -y)
     },
 
-    rectFill (x, y, w, h, c = 0) {
+    rectFill(x, y, w, h, c = 0) {
       ctx.fillStyle = colors.rgb(c)
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
-    map (x = 0, y = 0) {
+    map(x = 0, y = 0) {
       // const before = Date.now()
       _map.forEach((row, rowNumber) => {
         row.forEach((spriteIndex, colNumber) => {
@@ -150,11 +150,11 @@ const canvasAPI = ({
       // }
     },
 
-    sprite (x, y, spriteIndex, darken = 0, flip = false) {
+    sprite(x, y, spriteIndex, darken = 0, flip = false) {
       sprite({ x, y, spriteIndex, darken, flip, sprites: _sprites, ctx })
     },
 
-    circStroke (x, y, r, c = 0) {
+    circStroke(x, y, r, c = 0) {
       circle({
         cx: Math.floor(x),
         cy: Math.floor(y),
@@ -165,7 +165,7 @@ const canvasAPI = ({
       })
     },
 
-    circFill (x, y, r, c = 0) {
+    circFill(x, y, r, c = 0) {
       circle({
         cx: Math.floor(x),
         cy: Math.floor(y),
@@ -175,7 +175,7 @@ const canvasAPI = ({
       })
     },
 
-    clear (c) {
+    clear(c) {
       ctx.save()
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       if (!isNil(c)) {
@@ -187,7 +187,7 @@ const canvasAPI = ({
       ctx.restore()
     },
 
-    getPixel (x, y) {
+    getPixel(x, y) {
       return getPixel({
         x: Math.floor(x),
         y: Math.floor(y),
@@ -195,7 +195,7 @@ const canvasAPI = ({
       })
     },
 
-    setPixel (x, y, c = 0) {
+    setPixel(x, y, c = 0) {
       setPixel({
         x: Math.floor(x),
         y: Math.floor(y),
