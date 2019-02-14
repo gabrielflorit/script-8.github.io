@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Tutorial extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleClose = this.handleClose.bind(this)
     this.handlePrevious = this.handlePrevious.bind(this)
@@ -56,7 +56,7 @@ class Tutorial extends Component {
     }
   }
 
-  fireActions ({ lessonIndex, slideIndex }) {
+  fireActions({ lessonIndex, slideIndex }) {
     const {
       setScreen,
       updateGame,
@@ -70,13 +70,13 @@ class Tutorial extends Component {
     const slide = slides[slideIndex]
     const { screen: slideScreen, game, sprites, map: slideMap } = slide
 
-    // If we're not on CODE, set the game with no prefix.
-    // If we are on CODE, use prefix.
     if (!isNil(game)) {
       const patchedGame = patcher({ slides, index: slideIndex })
+      // If we're not on CODE, set the game with no prefix.
       if (screen !== screenTypes.CODE) {
         updateGame(patchedGame)
       } else {
+        // If we are on CODE, use prefix.
         updateGame(`SCRIPT-8 LESSON${patchedGame}`)
       }
     }
@@ -104,7 +104,7 @@ class Tutorial extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { tutorial, screen } = this.props
     const { lessonIndex, slideIndex } = tutorial
     const { slides } = lessons[lessonIndex]
@@ -127,21 +127,21 @@ class Tutorial extends Component {
     }
   }
 
-  handleClose () {
+  handleClose() {
     this.props.closeTutorial()
   }
 
-  handleSlide ({ lessonIndex, slideIndex }) {
+  handleSlide({ lessonIndex, slideIndex }) {
     this.props.setTutorialSlide({ lessonIndex, slideIndex })
     this.fireActions({ lessonIndex, slideIndex })
   }
 
-  handleNextLesson () {
+  handleNextLesson() {
     const { lessonIndex } = this.props.tutorial
     this.handleSlide({ lessonIndex: lessonIndex + 1, slideIndex: 0 })
   }
 
-  handleNextSlide () {
+  handleNextSlide() {
     const { lessonIndex, slideIndex } = this.props.tutorial
     const { newGameOnNext } = lessons[lessonIndex].slides[slideIndex]
     if (newGameOnNext) {
@@ -150,12 +150,12 @@ class Tutorial extends Component {
     this.handleSlide({ lessonIndex, slideIndex: slideIndex + 1 })
   }
 
-  handlePrevious () {
+  handlePrevious() {
     const { lessonIndex, slideIndex } = this.props.tutorial
     this.handleSlide({ lessonIndex, slideIndex: slideIndex - 1 })
   }
 
-  render () {
+  render() {
     const { tutorial, screen, tutorialRef } = this.props
     const { lessonIndex, slideIndex } = tutorial
     const { title, slides } = lessons[lessonIndex]
@@ -163,7 +163,7 @@ class Tutorial extends Component {
     const { requirements } = slide
 
     const close = (
-      <button className='button' onClick={this.handleClose}>
+      <button className="button" onClick={this.handleClose}>
         close
       </button>
     )
@@ -175,7 +175,7 @@ class Tutorial extends Component {
     const nextSlide =
       slideIndex < slides.length - 1 ? (
         <button
-          className='button'
+          className="button"
           disabled={!enableNextSlide}
           onClick={this.handleNextSlide}
         >
@@ -185,20 +185,20 @@ class Tutorial extends Component {
 
     const nextLesson =
       slideIndex === slides.length - 1 && lessonIndex < lessons.length - 1 ? (
-        <button className='button' onClick={this.handleNextLesson}>
+        <button className="button" onClick={this.handleNextLesson}>
           next lesson
         </button>
       ) : null
 
     const previous =
       slideIndex > 0 ? (
-        <button className='button' onClick={this.handlePrevious}>
+        <button className="button" onClick={this.handlePrevious}>
           previous
         </button>
       ) : null
 
     const buttons = (
-      <div className='buttons' ref={this.setButtonsRef}>
+      <div className="buttons" ref={this.setButtonsRef}>
         {previous}
         {nextLesson}
         {nextSlide}
@@ -238,7 +238,7 @@ class Tutorial extends Component {
             dangerouslySetInnerHTML={{ __html: p.replace(/^XX/, '') }}
           />
         ))}
-        <div className='bottom-bar'>
+        <div className="bottom-bar">
           {buttons}
           <p>{progress}</p>
         </div>

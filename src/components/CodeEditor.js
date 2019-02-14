@@ -1,3 +1,11 @@
+// actions.updateGame is used in three places:
+// - in CodeEditor, on code mirror change
+// - in Tutorial, if slide has game,
+//    if we're not on code, updateGame is called as is
+//    if we are on code, updateGame is called with the prefix
+
+// What happens when we click on CODE-1?
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import get from 'lodash/get'
@@ -9,7 +17,7 @@ import blank from '../iframe/src/blank.js'
 const { platform } = window.navigator
 
 class CodeEditor extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.mark = null
@@ -19,7 +27,7 @@ class CodeEditor extends Component {
     this.hideSlider = this.hideSlider.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     setupLinter()
     this.codeMirror = window.CodeMirror(this._editor, {
       value: this.props.game || '',
@@ -79,12 +87,12 @@ class CodeEditor extends Component {
     this.codeMirror.focus()
   }
 
-  hideSlider () {
+  hideSlider() {
     this.mark && this.mark.clear()
     this._slider.classList.add('hide')
   }
 
-  activateSlider () {
+  activateSlider() {
     // If the cursor is on a number,
     // reset and show the slider.
 
@@ -154,7 +162,7 @@ class CodeEditor extends Component {
     }
   }
 
-  handleSlider (e) {
+  handleSlider(e) {
     // Get mark positions.
     const { from, to } = this.mark.find()
 
@@ -177,12 +185,12 @@ class CodeEditor extends Component {
     )
   }
 
-  setContents (value) {
+  setContents(value) {
     this.codeMirror.setValue(value)
     this.codeMirror.refresh()
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
     if (nextProps.game === 'SCRIPT-8 NEW') {
@@ -197,7 +205,7 @@ class CodeEditor extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('keyup', this.hideSlider)
     const scrollInfo = this.codeMirror.getScrollInfo()
     this.props.setScrollInfo(scrollInfo)
@@ -207,28 +215,28 @@ class CodeEditor extends Component {
     })
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return false
   }
 
-  render () {
+  render() {
     return (
-      <div className='CodeEditor'>
+      <div className="CodeEditor">
         <div
-          className='wrapper'
+          className="wrapper"
           ref={_wrapper => {
             this._wrapper = _wrapper
           }}
         >
           <div
-            className='_editor'
+            className="_editor"
             ref={_editor => {
               this._editor = _editor
             }}
           />
           <input
-            type='range'
-            className='slider hide'
+            type="range"
+            className="slider hide"
             step={1}
             ref={_slider => {
               this._slider = _slider

@@ -24,8 +24,8 @@ const mapStateToProps = ({
   shelving,
   screen,
   nextAction,
-  sound
-  // codeTab
+  sound,
+  codeTab
 }) => ({
   screen,
   gist,
@@ -38,11 +38,12 @@ const mapStateToProps = ({
   token,
   isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
-  sound
-  // codeTab
+  sound,
+  codeTab
 })
 
 const mapDispatchToProps = dispatch => ({
+  setCodeTab: codeTab => dispatch(actions.setCodeTab(codeTab)),
   toggleSound: () => dispatch(actions.toggleSound()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
@@ -242,8 +243,9 @@ class Menu extends Component {
       setScreen,
       sound,
       toggleSound,
-      isFetching
-      // codeTab
+      isFetching,
+      codeTab,
+      setCodeTab
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -387,14 +389,67 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              <span className="full">CODE</span>
+              <span className="full">CODE-{codeTab}</span>
               <span className="mid">
-                {screen === screenTypes.CODE ? 'code' : 'cod'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTab}`
+                  : `cod${codeTab}`}
               </span>
               <span className="small">
-                {screen === screenTypes.CODE ? 'code' : 'co'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTab}`
+                  : `co${codeTab}`}
               </span>
             </button>
+            <ul className="dropdown">
+              <li>
+                <button
+                  className="button"
+                  onClick={() => {
+                    setCodeTab(0)
+                    setScreen(screenTypes.CODE)
+                  }}
+                >
+                  CODE-0
+                </button>
+              </li>
+
+              <li>
+                <button
+                  className="button"
+                  onClick={() => {
+                    setCodeTab(1)
+                    setScreen(screenTypes.CODE)
+                  }}
+                >
+                  CODE-1
+                </button>
+              </li>
+
+              <li>
+                <button
+                  className="button"
+                  onClick={() => {
+                    setCodeTab(2)
+                    setScreen(screenTypes.CODE)
+                  }}
+                >
+                  CODE-2
+                </button>
+              </li>
+
+              <li>
+                <button
+                  className="button"
+                  onClick={() => {
+                    setCodeTab(3)
+                    setScreen(screenTypes.CODE)
+                  }}
+                >
+                  CODE-3
+                </button>
+              </li>
+            </ul>
           </li>
 
           <li>
