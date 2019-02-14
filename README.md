@@ -72,6 +72,32 @@ yarn start
 
 This will open SCRIPT-8 on `http://localhost:3000`.
 
+### Note for windows users 
+
+In some circumstances yarn can complain with something like this error:
+
+```
+yarn run v1.13.0
+$ npm-run-all -p iframe-start-js iframe-watch-css
+$ cd src/iframe; react-scripts start
+$ cd src/iframe; stylus src/css/Iframe.styl -o src/css -w
+The system cannot find the path specified.
+The system cannot find the path specified.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+ERROR: "iframe-start-js" exited with 1.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
+
+A quick fix is to install Git for windows and configure npm to use Git Bash instead of cmd to run package.json scripts.
+
+```
+yarn config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
+```
+
 ## To deploy
 
 Switch to `dev` branch. Pull latest. Then,
