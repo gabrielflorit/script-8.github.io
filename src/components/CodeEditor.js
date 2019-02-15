@@ -4,6 +4,7 @@ import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
+import lessons from '../utils/lessons.json'
 
 const { platform } = window.navigator
 
@@ -16,6 +17,7 @@ class CodeEditor extends Component {
     this.handleSlider = this.handleSlider.bind(this)
     this.activateSlider = this.activateSlider.bind(this)
     this.hideSlider = this.hideSlider.bind(this)
+    this.highlighter = this.highlighter.bind(this)
   }
 
   componentDidMount () {
@@ -66,6 +68,30 @@ class CodeEditor extends Component {
   hideSlider () {
     this.mark && this.mark.clear()
     this._slider.classList.add('hide')
+  }
+
+  highlighter(codeMirror, targetLine){
+    try {
+      let wordAt = codeMirror.findWordAt({line: targetLine, ch: 0})
+      let lastHeadChar = wordAt.anchor.ch
+      let iterate = true
+      let line1 = wordAt.anchor.line
+      let ch1 = wordAt.anchor.ch
+      let line2;
+      let ch2;
+      while(iterate){
+        line2 = wordAt.head.line
+        ch2 = wordAt.head.ch
+        if(ch2 === lastHeadChar || isNaN(ch2)){
+          break
+        }
+        lastHeadChar = wordAt.head.ch
+        wordAt = this.codeMirror.findWordAt({line: targetLine, ch: wordAt.head.ch})
+      }
+      this.codeMirror.markText({line:line1, ch:ch1}, {line:line2, ch:ch2}, {css: "background-color: white"})
+      } catch(err){
+        console.log(err)
+      }
   }
 
   activateSlider () {
@@ -169,11 +195,22 @@ class CodeEditor extends Component {
   componentWillReceiveProps (nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
+    let lesson;
+    let slide;
+    if(nextProps.tutorial){
+      lesson = lessons[nextProps.tutorial.lessonIndex]
+      const { slides } = lesson
+      slide = slides[nextProps.tutorial.slideIndex]
+    }
     if (nextProps.game === 'SCRIPT-8 NEW') {
       this.setContents(blank)
     }
     if (nextProps.game.startsWith('SCRIPT-8 LESSON')) {
       this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
+
+      if(slide && slide.lineToFocus){
+        this.highlighter(this.codeMirror, slide.lineToFocus)
+      }
     }
     if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
       this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
