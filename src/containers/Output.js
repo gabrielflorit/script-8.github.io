@@ -30,7 +30,7 @@ const mapStateToProps = ({
   phrases,
   sprites,
   map,
-  game: screen === screenTypes.BOOT ? bios : game,
+  game: screen === screenTypes.BOOT ? { 0: bios } : game,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
   sound,
@@ -43,7 +43,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Output extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.evaluate = this.evaluate.bind(this)
@@ -60,31 +60,31 @@ class Output extends Component {
     }
   }
 
-  noop () {}
+  noop() {}
 
-  resize () {
+  resize() {
     if (this.isLoaded) {
       this.evaluate()
     }
   }
 
-  handleClickSize () {
+  handleClickSize() {
     this.setState({
       showSize: !this.state.showSize
     })
   }
 
-  handleBlur (e) {
+  handleBlur(e) {
     if (this.props.run) {
       e.currentTarget.focus()
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this._iframe.focus()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.props.run) {
       this._iframe.focus()
     }
@@ -93,11 +93,11 @@ class Output extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.resize)
   }
 
-  evaluate () {
+  evaluate() {
     const {
       game,
       finishBoot,
@@ -121,7 +121,7 @@ class Output extends Component {
         this._iframe.contentWindow.postMessage(
           {
             type: 'callCode',
-            game,
+            game: Object.values(game).join('\n'),
             songs,
             chains,
             phrases,
@@ -158,7 +158,7 @@ class Output extends Component {
       })
     } else {
       // Validate code before drawing.
-      getLintErrors({ text: game }).then(errors => {
+      getLintErrors({ text: Object.values(game).join('\n') }).then(errors => {
         if (!errors.length) {
           sendPayload()
         } else {
@@ -169,17 +169,19 @@ class Output extends Component {
     }
   }
 
-  getSize () {
+  getSize() {
     const { game, songs, chains, phrases, sprites, map } = this.props
 
-    const gameLz = lz.compress(game)
+    const gameText = Object.values(game).join('\n')
+
+    const gameTextLz = lz.compress(gameText)
     const art = JSON.stringify({ sprites, map })
     const artLz = lz.compress(art)
     const music = JSON.stringify({ phrases, chains, songs })
     const musicLz = lz.compress(music)
 
     const sizes = [
-      ['code', game, gameLz],
+      ['code', gameText, gameTextLz],
       ['art', art, artLz],
       ['music', music, musicLz]
     ]
@@ -200,7 +202,7 @@ class Output extends Component {
     )
   }
 
-  render () {
+  render() {
     const { showSize, errors } = this.state
     const { run, tutorial } = this.props
 
@@ -212,8 +214,8 @@ class Output extends Component {
       >
         <iframe
           src={process.env.REACT_APP_IFRAME_URL}
-          title='SCRIPT-8'
-          sandbox='allow-scripts allow-same-origin'
+          title="SCRIPT-8"
+          sandbox="allow-scripts allow-same-origin"
           onBlur={this.handleBlur}
           ref={_iframe => {
             this._iframe = _iframe
@@ -224,15 +226,15 @@ class Output extends Component {
           }}
         />
         {!run ? (
-          <div className='errors-and-stats'>
-            <ul className='errors'>
+          <div className="errors-and-stats">
+            <ul className="errors">
               {errors.map(({ type, message }) => (
                 <li key={type}>error: {message}</li>
               ))}
             </ul>
-            <div className='stats'>
+            <div className="stats">
               {showSize ? this.getSize() : null}
-              <button className='button' onClick={this.handleClickSize}>
+              <button className="button" onClick={this.handleClickSize}>
                 {showSize ? 'hide' : 'show'} cassette size
               </button>
             </div>

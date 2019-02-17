@@ -24,7 +24,8 @@ const mapDispatchToProps = dispatch => ({
   updateMap: newMap => dispatch(actions.updateMap(newMap)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   closeTutorial: () => dispatch(actions.closeTutorial()),
-  updateGame: game => dispatch(actions.updateGame(game)),
+  updateGame: ({ tab, content }) =>
+    dispatch(actions.updateGame({ tab, content })),
   updateSprite: ({ sprite, index }) =>
     dispatch(
       actions.updateSprite({
@@ -74,10 +75,10 @@ class Tutorial extends Component {
       const patchedGame = patcher({ slides, index: slideIndex })
       // If we're not on CODE, set the game with no prefix.
       if (screen !== screenTypes.CODE) {
-        updateGame(patchedGame)
+        updateGame({ tab: 0, content: patchedGame })
       } else {
         // If we are on CODE, use prefix.
-        updateGame(`SCRIPT-8 LESSON${patchedGame}`)
+        updateGame({ tab: 0, content: `SCRIPT-8 LESSON${patchedGame}` })
       }
     }
 

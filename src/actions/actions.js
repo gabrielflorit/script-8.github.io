@@ -174,6 +174,7 @@ export const fetchToken = code => dispatch => {
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
+// TODO: saveGist with new game setup
 export const saveGist = ({
   toBlank,
   game,

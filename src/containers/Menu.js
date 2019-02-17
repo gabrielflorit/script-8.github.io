@@ -152,7 +152,7 @@ class Menu extends Component {
     const isFork = !!_.get(gist, 'data.fork_of', null)
 
     let title
-    const match = game.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
+    const match = game[0].split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
     if (match) {
       title = match[1].trim()
     }
@@ -259,10 +259,11 @@ class Menu extends Component {
       chains,
       songs
     })
+
     const blank = isBlank({ game, sprites, map, phrases, chains, songs })
 
     const contentIsEmpty =
-      _.isEmpty(game) &&
+      _.isEmpty(Object.values(game).join()) &&
       _.isEmpty(sprites) &&
       _.isEmpty(map) &&
       _.isEmpty(phrases) &&

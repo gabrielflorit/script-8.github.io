@@ -7,7 +7,6 @@
 // What happens when we click on CODE-1?
 
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
@@ -30,7 +29,7 @@ class CodeEditor extends Component {
   componentDidMount() {
     setupLinter()
     this.codeMirror = window.CodeMirror(this._editor, {
-      value: this.props.game || '',
+      value: this.props.game[this.props.codeTab] || '',
       mode: 'javascript',
       theme: 'nyx8',
       lint: true,
@@ -61,7 +60,7 @@ class CodeEditor extends Component {
 
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
-      this.props.updateGame(content)
+      this.props.updateGame({ tab: this.props.codeTab, content })
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
@@ -193,16 +192,16 @@ class CodeEditor extends Component {
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
-    if (nextProps.game === 'SCRIPT-8 NEW') {
+    if (nextProps.game[0] === 'SCRIPT-8 NEW') {
       this.setContents(blank)
       this.codeMirror.getDoc().clearHistory()
     }
-    if (nextProps.game.startsWith('SCRIPT-8 LESSON')) {
-      this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
+    if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
+      this.setContents(nextProps.game[0].replace('SCRIPT-8 LESSON', ''))
     }
-    if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
-      this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
-    }
+    // if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
+    //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
+    // }
   }
 
   componentWillUnmount() {
@@ -247,11 +246,6 @@ class CodeEditor extends Component {
       </div>
     )
   }
-}
-
-CodeEditor.propTypes = {
-  updateGame: PropTypes.func.isRequired,
-  game: PropTypes.string
 }
 
 export default CodeEditor

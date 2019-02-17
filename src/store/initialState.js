@@ -6,7 +6,7 @@ const initialState = {
   // screen: screenTypes.CODE,
   booted: false,
   gist: {},
-  game: blank,
+  game: { 0: blank },
   token: {},
   nextAction: null,
   sfxs: [],

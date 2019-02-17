@@ -6,6 +6,7 @@ import { extractGistPhrases } from '../reducers/phrases.js'
 import { extractGistChains } from '../reducers/chains.js'
 import { extractGistSongs } from '../reducers/songs.js'
 
+// TODO
 const isDirty = ({ gist, game, sprites, map, phrases, chains, songs }) => {
   const gameIsDirty = !equal(parseGistGame(gist.data), game)
   const mapIsDirty = !equal(extractGistMap(gist.data), map)

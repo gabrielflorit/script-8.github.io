@@ -19,14 +19,15 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateGame: game => dispatch(actions.updateGame(game)),
+  updateGame: ({ tab, content }) =>
+    dispatch(actions.updateGame({ tab, content })),
   setScrollInfo: scrollInfo => dispatch(actions.setScrollInfo(scrollInfo)),
   updateHistory: ({ index, history }) =>
     dispatch(actions.updateHistory({ index, history }))
 })
 
 class Code extends Component {
-  render () {
+  render() {
     const {
       game,
       updateGame,
@@ -44,7 +45,7 @@ class Code extends Component {
           tutorial: tutorial !== false
         })}
       >
-        <div className='main'>
+        <div className="main">
           <CodeEditor
             game={game}
             updateGame={updateGame}
