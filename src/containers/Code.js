@@ -27,10 +27,39 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Code extends Component {
+  constructor(props) {
+    super(props)
+    this.handleTabUpdates = this.handleTabUpdates.bind(this)
+  }
+
+  // When the codemirror content changes,
+  handleTabUpdates({ tab, content }) {
+    console.log({ tab, content })
+    this.props.updateGame({ tab, content })
+
+    // const {
+    //   codeTabLines,
+    //   game,
+    //   updateGame,
+    //   setCodeTabLines,
+    //   codeTab
+    // } = this.props
+
+    // // get the number of lines in the editor
+    // const contentLines = content.split('\n').length
+
+    // // and use it to update the redux store's codeTabLines.
+    // codeTabLines[codeTab] = contentLines
+    // setCodeTabLines(codeTabLines)
+
+    // // Then assemble the new overall game and save to store.
+    // const updatedGame = [].join('\n')
+    // updateGame(content)
+  }
+
   render() {
     const {
       game,
-      updateGame,
       tutorial,
       scrollInfo,
       setScrollInfo,
@@ -48,7 +77,7 @@ class Code extends Component {
         <div className="main">
           <CodeEditor
             game={game}
-            updateGame={updateGame}
+            updateContent={this.handleTabUpdates}
             scrollInfo={scrollInfo}
             setScrollInfo={setScrollInfo}
             docHistories={docHistories}

@@ -1,8 +1,8 @@
-// actions.updateGame is used in three places:
+// actions.updateContent is used in three places:
 // - in CodeEditor, on code mirror change
 // - in Tutorial, if slide has game,
-//    if we're not on code, updateGame is called as is
-//    if we are on code, updateGame is called with the prefix
+//    if we're not on code, updateContent is called as is
+//    if we are on code, updateContent is called with the prefix
 
 // What happens when we click on CODE-1?
 
@@ -60,7 +60,8 @@ class CodeEditor extends Component {
 
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
-      this.props.updateGame({ tab: this.props.codeTab, content })
+      console.log({ s: 'onchange', tab: this.props.codeTab, content })
+      this.props.updateContent({ tab: this.props.codeTab, content })
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
@@ -189,19 +190,36 @@ class CodeEditor extends Component {
     this.codeMirror.refresh()
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   // If the incoming game is the empty game code,
+  //   // set CodeMirror's value to ''.
+  //   if (nextProps.game[0] === 'SCRIPT-8 NEW') {
+  //     this.setContents(blank)
+  //     this.codeMirror.getDoc().clearHistory()
+  //   }
+  //   if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
+  //     this.setContents(nextProps.game[0].replace('SCRIPT-8 LESSON', ''))
+  //   }
+  //   // if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
+  //   //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
+  //   // }
+  // }
+
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
     if (nextProps.game[0] === 'SCRIPT-8 NEW') {
       this.setContents(blank)
       this.codeMirror.getDoc().clearHistory()
+    } else if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
+      this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
+      // } else if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
+      //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
+    } else if (nextProps.codeTab !== this.props.codeTab) {
+      console.log('CHANGING CODETAB')
+      console.log({ nextProps })
+      this.setContents(nextProps.game[nextProps.codeTab] || '')
     }
-    if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
-      this.setContents(nextProps.game[0].replace('SCRIPT-8 LESSON', ''))
-    }
-    // if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
-    //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
-    // }
   }
 
   componentWillUnmount() {
