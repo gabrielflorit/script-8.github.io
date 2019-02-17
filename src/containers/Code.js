@@ -1,3 +1,5 @@
+// TODO: implement scrollInfo per tab
+
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'

@@ -1,5 +1,3 @@
-// TODO: add misc lines to store and save to gist
-
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'

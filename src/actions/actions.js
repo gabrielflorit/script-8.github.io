@@ -5,7 +5,7 @@ import actionTypes from './actionTypes.js'
 import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 import throwError from '../utils/throwError.js'
-import { parseGistGame } from '../reducers/game.js'
+import { parseGistGame, assembleOrderedGame } from '../reducers/game.js'
 
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
@@ -174,7 +174,6 @@ export const fetchToken = code => dispatch => {
     .then(json => dispatch(actions.tokenSuccess(json)))
 }
 
-// TODO: saveGist with new game setup
 export const saveGist = ({
   toBlank,
   game,
@@ -225,19 +224,33 @@ export const saveGist = ({
     }
 
     const gistGame = parseGistGame(gist.data)
+    const assembledGistGame = assembleOrderedGame(gistGame)
+    const assembledGame = assembleOrderedGame(game)
 
     // If game has length, send it.
-    if (game && game.length) {
+    if (assembledGame.length) {
       payload.files['code.js'] = {
-        content: game
+        content: assembledGame
+      }
+      payload.files['misc.json'] = {
+        content: JSON.stringify(
+          {
+            lines: _.range(4).map(d => {
+              return ((game[d] && game[d].text) || '').split('\n').length
+            })
+          },
+          null,
+          2
+        )
       }
     } else {
       // If game doesn't exist,
       // but the previous gist had game,
       // send 'code.js': null.
-      if (gistGame && gistGame.length) {
+      if (assembledGistGame.length) {
         payload.files['code.js'] = null
       }
+      payload.files['misc.json'] = null
     }
 
     return payload
