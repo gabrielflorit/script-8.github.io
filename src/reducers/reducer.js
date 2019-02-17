@@ -15,7 +15,6 @@ import tutorial from './tutorial.js'
 import sound from './sound.js'
 import shelving from './shelving.js'
 import scrollInfo from './scrollInfo.js'
-import codeTab from './codeTab.js'
 import docHistories from './docHistories.js'
 
 const reducer = combineReducers({
@@ -35,7 +34,6 @@ const reducer = combineReducers({
   sound,
   shelving,
   scrollInfo,
-  codeTab,
   docHistories
 })
 

@@ -4,14 +4,13 @@
 //    if we're not on code, updateContent is called as is
 //    if we are on code, updateContent is called with the prefix
 
-// What happens when we click on CODE-1?
-
 import React, { Component } from 'react'
 import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
+import { getActive } from '../reducers/game.js'
 
 const { platform } = window.navigator
 
@@ -29,7 +28,7 @@ class CodeEditor extends Component {
   componentDidMount() {
     setupLinter()
     this.codeMirror = window.CodeMirror(this._editor, {
-      value: this.props.game[this.props.codeTab] || '',
+      value: getActive(this.props.game).text || '',
       mode: 'javascript',
       theme: 'nyx8',
       lint: true,
@@ -48,7 +47,7 @@ class CodeEditor extends Component {
 
     const docHistory = get(
       this.props.docHistories,
-      `[${this.props.codeTab}]`,
+      `[${getActive(this.props.game).key}]`,
       null
     )
 
@@ -60,8 +59,7 @@ class CodeEditor extends Component {
 
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
-      console.log({ s: 'onchange', tab: this.props.codeTab, content })
-      this.props.updateContent({ tab: this.props.codeTab, content })
+      this.props.updateContent(content)
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
@@ -190,35 +188,18 @@ class CodeEditor extends Component {
     this.codeMirror.refresh()
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   // If the incoming game is the empty game code,
-  //   // set CodeMirror's value to ''.
-  //   if (nextProps.game[0] === 'SCRIPT-8 NEW') {
-  //     this.setContents(blank)
-  //     this.codeMirror.getDoc().clearHistory()
-  //   }
-  //   if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
-  //     this.setContents(nextProps.game[0].replace('SCRIPT-8 LESSON', ''))
-  //   }
-  //   // if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
-  //   //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
-  //   // }
-  // }
-
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
-    if (nextProps.game[0] === 'SCRIPT-8 NEW') {
+    if (nextProps.game[0].text === 'SCRIPT-8 NEW') {
       this.setContents(blank)
       this.codeMirror.getDoc().clearHistory()
-    } else if (nextProps.game[0].startsWith('SCRIPT-8 LESSON')) {
-      this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
-      // } else if (nextProps.game[0].startsWith('//SCRIPT-8 WEBSOCKET')) {
-      //   this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
-    } else if (nextProps.codeTab !== this.props.codeTab) {
-      console.log('CHANGING CODETAB')
-      console.log({ nextProps })
-      this.setContents(nextProps.game[nextProps.codeTab] || '')
+    } else if (nextProps.game[0].text.startsWith('SCRIPT-8 LESSON')) {
+      this.setContents(nextProps.game[0].text.replace('SCRIPT-8 LESSON', ''))
+    } else if (
+      getActive(this.props.game).key !== getActive(nextProps.game).key
+    ) {
+      this.setContents(getActive(nextProps.game).text || '')
     }
   }
 
@@ -227,7 +208,7 @@ class CodeEditor extends Component {
     const scrollInfo = this.codeMirror.getScrollInfo()
     this.props.setScrollInfo(scrollInfo)
     this.props.updateHistory({
-      index: this.props.codeTab,
+      index: getActive(this.props.game).key,
       history: this.codeMirror.getDoc().getHistory()
     })
   }

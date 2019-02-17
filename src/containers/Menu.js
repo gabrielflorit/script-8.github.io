@@ -1,3 +1,5 @@
+// TODO: implement history
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
@@ -11,6 +13,7 @@ import actions, {
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
+import { getActive, assembleOrderedGame } from '../reducers/game.js'
 
 const mapStateToProps = ({
   gist,
@@ -24,8 +27,7 @@ const mapStateToProps = ({
   shelving,
   screen,
   nextAction,
-  sound,
-  codeTab
+  sound
 }) => ({
   screen,
   gist,
@@ -38,12 +40,11 @@ const mapStateToProps = ({
   token,
   isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
-  sound,
-  codeTab
+  sound
 })
 
 const mapDispatchToProps = dispatch => ({
-  setCodeTab: codeTab => dispatch(actions.setCodeTab(codeTab)),
+  setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   toggleSound: () => dispatch(actions.toggleSound()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
@@ -152,7 +153,7 @@ class Menu extends Component {
     const isFork = !!_.get(gist, 'data.fork_of', null)
 
     let title
-    const match = game[0].split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
+    const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
     if (match) {
       title = match[1].trim()
     }
@@ -243,9 +244,8 @@ class Menu extends Component {
       setScreen,
       sound,
       toggleSound,
-      isFetching,
-      codeTab,
-      setCodeTab
+      setCodeTab,
+      isFetching
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -263,7 +263,7 @@ class Menu extends Component {
     const blank = isBlank({ game, sprites, map, phrases, chains, songs })
 
     const contentIsEmpty =
-      _.isEmpty(Object.values(game).join()) &&
+      _.isEmpty(assembleOrderedGame(game)) &&
       _.isEmpty(sprites) &&
       _.isEmpty(map) &&
       _.isEmpty(phrases) &&
@@ -307,6 +307,8 @@ class Menu extends Component {
     ].includes(screen)
 
     const isArtScreen = [screenTypes.SPRITE, screenTypes.MAP].includes(screen)
+
+    const codeTab = getActive(game).key
 
     return (
       <nav className="Menu">

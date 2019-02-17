@@ -15,7 +15,7 @@ describe('parseGistGame', () => {
           }
         }
       })
-    ).toEqual({ 0: '' })
+    ).toEqual({ 0: { text: '' } })
   })
   test('one line', () => {
     expect(
@@ -26,7 +26,7 @@ describe('parseGistGame', () => {
           }
         }
       })
-    ).toEqual({ 0: 'one' })
+    ).toEqual({ 0: { text: 'one' } })
   })
   test('two tabs', () => {
     expect(
@@ -41,10 +41,10 @@ describe('parseGistGame', () => {
         }
       })
     ).toEqual({
-      0: 'one\ntwo\nthree',
-      1: '',
-      2: 'four',
-      3: 'five\nsix'
+      0: { text: 'one\ntwo\nthree' },
+      1: { text: '' },
+      2: { text: 'four' },
+      3: { text: 'five\nsix' }
     })
   })
 })
@@ -314,7 +314,7 @@ test('newGame from CODE', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: { 0: 'SCRIPT-8 NEW' }
+    game: { 0: { text: 'SCRIPT-8 NEW', active: true, key: 0 } }
   })
 })
 
@@ -324,13 +324,13 @@ test('newGame from SONG', () => {
     gist: {
       something: 'here'
     },
-    game: { 0: 'first tab', 1: 'second tab' }
+    game: { 0: { text: 'first tab' }, 1: { text: 'second tab' } }
   }
   const action = actions.newGame(screenTypes.SONG)
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: { 0: blank }
+    game: { 0: { text: blank, active: true, key: 0 } }
   })
 })
 
@@ -444,7 +444,7 @@ test('fetchGistSuccess good data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: { 0: 'my game' },
+    game: { 0: { text: 'my game' } },
     phrases: {
       0: {
         0: {
@@ -476,11 +476,26 @@ test('fetchGistSuccess bad data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: { 0: '' },
+    game: { 0: { text: '' } },
     phrases: {},
     gist: {
       isFetching: false,
       data
+    }
+  })
+})
+
+test('setCodeTab', () => {
+  const before = {
+    ...initialState
+  }
+
+  const action = actions.setCodeTab(1)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    game: {
+      0: { text: '', active: false, key: 0 },
+      1: { active: true, key: 1 }
     }
   })
 })
@@ -492,7 +507,10 @@ test('updateGame', () => {
   const action = actions.updateGame({ tab: 1, content: 'one two three' })
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: { 0: '', 1: 'one two three' }
+    game: {
+      0: { text: '', active: true, key: 0 },
+      1: { text: 'one two three' }
+    }
   })
 })
 

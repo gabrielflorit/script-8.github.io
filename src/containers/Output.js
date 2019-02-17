@@ -9,6 +9,7 @@ import screenTypes from '../utils/screenTypes.js'
 import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
+import { assembleOrderedGame } from '../reducers/game.js'
 
 const sum = array =>
   array.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
@@ -30,7 +31,7 @@ const mapStateToProps = ({
   phrases,
   sprites,
   map,
-  game: screen === screenTypes.BOOT ? { 0: bios } : game,
+  game: screen === screenTypes.BOOT ? { 0: { text: bios } } : game,
   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen),
   screen,
   sound,
@@ -121,7 +122,7 @@ class Output extends Component {
         this._iframe.contentWindow.postMessage(
           {
             type: 'callCode',
-            game: Object.values(game).join('\n'),
+            game: assembleOrderedGame(game),
             songs,
             chains,
             phrases,
@@ -158,7 +159,9 @@ class Output extends Component {
       })
     } else {
       // Validate code before drawing.
-      getLintErrors({ text: Object.values(game).join('\n') }).then(errors => {
+      getLintErrors({
+        text: assembleOrderedGame(game)
+      }).then(errors => {
         if (!errors.length) {
           sendPayload()
         } else {
@@ -172,7 +175,7 @@ class Output extends Component {
   getSize() {
     const { game, songs, chains, phrases, sprites, map } = this.props
 
-    const gameText = Object.values(game).join('\n')
+    const gameText = assembleOrderedGame(game)
 
     const gameTextLz = lz.compress(gameText)
     const art = JSON.stringify({ sprites, map })

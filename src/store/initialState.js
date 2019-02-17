@@ -1,12 +1,19 @@
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
 
+// TODO: why do we have to make game keys?
 const initialState = {
   screen: screenTypes.BOOT,
   // screen: screenTypes.CODE,
   booted: false,
   gist: {},
-  game: { 0: blank },
+  game: {
+    0: {
+      text: blank,
+      active: true,
+      key: 0
+    }
+  },
   token: {},
   nextAction: null,
   sfxs: [],
@@ -16,7 +23,6 @@ const initialState = {
   chains: {},
   songs: {},
   scrollInfo: {},
-  codeTab: 0,
   docHistories: {},
   // tutorial: {
   //   lessonIndex: 1,

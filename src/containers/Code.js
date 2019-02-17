@@ -3,19 +3,13 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
+import { getActive } from '../reducers/game.js'
 
-const mapStateToProps = ({
+const mapStateToProps = ({ game, tutorial, scrollInfo, docHistories }) => ({
   game,
   tutorial,
   scrollInfo,
-  docHistories,
-  codeTab
-}) => ({
-  game,
-  tutorial,
-  scrollInfo,
-  docHistories,
-  codeTab
+  docHistories
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -32,29 +26,9 @@ class Code extends Component {
     this.handleTabUpdates = this.handleTabUpdates.bind(this)
   }
 
-  // When the codemirror content changes,
-  handleTabUpdates({ tab, content }) {
-    console.log({ tab, content })
+  handleTabUpdates(content) {
+    const tab = getActive(this.props.game).key
     this.props.updateGame({ tab, content })
-
-    // const {
-    //   codeTabLines,
-    //   game,
-    //   updateGame,
-    //   setCodeTabLines,
-    //   codeTab
-    // } = this.props
-
-    // // get the number of lines in the editor
-    // const contentLines = content.split('\n').length
-
-    // // and use it to update the redux store's codeTabLines.
-    // codeTabLines[codeTab] = contentLines
-    // setCodeTabLines(codeTabLines)
-
-    // // Then assemble the new overall game and save to store.
-    // const updatedGame = [].join('\n')
-    // updateGame(content)
   }
 
   render() {
@@ -64,8 +38,7 @@ class Code extends Component {
       scrollInfo,
       setScrollInfo,
       docHistories,
-      updateHistory,
-      codeTab
+      updateHistory
     } = this.props
 
     return (
@@ -81,7 +54,6 @@ class Code extends Component {
             scrollInfo={scrollInfo}
             setScrollInfo={setScrollInfo}
             docHistories={docHistories}
-            codeTab={codeTab}
             updateHistory={updateHistory}
           />
         </div>
