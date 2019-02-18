@@ -85,7 +85,8 @@ export const putOnShelf = ({
   gist,
   cover,
   title,
-  isFork
+  isFork,
+  isPrivate
 }) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
@@ -97,7 +98,8 @@ export const putOnShelf = ({
         gist,
         cover,
         title,
-        isFork
+        isFork,
+        isPrivate
       })
     })
     .then(
@@ -108,8 +110,8 @@ export const putOnShelf = ({
           message: `Could not post cassette via appspot service.`
         })
     )
-    .then(json => dispatch(actions.shelveCassetteSuccess()))
-    .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
+    .then(() => dispatch(actions.shelveCassetteSuccess()))
+    .then(() => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
 export const fetchGist = ({ id, token }) => dispatch => {

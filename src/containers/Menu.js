@@ -25,7 +25,6 @@ const mapStateToProps = ({
   screen,
   nextAction,
   sound
-  // codeTab
 }) => ({
   screen,
   gist,
@@ -39,7 +38,6 @@ const mapStateToProps = ({
   isFetching: gist.isFetching || token.isFetching || shelving,
   nextAction,
   sound
-  // codeTab
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -47,8 +45,8 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
-  putOnShelf: ({ user, gist, cover, title, isFork }) =>
-    dispatch(putOnShelf({ user, gist, cover, title, isFork })),
+  putOnShelf: ({ user, gist, cover, title, isFork, isPrivate }) =>
+    dispatch(putOnShelf({ user, gist, cover, title, isFork, isPrivate })),
   saveGist: ({
     game,
     token,
@@ -143,7 +141,7 @@ class Menu extends Component {
     }
   }
 
-  onPutOnShelfClick() {
+  onPutOnShelfClick(isPrivate) {
     const { putOnShelf, gist, game } = this.props
 
     const gistUser = _.get(gist, 'data.owner.login', null)
@@ -156,7 +154,13 @@ class Menu extends Component {
       title = match[1].trim()
     }
 
-    const payload = { user: gistUser, gist: gistId, title, isFork }
+    const payload = {
+      user: gistUser,
+      gist: gistId,
+      title,
+      isFork,
+      isPrivate
+    }
 
     const iframe = document.querySelector('iframe')
 
@@ -368,11 +372,22 @@ class Menu extends Component {
 
               <li>
                 <button
+                  onClick={() => {
+                    this.onPutOnShelfClick(true)
+                  }}
+                  disabled={!canShelve}
+                  className="button"
+                >
+                  Put on private shelf
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={this.onPutOnShelfClick}
                   disabled={!canShelve}
                   className="button"
                 >
-                  Put on shelf
+                  Put on public shelf
                 </button>
               </li>
             </ul>

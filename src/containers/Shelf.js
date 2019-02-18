@@ -40,6 +40,33 @@ class Shelf extends Component {
     const currentLogin = _.get(token, 'user.login', null)
 
     window
+      .fetch(`${process.env.REACT_APP_NOW}/private-cassettes`, {
+        method: 'POST',
+        body: JSON.stringify({
+          token: token.value
+        })
+      })
+      .then(
+        response => response.json(),
+        error =>
+          throwError({
+            error,
+            message: `Could not request cassettes.`
+          })
+      )
+      .then(value => {
+        const yourPrivateCassettes = _(value)
+          .sortBy(cassette => +cassette.updated)
+          .reverse()
+          .value()
+
+        this.setState({
+          yourPrivateCassettes,
+          fetching: false
+        })
+      })
+
+    window
       .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
       .then(
         response => response.json(),
@@ -69,14 +96,14 @@ class Shelf extends Component {
           .reverse()
           .value()
 
-        const yoursCassettes = currentLogin
+        const yourPublicCassettes = currentLogin
           ? recentCassettes.filter(cassette => cassette.user === currentLogin)
           : []
 
         this.setState({
           popularCassettes: popularCassettes.filter(d => !d.isFork),
           recentCassettes: recentCassettes.filter(d => !d.isFork),
-          yoursCassettes,
+          yourPublicCassettes,
           fetching: false
         })
       })
@@ -105,7 +132,8 @@ class Shelf extends Component {
     const {
       popularCassettes,
       recentCassettes,
-      yoursCassettes,
+      yourPublicCassettes,
+      yourPrivateCassettes,
       fetching
     } = this.state
 
@@ -116,22 +144,29 @@ class Shelf extends Component {
             <p className="loading">loading cassettes...</p>
           ) : (
             <Fragment>
-              {yoursCassettes.length ? (
+              {yourPrivateCassettes && yourPrivateCassettes.length ? (
                 <ShelfCassettes
                   handleOnClick={this.handleOnClick}
-                  cassettes={yoursCassettes}
-                  title="Yours"
+                  cassettes={yourPrivateCassettes}
+                  title="Your private cassettes"
+                />
+              ) : null}
+              {yourPublicCassettes && yourPublicCassettes.length ? (
+                <ShelfCassettes
+                  handleOnClick={this.handleOnClick}
+                  cassettes={yourPublicCassettes}
+                  title="Your public cassettes"
                 />
               ) : null}
               <ShelfCassettes
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
-                title="Popular"
+                title="Popular cassettes"
               />
               <ShelfCassettes
                 handleOnClick={this.handleOnClick}
                 cassettes={recentCassettes}
-                title="Recent"
+                title="Recent cassettes"
               />
             </Fragment>
           )}
