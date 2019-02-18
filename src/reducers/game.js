@@ -29,7 +29,9 @@ const parseGistGame = data => {
       (acc, cur, idx) => ({
         ...acc,
         [idx]: {
-          text: contentLines.slice(...cur).join('\n')
+          text: contentLines.slice(...cur).join('\n'),
+          active: idx === 0,
+          key: idx
         }
       }),
       {}
@@ -37,7 +39,9 @@ const parseGistGame = data => {
   } else {
     return {
       0: {
-        text: content
+        text: content,
+        active: true,
+        key: 0
       }
     }
   }
