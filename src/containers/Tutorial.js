@@ -1,3 +1,5 @@
+// TODO: check tutorial still works with tabs
+
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { isNil } from 'lodash'

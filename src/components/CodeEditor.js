@@ -199,7 +199,28 @@ class CodeEditor extends Component {
     } else if (
       getActive(this.props.game).key !== getActive(nextProps.game).key
     ) {
+      // Save current doc's history.
+      this.props.updateHistory({
+        index: getActive(this.props.game).key,
+        history: this.codeMirror.getDoc().getHistory()
+      })
+
+      // Set codemirror contents to new tab.
       this.setContents(getActive(nextProps.game).text || '')
+
+      // Try getting new tab's history.
+      const docHistory = get(
+        this.props.docHistories,
+        `[${getActive(nextProps.game).key}]`,
+        null
+      )
+
+      // Try setting new tab's history.
+      if (docHistory) {
+        this.codeMirror.getDoc().setHistory(docHistory)
+      } else {
+        this.codeMirror.getDoc().clearHistory()
+      }
     }
   }
 
