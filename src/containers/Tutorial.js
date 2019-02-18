@@ -161,7 +161,6 @@ class Tutorial extends Component {
     const { title, slides } = lessons[lessonIndex]
     const slide = slides[slideIndex]
     const { requirements } = slide
-
     const close = (
       <button className='button' onClick={this.handleClose}>
         close

@@ -31,6 +31,7 @@ class Code extends Component {
             updateGame={updateGame}
             scrollInfo={scrollInfo}
             setScrollInfo={setScrollInfo}
+            tutorial={tutorial}
           />
         </div>
       </div>
