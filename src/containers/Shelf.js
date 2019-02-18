@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
+import frecency from '../utils/frecency.js'
 import actions, { unshelve } from '../actions/actions.js'
 import ShelfCassettes from '../components/ShelfCassettes.js'
 
@@ -18,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Shelf extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.fetchCassettes = this.fetchCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
@@ -30,11 +31,11 @@ class Shelf extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchCassettes()
   }
 
-  fetchCassettes () {
+  fetchCassettes() {
     const { token } = this.props
     const currentLogin = _.get(token, 'user.login', null)
 
@@ -55,7 +56,11 @@ class Shelf extends Component {
         }))
 
         const popularCassettes = _(cassettes)
-          .sortBy(cassette => +cassette.counter)
+          .map(cassette => ({
+            ...cassette,
+            score: frecency(cassette.visits)
+          }))
+          .sortBy(cassette => cassette.score)
           .reverse()
           .value()
 
@@ -77,13 +82,13 @@ class Shelf extends Component {
       })
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.shelving && !this.props.shelving) {
       this.fetchCassettes()
     }
   }
 
-  handleOnClick ({ e, id }) {
+  handleOnClick({ e, id }) {
     const { gist, setScreen } = this.props
     if (id === _.get(gist, 'data.id')) {
       e.preventDefault()
@@ -91,12 +96,12 @@ class Shelf extends Component {
     }
   }
 
-  handleOnUnshelve (gistId) {
+  handleOnUnshelve(gistId) {
     const { token, unshelve } = this.props
     unshelve({ token, gistId })
   }
 
-  render () {
+  render() {
     const {
       popularCassettes,
       recentCassettes,
@@ -105,28 +110,28 @@ class Shelf extends Component {
     } = this.state
 
     return (
-      <div className='Shelf'>
-        <div className='main'>
+      <div className="Shelf">
+        <div className="main">
           {fetching ? (
-            <p className='loading'>loading cassettes...</p>
+            <p className="loading">loading cassettes...</p>
           ) : (
             <Fragment>
               {yoursCassettes.length ? (
                 <ShelfCassettes
                   handleOnClick={this.handleOnClick}
                   cassettes={yoursCassettes}
-                  title='Yours'
+                  title="Yours"
                 />
               ) : null}
               <ShelfCassettes
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
-                title='Popular'
+                title="Popular"
               />
               <ShelfCassettes
                 handleOnClick={this.handleOnClick}
                 cassettes={recentCassettes}
-                title='Recent'
+                title="Recent"
               />
             </Fragment>
           )}
