@@ -9,7 +9,7 @@ import lessons from '../utils/lessons.json'
 const { platform } = window.navigator
 
 class CodeEditor extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.mark = null
@@ -17,10 +17,10 @@ class CodeEditor extends Component {
     this.handleSlider = this.handleSlider.bind(this)
     this.activateSlider = this.activateSlider.bind(this)
     this.hideSlider = this.hideSlider.bind(this)
-    this.highlighter = this.highlighter.bind(this)
+    this.highlightText = this.highlightText.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     setupLinter()
     this.codeMirror = window.CodeMirror(this._editor, {
       value: this.props.game || '',
@@ -65,36 +65,26 @@ class CodeEditor extends Component {
     this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
   }
 
-  hideSlider () {
+  hideSlider() {
     this.mark && this.mark.clear()
     this._slider.classList.add('hide')
   }
 
-  highlighter(codeMirror, targetLine){
-    try {
-      let wordAt = codeMirror.findWordAt({line: targetLine, ch: 0})
-      let lastHeadChar = wordAt.anchor.ch
-      let iterate = true
-      let line1 = wordAt.anchor.line
-      let ch1 = wordAt.anchor.ch
-      let line2;
-      let ch2;
-      while(iterate){
-        line2 = wordAt.head.line
-        ch2 = wordAt.head.ch
-        if(ch2 === lastHeadChar || isNaN(ch2)){
-          break
-        }
-        lastHeadChar = wordAt.head.ch
-        wordAt = this.codeMirror.findWordAt({line: targetLine, ch: wordAt.head.ch})
+  // TODO: accept line ranges
+  highlightText(lineNumber) {
+    const line = this.codeMirror.getLine(lineNumber)
+
+    // Mark from first non-white character to end of line.
+    this.codeMirror.markText(
+      { line: lineNumber, ch: line.search(/\S/) },
+      { line: lineNumber, ch: line.length },
+      {
+        className: 'slider-token'
       }
-      this.codeMirror.markText({line:line1, ch:ch1}, {line:line2, ch:ch2}, {css: "background-color: white"})
-      } catch(err){
-        console.log(err)
-      }
+    )
   }
 
-  activateSlider () {
+  activateSlider() {
     // If the cursor is on a number,
     // reset and show the slider.
 
@@ -164,7 +154,7 @@ class CodeEditor extends Component {
     }
   }
 
-  handleSlider (e) {
+  handleSlider(e) {
     // Get mark positions.
     const { from, to } = this.mark.find()
 
@@ -187,29 +177,28 @@ class CodeEditor extends Component {
     )
   }
 
-  setContents (value) {
+  setContents(value) {
     this.codeMirror.setValue(value)
     this.codeMirror.refresh()
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     // set CodeMirror's value to ''.
-    let lesson;
-    let slide;
-    if(nextProps.tutorial){
-      lesson = lessons[nextProps.tutorial.lessonIndex]
-      const { slides } = lesson
-      slide = slides[nextProps.tutorial.slideIndex]
-    }
     if (nextProps.game === 'SCRIPT-8 NEW') {
       this.setContents(blank)
     }
     if (nextProps.game.startsWith('SCRIPT-8 LESSON')) {
       this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
 
-      if(slide && slide.lineToFocus){
-        this.highlighter(this.codeMirror, slide.lineToFocus)
+      const { tutorial } = nextProps
+      if (tutorial) {
+        const lesson = lessons[tutorial.lessonIndex]
+        const { slides } = lesson
+        const slide = slides[tutorial.slideIndex]
+        if (slide && slide.lineToHighlight) {
+          this.highlightText(slide.lineToHighlight)
+        }
       }
     }
     if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
@@ -217,34 +206,34 @@ class CodeEditor extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('keyup', this.hideSlider)
     const scrollInfo = this.codeMirror.getScrollInfo()
     this.props.setScrollInfo(scrollInfo)
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return false
   }
 
-  render () {
+  render() {
     return (
-      <div className='CodeEditor'>
+      <div className="CodeEditor">
         <div
-          className='wrapper'
+          className="wrapper"
           ref={_wrapper => {
             this._wrapper = _wrapper
           }}
         >
           <div
-            className='_editor'
+            className="_editor"
             ref={_editor => {
               this._editor = _editor
             }}
           />
           <input
-            type='range'
-            className='slider hide'
+            type="range"
+            className="slider hide"
             step={1}
             ref={_slider => {
               this._slider = _slider
