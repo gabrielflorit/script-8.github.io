@@ -1,4 +1,6 @@
-// TODO: insert new is dirty
+// TODO: add tab cycling button
+// TODO: add tab cycling button to HELP
+// TODO: on menu dropdown click, hide dropdown
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -405,53 +407,19 @@ class Menu extends Component {
               </span>
             </button>
             <ul className="dropdown">
-              <li>
-                <button
-                  className="button"
-                  onClick={() => {
-                    setCodeTab(0)
-                    setScreen(screenTypes.CODE)
-                  }}
-                >
-                  CODE-0
-                </button>
-              </li>
-
-              <li>
-                <button
-                  className="button"
-                  onClick={() => {
-                    setCodeTab(1)
-                    setScreen(screenTypes.CODE)
-                  }}
-                >
-                  CODE-1
-                </button>
-              </li>
-
-              <li>
-                <button
-                  className="button"
-                  onClick={() => {
-                    setCodeTab(2)
-                    setScreen(screenTypes.CODE)
-                  }}
-                >
-                  CODE-2
-                </button>
-              </li>
-
-              <li>
-                <button
-                  className="button"
-                  onClick={() => {
-                    setCodeTab(3)
-                    setScreen(screenTypes.CODE)
-                  }}
-                >
-                  CODE-3
-                </button>
-              </li>
+              {_.range(8).map(d => (
+                <li key={d}>
+                  <button
+                    className="button"
+                    onClick={() => {
+                      setCodeTab(d)
+                      setScreen(screenTypes.CODE)
+                    }}
+                  >
+                    CODE-{d}
+                  </button>
+                </li>
+              ))}
             </ul>
           </li>
 
