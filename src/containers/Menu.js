@@ -1,7 +1,3 @@
-// TODO: add tab cycling button
-// TODO: add tab cycling button to HELP
-// TODO: on menu dropdown click, hide dropdown
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
@@ -84,6 +80,7 @@ const mapDispatchToProps = dispatch => ({
 class Menu extends Component {
   constructor(props) {
     super(props)
+    this.cycleTab = this.cycleTab.bind(this)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
@@ -107,8 +104,30 @@ class Menu extends Component {
     }
   }
 
+  cycleTab(event) {
+    const { screen, game, setCodeTab } = this.props
+    if (screen === screenTypes.CODE) {
+      const codeTab = +getActive(game).key
+      const keyName = event.key
+
+      if (event.ctrlKey) {
+        if (keyName === '[') {
+          setCodeTab((codeTab - 1 + 8) % 8)
+        }
+        if (keyName === ']') {
+          setCodeTab((codeTab + 1) % 8)
+        }
+      }
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.cycleTab)
+  }
+
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onClose)
+    window.removeEventListener('keydown', this.cycleTab)
   }
 
   onClose(e) {
@@ -311,6 +330,7 @@ class Menu extends Component {
     const isArtScreen = [screenTypes.SPRITE, screenTypes.MAP].includes(screen)
 
     const codeTab = getActive(game).key
+    const codeTabSuffix = screen === screenTypes.CODE ? ` ${codeTab}` : ''
 
     return (
       <nav className="Menu">
@@ -394,16 +414,16 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              <span className="full">CODE-{codeTab}</span>
+              <span className="full">CODE{codeTabSuffix}</span>
               <span className="mid">
                 {screen === screenTypes.CODE
-                  ? `code${codeTab}`
-                  : `cod${codeTab}`}
+                  ? `code${codeTabSuffix}`
+                  : `cod${codeTabSuffix}`}
               </span>
               <span className="small">
                 {screen === screenTypes.CODE
-                  ? `code${codeTab}`
-                  : `co${codeTab}`}
+                  ? `code${codeTabSuffix}`
+                  : `co${codeTabSuffix}`}
               </span>
             </button>
             <ul className="dropdown">
@@ -416,7 +436,7 @@ class Menu extends Component {
                       setScreen(screenTypes.CODE)
                     }}
                   >
-                    CODE-{d}
+                    CODE {d}
                   </button>
                 </li>
               ))}
