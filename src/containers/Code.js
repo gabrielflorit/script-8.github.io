@@ -53,6 +53,7 @@ class Code extends Component {
             setScrollInfo={setScrollInfo}
             docHistories={docHistories}
             updateHistory={updateHistory}
+            tutorial={tutorial}
           />
         </div>
       </div>

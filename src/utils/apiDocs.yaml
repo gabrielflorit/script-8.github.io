@@ -24,6 +24,12 @@
     - print(x, y, text, [color=0])
     - Draws `text` at xy.
   -
+    - getPixel(x, y)
+    - Returns the current color of the pixel xy.
+  -
+    - setPixel(x, y, [color=0])
+    - Sets the color of the pixel xy.
+  -
     - line(x1, y1, x2, y2, [color=0])
     - Draws line from x1y1 to x2y2.
   -

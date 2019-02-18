@@ -38,6 +38,19 @@ const colors = {
   },
   triplet (i) {
     return triplets[i % triplets.length]
+  },
+
+  // NOTE: if triplet isn't a color in the pallet, this will return undefined.
+  lookup (triplet) {
+    for (let i = 0; i < triplets.length; i++) {
+      let current = triplets[i]
+      if (current[0] === triplet[0] &&
+          current[1] === triplet[1] &&
+          current[2] === triplet[2]) {
+        return i
+      }
+    }
+    return undefined
   }
 }
 

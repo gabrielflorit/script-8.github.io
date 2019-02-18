@@ -47,6 +47,7 @@
         print(42, 60, 'Hello world!', 0)
       }
     screen: CODE
+    lineToHighlight: 1
     text:
     - Your first SCRIPT-8 cassette!
     - You should see 'Hello world!' drawn on the right.
@@ -96,6 +97,7 @@
       draw = () => {
         print(42, 60, 'Hello world!', 0)
       }
+    lineToHighlight: 1
     text:
     - There are two functions here, 'draw' and 'print'.
     - SCRIPT-8 calls the 'draw' function 60 times per second.
@@ -182,6 +184,7 @@
         print(120, 120, 'Hello world!', 4)
       }
     screen: CODE
+    lineToHighlight: 1
     text:
     - OK. We have reached the end. I hope you learned something new.
     - The next lesson will be about SCRIPT-8's magical number slider.
@@ -729,7 +732,7 @@
   - text:
     - To make a map, click a sprite, and then click (or drag) on the top-left grid.
     - Delete by first clicking on `-`, and then click (or drag) on the top-left grid.
-    - Play for a bit. Then I'll try making a floor for our plumber. 
+    - Play for a bit. Then I'll try making a floor for our plumber.
     screen: MAP
     map: []
   - text:
@@ -993,7 +996,7 @@
           state.x -= 1
           state.flip = true
         }
-        
+
         if (input.right) {
           state.x += 1
           state.flip = false
@@ -1106,7 +1109,7 @@
       REP22
         sprite(state.x, state.y, state.sprite, 0, state.flip)
   - text:
-    - And if we're not pressing either left or right we'll use the standing sprite. 
+    - And if we're not pressing either left or right we'll use the standing sprite.
     screen: CODE
     game: |-
       REP16
@@ -1140,7 +1143,7 @@
     - OK then!
     - First we need to make an array of the walking sprites.
   - text:
-    - Next add a `counter` to `initialState`. 
+    - Next add a `counter` to `initialState`.
     screen: CODE
     game: |-
       REP5-7

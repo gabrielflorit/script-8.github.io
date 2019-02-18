@@ -11,6 +11,7 @@ import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
 import { getActive } from '../reducers/game.js'
+import lessons from '../utils/lessons.json'
 
 const { platform } = window.navigator
 
@@ -23,6 +24,7 @@ class CodeEditor extends Component {
     this.handleSlider = this.handleSlider.bind(this)
     this.activateSlider = this.activateSlider.bind(this)
     this.hideSlider = this.hideSlider.bind(this)
+    this.highlightText = this.highlightText.bind(this)
   }
 
   componentDidMount() {
@@ -87,6 +89,20 @@ class CodeEditor extends Component {
   hideSlider() {
     this.mark && this.mark.clear()
     this._slider.classList.add('hide')
+  }
+
+  // TODO: accept line ranges
+  highlightText(lineNumber) {
+    const line = this.codeMirror.getLine(lineNumber)
+
+    // Mark from first non-white character to end of line.
+    this.codeMirror.markText(
+      { line: lineNumber, ch: line.search(/\S/) },
+      { line: lineNumber, ch: line.length },
+      {
+        className: 'slider-token'
+      }
+    )
   }
 
   activateSlider() {
@@ -189,15 +205,32 @@ class CodeEditor extends Component {
 
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
-    // set CodeMirror's value to ''.
     if (nextProps.game[0].text === 'SCRIPT-8 NEW') {
+      // set CodeMirror's value to '',
       this.setContents(blank)
+      // and clear the doc history.
       this.codeMirror.getDoc().clearHistory()
     } else if (nextProps.game[0].text.startsWith('SCRIPT-8 LESSON')) {
+      // If the incoming game is a lesson,
+      // set the lesson,
       this.setContents(nextProps.game[0].text.replace('SCRIPT-8 LESSON', ''))
+
+      // and highlight lines if required.
+      const { tutorial } = nextProps
+      if (tutorial) {
+        const lesson = lessons[tutorial.lessonIndex]
+        const { slides } = lesson
+        const slide = slides[tutorial.slideIndex]
+        if (slide && slide.lineToHighlight) {
+          this.highlightText(slide.lineToHighlight)
+        }
+      }
     } else if (
       getActive(this.props.game).key !== getActive(nextProps.game).key
     ) {
+      // If the incoming tab is different than this one,
+      // we are about to switch tabs.
+
       // Save current doc's history.
       this.props.updateHistory({
         index: getActive(this.props.game).key,
