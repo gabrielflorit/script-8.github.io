@@ -22,7 +22,6 @@ const initialState = {
   phrases: {},
   chains: {},
   songs: {},
-  scrollInfo: {},
   docHistories: {},
   // tutorial: {
   //   lessonIndex: 1,

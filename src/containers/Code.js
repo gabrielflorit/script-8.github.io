@@ -1,5 +1,3 @@
-// TODO: implement scrollInfo per tab
-
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
@@ -7,17 +5,17 @@ import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
 import { getActive } from '../reducers/game.js'
 
-const mapStateToProps = ({ game, tutorial, scrollInfo, docHistories }) => ({
+const mapStateToProps = ({ game, tutorial, docHistories }) => ({
   game,
   tutorial,
-  scrollInfo,
   docHistories
 })
 
 const mapDispatchToProps = dispatch => ({
   updateGame: ({ tab, content }) =>
     dispatch(actions.updateGame({ tab, content })),
-  setScrollInfo: scrollInfo => dispatch(actions.setScrollInfo(scrollInfo)),
+  setScrollInfo: ({ tab, scrollInfo }) =>
+    dispatch(actions.setScrollInfo({ tab, scrollInfo })),
   updateHistory: ({ index, history }) =>
     dispatch(actions.updateHistory({ index, history }))
 })
@@ -37,7 +35,6 @@ class Code extends Component {
     const {
       game,
       tutorial,
-      scrollInfo,
       setScrollInfo,
       docHistories,
       updateHistory
@@ -53,7 +50,6 @@ class Code extends Component {
           <CodeEditor
             game={game}
             updateContent={this.handleTabUpdates}
-            scrollInfo={scrollInfo}
             setScrollInfo={setScrollInfo}
             docHistories={docHistories}
             updateHistory={updateHistory}

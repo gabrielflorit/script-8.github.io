@@ -27,8 +27,9 @@ class CodeEditor extends Component {
 
   componentDidMount() {
     setupLinter()
+    const activeGame = getActive(this.props.game)
     this.codeMirror = window.CodeMirror(this._editor, {
-      value: getActive(this.props.game).text || '',
+      value: activeGame.text || '',
       mode: 'javascript',
       theme: 'nyx8',
       lint: true,
@@ -45,11 +46,7 @@ class CodeEditor extends Component {
       }
     })
 
-    const docHistory = get(
-      this.props.docHistories,
-      `[${getActive(this.props.game).key}]`,
-      null
-    )
+    const docHistory = get(this.props.docHistories, `[${activeGame.key}]`, null)
 
     if (docHistory) {
       this.codeMirror.getDoc().setHistory(docHistory)
@@ -78,8 +75,10 @@ class CodeEditor extends Component {
     window.addEventListener('keyup', this.hideSlider)
 
     // If found, restore scroll position.
-    const { scrollInfo } = this.props
-    this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+    const { scrollInfo } = activeGame
+    if (scrollInfo) {
+      this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+    }
 
     // Give editor focus.
     this.codeMirror.focus()
@@ -205,6 +204,13 @@ class CodeEditor extends Component {
         history: this.codeMirror.getDoc().getHistory()
       })
 
+      // Save current scrollInfo.
+      const oldScrollInfo = this.codeMirror.getScrollInfo()
+      this.props.setScrollInfo({
+        scrollInfo: oldScrollInfo,
+        tab: getActive(this.props.game).key
+      })
+
       // Set codemirror contents to new tab.
       this.setContents(getActive(nextProps.game).text || '')
 
@@ -221,15 +227,25 @@ class CodeEditor extends Component {
       } else {
         this.codeMirror.getDoc().clearHistory()
       }
+
+      // Try setting new tab's scrollInfo.
+      const { scrollInfo } = getActive(nextProps.game)
+      if (scrollInfo) {
+        this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+      }
+
+      // Give editor focus.
+      this.codeMirror.focus()
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('keyup', this.hideSlider)
+    const activeGame = getActive(this.props.game)
     const scrollInfo = this.codeMirror.getScrollInfo()
-    this.props.setScrollInfo(scrollInfo)
+    this.props.setScrollInfo({ scrollInfo, tab: activeGame.key })
     this.props.updateHistory({
-      index: getActive(this.props.game).key,
+      index: activeGame.key,
       history: this.codeMirror.getDoc().getHistory()
     })
   }

@@ -69,6 +69,12 @@ const game = handleActions(
         text: payload.content
       }
     }),
+
+    [actionTypes.SET_SCROLL_INFO]: (state, { payload }) => ({
+      ...state,
+      [payload.tab]: { ...state[payload.tab], scrollInfo: payload.scrollInfo }
+    }),
+
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistGame(action.payload)
   },
