@@ -47,7 +47,6 @@
         print(42, 60, 'Hello world!', 0)
       }
     screen: CODE
-    lineToHighlight: 1
     text:
     - Your first SCRIPT-8 cassette!
     - You should see 'Hello world!' drawn on the right.
@@ -97,7 +96,6 @@
       draw = () => {
         print(42, 60, 'Hello world!', 0)
       }
-    lineToHighlight: 1
     text:
     - There are two functions here, 'draw' and 'print'.
     - SCRIPT-8 calls the 'draw' function 60 times per second.
@@ -184,7 +182,6 @@
         print(120, 120, 'Hello world!', 4)
       }
     screen: CODE
-    lineToHighlight: 1
     text:
     - OK. We have reached the end. I hope you learned something new.
     - The next lesson will be about SCRIPT-8's magical number slider.
@@ -518,6 +515,7 @@
     - This looks good. But each square needs to have the rotation angle based on its position AND time.
     - Let's create a function that does this.
     - We'll call it `getRotation`.
+    linesToHighlight: 4-5-6
     screen: CODE
     game: |-
       REP18-18

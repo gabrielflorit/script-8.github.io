@@ -70,18 +70,19 @@ class CodeEditor extends Component {
     this._slider.classList.add('hide')
   }
 
-  // TODO: accept line ranges
-  highlightText(lineNumber) {
-    const line = this.codeMirror.getLine(lineNumber)
+  highlightText(range) {
+    range.split('-').forEach(lineNumber => {
+      const line = this.codeMirror.getLine(lineNumber)
 
-    // Mark from first non-white character to end of line.
-    this.codeMirror.markText(
-      { line: lineNumber, ch: line.search(/\S/) },
-      { line: lineNumber, ch: line.length },
-      {
-        className: 'slider-token'
-      }
-    )
+      // Mark from first non-white character to end of line.
+      this.codeMirror.markText(
+        { line: lineNumber, ch: line.search(/\S/) },
+        { line: lineNumber, ch: line.length },
+        {
+          className: 'slider-token'
+        }
+      )
+    })
   }
 
   activateSlider() {
@@ -196,8 +197,8 @@ class CodeEditor extends Component {
         const lesson = lessons[tutorial.lessonIndex]
         const { slides } = lesson
         const slide = slides[tutorial.slideIndex]
-        if (slide && slide.lineToHighlight) {
-          this.highlightText(slide.lineToHighlight)
+        if (slide && slide.linesToHighlight) {
+          this.highlightText(slide.linesToHighlight)
         }
       }
     }
