@@ -47,7 +47,7 @@
         print(42, 60, 'Hello world!', 0)
       }
     screen: CODE
-    lineToFocus: 1
+    lineToHighlight: 1
     text:
     - Your first SCRIPT-8 cassette!
     - You should see 'Hello world!' drawn on the right.
@@ -97,7 +97,7 @@
       draw = () => {
         print(42, 60, 'Hello world!', 0)
       }
-    lineToFocus: 1
+    lineToHighlight: 1
     text:
     - There are two functions here, 'draw' and 'print'.
     - SCRIPT-8 calls the 'draw' function 60 times per second.
@@ -184,7 +184,7 @@
         print(120, 120, 'Hello world!', 4)
       }
     screen: CODE
-    lineToFocus: 1
+    lineToHighlight: 1
     text:
     - OK. We have reached the end. I hope you learned something new.
     - The next lesson will be about SCRIPT-8's magical number slider.
