@@ -45,8 +45,10 @@ const mapDispatchToProps = dispatch => ({
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
   newGame: screen => dispatch(actions.newGame(screen)),
-  putOnShelf: ({ user, gist, cover, title, isFork, isPrivate }) =>
-    dispatch(putOnShelf({ user, gist, cover, title, isFork, isPrivate })),
+  putOnShelf: ({ user, gist, cover, title, isFork, isPrivate, token }) =>
+    dispatch(
+      putOnShelf({ user, gist, cover, title, isFork, isPrivate, token })
+    ),
   saveGist: ({
     game,
     token,
@@ -142,7 +144,7 @@ class Menu extends Component {
   }
 
   onPutOnShelfClick(isPrivate) {
-    const { putOnShelf, gist, game } = this.props
+    const { putOnShelf, gist, game, token } = this.props
 
     const gistUser = _.get(gist, 'data.owner.login', null)
     const gistId = _.get(gist, 'data.id', null)
@@ -159,7 +161,8 @@ class Menu extends Component {
       gist: gistId,
       title,
       isFork,
-      isPrivate
+      isPrivate,
+      token
     }
 
     const iframe = document.querySelector('iframe')
@@ -383,7 +386,9 @@ class Menu extends Component {
               </li>
               <li>
                 <button
-                  onClick={this.onPutOnShelfClick}
+                  onClick={() => {
+                    this.onPutOnShelfClick(false)
+                  }}
                   disabled={!canShelve}
                   className="button"
                 >

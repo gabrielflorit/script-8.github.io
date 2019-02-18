@@ -4,7 +4,7 @@ import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
 import frecency from '../utils/frecency.js'
-import actions, { unshelve } from '../actions/actions.js'
+import actions, { setVisibility } from '../actions/actions.js'
 import ShelfCassettes from '../components/ShelfCassettes.js'
 
 const mapStateToProps = ({ gist, token, shelving }) => ({
@@ -15,7 +15,8 @@ const mapStateToProps = ({ gist, token, shelving }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
-  unshelve: ({ token, gistId }) => dispatch(unshelve({ token, gistId }))
+  setVisibility: ({ token, gistId, isPrivate }) =>
+    dispatch(setVisibility({ token, gistId, isPrivate }))
 })
 
 class Shelf extends Component {
@@ -23,7 +24,7 @@ class Shelf extends Component {
     super(props)
     this.fetchCassettes = this.fetchCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
-    this.handleOnUnshelve = this.handleOnUnshelve.bind(this)
+    this.handleSetVisibility = this.handleSetVisibility.bind(this)
     this.state = {
       fetching: true,
       popularCassettes: [],
@@ -39,32 +40,34 @@ class Shelf extends Component {
     const { token } = this.props
     const currentLogin = _.get(token, 'user.login', null)
 
-    window
-      .fetch(`${process.env.REACT_APP_NOW}/private-cassettes`, {
-        method: 'POST',
-        body: JSON.stringify({
-          token: token.value
-        })
-      })
-      .then(
-        response => response.json(),
-        error =>
-          throwError({
-            error,
-            message: `Could not request cassettes.`
+    if (token.value) {
+      window
+        .fetch(`${process.env.REACT_APP_NOW}/private-cassettes`, {
+          method: 'POST',
+          body: JSON.stringify({
+            token: token.value
           })
-      )
-      .then(value => {
-        const yourPrivateCassettes = _(value)
-          .sortBy(cassette => +cassette.updated)
-          .reverse()
-          .value()
-
-        this.setState({
-          yourPrivateCassettes,
-          fetching: false
         })
-      })
+        .then(
+          response => response.json(),
+          error =>
+            throwError({
+              error,
+              message: `Could not request cassettes.`
+            })
+        )
+        .then(value => {
+          const yourPrivateCassettes = _(value)
+            .sortBy(cassette => +cassette.updated)
+            .reverse()
+            .value()
+
+          this.setState({
+            yourPrivateCassettes,
+            fetching: false
+          })
+        })
+    }
 
     window
       .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
@@ -123,9 +126,9 @@ class Shelf extends Component {
     }
   }
 
-  handleOnUnshelve(gistId) {
-    const { token, unshelve } = this.props
-    unshelve({ token, gistId })
+  handleSetVisibility({ gistId, isPrivate }) {
+    const { token, setVisibility } = this.props
+    setVisibility({ token, gistId, isPrivate })
   }
 
   render() {
@@ -137,6 +140,8 @@ class Shelf extends Component {
       fetching
     } = this.state
 
+    const tokenLogin = _.get(this.props, 'token.user.login', null)
+
     return (
       <div className="Shelf">
         <div className="main">
@@ -146,6 +151,8 @@ class Shelf extends Component {
             <Fragment>
               {yourPrivateCassettes && yourPrivateCassettes.length ? (
                 <ShelfCassettes
+                  handleSetVisibility={this.handleSetVisibility}
+                  tokenLogin={tokenLogin}
                   handleOnClick={this.handleOnClick}
                   cassettes={yourPrivateCassettes}
                   title="Your private cassettes"
@@ -153,17 +160,23 @@ class Shelf extends Component {
               ) : null}
               {yourPublicCassettes && yourPublicCassettes.length ? (
                 <ShelfCassettes
+                  handleSetVisibility={this.handleSetVisibility}
+                  tokenLogin={tokenLogin}
                   handleOnClick={this.handleOnClick}
                   cassettes={yourPublicCassettes}
                   title="Your public cassettes"
                 />
               ) : null}
               <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
                 title="Popular cassettes"
               />
               <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={recentCassettes}
                 title="Recent cassettes"
