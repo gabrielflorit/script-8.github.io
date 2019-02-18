@@ -28,7 +28,8 @@ class ShelfCassettes extends Component {
   }
 
   renderCassette({ cassette, i, now }) {
-    const { handleOnClick } = this.props
+    const { handleOnClick, tokenLogin, handleSetVisibility } = this.props
+    const { isPrivate, gist } = cassette
     const title = cassette.title || ''
     const maxLength = 16
     const tooLong = title.length > maxLength
@@ -44,9 +45,9 @@ class ShelfCassettes extends Component {
         <div className="img">
           <span className="title">{finalTitle || ' '}</span>
           <a
-            href={`/?id=${cassette.gist}`}
+            href={`/?id=${gist}`}
             onClick={e => {
-              handleOnClick({ e, id: cassette.gist })
+              handleOnClick({ e, id: gist })
             }}
             target="_blank"
           >
@@ -64,7 +65,16 @@ class ShelfCassettes extends Component {
             </span>
           </div>{' '}
         </div>
-        <ul className="controls hide">unshelve</ul>
+        {tokenLogin === cassette.user ? (
+          <button
+            className="button"
+            onClick={() => {
+              handleSetVisibility({ gistId: gist, isPrivate: !isPrivate })
+            }}
+          >
+            make {isPrivate ? 'public' : 'private'}
+          </button>
+        ) : null}
       </li>
     )
   }
@@ -109,16 +119,3 @@ class ShelfCassettes extends Component {
 }
 
 export default ShelfCassettes
-// const unshelve =
-// currentLogin === cassette.user ? (
-//   <li>
-//     <button
-//       onClick={() => {
-//         this.handleOnUnshelve(cassette.gist)
-//       }}
-//       className='button'
-//     >
-//       unshelve
-//     </button>
-//   </li>
-// ) : null
