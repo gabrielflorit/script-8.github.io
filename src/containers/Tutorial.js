@@ -1,5 +1,3 @@
-// TODO: check tutorial still works with tabs
-
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import { isNil } from 'lodash'
@@ -22,6 +20,7 @@ const mapStateToProps = ({ screen, tutorial, game }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   newGame: () => dispatch(actions.newGame()),
   updateMap: newMap => dispatch(actions.updateMap(newMap)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
@@ -65,7 +64,8 @@ class Tutorial extends Component {
       updateGame,
       updateSprite,
       updateMap,
-      screen
+      screen,
+      setCodeTab
     } = this.props
 
     const lesson = lessons[lessonIndex]
@@ -104,6 +104,10 @@ class Tutorial extends Component {
     // Set the screen, if we have one.
     if (slideScreen) {
       setScreen(slideScreen)
+      // If the slide screen is CODE, go to the first tab.
+      if (slideScreen === screenTypes.CODE) {
+        setCodeTab(0)
+      }
     }
   }
 
