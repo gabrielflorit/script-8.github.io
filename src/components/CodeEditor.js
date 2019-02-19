@@ -1,9 +1,16 @@
+// actions.updateContent is used in three places:
+// - in CodeEditor, on code mirror change
+// - in Tutorial, if slide has game,
+//    if we're not on code, updateContent is called as is
+//    if we are on code, updateContent is called with the prefix
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
 import blank from '../iframe/src/blank.js'
+import { getActive } from '../reducers/game.js'
 import lessons from '../utils/lessons.json'
 
 const { platform } = window.navigator
@@ -22,8 +29,9 @@ class CodeEditor extends Component {
 
   componentDidMount() {
     setupLinter()
+    const activeGame = getActive(this.props.game)
     this.codeMirror = window.CodeMirror(this._editor, {
-      value: this.props.game || '',
+      value: activeGame.text || '',
       mode: 'javascript',
       theme: 'nyx8',
       lint: true,
@@ -40,9 +48,17 @@ class CodeEditor extends Component {
       }
     })
 
+    const docHistory = get(this.props.docHistories, `[${activeGame.key}]`, null)
+
+    if (docHistory) {
+      this.codeMirror.getDoc().setHistory(docHistory)
+    } else {
+      this.codeMirror.getDoc().clearHistory()
+    }
+
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
-      this.props.updateGame(content)
+      this.props.updateContent(content)
     })
 
     this.codeMirror.on('keydown', (cm, e) => {
@@ -61,8 +77,13 @@ class CodeEditor extends Component {
     window.addEventListener('keyup', this.hideSlider)
 
     // If found, restore scroll position.
-    const { scrollInfo } = this.props
-    this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+    const { scrollInfo } = activeGame
+    if (scrollInfo) {
+      this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+    }
+
+    // Give editor focus.
+    this.codeMirror.focus()
   }
 
   hideSlider() {
@@ -199,16 +220,17 @@ class CodeEditor extends Component {
 
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
-    // set CodeMirror's value to ''.
-    if (nextProps.game === 'SCRIPT-8 NEW') {
+    if (nextProps.game[0].text === 'SCRIPT-8 NEW') {
+      // set CodeMirror's value to '',
       this.setContents(blank)
-    }
-    if (nextProps.game.startsWith('SCRIPT-8 LESSON')) {
-      this.setContents(nextProps.game.replace('SCRIPT-8 LESSON', ''))
+      // and clear the doc history.
+      this.codeMirror.getDoc().clearHistory()
+    } else if (nextProps.game[0].text.startsWith('SCRIPT-8 LESSON')) {
+      // If the incoming game is a lesson,
+      // set the lesson,
+      this.setContents(nextProps.game[0].text.replace('SCRIPT-8 LESSON', ''))
 
-      // Reset highlighter.
-      this._highlighterBox.classList.add('hide')
-
+      // and highlight lines if required.
       const { tutorial } = nextProps
       if (tutorial) {
         const lesson = lessons[tutorial.lessonIndex]
@@ -219,16 +241,62 @@ class CodeEditor extends Component {
           this.highlightText(slide.linesToHighlight)
         }
       }
-    }
-    if (nextProps.game.startsWith('//SCRIPT-8 WEBSOCKET')) {
-      this.setContents(nextProps.game.replace('//SCRIPT-8 WEBSOCKET\n', ''))
+    } else if (
+      getActive(this.props.game).key !== getActive(nextProps.game).key
+    ) {
+      // If the incoming tab is different than this one,
+      // we are about to switch tabs.
+
+      // Save current doc's history.
+      this.props.updateHistory({
+        index: getActive(this.props.game).key,
+        history: this.codeMirror.getDoc().getHistory()
+      })
+
+      // Save current scrollInfo.
+      const oldScrollInfo = this.codeMirror.getScrollInfo()
+      this.props.setScrollInfo({
+        scrollInfo: oldScrollInfo,
+        tab: getActive(this.props.game).key
+      })
+
+      // Set codemirror contents to new tab.
+      this.setContents(getActive(nextProps.game).text || '')
+
+      // Try getting new tab's history.
+      const docHistory = get(
+        this.props.docHistories,
+        `[${getActive(nextProps.game).key}]`,
+        null
+      )
+
+      // Try setting new tab's history.
+      if (docHistory) {
+        this.codeMirror.getDoc().setHistory(docHistory)
+      } else {
+        this.codeMirror.getDoc().clearHistory()
+      }
+
+      // Try setting new tab's scrollInfo.
+      const { scrollInfo } = getActive(nextProps.game)
+      if (scrollInfo) {
+        this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+      }
+
+      // Give editor focus.
+      this.codeMirror.focus()
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('keyup', this.hideSlider)
+    const activeGame = getActive(this.props.game)
     const scrollInfo = this.codeMirror.getScrollInfo()
-    this.props.setScrollInfo(scrollInfo)
+    this.props.setScrollInfo({ scrollInfo, tab: activeGame.key })
+    this.props.updateHistory({
+      index: activeGame.key,
+      history: this.codeMirror.getDoc().getHistory()
+    })
   }
 
   shouldComponentUpdate() {
@@ -269,11 +337,6 @@ class CodeEditor extends Component {
       </div>
     )
   }
-}
-
-CodeEditor.propTypes = {
-  updateGame: PropTypes.func.isRequired,
-  game: PropTypes.string
 }
 
 export default CodeEditor

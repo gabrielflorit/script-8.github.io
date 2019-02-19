@@ -16,3 +16,6 @@
 -
   - Shift-Ctrl-R / Shift-Cmd-Option-F
   - Replace all
+-
+  - Ctrl-[ / Ctrl-]
+  - Go to previous/next code tab

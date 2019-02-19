@@ -3,6 +3,93 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
+import { parseGistGame } from './game.js'
+
+describe('parseGistGame', () => {
+  test('no lines', () => {
+    expect(
+      parseGistGame({
+        files: {
+          'code.js': {
+            content: ''
+          }
+        }
+      })
+    ).toEqual({ 0: { text: '' } })
+  })
+  test('one line', () => {
+    expect(
+      parseGistGame({
+        files: {
+          'code.js': {
+            content: 'one'
+          }
+        }
+      })
+    ).toEqual({ 0: { text: 'one' } })
+  })
+  test('two tabs', () => {
+    expect(
+      parseGistGame({
+        files: {
+          'code.js': {
+            content: 'one\ntwo\nthree\nfour\nfive\nsix'
+          },
+          'misc.json': {
+            content: '{"lines": [3,0,1,2]}'
+          }
+        }
+      })
+    ).toEqual({
+      0: { text: 'one\ntwo\nthree' },
+      1: { text: '' },
+      2: { text: 'four' },
+      3: { text: 'five\nsix' }
+    })
+  })
+})
+
+describe('docHistories', () => {
+  test('newGame', () => {
+    const before = {
+      ...initialState,
+      docHistories: {
+        0: 'something'
+      }
+    }
+    let newState = reducer(before, actions.newGame())
+    expect(newState).toEqual({
+      ...before,
+      docHistories: {}
+    })
+  })
+  test('updateHistory', () => {
+    const before = {
+      ...initialState,
+      docHistories: {
+        0: 'something'
+      }
+    }
+    let newState = reducer(
+      before,
+      actions.updateHistory({
+        index: 2,
+        history: {
+          name: 'gabriel'
+        }
+      })
+    )
+    expect(newState).toEqual({
+      ...before,
+      docHistories: {
+        0: 'something',
+        2: {
+          name: 'gabriel'
+        }
+      }
+    })
+  })
+})
 
 describe('tutorial', () => {
   test('setTutorialSlide', () => {
@@ -221,13 +308,13 @@ test('newGame from CODE', () => {
     gist: {
       something: 'here'
     },
-    game: 'something here'
+    game: { 0: 'first tab', 1: 'second tab' }
   }
   const action = actions.newGame(screenTypes.CODE)
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: 'SCRIPT-8 NEW'
+    game: { 0: { text: 'SCRIPT-8 NEW', active: true, key: 0 } }
   })
 })
 
@@ -237,13 +324,13 @@ test('newGame from SONG', () => {
     gist: {
       something: 'here'
     },
-    game: 'something here'
+    game: { 0: { text: 'first tab' }, 1: { text: 'second tab' } }
   }
   const action = actions.newGame(screenTypes.SONG)
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: blank
+    game: { 0: { text: blank, active: true, key: 0 } }
   })
 })
 
@@ -357,7 +444,7 @@ test('fetchGistSuccess good data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: 'my game',
+    game: { 0: { text: 'my game' } },
     phrases: {
       0: {
         0: {
@@ -389,7 +476,7 @@ test('fetchGistSuccess bad data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: '',
+    game: { 0: { text: '' } },
     phrases: {},
     gist: {
       isFetching: false,
@@ -398,14 +485,32 @@ test('fetchGistSuccess bad data', () => {
   })
 })
 
+test('setCodeTab', () => {
+  const before = {
+    ...initialState
+  }
+
+  const action = actions.setCodeTab(1)
+  expect(reducer(before, action)).toEqual({
+    ...before,
+    game: {
+      0: { text: '', active: false, key: 0 },
+      1: { active: true, key: 1 }
+    }
+  })
+})
+
 test('updateGame', () => {
   const before = {
     ...initialState
   }
-  const action = actions.updateGame('one two three')
+  const action = actions.updateGame({ tab: 1, content: 'one two three' })
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: 'one two three'
+    game: {
+      0: { text: '', active: true, key: 0 },
+      1: { text: 'one two three' }
+    }
   })
 })
 

@@ -3,21 +3,42 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
+import { getActive } from '../reducers/game.js'
 
-const mapStateToProps = ({ game, tutorial, scrollInfo }) => ({
+const mapStateToProps = ({ game, tutorial, docHistories }) => ({
   game,
   tutorial,
-  scrollInfo
+  docHistories
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateGame: game => dispatch(actions.updateGame(game)),
-  setScrollInfo: scrollInfo => dispatch(actions.setScrollInfo(scrollInfo))
+  updateGame: ({ tab, content }) =>
+    dispatch(actions.updateGame({ tab, content })),
+  setScrollInfo: ({ tab, scrollInfo }) =>
+    dispatch(actions.setScrollInfo({ tab, scrollInfo })),
+  updateHistory: ({ index, history }) =>
+    dispatch(actions.updateHistory({ index, history }))
 })
 
 class Code extends Component {
-  render () {
-    const { game, updateGame, tutorial, scrollInfo, setScrollInfo } = this.props
+  constructor(props) {
+    super(props)
+    this.handleTabUpdates = this.handleTabUpdates.bind(this)
+  }
+
+  handleTabUpdates(content) {
+    const tab = getActive(this.props.game).key
+    this.props.updateGame({ tab, content })
+  }
+
+  render() {
+    const {
+      game,
+      tutorial,
+      setScrollInfo,
+      docHistories,
+      updateHistory
+    } = this.props
 
     return (
       <div
@@ -25,12 +46,13 @@ class Code extends Component {
           tutorial: tutorial !== false
         })}
       >
-        <div className='main'>
+        <div className="main">
           <CodeEditor
             game={game}
-            updateGame={updateGame}
-            scrollInfo={scrollInfo}
+            updateContent={this.handleTabUpdates}
             setScrollInfo={setScrollInfo}
+            docHistories={docHistories}
+            updateHistory={updateHistory}
             tutorial={tutorial}
           />
         </div>
@@ -39,4 +61,7 @@ class Code extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Code)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Code)

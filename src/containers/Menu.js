@@ -11,6 +11,7 @@ import actions, {
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
+import { getActive, assembleOrderedGame } from '../reducers/game.js'
 
 const mapStateToProps = ({
   gist,
@@ -41,6 +42,7 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   toggleSound: () => dispatch(actions.toggleSound()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
   fetchToken: token => dispatch(fetchToken(token)),
@@ -80,6 +82,7 @@ const mapDispatchToProps = dispatch => ({
 class Menu extends Component {
   constructor(props) {
     super(props)
+    this.cycleTab = this.cycleTab.bind(this)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
@@ -103,8 +106,30 @@ class Menu extends Component {
     }
   }
 
+  cycleTab(event) {
+    const { screen, game, setCodeTab } = this.props
+    if (screen === screenTypes.CODE) {
+      const codeTab = +getActive(game).key
+      const keyName = event.key
+
+      if (event.ctrlKey) {
+        if (keyName === '[') {
+          setCodeTab((codeTab - 1 + 8) % 8)
+        }
+        if (keyName === ']') {
+          setCodeTab((codeTab + 1) % 8)
+        }
+      }
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.cycleTab)
+  }
+
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onClose)
+    window.removeEventListener('keydown', this.cycleTab)
   }
 
   onClose(e) {
@@ -151,7 +176,7 @@ class Menu extends Component {
     const isFork = !!_.get(gist, 'data.fork_of', null)
 
     let title
-    const match = game.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
+    const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
     if (match) {
       title = match[1].trim()
     }
@@ -249,8 +274,8 @@ class Menu extends Component {
       setScreen,
       sound,
       toggleSound,
+      setCodeTab,
       isFetching
-      // codeTab
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -264,10 +289,11 @@ class Menu extends Component {
       chains,
       songs
     })
+
     const blank = isBlank({ game, sprites, map, phrases, chains, songs })
 
     const contentIsEmpty =
-      _.isEmpty(game) &&
+      _.isEmpty(assembleOrderedGame(game)) &&
       _.isEmpty(sprites) &&
       _.isEmpty(map) &&
       _.isEmpty(phrases) &&
@@ -311,6 +337,9 @@ class Menu extends Component {
     ].includes(screen)
 
     const isArtScreen = [screenTypes.SPRITE, screenTypes.MAP].includes(screen)
+
+    const codeTab = getActive(game).key
+    const codeTabSuffix = screen === screenTypes.CODE ? ` ${codeTab}` : ''
 
     return (
       <nav className="Menu">
@@ -407,14 +436,33 @@ class Menu extends Component {
                 active: screen === screenTypes.CODE
               })}
             >
-              <span className="full">CODE</span>
+              <span className="full">CODE{codeTabSuffix}</span>
               <span className="mid">
-                {screen === screenTypes.CODE ? 'code' : 'cod'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTabSuffix}`
+                  : `cod${codeTabSuffix}`}
               </span>
               <span className="small">
-                {screen === screenTypes.CODE ? 'code' : 'co'}
+                {screen === screenTypes.CODE
+                  ? `code${codeTabSuffix}`
+                  : `co${codeTabSuffix}`}
               </span>
             </button>
+            <ul className="dropdown">
+              {_.range(8).map(d => (
+                <li key={d}>
+                  <button
+                    className="button"
+                    onClick={() => {
+                      setCodeTab(d)
+                      setScreen(screenTypes.CODE)
+                    }}
+                  >
+                    CODE {d}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </li>
 
           <li>
