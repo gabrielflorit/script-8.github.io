@@ -3,7 +3,48 @@ import actions from '../actions/actions.js'
 import initialState from '../store/initialState.js'
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
-import { parseGistGame } from './game.js'
+import { parseGistGame, assembleMiscLines } from './game.js'
+
+describe('assembleMiscLines', () => {
+  test('tab 0', () => {
+    expect(
+      assembleMiscLines({
+        0: {
+          text: 'one\ntwo'
+        }
+      })
+    ).toEqual([2, 0, 0, 0, 0, 0, 0, 0])
+  })
+
+  test('tab 0 and 1', () => {
+    expect(
+      assembleMiscLines({
+        0: {
+          text: 'one\ntwo'
+        },
+        1: {
+          text: 'one\ntwo'
+        }
+      })
+    ).toEqual([2, 2, 0, 0, 0, 0, 0, 0])
+  })
+
+  test('tab 0, 4, and 6', () => {
+    expect(
+      assembleMiscLines({
+        0: {
+          text: 'one\ntwo'
+        },
+        4: {
+          text: ''
+        },
+        6: {
+          text: 'one'
+        }
+      })
+    ).toEqual([2, 0, 0, 0, 0, 0, 1, 0])
+  })
+})
 
 describe('parseGistGame', () => {
   test('no lines', () => {
@@ -15,7 +56,7 @@ describe('parseGistGame', () => {
           }
         }
       })
-    ).toEqual({ 0: { text: '' } })
+    ).toEqual({ 0: { text: '', key: 0, active: true } })
   })
   test('one line', () => {
     expect(
@@ -26,7 +67,7 @@ describe('parseGistGame', () => {
           }
         }
       })
-    ).toEqual({ 0: { text: 'one' } })
+    ).toEqual({ 0: { text: 'one',key: 0, active: true } })
   })
   test('two tabs', () => {
     expect(
@@ -41,10 +82,10 @@ describe('parseGistGame', () => {
         }
       })
     ).toEqual({
-      0: { text: 'one\ntwo\nthree' },
-      1: { text: '' },
-      2: { text: 'four' },
-      3: { text: 'five\nsix' }
+      0: { text: 'one\ntwo\nthree', active: true, key: 0 },
+      1: { text: '', key: 1,active: false,  },
+      2: { text: 'four', key: 2,active: false,  },
+      3: { text: 'five\nsix', key: 3,active: false,  }
     })
   })
 })
@@ -444,7 +485,7 @@ test('fetchGistSuccess good data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: { 0: { text: 'my game' } },
+    game: { 0: { text: 'my game', active: true, key: 0 } },
     phrases: {
       0: {
         0: {
@@ -476,7 +517,7 @@ test('fetchGistSuccess bad data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
-    game: { 0: { text: '' } },
+    game: { 0: { text: '', active: true, key: 0 } },
     phrases: {},
     gist: {
       isFetching: false,

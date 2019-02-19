@@ -5,7 +5,7 @@ import actionTypes from './actionTypes.js'
 import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 import throwError from '../utils/throwError.js'
-import { parseGistGame, assembleOrderedGame } from '../reducers/game.js'
+import { parseGistGame, assembleOrderedGame, assembleMiscLines } from '../reducers/game.js'
 
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
@@ -239,9 +239,7 @@ export const saveGist = ({
       payload.files['misc.json'] = {
         content: JSON.stringify(
           {
-            lines: _.range(4).map(d => {
-              return ((game[d] && game[d].text) || '').split('\n').length
-            })
+            lines: assembleMiscLines(game)
           },
           null,
           2

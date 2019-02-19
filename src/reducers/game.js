@@ -14,6 +14,15 @@ const assembleOrderedGame = game =>
     .value()
     .join('\n')
 
+const assembleMiscLines = game =>
+  _.range(8).map(d => {
+    if (game[d] && game[d].text) {
+      return game[d].text.split('\n').length
+    } else {
+      return 0
+    }
+  })
+
 const getActive = game => ({
   ...game[Object.keys(game).filter(key => game[key].active)],
   key: Object.keys(game).filter(key => game[key].active)[0]
@@ -86,4 +95,4 @@ const game = handleActions(
 )
 
 export default game
-export { parseGistGame, getActive, assembleOrderedGame }
+export { parseGistGame, getActive, assembleOrderedGame, assembleMiscLines }
