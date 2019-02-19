@@ -82,15 +82,53 @@ const mapDispatchToProps = dispatch => ({
 class Menu extends Component {
   constructor(props) {
     super(props)
-    this.cycleTab = this.cycleTab.bind(this)
+    this.keydown = this.keydown.bind(this)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
     this.onClose = this.onClose.bind(this)
+    this.canRecord = this.canRecord.bind(this)
     window.script8.handleCode = props.fetchToken
 
     window.addEventListener('beforeunload', this.onClose)
+  }
+
+  canRecord() {
+    const {
+      gist,
+      token,
+      game,
+      sprites,
+      map,
+      phrases,
+      chains,
+      songs
+    } = this.props
+
+    const dirty = isDirty({
+      gist,
+      game,
+      sprites,
+      map,
+      phrases,
+      chains,
+      songs
+    })
+
+    // If gistLogin is null, gist was created anonymously.
+    const gistLogin = _.get(gist, 'data.owner.login', null)
+
+    // If gistLogin does not match currentLogin, gist wasn't created by us.
+    const currentLogin = _.get(token, 'user.login', null)
+
+    // RECORD can only be enabled when:
+    // - the gist is ours AND content is dirty
+    // - OR the gist is empty (new game)
+    const enableRecord =
+      (currentLogin && currentLogin === gistLogin && dirty) || _.isEmpty(gist)
+
+    return enableRecord
   }
 
   componentDidUpdate() {
@@ -106,30 +144,37 @@ class Menu extends Component {
     }
   }
 
-  cycleTab(event) {
+  keydown(event) {
     const { screen, game, setCodeTab } = this.props
+
     if (screen === screenTypes.CODE) {
       const codeTab = +getActive(game).key
-      const keyName = event.key
+      const { altKey, code } = event
 
-      if (event.ctrlKey) {
-        if (keyName === '[') {
+      if (altKey) {
+        if (code === 'BracketLeft') {
           setCodeTab((codeTab - 1 + 8) % 8)
+          event.preventDefault()
         }
-        if (keyName === ']') {
+        if (code === 'BracketRight') {
           setCodeTab((codeTab + 1) % 8)
+          event.preventDefault()
+        }
+        if (code === 'KeyS' && this.canRecord()) {
+          this.onRecordClick(false)
+          event.preventDefault()
         }
       }
     }
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.cycleTab)
+    window.addEventListener('keydown', this.keydown)
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onClose)
-    window.removeEventListener('keydown', this.cycleTab)
+    window.removeEventListener('keydown', this.keydown)
   }
 
   onClose(e) {
@@ -311,11 +356,7 @@ class Menu extends Component {
     // - OR content is not NEW_GAME template
     const enableInsertBlank = !_.isEmpty(gist) || !blank
 
-    // RECORD can only be enabled when:
-    // - the gist is ours AND content is dirty
-    // - OR the gist is empty (new game)
-    const enableRecord =
-      (currentLogin && currentLogin === gistLogin && dirty) || _.isEmpty(gist)
+    const enableRecord = this.canRecord()
 
     // RECORD TO BLANK can only be enabled when:
     // - gist is NOT empty AND
