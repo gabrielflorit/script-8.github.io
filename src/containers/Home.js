@@ -33,26 +33,31 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Home extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleStartTutorial = this.handleStartTutorial.bind(this)
     this.handleSeeLessons = this.handleSeeLessons.bind(this)
+    this.handleClickGifs = this.handleClickGifs.bind(this)
   }
 
-  handleStartTutorial () {
+  handleStartTutorial() {
     this.props.startTutorial()
   }
 
-  handleSeeLessons () {
+  handleSeeLessons() {
     this.props.setScreen(screenTypes.HELP)
   }
 
-  render () {
+  handleClickGifs() {
+    this.props.setScreen(screenTypes.SHELF)
+  }
+
+  render() {
     return (
-      <div className='Home'>
-        <div className='main'>
-          <img className='logo' src={logo} alt='SCRIPT-8 logo' />
-          <p className='last-updated'>
+      <div className="Home">
+        <div className="main">
+          <img className="logo" src={logo} alt="SCRIPT-8 logo" />
+          <p className="last-updated">
             <span>updated {timestamp}</span>
             <span>v{version}</span>
           </p>
@@ -61,29 +66,29 @@ class Home extends Component {
             retro-looking games (called cassettes). It's free, browser-based,
             and{' '}
             <a
-              className='text'
-              href='https://github.com/script-8/script-8.github.io'
+              className="text"
+              href="https://github.com/script-8/script-8.github.io"
             >
               open-source
             </a>
             . Cassettes are written in JavaScript.
           </p>
-          <p className='gifs'>
-            <a href='https://script-8.github.io/?id=cd8d6811adb3afb472aaf7505729cf01'>
+          <p className="gifs">
+            <button onClick={this.handleClickGifs}>
               <img
-                className='gif'
+                className="gif"
                 src={loshermanosbrosgif}
-                alt='Los hermanos bros'
+                alt="Los hermanos bros"
               />
-            </a>
-            <a href='https://script-8.github.io/?id=1c4ae6ff3727cb4a0e344e3435aa16b2'>
-              <img className='gif' src={breakoutgif} alt='break-8 game' />
-            </a>
-            <a href='https://script-8.github.io/?id=7f370bc716aff805f593a3f80008711f'>
-              <img className='gif' src={brospipegif} alt='the plumber' />
-            </a>
+            </button>
+            <button onClick={this.handleClickGifs}>
+              <img className="gif" src={breakoutgif} alt="break-8 game" />
+            </button>
+            <button onClick={this.handleClickGifs}>
+              <img className="gif" src={brospipegif} alt="the plumber" />
+            </button>
           </p>
-          <p className='start'>
+          <p className="start">
             <button
               className={classNames('button', {
                 invisible: this.props.tutorial
@@ -111,35 +116,35 @@ class Home extends Component {
           <ul>
             <li>
               a code editor where the game changes as you type.
-              <img className='gif wide' src={livecoding480} alt='livecoding' />
+              <img className="gif wide" src={livecoding480} alt="livecoding" />
             </li>
             <li>
               a slider to help you tweak numbers without typing.
-              <img className='gif wide' src={slider480} alt='slider' />
+              <img className="gif wide" src={slider480} alt="slider" />
             </li>
             <li>
               <span>a time-traveling tool so you can pause and rewind.</span>
               <img
-                className='gif wide single'
+                className="gif wide single"
                 src={pauserewind}
-                alt='pause and rewind'
+                alt="pause and rewind"
               />
             </li>
             <li>
               <span>
                 buttons that show a character's past and future paths.
               </span>
-              <img className='gif wide single' src={toggle} alt='toggle' />
+              <img className="gif wide single" src={toggle} alt="toggle" />
             </li>
             <li>
               the ability to combine all the above so you can manipulate time.
               <iframe
                 title="Demonstration of SCRIPT-8's time-traveling tool"
-                width='560'
-                height='315'
-                src='https://www.youtube.com/embed/0rg5GGFaIY0'
-                frameBorder='0'
-                allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/0rg5GGFaIY0"
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />{' '}
             </li>
@@ -148,9 +153,9 @@ class Home extends Component {
                 a sprite editor where the game instantly displays your edits.
               </span>
               <img
-                className='gif wide single'
+                className="gif wide single"
                 src={spritedemo}
-                alt='sprite demo'
+                alt="sprite demo"
               />
             </li>
             <li>
@@ -158,7 +163,7 @@ class Home extends Component {
                 a map editor where changes alter the game's behavior, in
                 real-time.
               </span>
-              <img className='gif wide single' src={mapdemo} alt='map demo' />
+              <img className="gif wide single" src={mapdemo} alt="map demo" />
             </li>
             <li>
               <span>
@@ -166,9 +171,9 @@ class Home extends Component {
                 and turn those into songs.
               </span>
               <img
-                className='gif wide single'
+                className="gif wide single"
                 src={musicdemo}
-                alt='music demo'
+                alt="music demo"
               />
             </li>
           </ul>
@@ -182,31 +187,31 @@ class Home extends Component {
           </p>
           <p>
             SCRIPT-8 is heavily influenced by Bret Victor's ideas (specifically{' '}
-            <a className='text' href='http://vimeo.com/36579366'>
+            <a className="text" href="http://vimeo.com/36579366">
               Inventing on principle
             </a>{' '}
             and{' '}
             <a
-              className='text'
-              href='http://worrydream.com/LearnableProgramming/'
+              className="text"
+              href="http://worrydream.com/LearnableProgramming/"
             >
               Learnable programming
             </a>
             ) and Joseph White's{' '}
-            <a className='text' href='https://www.lexaloffle.com/pico-8.php'>
+            <a className="text" href="https://www.lexaloffle.com/pico-8.php">
               PICO-8
             </a>
             , the best of all fantasy consoles.
           </p>
           <p>
             SCRIPT-8 is written by Gabriel Florit (that's me!). Click{' '}
-            <a className='text' href='https://twitter.com/gabrielflorit'>
+            <a className="text" href="https://twitter.com/gabrielflorit">
               here
             </a>{' '}
             to follow me on twitter. And visit the Github repository{' '}
             <a
-              className='text'
-              href='https://github.com/script-8/script-8.github.io'
+              className="text"
+              href="https://github.com/script-8/script-8.github.io"
             >
               here
             </a>
@@ -215,7 +220,7 @@ class Home extends Component {
           </p>
           <p>
             If you have any questions, come join us on the{' '}
-            <a className='text' href='https://discord.gg/HA68FNX'>
+            <a className="text" href="https://discord.gg/HA68FNX">
               Fantasy Consoles Discord server
             </a>
             , a friendly place to chat about these sophisticated, cutting-edge
@@ -223,18 +228,18 @@ class Home extends Component {
           </p>
           <p>
             SCRIPT-8 nyx8 palette by{' '}
-            <a className='text' href='https://twitter.com/Xavier_Gd'>
+            <a className="text" href="https://twitter.com/Xavier_Gd">
               Javier Guerrero
             </a>
             . Sprites in{' '}
             <a
-              className='text'
-              href='https://script-8.github.io/?id=cd8d6811adb3afb472aaf7505729cf01'
+              className="text"
+              href="https://script-8.github.io/?id=cd8d6811adb3afb472aaf7505729cf01"
             >
               Los Hermanos Bros.
             </a>{' '}
             by{' '}
-            <a className='text' href='https://twitter.com/johanvinet'>
+            <a className="text" href="https://twitter.com/johanvinet">
               Johan Vinet
             </a>
             .
