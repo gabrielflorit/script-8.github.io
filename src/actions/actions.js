@@ -32,10 +32,10 @@ const actions = createActions({
   [actionTypes.CLOSE_TUTORIAL]: () => {},
   [actionTypes.SHELVE_CASSETTE_REQUEST]: () => {},
   [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d,
+  [actionTypes.SET_VISIBILITY_REQUEST]: d => d,
+  [actionTypes.SET_VISIBILITY_SUCCESS]: d => d,
   [actionTypes.COUNTER_CASSETTE_REQUEST]: () => {},
   [actionTypes.COUNTER_CASSETTE_SUCCESS]: d => d,
-  [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
-  [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d,
   [actionTypes.SET_SCROLL_INFO]: d => d,
   [actionTypes.SET_CODE_TAB]: d => d,
   [actionTypes.UPDATE_HISTORY]: d => d
@@ -58,15 +58,16 @@ export const counterCassette = ({ id }) => dispatch => {
     )
 }
 
-export const unshelve = ({ token, gistId }) => dispatch => {
-  dispatch(actions.unshelveCassetteRequest())
+export const setVisibility = ({ token, gistId, isPrivate }) => dispatch => {
+  dispatch(actions.setVisibilityRequest())
 
   return window
-    .fetch(`${process.env.REACT_APP_NOW}/unshelve`, {
+    .fetch(`${process.env.REACT_APP_NOW}/set-visibility`, {
       method: 'POST',
       body: JSON.stringify({
         token: token.value,
-        gistId
+        gist: gistId,
+        isPrivate
       })
     })
     .then(
@@ -74,11 +75,10 @@ export const unshelve = ({ token, gistId }) => dispatch => {
       error =>
         throwError({
           error,
-          message: `Could not unshelve cassette via appspot service.`
+          message: `Could not set visibility.`
         })
     )
-    .then(json => dispatch(actions.unshelveCassetteSuccess()))
-    .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
+    .then(() => dispatch(actions.setVisibilitySuccess()))
 }
 
 export const putOnShelf = ({
@@ -86,7 +86,9 @@ export const putOnShelf = ({
   gist,
   cover,
   title,
-  isFork
+  isFork,
+  isPrivate,
+  token
 }) => dispatch => {
   dispatch(actions.shelveCassetteRequest())
 
@@ -98,7 +100,9 @@ export const putOnShelf = ({
         gist,
         cover,
         title,
-        isFork
+        isFork,
+        isPrivate,
+        token: token.value
       })
     })
     .then(
@@ -109,8 +113,8 @@ export const putOnShelf = ({
           message: `Could not post cassette via appspot service.`
         })
     )
-    .then(json => dispatch(actions.shelveCassetteSuccess()))
-    .then(json => dispatch(actions.setScreen(screenTypes.SHELF)))
+    .then(() => dispatch(actions.shelveCassetteSuccess()))
+    .then(() => dispatch(actions.setScreen(screenTypes.SHELF)))
 }
 
 export const fetchGist = ({ id, token }) => dispatch => {

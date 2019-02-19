@@ -47,7 +47,6 @@
         print(42, 60, 'Hello world!', 0)
       }
     screen: CODE
-    lineToHighlight: 1
     text:
     - Your first SCRIPT-8 cassette!
     - You should see 'Hello world!' drawn on the right.
@@ -97,7 +96,6 @@
       draw = () => {
         print(42, 60, 'Hello world!', 0)
       }
-    lineToHighlight: 1
     text:
     - There are two functions here, 'draw' and 'print'.
     - SCRIPT-8 calls the 'draw' function 60 times per second.
@@ -184,7 +182,6 @@
         print(120, 120, 'Hello world!', 4)
       }
     screen: CODE
-    lineToHighlight: 1
     text:
     - OK. We have reached the end. I hope you learned something new.
     - The next lesson will be about SCRIPT-8's magical number slider.
@@ -336,6 +333,7 @@
     - Good. Every new square needs to start a bit further up and to the left.
     - Before we move on, there's a bit of duplication here. You see it?
     - Let's fix that.
+    linesToHighlight: 5-6
     screen: CODE
     game: |-
       REP5-6
@@ -344,6 +342,7 @@
   - text:
     - Better. One final thing. The colors are all the same.
     - Can you change that?
+    linesToHighlight: 3-4
     screen: CODE
     game: |-
       REP3-7
@@ -353,6 +352,7 @@
   - text:
     - If we would have set color to `i`, the last square would be invisible.
     - Hence the use of the modulus operator.
+    linesToHighlight: 5-5
     screen: CODE
     game: |-
       REP5-5
@@ -388,6 +388,7 @@
   - text:
     - You can also specify a rotation point. We won't go into that, but consult HELP for more information.
     - Back to our squares. Can you draw eight squares using `polyStroke`?
+    linesToHighlight: 6-7
     screen: CODE
     game: |-
       REP6-6
@@ -417,6 +418,7 @@
     - Ignore `input` for now. We'll talk about it in a future lesson.
     - Now, see that `state` parameter?
     - XXupdate(state, input, elapsed)
+    linesToHighlight: 0-1
     screen: CODE
     game: |-
       REP0-0
@@ -428,6 +430,7 @@
     - SCRIPT-8 is a state-based engine. You define the game's initial state at the beginning.
     - Then, during every `update`, modify the state as needed.
     - And draw your game in `draw`, which receives one parameter, `state`.
+    linesToHighlight: 3-3
     game: |-
       REP3-3
       draw = (state) => {
@@ -435,6 +438,7 @@
     - That's the game loop! Nothing to it.
     - I've added `initialState`. It's empty now. What do we want to put in there?
     - How about our squares' rotation angle?
+    linesToHighlight: 0-1
     screen: CODE
     game: |-
       REP0-0
@@ -445,6 +449,7 @@
   - text:
     - Good idea.
     - We also need to update `draw`.
+    linesToHighlight: 1-1
     screen: CODE
     game: |-
       ADD1
@@ -452,6 +457,7 @@
   - text:
     - Notice how we're not declaring `angle` inside `draw`.
     - Instead, we'll get it from `state`.
+    linesToHighlight: 9-10
     screen: CODE
     game: |-
       REP9-10
@@ -467,6 +473,7 @@
     - Ta-dah!
     - Isn't SCRIPT-8 fun?
     - See you in the next lesson.
+    linesToHighlight: 5-5
     screen: CODE
     game: |-
       ADD5
@@ -518,6 +525,7 @@
     - This looks good. But each square needs to have the rotation angle based on its position AND time.
     - Let's create a function that does this.
     - We'll call it `getRotation`.
+    linesToHighlight: 19-23
     screen: CODE
     game: |-
       REP18-18
@@ -530,6 +538,7 @@
   - text:
     - We also need a way to keep track of total time passed.
     - Let's add that to `initialState`.
+    linesToHighlight: 4-8
     screen: CODE
     game: |-
       ADD3
@@ -542,6 +551,7 @@
   - text:
     - And what good is this `totalElapsed` if we don't change it?
     - "Do that in `update`:"
+    linesToHighlight: 1-1
     screen: CODE
     game: |-
       ADD1
@@ -550,12 +560,14 @@
     - How should we store each square's rotation?
     - A good place to do this is your game's state.
     - "Add a `rotations` array to `initialState`:"
+    linesToHighlight: 12-12
     screen: CODE
     game: |-
       ADD12
         state.totalElapsed += elapsed
   - text:
     - "And finally, update the `rotations` array in `update`:"
+    linesToHighlight: 2-2
     screen: CODE
     game: |-
       ADD2
@@ -563,6 +575,7 @@
   - text:
     - OK. Now we get to draw our squares.
     - Use `rotations` in `draw`. Each `polyStroke` call should reference this array instead of `angle`.
+    linesToHighlight: 14-14
     screen: CODE
     game: |-
       REP14-14
@@ -571,6 +584,7 @@
     - WOW! That is a bit too fast.
     - Adjust the calculations in `getRotation`.
     - "Divide by something, e.g. 50:"
+    linesToHighlight: 31-32
     screen: CODE
     game: |-
       REP31-31
@@ -579,6 +593,7 @@
     - Much better.
     - We should also get rid of `angle` in our state.
     - We don't need it anymore.
+    linesToHighlight: 9-9
     screen: CODE
     game: |-
       REP9-9
@@ -586,6 +601,7 @@
   - text:
     - Now, here's a neat trick.
     - "Use a sine function in `getRotation`:"
+    linesToHighlight: 0-3
     screen: CODE
     game: |-
       DEL3
@@ -593,6 +609,7 @@
     - This gives it more of an elastic swirly feel. Beautiful!
     - We need a title. Add it as the first line of your cassette.
     - I'll show you.
+    linesToHighlight: 8-8
     screen: CODE
     game: |-
       REP8-8
@@ -601,6 +618,7 @@
     - Now try putting your cassette on the SHELF.
     - To do this, first record it by mousing over CASSETTE (on the top menu) and clicking RECORD.
     - Once that's done, mouse over CASSETTE and click PUT ON SHELF.
+    linesToHighlight: 0-0
     screen: CODE
     game: |-
       REP0-0

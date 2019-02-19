@@ -91,18 +91,33 @@ class CodeEditor extends Component {
     this._slider.classList.add('hide')
   }
 
-  // TODO: accept line ranges
-  highlightText(lineNumber) {
-    const line = this.codeMirror.getLine(lineNumber)
+  highlightText(range) {
+    const lines = range.split('-').map(d => +d)
+    const firstLine = lines[0]
+    const lastLine = lines[lines.length - 1]
+    const cmLines = lines.map(d => this.codeMirror.getLine(d))
 
-    // Mark from first non-white character to end of line.
-    this.codeMirror.markText(
-      { line: lineNumber, ch: line.search(/\S/) },
-      { line: lineNumber, ch: line.length },
-      {
-        className: 'slider-token'
-      }
+    const whiteSpaces = cmLines[0].search(/\S/)
+
+    // Calculate the width.
+    const width =
+      (Math.max(...cmLines.map(d => d.length)) - whiteSpaces + 1) *
+      this.codeMirror.defaultCharWidth()
+
+    // Calculate the height.
+    const height =
+      this.codeMirror.defaultTextHeight() * (1 + lastLine - firstLine)
+
+    this.codeMirror.addWidget(
+      { line: firstLine, ch: whiteSpaces },
+      document.querySelector('#highlighter-box'),
+      false
     )
+
+    this._highlighterBox.style.width = `${width + 8}px`
+    this._highlighterBox.style.height = `${height + 6}px`
+
+    this.codeMirror.scrollIntoView({ line: lastLine, ch: 0 }, 40)
   }
 
   activateSlider() {
@@ -221,8 +236,9 @@ class CodeEditor extends Component {
         const lesson = lessons[tutorial.lessonIndex]
         const { slides } = lesson
         const slide = slides[tutorial.slideIndex]
-        if (slide && slide.lineToHighlight) {
-          this.highlightText(slide.lineToHighlight)
+        if (slide && slide.linesToHighlight) {
+          this._highlighterBox.classList.remove('hide')
+          this.highlightText(slide.linesToHighlight)
         }
       }
     } else if (
@@ -310,6 +326,12 @@ class CodeEditor extends Component {
               this._slider = _slider
             }}
             onInput={this.handleSlider}
+          />
+          <div
+            id="highlighter-box"
+            ref={_highlighterBox => {
+              this._highlighterBox = _highlighterBox
+            }}
           />
         </div>
       </div>

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import screenTypes from '../utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
-import actions, { unshelve } from '../actions/actions.js'
+import frecency from '../utils/frecency.js'
+import actions, { setVisibility } from '../actions/actions.js'
 import ShelfCassettes from '../components/ShelfCassettes.js'
 
 const mapStateToProps = ({ gist, token, shelving }) => ({
@@ -14,15 +15,16 @@ const mapStateToProps = ({ gist, token, shelving }) => ({
 
 const mapDispatchToProps = dispatch => ({
   setScreen: screen => dispatch(actions.setScreen(screen)),
-  unshelve: ({ token, gistId }) => dispatch(unshelve({ token, gistId }))
+  setVisibility: ({ token, gistId, isPrivate }) =>
+    dispatch(setVisibility({ token, gistId, isPrivate }))
 })
 
 class Shelf extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.fetchCassettes = this.fetchCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
-    this.handleOnUnshelve = this.handleOnUnshelve.bind(this)
+    this.handleSetVisibility = this.handleSetVisibility.bind(this)
     this.state = {
       fetching: true,
       popularCassettes: [],
@@ -30,13 +32,42 @@ class Shelf extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchCassettes()
   }
 
-  fetchCassettes () {
+  fetchCassettes() {
     const { token } = this.props
     const currentLogin = _.get(token, 'user.login', null)
+
+    if (token.value) {
+      window
+        .fetch(`${process.env.REACT_APP_NOW}/private-cassettes`, {
+          method: 'POST',
+          body: JSON.stringify({
+            token: token.value
+          })
+        })
+        .then(
+          response => response.json(),
+          error =>
+            throwError({
+              error,
+              message: `Could not request cassettes.`
+            })
+        )
+        .then(value => {
+          const yourPrivateCassettes = _(value)
+            .sortBy(cassette => +cassette.updated)
+            .reverse()
+            .value()
+
+          this.setState({
+            yourPrivateCassettes,
+            fetching: false
+          })
+        })
+    }
 
     window
       .fetch(`${process.env.REACT_APP_NOW}/cassettes`)
@@ -55,7 +86,11 @@ class Shelf extends Component {
         }))
 
         const popularCassettes = _(cassettes)
-          .sortBy(cassette => +cassette.counter)
+          .map(cassette => ({
+            ...cassette,
+            score: frecency(cassette.visits)
+          }))
+          .sortBy(cassette => cassette.score)
           .reverse()
           .value()
 
@@ -64,26 +99,26 @@ class Shelf extends Component {
           .reverse()
           .value()
 
-        const yoursCassettes = currentLogin
+        const yourPublicCassettes = currentLogin
           ? recentCassettes.filter(cassette => cassette.user === currentLogin)
           : []
 
         this.setState({
           popularCassettes: popularCassettes.filter(d => !d.isFork),
           recentCassettes: recentCassettes.filter(d => !d.isFork),
-          yoursCassettes,
+          yourPublicCassettes,
           fetching: false
         })
       })
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.shelving && !this.props.shelving) {
       this.fetchCassettes()
     }
   }
 
-  handleOnClick ({ e, id }) {
+  handleOnClick({ e, id }) {
     const { gist, setScreen } = this.props
     if (id === _.get(gist, 'data.id')) {
       e.preventDefault()
@@ -91,42 +126,60 @@ class Shelf extends Component {
     }
   }
 
-  handleOnUnshelve (gistId) {
-    const { token, unshelve } = this.props
-    unshelve({ token, gistId })
+  handleSetVisibility({ gistId, isPrivate }) {
+    const { token, setVisibility } = this.props
+    setVisibility({ token, gistId, isPrivate })
   }
 
-  render () {
+  render() {
     const {
       popularCassettes,
       recentCassettes,
-      yoursCassettes,
+      yourPublicCassettes,
+      yourPrivateCassettes,
       fetching
     } = this.state
 
+    const tokenLogin = _.get(this.props, 'token.user.login', null)
+
     return (
-      <div className='Shelf'>
-        <div className='main'>
+      <div className="Shelf">
+        <div className="main">
           {fetching ? (
-            <p className='loading'>loading cassettes...</p>
+            <p className="loading">loading cassettes...</p>
           ) : (
             <Fragment>
-              {yoursCassettes.length ? (
+              {yourPrivateCassettes && yourPrivateCassettes.length ? (
                 <ShelfCassettes
+                  handleSetVisibility={this.handleSetVisibility}
+                  tokenLogin={tokenLogin}
                   handleOnClick={this.handleOnClick}
-                  cassettes={yoursCassettes}
-                  title='Yours'
+                  cassettes={yourPrivateCassettes}
+                  title="Your private cassettes"
+                />
+              ) : null}
+              {yourPublicCassettes && yourPublicCassettes.length ? (
+                <ShelfCassettes
+                  handleSetVisibility={this.handleSetVisibility}
+                  tokenLogin={tokenLogin}
+                  handleOnClick={this.handleOnClick}
+                  cassettes={yourPublicCassettes}
+                  title="Your public cassettes"
                 />
               ) : null}
               <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
-                title='Popular'
+                title="Popular cassettes"
               />
               <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={recentCassettes}
-                title='Recent'
+                title="Recent cassettes"
               />
             </Fragment>
           )}
