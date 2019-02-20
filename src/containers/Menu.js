@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import _ from 'lodash'
-import screenTypes from '../utils/screenTypes.js'
+import screenTypes, {
+  getPreviousScreen,
+  getNextScreen
+} from '../utils/screenTypes.js'
 import isDirty from '../utils/isDirty.js'
 import isBlank from '../utils/isBlank.js'
 import areYouSure from '../utils/areYouSure.js'
@@ -145,7 +148,7 @@ class Menu extends Component {
   }
 
   keydown(event) {
-    const { screen, game, setCodeTab } = this.props
+    const { screen, game, setCodeTab, setScreen } = this.props
 
     const { altKey, code } = event
 
@@ -167,6 +170,7 @@ class Menu extends Component {
           event.preventDefault()
         }
       }
+
       // If we're on any creation screen,
       if (
         [
@@ -183,6 +187,15 @@ class Menu extends Component {
           this.onRecordClick(false)
           event.preventDefault()
         }
+      }
+
+      if (code === 'Period') {
+        setScreen(getPreviousScreen(screen))
+        event.preventDefault()
+      }
+      if (code === 'Slash') {
+        setScreen(getNextScreen(screen))
+        event.preventDefault()
       }
     }
   }
@@ -534,9 +547,11 @@ class Menu extends Component {
                 active: isArtScreen
               })}
             >
-              <span className="full">ART</span>
-              <span className="mid">ART</span>
-              <span className="small">{isArtScreen ? 'art' : 'ar'}</span>
+              <span className="full">{isArtScreen ? screen : 'ART'}</span>
+              <span className="mid">{isArtScreen ? screen : 'ART'}</span>
+              <span className="small">
+                {isArtScreen ? screen.substring(0, 2) : 'AR'}
+              </span>
             </button>
             <ul className="dropdown">
               <li>
@@ -576,9 +591,11 @@ class Menu extends Component {
                 active: isMusicScreen
               })}
             >
-              <span className="full">MUSIC</span>
-              <span className="mid">{isMusicScreen ? 'music' : 'mus'}</span>
-              <span className="small">{isMusicScreen ? 'music' : 'mu'}</span>
+              <span className="full">{isMusicScreen ? screen : 'mus'}</span>
+              <span className="mid">{isMusicScreen ? screen : 'mus'}</span>
+              <span className="small">
+                {isMusicScreen ? screen.substring(0, 2) : 'mu'}
+              </span>
             </button>
             <ul className="dropdown">
               <li>
