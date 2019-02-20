@@ -16,6 +16,8 @@ import actions, {
 } from '../actions/actions.js'
 import { getActive, assembleOrderedGame } from '../reducers/game.js'
 
+const { platform } = window.navigator
+
 const mapStateToProps = ({
   gist,
   game,
@@ -150,7 +152,30 @@ class Menu extends Component {
   keydown(event) {
     const { screen, game, setCodeTab, setScreen } = this.props
 
-    const { altKey, code } = event
+    const { altKey, code, metaKey, ctrlKey } = event
+
+    const isCreationScreen = [
+      screenTypes.CODE,
+      screenTypes.SPRITE,
+      screenTypes.MAP,
+      screenTypes.SONG,
+      screenTypes.CHAIN,
+      screenTypes.PHRASE
+    ].includes(screen)
+
+    // If we pressed Cmd-S or Ctrl-S,
+    if (
+      (metaKey && code === 'KeyS' && _.includes(platform, 'Mac')) ||
+      (ctrlKey && code === 'KeyS' && !_.includes(platform, 'Mac'))
+    ) {
+      // and we're on any creation screen,
+      // and we can save,
+      if (isCreationScreen && this.canRecord()) {
+        // save.
+        this.onRecordClick(false)
+        event.preventDefault()
+      }
+    }
 
     // If we pressed Alt,
     if (altKey) {
@@ -167,24 +192,6 @@ class Menu extends Component {
         }
         if (code === 'BracketRight') {
           setCodeTab((codeTab + 1) % 8)
-          event.preventDefault()
-        }
-      }
-
-      // If we're on any creation screen,
-      if (
-        [
-          screenTypes.CODE,
-          screenTypes.SPRITE,
-          screenTypes.MAP,
-          screenTypes.SONG,
-          screenTypes.CHAIN,
-          screenTypes.PHRASE
-        ].includes(screen)
-      ) {
-        // handle pressing Alt-S.
-        if (code === 'KeyS' && this.canRecord()) {
-          this.onRecordClick(false)
           event.preventDefault()
         }
       }
