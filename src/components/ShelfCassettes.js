@@ -29,7 +29,9 @@ class ShelfCassettes extends Component {
 
   renderCassette({ cassette, i, now }) {
     const { handleOnClick, tokenLogin, handleSetVisibility } = this.props
-    const { isPrivate, gist } = cassette
+    const { isPrivate, gist, visits } = cassette
+    const visitsCount = visits ? _.sum(Object.values(visits)) : 0
+    const counter = visitsCount + cassette.counter
     const title = cassette.title || ''
     const maxLength = 16
     const tooLong = title.length > maxLength
@@ -61,7 +63,7 @@ class ShelfCassettes extends Component {
           <div className="date-info">
             <span className="date">{timeAgo({ now, before: date })}</span>
             <span className="booted">
-              {cassette.counter || 0} play{cassette.counter === 1 ? '' : 's'}
+              {counter || 0} play{counter === 1 ? '' : 's'}
             </span>
           </div>{' '}
         </div>
