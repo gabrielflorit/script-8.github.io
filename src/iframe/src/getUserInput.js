@@ -15,7 +15,7 @@ const getUserInput = keys => {
     select: keys.has(' ') || (buttons && buttons[8].pressed)
   }
 
-  for (var key of Object.keys(newUserInput)) {
+  for (const key of Object.keys(newUserInput)) {
     let keyPressed = !previousUserInput[key] && newUserInput[key]
     newUserInput[key + "Pressed"] = keyPressed
 
