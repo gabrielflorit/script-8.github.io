@@ -49,7 +49,7 @@ const CANVAS_SIZE = 128
 const ACTOR_FRAME_SKIP = 5
 
 class Iframe extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.ArrowUpElement = null
@@ -167,7 +167,7 @@ class Iframe extends Component {
     }
   }
 
-  logger ({ type, error = null }) {
+  logger({ type, error = null }) {
     const { message, run } = this.state
     // If we have an error,
     if (error) {
@@ -212,73 +212,73 @@ class Iframe extends Component {
     }
   }
 
-  touchstartArrowUp () {
+  touchstartArrowUp() {
     this.ArrowUpElement.classList.add('on')
     this.keys.add('ArrowUp')
   }
-  touchstartArrowRight () {
+  touchstartArrowRight() {
     this.ArrowRightElement.classList.add('on')
     this.keys.add('ArrowRight')
   }
-  touchstartArrowDown () {
+  touchstartArrowDown() {
     this.ArrowDownElement.classList.add('on')
     this.keys.add('ArrowDown')
   }
-  touchstartArrowLeft () {
+  touchstartArrowLeft() {
     this.ArrowLeftElement.classList.add('on')
     this.keys.add('ArrowLeft')
   }
-  touchstarta () {
+  touchstarta() {
     this.aElement.classList.add('on')
     this.keys.add('a')
   }
-  touchstartb () {
+  touchstartb() {
     this.bElement.classList.add('on')
     this.keys.add('b')
   }
-  touchstartEnter () {
+  touchstartEnter() {
     this.EnterElement.classList.add('on')
     this.keys.add('Enter')
   }
-  touchstartSpace () {
+  touchstartSpace() {
     this.SpaceElement.classList.add('on')
     this.keys.add(' ')
   }
 
-  touchendArrowUp () {
+  touchendArrowUp() {
     this.ArrowUpElement.classList.remove('on')
     this.keys.delete('ArrowUp')
   }
-  touchendArrowRight () {
+  touchendArrowRight() {
     this.ArrowRightElement.classList.remove('on')
     this.keys.delete('ArrowRight')
   }
-  touchendArrowDown () {
+  touchendArrowDown() {
     this.ArrowDownElement.classList.remove('on')
     this.keys.delete('ArrowDown')
   }
-  touchendArrowLeft () {
+  touchendArrowLeft() {
     this.ArrowLeftElement.classList.remove('on')
     this.keys.delete('ArrowLeft')
   }
-  touchenda () {
+  touchenda() {
     this.aElement.classList.remove('on')
     this.keys.delete('a')
   }
-  touchendb () {
+  touchendb() {
     this.bElement.classList.remove('on')
     this.keys.delete('b')
   }
-  touchendEnter () {
+  touchendEnter() {
     this.EnterElement.classList.remove('on')
     this.keys.delete('Enter')
   }
-  touchendSpace () {
+  touchendSpace() {
     this.SpaceElement.classList.remove('on')
     this.keys.delete(' ')
   }
 
-  updateGlobals (providedGlobals) {
+  updateGlobals(providedGlobals) {
     // Assign various properties to global scope, for the user.
     let globals
 
@@ -315,7 +315,7 @@ class Iframe extends Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.updateGlobals()
     this.soundFunctions = soundAPI(this.volumeNode)
     this.updateGlobals({
@@ -407,7 +407,7 @@ class Iframe extends Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     document.removeEventListener('touchstart', this.mousedownHandler)
     document.removeEventListener('mousedown', this.mousedownHandler)
     document.removeEventListener('touchend', this.mouseupHandler)
@@ -416,7 +416,7 @@ class Iframe extends Component {
     document.removeEventListener('keyup', this.keyupHandler)
   }
 
-  evalCode () {
+  evalCode() {
     const { shadows, state } = this
     // eslint-disable-next-line no-unused-vars
     const { game, message, callbacks } = state
@@ -453,13 +453,13 @@ class Iframe extends Component {
     }
   }
 
-  stopTimer () {
+  stopTimer() {
     if (this.timer) {
       this.timer.stop()
     }
   }
 
-  startTimer () {
+  startTimer() {
     const timerCallback = elapsed => {
       try {
         // Calculate the actual FPS,
@@ -510,13 +510,13 @@ class Iframe extends Component {
     this.timer = interval(timerCallback, 1000 / FPS)
   }
 
-  handleTimelineInput (e) {
+  handleTimelineInput(e) {
     this.setState({
       timelineIndex: +e.target.value
     })
   }
 
-  handleActorClick (actorName) {
+  handleActorClick(actorName) {
     const { selectedActors } = this.state
 
     // If actorName is in selectedActors, take it out.
@@ -530,13 +530,13 @@ class Iframe extends Component {
     })
   }
 
-  handleRestartClick () {
+  handleRestartClick() {
     window.initialState = Date.now()
     this.reduxHistory = []
     this.forceUpdate()
   }
 
-  handlePauseClick () {
+  handlePauseClick() {
     if (this.state.isPaused) {
       this.reduxHistory = []
       this.startTimer()
@@ -553,7 +553,7 @@ class Iframe extends Component {
   }
 
   // When the app's UI state has changed,
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { state, shadows } = this
     const {
       message,
@@ -823,7 +823,7 @@ class Iframe extends Component {
     }
   }
 
-  render () {
+  render() {
     const {
       isPaused,
       actors,
@@ -834,10 +834,10 @@ class Iframe extends Component {
       run
     } = this.state
     return (
-      <div className='Iframe'>
-        <div className='container'>
+      <div className="Iframe">
+        <div className="container">
           <canvas
-            className='master'
+            className="master"
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
             ref={_canvas => {
@@ -852,7 +852,7 @@ class Iframe extends Component {
           >
             <div
               ref={this.setArrowLeftRef}
-              className='button left'
+              className="button left"
               onTouchStart={this.touchstartArrowLeft}
               onTouchEnd={this.touchendArrowLeft}
             >
@@ -860,7 +860,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setArrowUpRef}
-              className='button up'
+              className="button up"
               onTouchStart={this.touchstartArrowUp}
               onTouchEnd={this.touchendArrowUp}
             >
@@ -868,7 +868,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setArrowRightRef}
-              className='button right'
+              className="button right"
               onTouchStart={this.touchstartArrowRight}
               onTouchEnd={this.touchendArrowRight}
             >
@@ -876,7 +876,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setaRef}
-              className='button a'
+              className="button a"
               onTouchStart={this.touchstarta}
               onTouchEnd={this.touchenda}
             >
@@ -884,7 +884,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setbRef}
-              className='button b'
+              className="button b"
               onTouchStart={this.touchstartb}
               onTouchEnd={this.touchendb}
             >
@@ -892,7 +892,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setArrowDownRef}
-              className='button down'
+              className="button down"
               onTouchStart={this.touchstartArrowDown}
               onTouchEnd={this.touchendArrowDown}
             >
@@ -900,7 +900,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setSpaceRef}
-              className='button select'
+              className="button select"
               onTouchStart={this.touchstartSpace}
               onTouchEnd={this.touchendSpace}
             >
@@ -908,7 +908,7 @@ class Iframe extends Component {
             </div>
             <div
               ref={this.setEnterRef}
-              className='button start'
+              className="button start"
               onTouchStart={this.touchstartEnter}
               onTouchEnd={this.touchendEnter}
             >
@@ -920,7 +920,7 @@ class Iframe extends Component {
               hide: run
             })}
           >
-            <button className='button play' onClick={this.handlePauseClick}>
+            <button className="button play" onClick={this.handlePauseClick}>
               {isPaused ? 'play' : 'pause'}
             </button>
 
@@ -948,7 +948,7 @@ class Iframe extends Component {
             })}
           >
             <input
-              type='range'
+              type="range"
               value={timelineIndex}
               min={0}
               max={alteredStates.length - 1}
