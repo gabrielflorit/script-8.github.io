@@ -16,6 +16,8 @@ const getUserInput = keys => {
   }
 
   for (const key of Object.keys(newUserInput)) {
+    if (key.startsWith("__")) continue;
+
     let keyPressed = !previousUserInput[key] && newUserInput[key]
     newUserInput[key + "Pressed"] = keyPressed
 
