@@ -5,7 +5,11 @@ import actionTypes from './actionTypes.js'
 import screenTypes from '../utils/screenTypes.js'
 import { compressPhrases } from '../reducers/phrases.js'
 import throwError from '../utils/throwError.js'
-import { parseGistGame, assembleOrderedGame, assembleMiscLines } from '../reducers/game.js'
+import {
+  parseGistGame,
+  assembleOrderedGame,
+  assembleMiscLines
+} from '../reducers/game.js'
 
 const actions = createActions({
   [actionTypes.TOGGLE_SOUND]: () => {},
