@@ -25,7 +25,7 @@ const getUserInput = keys => {
 
   previousUserInput = newUserInput
 
-  return previousUserInput
+  return newUserInput
 }
 
 export default getUserInput
