@@ -16,7 +16,16 @@
   dl:
   -
     - ''
-    - "The `update` function receives `input` as its second parameter. It's an object of booleans, each representing whether a button is currently held down or not: up, right, down, left, a, b, start, select. On keyboards, the last two represent Enter and Space, respectively. For example, if you're holding right and up, `input` will be { right: true, up: true }. This object also contains {key}Prssed and {key}Released properties indicating if the key was first pressed down on the current frame and if the key was first released on the current frame respectively."
+    - "The `update` function receives `input` as its second parameter. It's an object of booleans representing user input: up, right, down, left, a, b, start, and select. On keyboards, the last two represent Enter and Space, respectively. There are several input variations:"
+  -
+    - '<button>'
+    - "Whether a button is currently held down (or not). For example, if you're holding right and up, `input` will have the following properties: `{ right: true, up: true }`."
+  -
+    - '<buttonPressed>'
+    - 'Whether a button is pressed on the current frame but not on the previous frame. For example, if you pressed `up` in the current frame, `input` will have the following property: `{ upPressed: true }`.'
+  -
+    - '<buttonReleased>'
+    - 'Whether a button is not pressed on the current frame but was pressed on the previous frame.'
 - title: Draw
   note: non-integers are rounded down
   dl:
