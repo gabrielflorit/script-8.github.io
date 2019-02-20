@@ -147,11 +147,17 @@ class Menu extends Component {
   keydown(event) {
     const { screen, game, setCodeTab } = this.props
 
-    if (screen === screenTypes.CODE) {
-      const codeTab = +getActive(game).key
-      const { altKey, code } = event
+    const { altKey, code } = event
 
-      if (altKey) {
+    // If we pressed Alt,
+    if (altKey) {
+      // and we're on the CODE screen,
+      if (screen === screenTypes.CODE) {
+        // Get the current code tab.
+        const codeTab = +getActive(game).key
+
+        // Then see if we pressed [ or ],
+        // and if so, cycle through tabs appropriately.
         if (code === 'BracketLeft') {
           setCodeTab((codeTab - 1 + 8) % 8)
           event.preventDefault()
@@ -160,6 +166,19 @@ class Menu extends Component {
           setCodeTab((codeTab + 1) % 8)
           event.preventDefault()
         }
+      }
+      // If we're on any creation screen,
+      if (
+        [
+          screenTypes.CODE,
+          screenTypes.SPRITE,
+          screenTypes.MAP,
+          screenTypes.SONG,
+          screenTypes.CHAIN,
+          screenTypes.PHRASE
+        ].includes(screen)
+      ) {
+        // handle pressing Alt-S.
         if (code === 'KeyS' && this.canRecord()) {
           this.onRecordClick(false)
           event.preventDefault()
