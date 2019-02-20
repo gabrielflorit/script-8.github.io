@@ -16,13 +16,13 @@ const getUserInput = keys => {
   }
 
   for (const key of Object.keys(newUserInput)) {
-    if (key.startsWith("__")) continue;
+    if (key.startsWith('__')) continue
 
     let keyPressed = !previousUserInput[key] && newUserInput[key]
-    newUserInput[key + "Pressed"] = keyPressed
+    newUserInput[key + 'Pressed'] = keyPressed
 
     let keyReleased = previousUserInput[key] && !newUserInput[key]
-    newUserInput[key + "Released"] = keyReleased
+    newUserInput[key + 'Released'] = keyReleased
   }
 
   previousUserInput = newUserInput
