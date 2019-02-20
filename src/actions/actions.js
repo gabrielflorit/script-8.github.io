@@ -250,13 +250,12 @@ export const saveGist = ({
         )
       }
     } else {
-      // If game doesn't exist,
-      // but the previous gist had game,
+      // So the game has no length.
+      // But if the previous gist had game,
       // send 'code.js': null.
       if (assembledGistGame.length) {
         payload.files['code.js'] = null
       }
-      payload.files['misc.json'] = null
     }
 
     return payload
