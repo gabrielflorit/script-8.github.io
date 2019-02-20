@@ -1,7 +1,9 @@
+let previousUserInput = {}
+
 const getUserInput = keys => {
   const { buttons } = window.navigator.getGamepads()[0] || {}
 
-  return {
+  let newUserInput = {
     __mousedown: keys.has('mousedown'),
     up: keys.has('ArrowUp') || (buttons && buttons[12].pressed),
     right: keys.has('ArrowRight') || (buttons && buttons[15].pressed),
@@ -12,6 +14,20 @@ const getUserInput = keys => {
     start: keys.has('Enter') || (buttons && buttons[9].pressed),
     select: keys.has(' ') || (buttons && buttons[8].pressed)
   }
+
+  for (const key of Object.keys(newUserInput)) {
+    if (key.startsWith("__")) continue;
+
+    let keyPressed = !previousUserInput[key] && newUserInput[key]
+    newUserInput[key + "Pressed"] = keyPressed
+
+    let keyReleased = previousUserInput[key] && !newUserInput[key]
+    newUserInput[key + "Released"] = keyReleased
+  }
+
+  previousUserInput = newUserInput
+
+  return newUserInput
 }
 
 export default getUserInput
