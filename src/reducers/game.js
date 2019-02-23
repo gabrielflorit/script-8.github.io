@@ -83,14 +83,9 @@ const game = handleActions(
       }
     }),
 
-    [actionTypes.SET_SCROLL_INFO]: (state, { payload }) => ({
+    [actionTypes.SET_SCROLL_DATA]: (state, { payload }) => ({
       ...state,
-      [payload.tab]: { ...state[payload.tab], scrollInfo: payload.scrollInfo }
-    }),
-
-    [actionTypes.SET_CURSOR_POSITION]: (state, { payload }) => ({
-      ...state,
-      [payload.tab]: { ...state[payload.tab], cursorPosition: payload.cursorPosition}
+      [payload.tab]: { ...state[payload.tab], scrollData: payload.scrollData }
     }),
 
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>

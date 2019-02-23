@@ -76,10 +76,11 @@ class CodeEditor extends Component {
     // Add this eventlistener to window.
     window.addEventListener('keyup', this.hideSlider)
 
-    // If found, restore scroll position.
-    const { scrollInfo } = activeGame
-    if (scrollInfo) {
-      this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+    // If found, restore scroll data.
+    const { scrollData } = activeGame
+    if (scrollData) {
+      this.codeMirror.scrollTo(scrollData.left || 0, scrollData.top || 0);
+      this.codeMirror.setCursor(scrollData.cursorPosition);
     }
 
     // If found, restore cursor position.
@@ -259,17 +260,15 @@ class CodeEditor extends Component {
         history: this.codeMirror.getDoc().getHistory()
       })
 
-      // Save current scrollInfo.
+      // Save current scrollData.
       const oldScrollInfo = this.codeMirror.getScrollInfo()
-      this.props.setScrollInfo({
-        scrollInfo: oldScrollInfo,
-        tab: getActive(this.props.game).key
-      })
-
-      // Save current cursor position.
       const oldCursorPosition = this.codeMirror.getCursor()
-      this.props.setCursorPosition({
-        cursorPosition: oldCursorPosition,
+      this.props.setScrollData({
+        scrollData: {
+          top: oldScrollInfo.top,
+          left: oldScrollInfo.left,
+          cursorPosition: oldCursorPosition
+        },
         tab: getActive(this.props.game).key
       })
 
@@ -291,15 +290,10 @@ class CodeEditor extends Component {
       }
 
       // Try setting new tab's scrollInfo.
-      const { scrollInfo } = getActive(nextProps.game)
-      if (scrollInfo) {
-        this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
-      }
-
-      // Try setting new tab's cursorPosition.
-      const { cursorPosition } = getActive(nextProps.game)
-      if (cursorPosition) {
-        this.codeMirror.setCursor(cursorPosition)
+      const { scrollData } = getActive(nextProps.game)
+      if (scrollData) {
+        this.codeMirror.scrollTo(scrollData.left || 0, scrollData.top || 0)
+        this.codeMirror.setCursor(scrollData.cursorPosition)
       }
 
       // Give editor focus.
@@ -312,8 +306,8 @@ class CodeEditor extends Component {
     const activeGame = getActive(this.props.game)
     const scrollInfo = this.codeMirror.getScrollInfo()
     const cursorPosition = this.codeMirror.getCursor()
-    this.props.setScrollInfo({ scrollInfo, tab: activeGame.key })
-    this.props.setCursorPosition({ cursorPosition, tab: activeGame.key })
+    const scrollData = { top: scrollInfo.top, left: scrollInfo.left, cursorPosition }
+    this.props.setScrollData({ scrollData, tab: activeGame.key })
     this.props.updateHistory({
       index: activeGame.key,
       history: this.codeMirror.getDoc().getHistory()
