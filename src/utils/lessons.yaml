@@ -897,21 +897,21 @@
     - Pressing left makes Mr. M move back, but he's facing forward.
     - That isn't right.
   - text:
-    - "Fortunately for us, `sprite` has two optional parameters:"
-    - XXsprite(x, y, spriteIndex, [brighten, flipX])
-    - "`brighten` brightens or darkens the sprite. And `flipX` flips it left or right."
+    - "Fortunately for us, `sprite` has three optional parameters:"
+    - XXsprite(x, y, spriteIndex, [brighten, flipH, flipV])
+    - "`brighten` brightens or darkens the sprite. `flipH` flips it horizontally. `flipV` flips it vertically."
   - text:
-    - First, we should add `flip` to `initialState`. We need to keep track of it somehow.
+    - First, we should add `flipH` to `initialState`. We need to keep track of it somehow.
     screen: CODE
   - text:
     - Next, update the input-handling code.
-    - If left is pressed, set flip to true.
-    - If right is pressed, set flip to false.
+    - If left is pressed, set flipH to true.
+    - If right is pressed, set flipH to false.
     screen: CODE
     game: |-
       REP2
         y: 112,
-        flip: false
+        flipH: false
   - text:
     - Finally, change the sprite call.
     - Remember to ignore `brighten` for now (the fourth parameter).
@@ -920,12 +920,12 @@
       REP7-13
         if (input.left) {
           state.x -= 1
-          state.flip = true
+          state.flipH = true
         }
 
         if (input.right) {
           state.x += 1
-          state.flip = false
+          state.flipH = false
         }
   - text:
     - And there you have it. Our plumber faces the right direction.
@@ -933,7 +933,7 @@
     screen: CODE
     game: |-
       REP21
-        sprite(state.x, state.y, 0, 0, state.flip)
+        sprite(state.x, state.y, 0, 0, state.flipH)
   - text:
     - This has been a long lesson, mostly because I like the sight of my own words.
     - But pause for a second and look at the amount of code required to make our plumber move.
@@ -1006,25 +1006,25 @@
       initialState = {
         x: 0,
         y: 112,
-        flip: false
+        flipH: false
       }
 
       update = (state, input) => {
         if (input.left) {
           state.x -= 1
-          state.flip = true
+          state.flipH = true
         }
 
         if (input.right) {
           state.x += 1
-          state.flip = false
+          state.flipH = false
         }
       }
 
       draw = state => {
         clear()
         map()
-        sprite(state.x, state.y, 0, 0, state.flip)
+        sprite(state.x, state.y, 0, 0, state.flipH)
       }
   - text:
     - We're using the same sprite whether he's standing or walking.
@@ -1125,7 +1125,7 @@
     screen: CODE
     game: |-
       REP22
-        sprite(state.x, state.y, state.sprite, 0, state.flip)
+        sprite(state.x, state.y, state.sprite, 0, state.flipH)
   - text:
     - And if we're not pressing either left or right we'll use the standing sprite.
     screen: CODE

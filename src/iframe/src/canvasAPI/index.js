@@ -150,8 +150,8 @@ const canvasAPI = ({
       // }
     },
 
-    sprite(x, y, spriteIndex, darken = 0, flipHorizontal = false, flipVertical = false) {
-      sprite({ x, y, spriteIndex, darken, flipHorizontal, flipVertical, sprites: _sprites, ctx })
+    sprite(x, y, spriteIndex, darken = 0, flipH = false, flipV = false) {
+      sprite({ x, y, spriteIndex, darken, flipH, flipV, sprites: _sprites, ctx })
     },
 
     circStroke(x, y, r, c = 0) {

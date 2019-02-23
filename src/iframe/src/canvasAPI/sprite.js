@@ -6,8 +6,8 @@ const sprite = ({
   y,
   spriteIndex,
   darken = 0,
-  flipHorizontal = false,
-  flipVertical = false,
+  flipH = false,
+  flipV = false,
   sprites,
   ctx
 }) => {
@@ -18,8 +18,8 @@ const sprite = ({
           const clamped = clamp(+color - darken, 0, 7)
           ctx.fillStyle = colors.rgb(clamped)
           ctx.fillRect(
-            Math.floor(x) + (flipHorizontal ? 7 - colIndex : colIndex),
-            Math.floor(y) + (flipVertical ? 7 - rowIndex : rowIndex),
+            Math.floor(x) + (flipH ? 7 - colIndex : colIndex),
+            Math.floor(y) + (flipV ? 7 - rowIndex : rowIndex),
             1,
             1
           )
