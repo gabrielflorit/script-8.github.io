@@ -40,6 +40,14 @@ const mapDispatchToProps = dispatch => ({
   finishBoot: () => dispatch(actions.finishBoot())
 })
 
+const getTokenCount = src => {
+  try {
+    return numberWithCommas([...tokenizer(src)].length)
+  } catch (error) {
+    return "ERROR"
+  }
+}
+
 class Output extends Component {
   constructor(props) {
     super(props)
@@ -172,20 +180,6 @@ class Output extends Component {
   getSize() {
     const { game, songs, chains, phrases, sprites, map } = this.props
 
-    function getTokenCount(src) {
-      try {
-        return numberWithCommas([...tokenizer(src)].length)
-      } catch (error) {
-        return "ERROR"
-      }
-    }
-
-    function renderCodeCount(name, code) {
-      return <li key={name}>
-        {name}: {getTokenCount(code)}
-      </li>
-    }
-
     const code = assembleOrderedGame(game)
     const art = JSON.stringify({ sprites, map })
     const music = JSON.stringify({ phrases, chains, songs })
@@ -200,7 +194,11 @@ class Output extends Component {
 
     return (
       <ul>
-        {_.toPairs(assets).map(pair => renderCodeCount(...pair))}
+        {_.toPairs(assets).map(pair => ((name, code) => (
+          <li key={name}>
+            {name}: {getTokenCount(code)}
+          </li>
+        ))(...pair))}
       </ul>
     )
   }
