@@ -41,6 +41,7 @@ const actions = createActions({
   [actionTypes.COUNTER_CASSETTE_REQUEST]: () => {},
   [actionTypes.COUNTER_CASSETTE_SUCCESS]: d => d,
   [actionTypes.SET_SCROLL_INFO]: d => d,
+  [actionTypes.SET_CURSOR_POSITION]: d => d,
   [actionTypes.SET_CODE_TAB]: d => d,
   [actionTypes.UPDATE_HISTORY]: d => d
 })

@@ -88,6 +88,11 @@ const game = handleActions(
       [payload.tab]: { ...state[payload.tab], scrollInfo: payload.scrollInfo }
     }),
 
+    [actionTypes.SET_CURSOR_POSITION]: (state, { payload }) => ({
+      ...state,
+      [payload.tab]: { ...state[payload.tab], cursorPosition: payload.cursorPosition}
+    }),
+
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistGame(action.payload)
   },

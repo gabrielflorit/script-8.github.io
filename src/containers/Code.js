@@ -16,6 +16,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(actions.updateGame({ tab, content })),
   setScrollInfo: ({ tab, scrollInfo }) =>
     dispatch(actions.setScrollInfo({ tab, scrollInfo })),
+  setCursorPosition: ({ tab, cursorPosition }) =>
+    dispatch(actions.setCursorPosition({ tab, cursorPosition })),
   updateHistory: ({ index, history }) =>
     dispatch(actions.updateHistory({ index, history }))
 })

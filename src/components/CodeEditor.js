@@ -260,6 +260,13 @@ class CodeEditor extends Component {
         tab: getActive(this.props.game).key
       })
 
+      // Save current cursor position.
+      const oldCursorPosition = this.codeMirror.getCursor()
+      this.props.setCursorPosition({
+        cursorPosition: oldCursorPosition,
+        tab: getActive(this.props.game).key
+      })
+
       // Set codemirror contents to new tab.
       this.setContents(getActive(nextProps.game).text || '')
 
@@ -281,6 +288,12 @@ class CodeEditor extends Component {
       const { scrollInfo } = getActive(nextProps.game)
       if (scrollInfo) {
         this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
+      }
+
+      // Try setting new tab's cursorPosition.
+      const { cursorPosition } = getActive(nextProps.game)
+      if (cursorPosition) {
+        this.codeMirror.setCursor(cursorPosition)
       }
 
       // Give editor focus.
