@@ -2,7 +2,7 @@ import _ from 'lodash'
 import classNames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { tokenizer } from "acorn";
+import { tokenizer } from 'acorn'
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -40,20 +40,21 @@ const mapDispatchToProps = dispatch => ({
   finishBoot: () => dispatch(actions.finishBoot())
 })
 
-const getTokenCount = src => {
+const getTokenCount = game => {
+  const src = assembleOrderedGame(game)
   try {
     return numberWithCommas([...tokenizer(src)].length)
   } catch (error) {
-    return "ERROR"
+    return 'ERROR'
   }
 }
+const throttledTokenCount = _.throttle(getTokenCount, 1000)
 
 class Output extends Component {
   constructor(props) {
     super(props)
 
     this.evaluate = this.evaluate.bind(this)
-    this.getSize = this.getSize.bind(this)
     this.handleClickSize = this.handleClickSize.bind(this)
     this.resize = _.debounce(this.resize.bind(this), 100)
     this.handleBlur = this.handleBlur.bind(this)
@@ -177,35 +178,11 @@ class Output extends Component {
     }
   }
 
-  getSize() {
-    const { game, songs, chains, phrases, sprites, map } = this.props
-
-    const code = assembleOrderedGame(game)
-    const art = JSON.stringify({ sprites, map })
-    const music = JSON.stringify({ phrases, chains, songs })
-    const total = code + art + music
-
-    const assets = {
-      code,
-      art,
-      music,
-      total
-    };
-
-    return (
-      <ul>
-        {_.toPairs(assets).map(pair => ((name, code) => (
-          <li key={name}>
-            {name}: {getTokenCount(code)}
-          </li>
-        ))(...pair))}
-      </ul>
-    )
-  }
-
   render() {
-    const { showSize, errors } = this.state
-    const { run, tutorial } = this.props
+    const { errors } = this.state
+    const { run, tutorial, game } = this.props
+
+    const tokenCount = throttledTokenCount(game)
 
     return (
       <div
@@ -233,12 +210,7 @@ class Output extends Component {
                 <li key={type}>error: {message}</li>
               ))}
             </ul>
-            <div className="stats">
-              {showSize ? this.getSize() : null}
-              <button className="button" onClick={this.handleClickSize}>
-                {showSize ? 'hide' : 'show'} cassette size
-              </button>
-            </div>
+            <div className="stats">TOKENS: {tokenCount}</div>
           </div>
         ) : null}
       </div>
