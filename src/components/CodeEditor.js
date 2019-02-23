@@ -289,7 +289,7 @@ class CodeEditor extends Component {
         this.codeMirror.getDoc().clearHistory()
       }
 
-      // Try setting new tab's scrollInfo.
+      // Try setting new tab's scrollData.
       const { scrollData } = getActive(nextProps.game)
       if (scrollData) {
         this.codeMirror.scrollTo(scrollData.left || 0, scrollData.top || 0)
