@@ -2,7 +2,7 @@ import _ from 'lodash'
 import classNames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import lz from 'lz-string'
+import { tokenizer } from "acorn";
 import actions from '../actions/actions.js'
 import bios from '../utils/bios.js'
 import screenTypes from '../utils/screenTypes.js'
@@ -10,9 +10,6 @@ import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../reducers/game.js'
-
-const sum = array =>
-  array.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 
 const mapStateToProps = ({
   screen,
@@ -175,32 +172,35 @@ class Output extends Component {
   getSize() {
     const { game, songs, chains, phrases, sprites, map } = this.props
 
-    const gameText = assembleOrderedGame(game)
+    function getTokenCount(src) {
+      try {
+        return numberWithCommas([...tokenizer(src)].length)
+      } catch (error) {
+        return "ERROR"
+      }
+    }
 
-    const gameTextLz = lz.compress(gameText)
+    function renderCodeCount(name, code) {
+      return <li key={name}>
+        {name}: {getTokenCount(code)}
+      </li>
+    }
+
+    const code = assembleOrderedGame(game)
     const art = JSON.stringify({ sprites, map })
-    const artLz = lz.compress(art)
     const music = JSON.stringify({ phrases, chains, songs })
-    const musicLz = lz.compress(music)
+    const total = code + art + music
 
-    const sizes = [
-      ['code', gameText, gameTextLz],
-      ['art', art, artLz],
-      ['music', music, musicLz]
-    ]
+    const assets = {
+      code,
+      art,
+      music,
+      total
+    };
 
     return (
       <ul>
-        {sizes.map((d, i) => (
-          <li key={i}>
-            {d[0]}: {numberWithCommas(d[1].length)}/
-            {numberWithCommas(d[2].length)}
-          </li>
-        ))}
-        <li>
-          total: {numberWithCommas(sum(sizes.map(d => d[1].length)))}/
-          {numberWithCommas(sum(sizes.map(d => d[2].length)))}
-        </li>
+        {_.toPairs(assets).map(pair => renderCodeCount(...pair))}
       </ul>
     )
   }
