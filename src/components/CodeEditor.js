@@ -82,6 +82,12 @@ class CodeEditor extends Component {
       this.codeMirror.scrollTo(scrollInfo.left || 0, scrollInfo.top || 0)
     }
 
+    // If found, restore cursor position.
+    const { cursorPosition } = activeGame
+    if (cursorPosition) {
+      this.codeMirror.setCursor(cursorPosition);
+    }
+
     // Give editor focus.
     this.codeMirror.focus()
   }
@@ -305,7 +311,9 @@ class CodeEditor extends Component {
     window.removeEventListener('keyup', this.hideSlider)
     const activeGame = getActive(this.props.game)
     const scrollInfo = this.codeMirror.getScrollInfo()
+    const cursorPosition = this.codeMirror.getCursor()
     this.props.setScrollInfo({ scrollInfo, tab: activeGame.key })
+    this.props.setCursorPosition({ cursorPosition, tab: activeGame.key })
     this.props.updateHistory({
       index: activeGame.key,
       history: this.codeMirror.getDoc().getHistory()

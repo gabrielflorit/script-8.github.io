@@ -38,6 +38,7 @@ class Code extends Component {
       game,
       tutorial,
       setScrollInfo,
+      setCursorPosition,
       docHistories,
       updateHistory
     } = this.props
@@ -53,6 +54,7 @@ class Code extends Component {
             game={game}
             updateContent={this.handleTabUpdates}
             setScrollInfo={setScrollInfo}
+            setCursorPosition={setCursorPosition}
             docHistories={docHistories}
             updateHistory={updateHistory}
             tutorial={tutorial}
