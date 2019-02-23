@@ -79,14 +79,8 @@ class CodeEditor extends Component {
     // If found, restore scroll data.
     const { scrollData } = activeGame
     if (scrollData) {
-      this.codeMirror.scrollTo(scrollData.left || 0, scrollData.top || 0);
-      this.codeMirror.setCursor(scrollData.cursorPosition);
-    }
-
-    // If found, restore cursor position.
-    const { cursorPosition } = activeGame
-    if (cursorPosition) {
-      this.codeMirror.setCursor(cursorPosition);
+      this.codeMirror.scrollTo(scrollData.left || 0, scrollData.top || 0)
+      this.codeMirror.setCursor(scrollData.cursorPosition)
     }
 
     // Give editor focus.
