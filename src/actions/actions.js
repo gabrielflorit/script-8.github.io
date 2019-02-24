@@ -12,6 +12,7 @@ import {
 } from '../reducers/game.js'
 
 const actions = createActions({
+  [actionTypes.DISMISS_NOTICES]: d => d,
   [actionTypes.TOGGLE_SOUND]: () => {},
   [actionTypes.SET_SCREEN]: d => d,
   [actionTypes.FETCH_GIST_REQUEST]: () => {},

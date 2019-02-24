@@ -20,7 +20,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 store.subscribe(() => {
   saveState({
-    token: store.getState().token
+    token: store.getState().token,
+    dismissedNotices: store.getState().dismissedNotices
   })
 })
 
