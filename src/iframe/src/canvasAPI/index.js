@@ -19,9 +19,7 @@ const canvasAPI = ({
   sprites,
   map
 }) => {
-  const _sprites = JSON.parse(JSON.stringify(sprites))
-  let _runningMap = JSON.parse(JSON.stringify(map))
-  const _originalMap = JSON.parse(JSON.stringify(map))
+  let _runningMap = JSON.parse(JSON.stringify(map || []))
   ctx.setTransform(1, 0, 0, 1, 0, 0)
 
   let _cameraX = 0
@@ -33,7 +31,7 @@ const canvasAPI = ({
   _memoryCanvas.height = canvasHeight
   const _mCtx = _memoryCanvas.getContext('2d')
 
-  Object.entries(_sprites).forEach(([skey, value]) => {
+  Object.entries(sprites).forEach(([skey, value]) => {
     const key = +skey
     const row = Math.floor(key / 16)
     const col = key % 16
@@ -47,7 +45,7 @@ const canvasAPI = ({
 
     getTile(mx, my) {
       const tile = get(_runningMap, [my, mx], null)
-      let result = tile !== null ? _sprites[tile] : null
+      let result = tile !== null ? sprites[tile] : null
       if (result) {
         result.type = result[8]
         result.number = tile
@@ -103,7 +101,7 @@ const canvasAPI = ({
     },
 
     resetMap() {
-      _runningMap = JSON.parse(JSON.stringify(_originalMap))
+      _runningMap = JSON.parse(JSON.stringify(map))
     },
 
     map(x = 0, y = 0) {
@@ -168,7 +166,7 @@ const canvasAPI = ({
         darken,
         flipH,
         flipV,
-        sprites: _sprites,
+        sprites,
         ctx
       })
     },
