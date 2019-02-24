@@ -19,8 +19,9 @@ const canvasAPI = ({
   sprites,
   map
 }) => {
-  const _sprites = sprites
-  const _map = map
+  const _sprites = JSON.parse(JSON.stringify(sprites))
+  let _runningMap = JSON.parse(JSON.stringify(map))
+  const _originalMap = JSON.parse(JSON.stringify(map))
   ctx.setTransform(1, 0, 0, 1, 0, 0)
 
   let _cameraX = 0
@@ -45,16 +46,17 @@ const canvasAPI = ({
     },
 
     getTile(mx, my) {
-      const tile = get(_map, [my, mx], null)
+      const tile = get(_runningMap, [my, mx], null)
       let result = tile !== null ? _sprites[tile] : null
       if (result) {
         result.type = result[8]
+        result.number = tile
       }
       return result
     },
 
     setTile(mx, my, spriteNumber) {
-      _map[my][mx] = spriteNumber
+      _runningMap[my][mx] = spriteNumber
     },
 
     line(x1, y1, x2, y2, c = 0) {
@@ -100,9 +102,13 @@ const canvasAPI = ({
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
+    resetMap() {
+      _runningMap = JSON.parse(JSON.stringify(_originalMap))
+    },
+
     map(x = 0, y = 0) {
       // const before = Date.now()
-      _map.forEach((row, rowNumber) => {
+      _runningMap.forEach((row, rowNumber) => {
         row.forEach((spriteIndex, colNumber) => {
           if (spriteIndex !== null) {
             const sx = (spriteIndex % 16) * 8
@@ -155,7 +161,16 @@ const canvasAPI = ({
     },
 
     sprite(x, y, spriteIndex, darken = 0, flipH = false, flipV = false) {
-      sprite({ x, y, spriteIndex, darken, flipH, flipV, sprites: _sprites, ctx })
+      sprite({
+        x,
+        y,
+        spriteIndex,
+        darken,
+        flipH,
+        flipV,
+        sprites: _sprites,
+        ctx
+      })
     },
 
     circStroke(x, y, r, c = 0) {
