@@ -5,6 +5,30 @@ import screenTypes from '../utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
 import { parseGistGame, assembleMiscLines } from './game.js'
 
+describe('dismissedNotices', () => {
+  test('blank to one', () => {
+    const before = {
+      ...initialState
+    }
+    const newState = reducer(before, actions.dismissNotices([1, 2, 3]))
+    expect(newState).toEqual({
+      ...before,
+      dismissedNotices: [1, 2, 3]
+    })
+  })
+  test('one to two', () => {
+    const before = {
+      ...initialState,
+      dismissedNotices: [1]
+    }
+    const newState = reducer(before, actions.dismissNotices([2, 1, 3]))
+    expect(newState).toEqual({
+      ...before,
+      dismissedNotices: [2, 1, 3]
+    })
+  })
+})
+
 describe('assembleMiscLines', () => {
   test('tab 0', () => {
     expect(
@@ -67,7 +91,7 @@ describe('parseGistGame', () => {
           }
         }
       })
-    ).toEqual({ 0: { text: 'one',key: 0, active: true } })
+    ).toEqual({ 0: { text: 'one', key: 0, active: true } })
   })
   test('two tabs', () => {
     expect(
@@ -83,9 +107,9 @@ describe('parseGistGame', () => {
       })
     ).toEqual({
       0: { text: 'one\ntwo\nthree', active: true, key: 0 },
-      1: { text: '', key: 1,active: false,  },
-      2: { text: 'four', key: 2,active: false,  },
-      3: { text: 'five\nsix', key: 3,active: false,  }
+      1: { text: '', key: 1, active: false },
+      2: { text: 'four', key: 2, active: false },
+      3: { text: 'five\nsix', key: 3, active: false }
     })
   })
 })
@@ -98,7 +122,7 @@ describe('docHistories', () => {
         0: 'something'
       }
     }
-    let newState = reducer(before, actions.newGame())
+    const newState = reducer(before, actions.newGame())
     expect(newState).toEqual({
       ...before,
       docHistories: {}
@@ -111,7 +135,7 @@ describe('docHistories', () => {
         0: 'something'
       }
     }
-    let newState = reducer(
+    const newState = reducer(
       before,
       actions.updateHistory({
         index: 2,
@@ -138,7 +162,7 @@ describe('tutorial', () => {
       ...initialState,
       tutorial: null
     }
-    let newState = reducer(
+    const newState = reducer(
       before,
       actions.setTutorialSlide({
         lessonIndex: 0,
@@ -159,7 +183,7 @@ describe('tutorial', () => {
       ...initialState,
       tutorial: { a: '1' }
     }
-    let newState = reducer(before, actions.closeTutorial())
+    const newState = reducer(before, actions.closeTutorial())
     expect(newState).toEqual({
       ...before,
       tutorial: null

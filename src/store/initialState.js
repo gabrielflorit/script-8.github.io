@@ -23,6 +23,7 @@ const initialState = {
   chains: {},
   songs: {},
   docHistories: {},
+  dismissedNotices: [],
   // tutorial: {
   //   lessonIndex: 1,
   //   slideIndex: 0
