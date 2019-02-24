@@ -68,7 +68,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p start-js watch-css parse-lessons watch-lessons parse-apiDocs watch-apiDocs parse-howTo watch-howTo parse-shortcuts watch-shortcuts",
     "build-js": "react-scripts build",
-    "build": "npm-run-all -s build-css build-js iframe",
+    "build": "npm-run-all -s parse-lessons parse-apiDocs parse-howTo parse-shortcuts build-css build-js iframe",
     "serve": "serve -s build",
     "build-dev": "npm-run-all -s build serve",
     "test": "react-scripts test --env=jsdom",
