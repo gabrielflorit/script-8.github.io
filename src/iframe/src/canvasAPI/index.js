@@ -17,9 +17,9 @@ const canvasAPI = ({
   width: canvasWidth,
   height: canvasHeight,
   sprites,
-  map
+  map = []
 }) => {
-  let _runningMap = JSON.parse(JSON.stringify(map || []))
+  let _runningMap = JSON.parse(JSON.stringify(map))
   ctx.setTransform(1, 0, 0, 1, 0, 0)
 
   let _cameraX = 0

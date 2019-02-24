@@ -533,6 +533,7 @@ class Iframe extends Component {
   handleRestartClick() {
     window.initialState = Date.now()
     this.reduxHistory = []
+    window.resetMap()
     this.forceUpdate()
   }
 
