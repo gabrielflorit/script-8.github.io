@@ -26,10 +26,11 @@ import '../css/App.css'
 
 console.log(JSON.stringify(`SCRIPT-8 app v ${version}`, null, 2))
 
-const mapStateToProps = ({ screen, tutorial, dismissedNotices }) => ({
+const mapStateToProps = ({ screen, tutorial, dismissedNotices, token }) => ({
   screen,
   tutorial,
-  dismissedNotices
+  dismissedNotices,
+  token
 })
 
 const mapDispatchToProps = () => ({})
@@ -69,7 +70,7 @@ class App extends Component {
   }
 
   render() {
-    const { screen, tutorial, dismissedNotices } = this.props
+    const { screen, tutorial, dismissedNotices, token } = this.props
 
     // show notice only if notices has a notice not in dismissed notices
     const newNoticeIds = _.difference(notices.map(d => d.id), dismissedNotices)
@@ -96,7 +97,7 @@ class App extends Component {
               tutorialRef={this.tutorialElement}
             />
           ) : null}
-          {newNoticeIds.length ? <Notice /> : null}
+          {!_.isEmpty(token) && newNoticeIds.length ? <Notice /> : null}
         </div>
       </ErrorBoundary>
     )

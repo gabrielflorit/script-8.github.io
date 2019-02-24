@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "id": 1,
+    "date": "2-24-2019",
+    "text": "Renamed `tile` to `getTile`. Please update your cassettes. See HELP for more details."
+  }
+]
