@@ -63,8 +63,11 @@
     - clear([c])
     - Clears the screen. Optionally pass in a color to draw the entire screen with that color.
   -
-    - tile(mx, my)
+    - getTile(mx, my)
     - If found, returns the sprite at this location. `mx` and `my` are in map coordinates. The result is an array, with a `type` property indicating the sprite type (0-1-2-3).
+  -
+    - setTile(mx, my, spriteNumber)
+    - Sets the sprite on the map. `mx` and `my` are in map coordinates.
   -
     - map([mx=0, my=0])
     - Draws the map. `mx` and `my` are in map coordinates, e.g. mx=1, my=1 is the top-left map tile.

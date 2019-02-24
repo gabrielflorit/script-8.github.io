@@ -44,13 +44,17 @@ const canvasAPI = ({
       polyStroke({ points, args, ctx })
     },
 
-    tile(x, y) {
-      const thisTile = get(_map, [y, x], null)
-      let result = thisTile !== null ? _sprites[thisTile] : null
+    getTile(mx, my) {
+      const tile = get(_map, [my, mx], null)
+      let result = tile !== null ? _sprites[tile] : null
       if (result) {
         result.type = result[8]
       }
       return result
+    },
+
+    setTile(mx, my, spriteNumber) {
+      _map[my][mx] = spriteNumber
     },
 
     line(x1, y1, x2, y2, c = 0) {
