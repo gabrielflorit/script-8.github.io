@@ -21,7 +21,13 @@ if (process.env.NODE_ENV !== 'production') {
 store.subscribe(() => {
   saveState({
     token: store.getState().token,
-    dismissedNotices: store.getState().dismissedNotices
+    dismissedNotices: store.getState().dismissedNotices,
+    game: store.getState().game,
+    sprites: store.getState().sprites,
+    map: store.getState().map,
+    phrases: store.getState().phrases,
+    chains: store.getState().chains,
+    songs: store.getState().songs,
   })
 })
 
