@@ -228,9 +228,15 @@ class Menu extends Component {
       songs
     })
     if (dirty) {
-      const message = 'Leave site? Changes you made may not be saved.'
-      e.returnValue = message
-      return message
+      localStorage['script-8-buffer'] = JSON.stringify({
+        gist,
+        game,
+        sprites,
+        map,
+        phrases,
+        chains,
+        songs
+      })
     }
   }
 

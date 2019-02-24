@@ -26,6 +26,10 @@ class Boot extends Component {
     if (id) {
       // try fetching the gist.
       fetchGist({ id, token })
+    } else if ('script-8-buffer' in localStorage) {
+      // const { gist, game, sprites, map, phrases, chains, songs } = JSON.parse(localStorage['buffer'])
+      actions.fetchGistSuccess(JSON.parse(localStorage['buffer']))
+      setScreen(screenTypes.CODE)
     } else {
       // If there is no id,
       // show home.
