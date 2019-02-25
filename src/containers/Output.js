@@ -63,7 +63,8 @@ class Output extends Component {
 
     this.state = {
       showSize: false,
-      errors: []
+      errors: [],
+      log: null
     }
   }
 
@@ -91,12 +92,20 @@ class Output extends Component {
     this._iframe.focus()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.run) {
       this._iframe.focus()
     }
     if (this.isLoaded) {
       this.evaluate()
+    }
+    if (
+      assembleOrderedGame(this.props.game) !==
+      assembleOrderedGame(prevProps.game)
+    ) {
+      this.setState({
+        log: null
+      })
     }
   }
 
@@ -146,12 +155,15 @@ class Output extends Component {
           if (e.data.callback === 'finishBoot') {
             finishBoot()
           }
-          const { height, errors } = e.data
+          const { height, errors, log } = e.data
           if (height && this._iframe) {
             this._iframe.height = height
           }
           if (errors) {
             this.setState({ errors })
+          }
+          if (log) {
+            this.setState({ log })
           }
         }
       }
@@ -179,7 +191,7 @@ class Output extends Component {
   }
 
   render() {
-    const { errors } = this.state
+    const { errors, log } = this.state
     const { run, tutorial, game } = this.props
 
     const tokenCount = throttledTokenCount(game)
@@ -205,6 +217,7 @@ class Output extends Component {
         />
         {!run ? (
           <div className="errors-and-stats">
+            {log ? <div className="log">log: {JSON.stringify(log)}</div> : null}
             <ul className="errors">
               {errors.map(({ type, message }) => (
                 <li key={type}>error: {message}</li>

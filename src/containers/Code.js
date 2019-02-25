@@ -14,8 +14,8 @@ const mapStateToProps = ({ game, tutorial, docHistories }) => ({
 const mapDispatchToProps = dispatch => ({
   updateGame: ({ tab, content }) =>
     dispatch(actions.updateGame({ tab, content })),
-  setScrollInfo: ({ tab, scrollInfo }) =>
-    dispatch(actions.setScrollInfo({ tab, scrollInfo })),
+  setScrollData: ({ tab, scrollData }) =>
+    dispatch(actions.setScrollData({ tab, scrollData })),
   updateHistory: ({ index, history }) =>
     dispatch(actions.updateHistory({ index, history }))
 })
@@ -35,7 +35,7 @@ class Code extends Component {
     const {
       game,
       tutorial,
-      setScrollInfo,
+      setScrollData,
       docHistories,
       updateHistory
     } = this.props
@@ -50,7 +50,7 @@ class Code extends Component {
           <CodeEditor
             game={game}
             updateContent={this.handleTabUpdates}
-            setScrollInfo={setScrollInfo}
+            setScrollData={setScrollData}
             docHistories={docHistories}
             updateHistory={updateHistory}
             tutorial={tutorial}

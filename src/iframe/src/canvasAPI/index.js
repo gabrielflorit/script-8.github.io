@@ -17,10 +17,9 @@ const canvasAPI = ({
   width: canvasWidth,
   height: canvasHeight,
   sprites,
-  map
+  map = []
 }) => {
-  const _sprites = sprites
-  const _map = map
+  let _runningMap = JSON.parse(JSON.stringify(map))
   ctx.setTransform(1, 0, 0, 1, 0, 0)
 
   let _cameraX = 0
@@ -32,7 +31,7 @@ const canvasAPI = ({
   _memoryCanvas.height = canvasHeight
   const _mCtx = _memoryCanvas.getContext('2d')
 
-  Object.entries(_sprites).forEach(([skey, value]) => {
+  Object.entries(sprites).forEach(([skey, value]) => {
     const key = +skey
     const row = Math.floor(key / 16)
     const col = key % 16
@@ -45,16 +44,17 @@ const canvasAPI = ({
     },
 
     getTile(mx, my) {
-      const tile = get(_map, [my, mx], null)
-      let result = tile !== null ? _sprites[tile] : null
+      const tile = get(_runningMap, [my, mx], null)
+      let result = tile !== null ? sprites[tile] : null
       if (result) {
-        result.type = result[8]
+        result.type = result[8] || 0
+        result.number = tile
       }
       return result
     },
 
     setTile(mx, my, spriteNumber) {
-      _map[my][mx] = spriteNumber
+      _runningMap[my][mx] = spriteNumber
     },
 
     line(x1, y1, x2, y2, c = 0) {
@@ -100,9 +100,13 @@ const canvasAPI = ({
       ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
     },
 
+    resetMap() {
+      _runningMap = JSON.parse(JSON.stringify(map))
+    },
+
     map(x = 0, y = 0) {
       // const before = Date.now()
-      _map.forEach((row, rowNumber) => {
+      _runningMap.forEach((row, rowNumber) => {
         row.forEach((spriteIndex, colNumber) => {
           if (spriteIndex !== null) {
             const sx = (spriteIndex % 16) * 8
@@ -155,7 +159,16 @@ const canvasAPI = ({
     },
 
     sprite(x, y, spriteIndex, darken = 0, flipH = false, flipV = false) {
-      sprite({ x, y, spriteIndex, darken, flipH, flipV, sprites: _sprites, ctx })
+      sprite({
+        x,
+        y,
+        spriteIndex,
+        darken,
+        flipH,
+        flipV,
+        sprites,
+        ctx
+      })
     },
 
     circStroke(x, y, r, c = 0) {
