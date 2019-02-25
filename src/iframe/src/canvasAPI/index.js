@@ -85,8 +85,8 @@ const canvasAPI = ({
     },
 
     camera(x = 0, y = 0) {
-      _cameraX = x
-      _cameraY = y
+      _cameraX = Math.floor(x)
+      _cameraY = Math.floor(y)
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.translate(-x, -y)
     },
