@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Sprite extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.draw = this.draw.bind(this)
@@ -42,7 +42,7 @@ class Sprite extends Component {
     }
   }
 
-  draw () {
+  draw() {
     // Assign various properties to global scope, for the user.
     const { sprites } = this.props
     this.canvasAPI = canvasAPI({
@@ -61,25 +61,25 @@ class Sprite extends Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.draw()
   }
 
-  getCurrentSprite () {
+  getCurrentSprite() {
     const { sprites } = this.props
     const { spriteIndex } = this.state
     return _.get(sprites, spriteIndex, _.range(8).map(d => '        '))
   }
 
-  handleCanvasClick (spriteIndex) {
+  handleCanvasClick(spriteIndex) {
     this.setState({ spriteIndex })
   }
 
-  handleColorClick (colorIndex) {
+  handleColorClick(colorIndex) {
     this.setState({ colorIndex, mode: '+' })
   }
 
-  handleTypeClick (typeIndex) {
+  handleTypeClick(typeIndex) {
     const { spriteIndex } = this.state
     const { updateSprite } = this.props
     const sprite = this.getCurrentSprite()
@@ -89,7 +89,7 @@ class Sprite extends Component {
     updateSprite({ sprite: newSprite, index: spriteIndex })
   }
 
-  handleOnMouseDown (e) {
+  handleOnMouseDown(e) {
     this.setState({
       mouseDown: true
     })
@@ -97,20 +97,20 @@ class Sprite extends Component {
     this.drawPixel({ row: +row, col: +col })
   }
 
-  handleOnMouseEnter (e) {
+  handleOnMouseEnter(e) {
     if (this.state.mouseDown) {
       const { row, col } = e.target.dataset
       this.drawPixel({ row: +row, col: +col })
     }
   }
 
-  handleOnMouseUp () {
+  handleOnMouseUp() {
     this.setState({
       mouseDown: false
     })
   }
 
-  handleOnTouchMove (e) {
+  handleOnTouchMove(e) {
     if (this.state.mouseDown) {
       const touchLocation = e.changedTouches[0]
       const dataset = document.elementFromPoint(
@@ -124,13 +124,13 @@ class Sprite extends Component {
     }
   }
 
-  setMode (mode) {
+  setMode(mode) {
     this.setState({
       mode
     })
   }
 
-  drawPixel ({ row, col }) {
+  drawPixel({ row, col }) {
     const { spriteIndex, colorIndex, mode } = this.state
     const { updateSprite } = this.props
 
@@ -148,11 +148,11 @@ class Sprite extends Component {
     updateSprite({ sprite: newSprite, index: spriteIndex })
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.draw()
   }
 
-  render () {
+  render() {
     const { spriteIndex, colorIndex, mode } = this.state
     const sprite = this.getCurrentSprite()
     const isEmpty = !sprite.slice(0, 8).filter(d => d !== '        ').length
@@ -161,12 +161,12 @@ class Sprite extends Component {
       <div
         onMouseUp={this.handleOnMouseUp}
         onTouchEnd={this.handleOnMouseUp}
-        className='Sprite two-rows-and-grid'
+        className="Sprite two-rows-and-grid"
       >
-        <div className='main'>
-          <div className='SpriteEditor'>
-            <div className='sprite-and-colors'>
-              <table className='sprite'>
+        <div className="main">
+          <div className="SpriteEditor">
+            <div className="sprite-and-colors">
+              <table className="sprite">
                 <tbody>
                   {_.range(8).map(row => (
                     <tr key={row}>
@@ -192,8 +192,8 @@ class Sprite extends Component {
                   ))}
                 </tbody>
               </table>
-              <div className='colors-and-tools'>
-                <table className='colors'>
+              <div className="colors-and-tools">
+                <table className="colors">
                   <tbody>
                     {_.range(2).map(row => (
                       <tr key={row}>
@@ -222,8 +222,8 @@ class Sprite extends Component {
                     ))}
                   </tbody>
                 </table>
-                <div className='tools'>
-                  <div className='add-delete'>
+                <div className="tools">
+                  <div className="add-delete">
                     <button
                       className={classNames('button', {
                         active: mode === '+'
@@ -274,7 +274,7 @@ class Sprite extends Component {
                 </div>
               </div>
             </div>
-            <div className='sprites'>
+            <div className="sprites">
               <table>
                 <tbody>
                   {_.range(8).map(row => (
@@ -308,6 +308,7 @@ class Sprite extends Component {
                 }}
               />
             </div>
+            <div className="sprite-number">{spriteIndex}</div>
           </div>
         </div>
       </div>
@@ -315,4 +316,7 @@ class Sprite extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sprite)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sprite)
