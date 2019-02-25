@@ -28,6 +28,7 @@ store.subscribe(() => {
     phrases: store.getState().phrases,
     chains: store.getState().chains,
     songs: store.getState().songs,
+    gist: store.getState().gist,
   })
 })
 
