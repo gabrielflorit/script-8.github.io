@@ -64,7 +64,7 @@
     - - clamp(number, [lower], upper)
       - Clamps `number` between inclusive `lower` and `upper`. <a class='text' href='https://lodash.com/docs/4.17.11#clamp'>By Lodash</a>.
     - - log(message)
-      - Prints `message` to browser console.
+      - Prints `message` to the preview window.
     - - new StateMachine({ init, transitions })
       - Creates a state machine. By <a href='https://github.com/jakesgordon/javascript-state-machine'>Jake Gordon</a>. Consult its documentation.
 - title: Sound (not stable)

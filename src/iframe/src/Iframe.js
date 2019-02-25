@@ -16,7 +16,6 @@ import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
-import log from './log.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import createReducer from './createReducer.js'
@@ -110,8 +109,10 @@ class Iframe extends Component {
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
     this.handleRestartClick = this.handleRestartClick.bind(this)
-    this.logger = this.logger.bind(this)
+    this.errorLogger = this.errorLogger.bind(this)
     this.loggerErrors = {}
+    this.logger = this.logger.bind(this)
+    this.log = null
 
     this.heightSent = 0
 
@@ -125,7 +126,7 @@ class Iframe extends Component {
 
     this.volumeNode = new Tone.Volume()
 
-    this.reducer = createReducer(this.logger)
+    this.reducer = createReducer(this.errorLogger)
     this.store = null
     this.previousInitialState = null
     this.reduxHistory = []
@@ -167,7 +168,23 @@ class Iframe extends Component {
     }
   }
 
-  logger({ type, error = null }) {
+  logger(value) {
+    const { message, run } = this.state
+    // If we have something to log,
+    if (!run && value) {
+      // and it is different than the previous one,
+      if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
+        // update the log,
+        this.log = value
+        // and send to parent.
+        message.ports[0].postMessage({
+          log: this.log
+        })
+      }
+    }
+  }
+
+  errorLogger({ type, error = null }) {
     const { message, run } = this.state
     // If we have an error,
     if (error) {
@@ -288,7 +305,7 @@ class Iframe extends Component {
         Math,
         Object,
         Array,
-        log,
+        log: this.logger,
         ...canvasAPI({
           ctx: this._canvas.getContext('2d'),
           width: CANVAS_SIZE,
@@ -447,9 +464,9 @@ class Iframe extends Component {
         initialState = this.previousInitialState
       }
     `)
-      this.logger({ type: 'evalCode' })
+      this.errorLogger({ type: 'evalCode' })
     } catch (e) {
-      this.logger({ type: 'evalCode', error: e })
+      this.errorLogger({ type: 'evalCode', error: e })
     }
   }
 
@@ -498,9 +515,9 @@ class Iframe extends Component {
             fps: newFps
           })
         }
-        this.logger({ type: 'startTimer' })
+        this.errorLogger({ type: 'startTimer' })
       } catch (e) {
-        this.logger({ type: 'startTimer', error: e })
+        this.errorLogger({ type: 'startTimer', error: e })
       }
     }
     if (this.timer) {
@@ -690,7 +707,7 @@ class Iframe extends Component {
             this.reduxHistory.forEach(({ state, action }, i) => {
               if (i === timelineIndex - 1) {
                 // Enable logging only if this is the selected frame.
-                this.updateGlobals({ log })
+                this.updateGlobals({ log: this.logger })
               } else {
                 this.updateGlobals({ log: NOOP })
               }
@@ -699,7 +716,7 @@ class Iframe extends Component {
             })
 
             // Re-enable logging.
-            this.updateGlobals({ log })
+            this.updateGlobals({ log: this.logger })
 
             alteredStates = alteredStates.filter(d => !isEmpty(d))
 
@@ -739,7 +756,7 @@ class Iframe extends Component {
                 window.drawActors &&
                   window.drawActors({ actors: matchingActors }, true)
                 // Re-enable console.log.
-                this.updateGlobals({ log })
+                this.updateGlobals({ log: this.logger })
               }
             })
 
@@ -763,9 +780,9 @@ class Iframe extends Component {
               timelineIndex: newTimelineIndex
             })
           }
-          this.logger({ type: 'isPaused' })
+          this.errorLogger({ type: 'isPaused' })
         } catch (e) {
-          this.logger({ type: 'isPaused', error: e })
+          this.errorLogger({ type: 'isPaused', error: e })
         }
       } else {
         // If the ul buttons don't have any canvases, add them!
