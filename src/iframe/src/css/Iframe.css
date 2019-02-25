@@ -60,7 +60,7 @@
 }
 .VT323,
 .button,
-.stats .fps {
+.stats .stat-values .stat {
   font-family: 'VT323', monospace;
 }
 html {
@@ -230,8 +230,10 @@ ul li button.active canvas {
 .stats button {
   padding-right: 1rem;
 }
-.stats .fps {
+.stats .stat-values {
   margin-left: auto;
+}
+.stats .stat-values .stat {
   color: #0f2a3f;
   font-size: 1.5rem;
 }

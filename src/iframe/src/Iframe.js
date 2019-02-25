@@ -163,7 +163,8 @@ class Iframe extends Component {
       isPaused: true,
       alteredStates: [],
       run: true,
-      sound: true
+      sound: true,
+      mousePosition: { x: 0, y: 0 }
     }
   }
 
@@ -331,6 +332,14 @@ class Iframe extends Component {
     this.mouseupHandler = () => {
       this.keys.delete('mousedown')
     }
+    this.mousemoveHandler = ({ target, clientX, clientY }) => {
+      if (target.classList.contains("master")) {
+        const canvasClientRect = target.getBoundingClientRect();
+        let x = Math.floor((clientX - canvasClientRect.left) * target.width / canvasClientRect.width)
+        let y = Math.floor((clientY - canvasClientRect.top) * target.height / canvasClientRect.height)
+        this.setState({ mousePosition: { x, y } })
+      }
+    }
     this.keydownHandler = ({ key }) => {
       this.keys.add(key)
     }
@@ -342,6 +351,7 @@ class Iframe extends Component {
     document.addEventListener('mousedown', this.mousedownHandler)
     document.addEventListener('touchend', this.mouseupHandler)
     document.addEventListener('mouseup', this.mouseupHandler)
+    document.addEventListener('mousemove', this.mousemoveHandler)
     document.addEventListener('keydown', this.keydownHandler)
     document.addEventListener('keyup', this.keyupHandler)
 
@@ -412,6 +422,7 @@ class Iframe extends Component {
     document.removeEventListener('mousedown', this.mousedownHandler)
     document.removeEventListener('touchend', this.mouseupHandler)
     document.removeEventListener('mouseup', this.mouseupHandler)
+    document.removeEventListener('mousemove', this.mousemoveHandler)
     document.removeEventListener('keydown', this.keydownHandler)
     document.removeEventListener('keyup', this.keyupHandler)
   }
@@ -933,12 +944,16 @@ class Iframe extends Component {
               restart
             </button>
 
-            <div
-              className={classNames('fps', {
-                hide: isPaused
-              })}
+            <div className={classNames('stat-values', {
+              hide: isPaused
+            })}
             >
-              fps (avg): <span>{fps}</span>
+              <div className={classNames('stat')}>
+                mouse: (<span>{this.state.mousePosition.x}</span>, <span>{this.state.mousePosition.y}</span>)
+              </div>
+              <div className={classNames('stat')}>
+                fps (avg): <span>{fps}</span>
+              </div>
             </div>
           </div>
           <div
