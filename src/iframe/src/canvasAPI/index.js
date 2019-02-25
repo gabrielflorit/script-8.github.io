@@ -189,8 +189,8 @@ const canvasAPI = ({
 
     getPixel(x, y) {
       return getPixel({
-        x: Math.floor(x),
-        y: Math.floor(y),
+        x: Math.floor(x - _cameraX),
+        y: Math.floor(y - _cameraY),
         ctx
       })
     },
