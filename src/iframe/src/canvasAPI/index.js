@@ -47,7 +47,7 @@ const canvasAPI = ({
       const tile = get(_runningMap, [my, mx], null)
       let result = tile !== null ? sprites[tile] : null
       if (result) {
-        result.type = result[8]
+        result.type = result[8] || 0
         result.number = tile
       }
       return result
