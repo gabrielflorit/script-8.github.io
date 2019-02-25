@@ -66,7 +66,7 @@
     - - log(message)
       - Prints `message` to the preview window.
     - - new StateMachine({ init, transitions })
-      - Creates a state machine. By <a href='https://github.com/jakesgordon/javascript-state-machine'>Jake Gordon</a>. Consult its documentation.
+      - Creates a state machine. By <a class='text' href='https://github.com/jakesgordon/javascript-state-machine'>Jake Gordon</a>. Consult its documentation.
 - title: Sound (not stable)
   dl:
     - - playPhrase(phrase)

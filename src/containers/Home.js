@@ -204,7 +204,14 @@ class Home extends Component {
             , the best of all fantasy consoles.
           </p>
           <p>
-            SCRIPT-8 is written by Gabriel Florit (that's me!). Click{' '}
+            SCRIPT-8 is written by Gabriel Florit (that's me!) and{' '}
+            <a
+              className="text"
+              href="https://github.com/script-8/script-8.github.io/graphs/contributors"
+            >
+              dedicated contributors
+            </a>
+            . Click{' '}
             <a className="text" href="https://twitter.com/gabrielflorit">
               here
             </a>{' '}

@@ -19,30 +19,36 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Help extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleLesson = this.handleLesson.bind(this)
   }
 
-  handleLesson (lessonIndex) {
+  handleLesson(lessonIndex) {
     this.props.setLessonIndex(lessonIndex)
   }
 
-  render () {
+  render() {
     return (
-      <div className='Help'>
-        <div className='main'>
-          <ul className='top-list'>
+      <div className="Help">
+        <div className="main">
+          <ul className="top-list">
             <li>
-              SCRIPT-8 is written by Gabriel Florit (that's me!). Do you have a
-              question? Or perhaps you found a bug? Tweet me at{' '}
-              <a className='text' href='https://twitter.com/gabrielflorit'>
+              SCRIPT-8 is written by Gabriel Florit (that's me!) and{' '}
+              <a
+                className="text"
+                href="https://github.com/script-8/script-8.github.io/graphs/contributors"
+              >
+                dedicated contributors
+              </a>
+              . Do you have a question? Or perhaps you found a bug? Tweet me at{' '}
+              <a className="text" href="https://twitter.com/gabrielflorit">
                 @gabrielflorit
               </a>{' '}
               and I'll be glad to help out. And visit the Github repository{' '}
               <a
-                className='text'
-                href='https://github.com/script-8/script-8.github.io'
+                className="text"
+                href="https://github.com/script-8/script-8.github.io"
               >
                 here
               </a>
@@ -52,7 +58,7 @@ class Help extends Component {
 
             <li>
               If you have any further questions, come join us on the{' '}
-              <a className='text' href='https://discord.gg/HA68FNX'>
+              <a className="text" href="https://discord.gg/HA68FNX">
                 Fantasy Consoles Discord server
               </a>
               , a friendly place to chat about these sophisticated, cutting-edge
@@ -61,11 +67,11 @@ class Help extends Component {
 
             <li>
               Lessons
-              <ul className='lessons'>
+              <ul className="lessons">
                 {lessons.map((lesson, i) => (
                   <li key={i}>
                     <button
-                      className='button'
+                      className="button"
                       onClick={() => {
                         this.handleLesson(i)
                       }}
@@ -78,7 +84,7 @@ class Help extends Component {
             </li>
           </ul>
 
-          <ul className='top-list how'>
+          <ul className="top-list how">
             <li>
               FAQ
               <dl>
@@ -92,7 +98,7 @@ class Help extends Component {
             </li>
           </ul>
 
-          <ul className='top-list'>
+          <ul className="top-list">
             <li>
               Keyboard shortcuts
               <dl>
@@ -106,10 +112,10 @@ class Help extends Component {
             </li>
           </ul>
 
-          <ul className='top-list'>
+          <ul className="top-list">
             <li>
               API documentation
-              <ul className='second-list'>
+              <ul className="second-list">
                 {apiDocs.map((section, i) => (
                   <li key={i}>
                     {section.title}
@@ -133,4 +139,7 @@ class Help extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Help)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Help)
