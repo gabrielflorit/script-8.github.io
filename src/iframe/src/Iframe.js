@@ -302,6 +302,7 @@ class Iframe extends Component {
     if (!providedGlobals) {
       globals = {
         StateMachine,
+        JSON,
         Math,
         Object,
         Array,
