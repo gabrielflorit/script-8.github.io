@@ -92,11 +92,8 @@ class Menu extends Component {
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
-    this.onClose = this.onClose.bind(this)
     this.canRecord = this.canRecord.bind(this)
     window.script8.handleCode = props.fetchToken
-
-    window.addEventListener('beforeunload', this.onClose)
   }
 
   canRecord() {
@@ -212,26 +209,7 @@ class Menu extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onClose)
     window.removeEventListener('keydown', this.keydown)
-  }
-
-  onClose(e) {
-    const { gist, game, sprites, map, phrases, chains, songs } = this.props
-    const dirty = isDirty({
-      gist,
-      game,
-      sprites,
-      map,
-      phrases,
-      chains,
-      songs
-    })
-    if (dirty) {
-      const message = 'Leave site? Changes you made may not be saved.'
-      e.returnValue = message
-      return message
-    }
   }
 
   onInsertBlankClick() {
