@@ -1,7 +1,9 @@
 let previousUserInput = {}
 
 const getUserInput = keys => {
-  const { buttons } = window.navigator.getGamepads()[0] || {}
+  const { buttons } = window.navigator.getGamepads
+    ? window.navigator.getGamepads()[0] || {}
+    : {}
 
   let newUserInput = {
     __mousedown: keys.has('mousedown'),
