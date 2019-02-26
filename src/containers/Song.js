@@ -29,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Song extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.handleSongIndexChange = this.handleSongIndexChange.bind(this)
@@ -45,7 +45,7 @@ class Song extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Tone.context.resume()
 
     const { chains, phrases } = this.props
@@ -102,13 +102,13 @@ class Song extends Component {
     )
   }
 
-  getCurrentSong () {
+  getCurrentSong() {
     const { songs } = this.props
     const { songIndex } = this.state
     return _.get(songs, songIndex, {})
   }
 
-  handlePlay () {
+  handlePlay() {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
@@ -121,7 +121,7 @@ class Song extends Component {
     })
   }
 
-  handleSongIndexChange (e) {
+  handleSongIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
       this.setState({
@@ -130,7 +130,7 @@ class Song extends Component {
     }
   }
 
-  handleChainClick ({ col }) {
+  handleChainClick({ col }) {
     const { chains, updateSong } = this.props
     const { songIndex } = this.state
     const song = this.getCurrentSong()
@@ -168,35 +168,35 @@ class Song extends Component {
     updateSong({ song: newSong, index: songIndex })
   }
 
-  drawCallback (playingIndex) {
+  drawCallback(playingIndex) {
     this.setState({
       playingIndex
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
   }
 
-  render () {
+  render() {
     const { songIndex, isPlaying, playingIndex } = this.state
     const song = this.getCurrentSong()
     const { chains } = this.props
 
     return (
-      <div className='Song two-rows-and-grid'>
-        <div className='main'>
+      <div className="Song two-rows-and-grid">
+        <div className="main">
           <div className={classNames('warning', { hide: !_.isEmpty(chains) })}>
             error: no chains found
           </div>
           <div className={classNames('settings', { hide: _.isEmpty(chains) })}>
-            <div className='title'>Song</div>
+            <div className="title">Song</div>
             <TextInput
-              label='#'
+              label="#"
               value={songIndex.toString()}
               handleChange={this.handleSongIndexChange}
-              type='number'
+              type="number"
               options={{ min: 0, max: settings.songs - 1 }}
             />
           </div>
@@ -207,7 +207,7 @@ class Song extends Component {
             >
               {isPlaying ? 'stop' : 'play'}
             </button>
-            <table className='songs'>
+            <table className="songs">
               <tbody>
                 <tr>
                   <td>c</td>
@@ -215,16 +215,14 @@ class Song extends Component {
                     const chain = _.get(song, col)
                     const highlighter =
                       col === playingIndex && isPlaying ? (
-                        <span className='highlight' />
+                        <span className="highlight" />
                       ) : null
                     return (
                       <td
                         key={col}
                         className={classNames({
                           highlight:
-                            col === playingIndex &&
-                            isPlaying &&
-                            !_.isNil(chain)
+                            col === playingIndex && isPlaying && !_.isNil(chain)
                         })}
                         onClick={() => this.handleChainClick({ col })}
                       >

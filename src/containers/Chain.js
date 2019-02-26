@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Chain extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
@@ -41,13 +41,13 @@ class Chain extends Component {
     }
   }
 
-  drawCallback (playingIndex) {
+  drawCallback(playingIndex) {
     this.setState({
       playingIndex
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Tone.context.resume()
 
     const { phrases } = this.props
@@ -96,13 +96,13 @@ class Chain extends Component {
     )
   }
 
-  getCurrentChain () {
+  getCurrentChain() {
     const { chains } = this.props
     const { chainIndex } = this.state
     return _.get(chains, chainIndex, {})
   }
 
-  handlePlay () {
+  handlePlay() {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
@@ -115,7 +115,7 @@ class Chain extends Component {
     })
   }
 
-  handleChainIndexChange (e) {
+  handleChainIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
       this.setState({
@@ -124,7 +124,7 @@ class Chain extends Component {
     }
   }
 
-  handlePhraseClick ({ channel, col }) {
+  handlePhraseClick({ channel, col }) {
     const { phrases, updateChain } = this.props
     const { chainIndex } = this.state
     const chain = this.getCurrentChain()
@@ -162,29 +162,29 @@ class Chain extends Component {
     updateChain({ chain: newChain, index: chainIndex })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
   }
 
-  render () {
+  render() {
     const { chainIndex, isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
     const { phrases } = this.props
 
     return (
-      <div className='Chain two-rows-and-grid'>
-        <div className='main'>
+      <div className="Chain two-rows-and-grid">
+        <div className="main">
           <div className={classNames('warning', { hide: !_.isEmpty(phrases) })}>
             error: no phrases found
           </div>
           <div className={classNames('settings', { hide: _.isEmpty(phrases) })}>
-            <div className='title'>Chain</div>
+            <div className="title">Chain</div>
             <TextInput
-              label='#'
+              label="#"
               value={chainIndex.toString()}
               handleChange={this.handleChainIndexChange}
-              type='number'
+              type="number"
               options={{ min: 0, max: settings.chains - 1 }}
             />
           </div>
@@ -195,7 +195,7 @@ class Chain extends Component {
             >
               {isPlaying ? 'stop' : 'play'}
             </button>
-            <table className='phrases'>
+            <table className="phrases">
               <tbody>
                 {_.range(settings.chainChannels).map(channel => (
                   <tr key={channel}>
@@ -204,7 +204,7 @@ class Chain extends Component {
                       const phrase = _.get(chain, [col, channel])
                       const highlighter =
                         channel === 0 && col === playingIndex && isPlaying ? (
-                          <span className='highlight' />
+                          <span className="highlight" />
                         ) : null
                       return (
                         <td
