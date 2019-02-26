@@ -14,9 +14,15 @@ class Updater extends Component {
     // if we have an id in the gist,
     // make sure the url reflects this
     const { gist } = this.props
-    const id = _.get(gist, 'data.id')
-    if (id) {
-      this.updateUrl(id)
+    const gistId = _.get(gist, 'data.id')
+
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const urlId = params.get('id')
+
+    if (urlId || gistId) {
+      // id from URL wins every time over persisted cassette
+      this.updateUrl(urlId? urlId: gistId)
     }
   }
 
