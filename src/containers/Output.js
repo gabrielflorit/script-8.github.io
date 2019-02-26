@@ -162,7 +162,7 @@ class Output extends Component {
           if (errors) {
             this.setState({ errors })
           }
-          if (log) {
+          if (!_.isNil(log)) {
             this.setState({ log })
           }
         }
@@ -217,7 +217,9 @@ class Output extends Component {
         />
         {!run ? (
           <div className="errors-and-stats">
-            {log ? <div className="log">log: {JSON.stringify(log)}</div> : null}
+            {!_.isNil(log) ? (
+              <div className="log">log: {JSON.stringify(log)}</div>
+            ) : null}
             <ul className="errors">
               {errors.map(({ type, message }) => (
                 <li key={type}>error: {message}</li>

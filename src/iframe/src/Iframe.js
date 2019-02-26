@@ -171,7 +171,7 @@ class Iframe extends Component {
   logger(value) {
     const { message, run } = this.state
     // If we have something to log,
-    if (!run && value) {
+    if (!run && !_.isNil(value)) {
       // and it is different than the previous one,
       if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
         // update the log,
