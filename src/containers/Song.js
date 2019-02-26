@@ -45,6 +45,12 @@ class Song extends Component {
     }
   }
 
+  drawCallback(playingIndex) {
+    this.setState({
+      playingIndex
+    })
+  }
+
   componentDidMount() {
     Tone.context.resume()
 
@@ -151,6 +157,7 @@ class Song extends Component {
       // If the cell is not empty,
       // and if it shows the first chain,
       const newChainIndex = _.indexOf(sortedChains, newChain)
+
       if (newChainIndex === 0) {
         // clear.
         newChain = null
@@ -166,12 +173,6 @@ class Song extends Component {
     }
 
     updateSong({ song: newSong, index: songIndex })
-  }
-
-  drawCallback(playingIndex) {
-    this.setState({
-      playingIndex
-    })
   }
 
   componentWillUnmount() {

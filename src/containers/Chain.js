@@ -51,6 +51,7 @@ class Chain extends Component {
     Tone.context.resume()
 
     const { phrases } = this.props
+
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const chain = this.getCurrentChain()
