@@ -12,9 +12,17 @@ const compressPhrases = phrases =>
     )
   )
 
-const expandPhrases = phrases =>
-  _.mapValues(phrases, notes =>
-    _(notes)
+const expandPhrases = phrases => {
+  // `phrases` is an object, e.g.
+  // {
+  //   "0": [
+  //     "0f17",
+  //     "1g17",
+  //     "2a17",
+  const result = _.mapValues(phrases, phrase => {
+    // If phrase is an array, it's an old kind. We have to convert it.
+    const phraseIsArray = Array.isArray(phrase)
+    const notes = _(phraseIsArray ? phrase : phrase.notes)
       .map(note => note.match(/^(\d+)(.*)(\d)(\d)/).slice(1, 5))
       .map(match => ({
         index: match[0],
@@ -25,7 +33,15 @@ const expandPhrases = phrases =>
       .keyBy('index')
       .mapValues(d => _.omit(d, 'index'))
       .value()
-  )
+
+    return {
+      notes,
+      rate: phraseIsArray ? 0 : phrase.rate
+    }
+  })
+  console.log({ phrases, result })
+  return result
+}
 
 const extractGistPhrases = data =>
   expandPhrases(

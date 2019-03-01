@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Phrase extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
@@ -43,19 +43,19 @@ class Phrase extends Component {
     }
   }
 
-  drawCallback (playingIndex) {
+  drawCallback(playingIndex) {
     this.setState({
       playingIndex
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Tone.context.resume()
 
     this.sequence = new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
-        const value = phrase[index]
+        const value = phrase.notes[index]
         if (value) {
           playNote({ ...value, time, synth })
         }
@@ -68,13 +68,13 @@ class Phrase extends Component {
     )
   }
 
-  getCurrentPhrase () {
+  getCurrentPhrase() {
     const { phrases } = this.props
     const { phraseIndex } = this.state
     return _.get(phrases, phraseIndex, {})
   }
 
-  handlePlay () {
+  handlePlay() {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
@@ -87,7 +87,7 @@ class Phrase extends Component {
     })
   }
 
-  handlePhraseIndexChange (e) {
+  handlePhraseIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
       this.setState({
@@ -96,11 +96,11 @@ class Phrase extends Component {
     }
   }
 
-  handleVolumeClick (col) {
+  handleVolumeClick(col) {
     const { updatePhrase } = this.props
     const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
-    const position = phrase[col]
+    const position = phrase.notes[col]
     let newPosition
 
     // If we do not have a note on this column,
@@ -134,17 +134,20 @@ class Phrase extends Component {
 
     const newPhrase = {
       ...phrase,
-      [col]: newPosition
+      notes: {
+        ...phrase.notes,
+        [col]: newPosition
+      }
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  handleNoteClick ({ row, col }) {
+  handleNoteClick({ row, col }) {
     const { updatePhrase } = this.props
     const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
-    const position = phrase[col]
+    const position = phrase.notes[col]
     let newNote
 
     // If we do not have a note on this column,
@@ -186,52 +189,55 @@ class Phrase extends Component {
 
     const newPhrase = {
       ...phrase,
-      [col]: newNote
+      notes: {
+        ...phrase.notes,
+        [col]: newNote
+      }
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
   }
 
-  render () {
+  render() {
     const { phraseIndex, isPlaying, playingIndex } = this.state
     const phrase = this.getCurrentPhrase()
 
     return (
-      <div className='Phrase two-rows-and-grid'>
-        <div className='main'>
-          <div className='settings'>
-            <div className='title'>Phrase</div>
+      <div className="Phrase two-rows-and-grid">
+        <div className="main">
+          <div className="settings">
+            <div className="title">Phrase</div>
             <TextInput
-              label='#'
+              label="#"
               value={phraseIndex.toString()}
               handleChange={this.handlePhraseIndexChange}
-              type='number'
+              type="number"
               options={{ min: 0, max: settings.phrases - 1 }}
             />
           </div>
-          <div className='matrix'>
+          <div className="matrix">
             <button
               className={classNames('play button', { active: isPlaying })}
               onClick={this.handlePlay}
             >
               {isPlaying ? 'stop' : 'play'}
             </button>
-            <table className='notes'>
+            <table className="notes">
               <tbody>
                 {_.range(11, -1).map(row => (
                   <tr key={row}>
                     <td>{toLetter(row)}</td>
                     {_.range(settings.matrixLength).map(col => {
-                      const value = phrase[col]
+                      const value = phrase.notes[col]
                       const match = value && value.note === row
                       const highlighter =
                         row === 11 && col === playingIndex && isPlaying ? (
-                          <span className='highlight' />
+                          <span className="highlight" />
                         ) : null
                       return (
                         <td
@@ -252,15 +258,15 @@ class Phrase extends Component {
                 ))}
               </tbody>
             </table>
-            <table className='volumes'>
+            <table className="volumes">
               <tbody>
                 <tr>
                   <td>v</td>
                   {_.range(settings.matrixLength).map(col => {
-                    const value = phrase[col]
+                    const value = phrase.notes[col]
                     const highlighter =
                       col === playingIndex && isPlaying ? (
-                        <span className='highlight' />
+                        <span className="highlight" />
                       ) : null
                     return (
                       <td
@@ -286,4 +292,7 @@ class Phrase extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Phrase)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Phrase)
