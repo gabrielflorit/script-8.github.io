@@ -120,7 +120,7 @@ const soundAPI = volumeNode => {
                 const phrase = _.get(phrases, phraseIndex)
 
                 // Get the note element for this position.
-                const noteElement = _.get(phrase, notePosition)
+                const noteElement = _.get(phrase.notes, notePosition)
 
                 // If we have a note,
                 if (!_.isNil(noteElement)) {
@@ -200,7 +200,7 @@ const soundAPI = volumeNode => {
 
       const sequence = new Tone.Sequence(
         (time, index) => {
-          const value = phrase[index]
+          const value = phrase.notes[index]
           if (value) {
             // console.log(`phraseSynth volume`)
             // console.log({ volume: phraseSynth.volume.value })

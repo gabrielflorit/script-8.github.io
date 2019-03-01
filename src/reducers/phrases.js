@@ -5,20 +5,27 @@ import actionTypes from '../actions/actionTypes.js'
 import initialState from '../store/initialState.js'
 import toLetter, { letterToNumber } from '../iframe/src/toLetter.js'
 
-const compressPhrases = phrases =>
-  _.mapValues(phrases, phrase =>
-    _.map(phrase, (note, noteIndex) =>
+const compressPhrases = phrases => {
+  const result = _.mapValues(phrases, phrase => {
+    const notes = _.map(phrase.notes, (note, noteIndex) =>
       [noteIndex, toLetter(note.note), note.octave, note.volume].join('')
     )
-  )
+    return {
+      notes,
+      rate: phrase.rate
+    }
+  })
+  return result
+}
 
 const expandPhrases = phrases => {
-  // `phrases` is an object, e.g.
+  // `phrases` is an object, e.g. (old style)
   // {
   //   "0": [
   //     "0f17",
   //     "1g17",
   //     "2a17",
+
   const result = _.mapValues(phrases, phrase => {
     // If phrase is an array, it's an old kind. We have to convert it.
     const phraseIsArray = Array.isArray(phrase)
@@ -39,7 +46,7 @@ const expandPhrases = phrases => {
       rate: phraseIsArray ? 0 : phrase.rate
     }
   })
-  console.log({ phrases, result })
+
   return result
 }
 

@@ -9,7 +9,7 @@ const settings = {
   startOffset: '+0.1',
   startOffsetDouble: '+0.5',
   bpm: 200,
-  subdivision: '8n'
+  subdivision: '32n'
 }
 
 export default settings
