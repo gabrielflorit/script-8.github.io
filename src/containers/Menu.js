@@ -673,23 +673,6 @@ class Menu extends Component {
           <li>
             <button
               onClick={() => {
-                setScreen(screenTypes.RUN)
-              }}
-              className={classNames('button', {
-                active: screen === screenTypes.RUN
-              })}
-            >
-              <span className="full">RUN</span>
-              <span className="mid">run</span>
-              <span className="small">
-                {screen === screenTypes.RUN ? 'run' : 'ru'}
-              </span>
-            </button>
-          </li>
-
-          <li>
-            <button
-              onClick={() => {
                 setScreen(screenTypes.HELP)
               }}
               className={classNames('button', {
@@ -721,6 +704,23 @@ class Menu extends Component {
               </span>
               <span className="small">
                 {screen === screenTypes.SHELF ? 'shelf' : 'sh'}
+              </span>
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.RUN)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.RUN
+              })}
+            >
+              <span className="full">RUN</span>
+              <span className="mid">run</span>
+              <span className="small">
+                {screen === screenTypes.RUN ? 'run' : 'ru'}
               </span>
             </button>
           </li>
