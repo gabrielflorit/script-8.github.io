@@ -1,7 +1,17 @@
 {
-  "main.css": "static/css/main.36366616.css",
-  "main.css.map": "static/css/main.36366616.css.map",
-  "main.js": "static/js/main.6be1ab9b.js",
-  "main.js.map": "static/js/main.6be1ab9b.js.map",
-  "static/media/VT323-latin.woff2": "static/media/VT323-latin.e3552630.woff2"
+  "main.css": "static/css/main.3846686b.css",
+  "main.css.map": "static/css/main.3846686b.css.map",
+  "main.js": "static/js/main.f0220746.js",
+  "main.js.map": "static/js/main.f0220746.js.map",
+  "static/media/VT323-latin.woff2": "static/media/VT323-latin.e3552630.woff2",
+  "static/media/breakout-lite.gif": "static/media/breakout-lite.a4d778a2.gif",
+  "static/media/brospipe-lite.gif": "static/media/brospipe-lite.82f3b93a.gif",
+  "static/media/livecoding480.gif": "static/media/livecoding480.20d1866a.gif",
+  "static/media/loshermanosbros-lite.gif": "static/media/loshermanosbros-lite.c3b13663.gif",
+  "static/media/mapdemo.gif": "static/media/mapdemo.23680514.gif",
+  "static/media/musicdemo.gif": "static/media/musicdemo.c1b0f3bd.gif",
+  "static/media/pauserewind.gif": "static/media/pauserewind.741e69fa.gif",
+  "static/media/slider480.gif": "static/media/slider480.dc4d8c4b.gif",
+  "static/media/spritedemo.gif": "static/media/spritedemo.76159464.gif",
+  "static/media/toggle.gif": "static/media/toggle.4ab6d6b6.gif"
 }
