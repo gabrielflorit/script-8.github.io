@@ -89,6 +89,7 @@ class Menu extends Component {
     super(props)
     this.keydown = this.keydown.bind(this)
     this.onRecordClick = this.onRecordClick.bind(this)
+    this.onLoginClick = this.onLoginClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
@@ -232,6 +233,16 @@ class Menu extends Component {
       e.returnValue = message
       return message
     }
+  }
+
+  onLoginClick() {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${
+        process.env.REACT_APP_CLIENT_ID
+      }&scope=gist`,
+      'popup',
+      'width=600,height=700'
+    )
   }
 
   onInsertBlankClick() {
@@ -421,6 +432,8 @@ class Menu extends Component {
     const codeTab = getActive(game).key
     const codeTabSuffix = screen === screenTypes.CODE ? ` ${codeTab}` : ''
 
+    const loggedIn = !!token.value
+
     return (
       <nav className="Menu">
         <ul>
@@ -439,6 +452,17 @@ class Menu extends Component {
                 {screen === screenTypes.HOME ? 'script-8' : 's-8'}
               </span>
             </button>
+            <ul className="dropdown">
+              <li>
+                <button
+                  onClick={this.onLoginClick}
+                  className="button"
+                  disabled={loggedIn}
+                >
+                  Login
+                </button>
+              </li>
+            </ul>
           </li>
           <li>
             <button className="button">
@@ -649,23 +673,6 @@ class Menu extends Component {
           <li>
             <button
               onClick={() => {
-                setScreen(screenTypes.RUN)
-              }}
-              className={classNames('button', {
-                active: screen === screenTypes.RUN
-              })}
-            >
-              <span className="full">RUN</span>
-              <span className="mid">run</span>
-              <span className="small">
-                {screen === screenTypes.RUN ? 'run' : 'ru'}
-              </span>
-            </button>
-          </li>
-
-          <li>
-            <button
-              onClick={() => {
                 setScreen(screenTypes.HELP)
               }}
               className={classNames('button', {
@@ -697,6 +704,23 @@ class Menu extends Component {
               </span>
               <span className="small">
                 {screen === screenTypes.SHELF ? 'shelf' : 'sh'}
+              </span>
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setScreen(screenTypes.RUN)
+              }}
+              className={classNames('button', {
+                active: screen === screenTypes.RUN
+              })}
+            >
+              <span className="full">RUN</span>
+              <span className="mid">run</span>
+              <span className="small">
+                {screen === screenTypes.RUN ? 'run' : 'ru'}
               </span>
             </button>
           </li>

@@ -301,6 +301,7 @@ class Iframe extends Component {
 
     if (!providedGlobals) {
       globals = {
+        console,
         StateMachine,
         JSON,
         Math,
