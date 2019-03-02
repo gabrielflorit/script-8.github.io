@@ -8,8 +8,8 @@ const settings = {
   chainChannels: 4,
   startOffset: '+0.1',
   startOffsetDouble: '+0.5',
-  bpm: 200,
-  subdivision: '32n'
+  bpm: 144,
+  subdivision: '4n'
 }
 
 export default settings

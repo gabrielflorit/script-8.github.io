@@ -12,7 +12,7 @@ const compressPhrases = phrases => {
     )
     return {
       notes,
-      rate: phrase.rate
+      tempo: phrase.tempo
     }
   })
   return result
@@ -43,7 +43,7 @@ const expandPhrases = phrases => {
 
     return {
       notes,
-      rate: phraseIsArray ? 0 : phrase.rate
+      tempo: phraseIsArray ? 0 : phrase.tempo
     }
   })
 

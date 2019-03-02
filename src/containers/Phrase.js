@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
+import {
+  createSynth,
+  playNote,
+  tempoToPlaybackRate
+} from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../iframe/src/toLetter.js'
@@ -29,6 +33,8 @@ class Phrase extends Component {
   constructor(props) {
     super(props)
 
+    this.createSequence = this.createSequence.bind(this)
+    this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
@@ -52,12 +58,18 @@ class Phrase extends Component {
   componentDidMount() {
     Tone.context.resume()
 
-    this.sequence = new Tone.Sequence(
+    const phrase = this.getCurrentPhrase()
+    this.sequence = this.createSequence()
+    this.sequence.playbackRate = tempoToPlaybackRate(phrase.tempo)
+  }
+
+  createSequence() {
+    return new Tone.Sequence(
       (time, index) => {
         const phrase = this.getCurrentPhrase()
         const value = phrase.notes[index]
         if (value) {
-          playNote({ ...value, time, synth })
+          playNote({ ...value, time, synth, tempo: phrase.tempo })
         }
         Tone.Draw.schedule(() => {
           this.drawCallback(index)
@@ -71,7 +83,25 @@ class Phrase extends Component {
   getCurrentPhrase() {
     const { phrases } = this.props
     const { phraseIndex } = this.state
-    return _.get(phrases, phraseIndex, {})
+    return _.get(phrases, phraseIndex, { tempo: 0, notes: [] })
+  }
+
+  handleTempoChange(e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      // Update the sequence.
+      this.sequence.playbackRate = tempoToPlaybackRate(value)
+
+      // And update the store.
+      const { phraseIndex } = this.state
+      const { updatePhrase } = this.props
+      const phrase = this.getCurrentPhrase()
+      const newPhrase = {
+        ...phrase,
+        tempo: value
+      }
+      updatePhrase({ phrase: newPhrase, index: phraseIndex })
+    }
   }
 
   handlePlay() {
@@ -100,6 +130,7 @@ class Phrase extends Component {
     const { updatePhrase } = this.props
     const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
+    const { tempo } = phrase
     const position = phrase.notes[col]
     let newPosition
 
@@ -129,7 +160,7 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      playNote({ ...newPosition, synth })
+      playNote({ ...newPosition, synth, tempo })
     }
 
     const newPhrase = {
@@ -147,6 +178,7 @@ class Phrase extends Component {
     const { updatePhrase } = this.props
     const { phraseIndex, isPlaying } = this.state
     const phrase = this.getCurrentPhrase()
+    const { tempo } = phrase
     const position = phrase.notes[col]
     let newNote
 
@@ -184,7 +216,7 @@ class Phrase extends Component {
     }
 
     if (newNote && !isPlaying) {
-      playNote({ ...newNote, synth })
+      playNote({ ...newNote, synth, tempo })
     }
 
     const newPhrase = {
@@ -218,6 +250,14 @@ class Phrase extends Component {
               handleChange={this.handlePhraseIndexChange}
               type="number"
               options={{ min: 0, max: settings.phrases - 1 }}
+            />
+            <div className="title">Tempo</div>
+            <TextInput
+              label="#"
+              value={phrase.tempo.toString()}
+              handleChange={this.handleTempoChange}
+              type="number"
+              options={{ min: 0, max: 7 }}
             />
           </div>
           <div className="matrix">
