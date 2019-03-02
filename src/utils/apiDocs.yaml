@@ -70,8 +70,8 @@
 - title: Sound (not stable)
   dl:
     - - playPhrase(phrase)
-      - docs coming
+      - Plays a phrase as defined in the PHRASE editor. `phrase` is the phrase number. You can only play one phrase at a time.
     - - playSong(song, [loop=false])
-      - docs coming
+      - Plays a song as defined in the SONG editor. `song` is the song number. Set `loop` to true to make the song loop infinitely. You can only play one song at a time.
     - - stopSong()
-      - docs coming
+      - Stops the current song.

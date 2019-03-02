@@ -17,9 +17,13 @@ const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
-const mapStateToProps = ({ phrases }) => ({ phrases })
+const getCurrentPhrase = ({ phrases, selectedUi }) =>
+  _.get(phrases, [selectedUi.phrase], { tempo: 0, notes: [] })
+
+const mapStateToProps = ({ phrases, selectedUi }) => ({ phrases, selectedUi })
 
 const mapDispatchToProps = dispatch => ({
+  selectUi: payload => dispatch(actions.selectUi(payload)),
   updatePhrase: ({ phrase, index }) =>
     dispatch(
       actions.updatePhrase({
@@ -38,14 +42,12 @@ class Phrase extends Component {
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
-    this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
     this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0,
-      phraseIndex: 0
+      playingIndex: 0
     }
   }
 
@@ -58,7 +60,7 @@ class Phrase extends Component {
   componentDidMount() {
     Tone.context.resume()
 
-    const phrase = this.getCurrentPhrase()
+    const phrase = getCurrentPhrase(this.props)
     this.sequence = this.createSequence()
     this.sequence.playbackRate = tempoToPlaybackRate(phrase.tempo)
   }
@@ -66,7 +68,7 @@ class Phrase extends Component {
   createSequence() {
     return new Tone.Sequence(
       (time, index) => {
-        const phrase = this.getCurrentPhrase()
+        const phrase = getCurrentPhrase(this.props)
         const value = phrase.notes[index]
         if (value) {
           playNote({ ...value, time, synth, tempo: phrase.tempo })
@@ -80,22 +82,16 @@ class Phrase extends Component {
     )
   }
 
-  getCurrentPhrase() {
-    const { phrases } = this.props
-    const { phraseIndex } = this.state
-    return _.get(phrases, phraseIndex, { tempo: 0, notes: [] })
-  }
-
   handleTempoChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
       // Update the sequence.
       this.sequence.playbackRate = tempoToPlaybackRate(value)
 
-      // And update the store.
-      const { phraseIndex } = this.state
-      const { updatePhrase } = this.props
-      const phrase = this.getCurrentPhrase()
+      // Update the store.
+      const { updatePhrase, selectedUi } = this.props
+      const phraseIndex = selectedUi.phrase
+      const phrase = getCurrentPhrase(this.props)
       const newPhrase = {
         ...phrase,
         tempo: value
@@ -120,16 +116,19 @@ class Phrase extends Component {
   handlePhraseIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
-      this.setState({
-        phraseIndex: value
+      const { selectUi, selectedUi } = this.props
+      selectUi({
+        ...selectedUi,
+        phrase: value
       })
     }
   }
 
   handleVolumeClick(col) {
-    const { updatePhrase } = this.props
-    const { phraseIndex, isPlaying } = this.state
-    const phrase = this.getCurrentPhrase()
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+    const { isPlaying } = this.state
+    const phrase = getCurrentPhrase(this.props)
     const { tempo } = phrase
     const position = phrase.notes[col]
     let newPosition
@@ -175,9 +174,10 @@ class Phrase extends Component {
   }
 
   handleNoteClick({ row, col }) {
-    const { updatePhrase } = this.props
-    const { phraseIndex, isPlaying } = this.state
-    const phrase = this.getCurrentPhrase()
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+    const { isPlaying } = this.state
+    const phrase = getCurrentPhrase(this.props)
     const { tempo } = phrase
     const position = phrase.notes[col]
     let newNote
@@ -235,9 +235,23 @@ class Phrase extends Component {
     this.sequence.stop()
   }
 
+  componentDidUpdate(prevProps) {
+    const oldPhrase = getCurrentPhrase(prevProps)
+    const newPhrase = getCurrentPhrase(this.props)
+    if (
+      prevProps.selectedUi.phrase !== this.props.selectedUi.phrase ||
+      oldPhrase.tempo !== newPhrase.tempo
+    ) {
+      this.sequence.playbackRate = tempoToPlaybackRate(newPhrase.tempo)
+    }
+  }
+
   render() {
-    const { phraseIndex, isPlaying, playingIndex } = this.state
-    const phrase = this.getCurrentPhrase()
+    const { selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+
+    const { isPlaying, playingIndex } = this.state
+    const phrase = getCurrentPhrase(this.props)
 
     return (
       <div className="Phrase two-rows-and-grid">
