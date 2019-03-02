@@ -89,12 +89,17 @@ class Song extends Component {
             const phrase = _.get(phrases, phraseIndex)
 
             // Get the note element for this position.
-            const noteElement = _.get(phrase, notePosition)
+            const noteElement = _.get(phrase.notes, notePosition)
 
             // If we have a note,
             if (!_.isNil(noteElement)) {
               // play it!
-              playNote({ ...noteElement, time, synth: synths[channel] })
+              playNote({
+                ...noteElement,
+                time,
+                synth: synths[channel],
+                tempo: 0
+              })
             }
           }
         })
