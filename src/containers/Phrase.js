@@ -17,8 +17,11 @@ const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
-const getCurrentPhrase = ({ phrases, selectedUi }) =>
-  _.get(phrases, [selectedUi.phrase], { tempo: 0, notes: [] })
+const getCurrentPhrase = ({ phrases, selectedUi }) => ({
+  tempo: 0,
+  notes: [],
+  ..._.get(phrases, [selectedUi.phrase], {})
+})
 
 const mapStateToProps = ({ phrases, selectedUi }) => ({ phrases, selectedUi })
 

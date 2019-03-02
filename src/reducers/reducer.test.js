@@ -302,16 +302,67 @@ describe('updatePhrase', () => {
     const before = initialState
     const action = actions.updatePhrase({
       phrase: {
-        0: { note: 0 },
-        1: {}
+        notes: {
+          0: { note: 0 },
+          1: {}
+        }
       },
       index: 1
     })
     expect(reducer(before, action)).toEqual({
       ...before,
       phrases: {
-        1: { 0: { note: 0 } }
+        1: { notes: { 0: { note: 0 } } }
       }
+    })
+  })
+  test('omit empty', () => {
+    const before = {
+      ...initialState,
+      phrases: {
+        1: { notes: { 0: { note: 0 } } }
+      }
+    }
+    const action = actions.updatePhrase({
+      phrase: {
+        notes: {},
+        tempo: 0
+      },
+      index: 1
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      phrases: {}
+    })
+  })
+  test('omit empty complex', () => {
+    const before = {
+      ...initialState,
+      phrases: {
+        '6': {
+          tempo: 0,
+          notes: {
+            '0': {
+              note: 11,
+              octave: 0,
+              volume: 7
+            }
+          }
+        }
+      }
+    }
+    const action = actions.updatePhrase({
+      phrase: {
+        tempo: 0,
+        notes: {
+          '0': null
+        }
+      },
+      index: '6'
+    })
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      phrases: {}
     })
   })
 })
@@ -512,10 +563,13 @@ test('fetchGistSuccess good data', () => {
     game: { 0: { text: 'my game', active: true, key: 0 } },
     phrases: {
       0: {
-        0: {
-          note: 11,
-          octave: 3,
-          volume: 7
+        tempo: 0,
+        notes: {
+          0: {
+            note: 11,
+            octave: 3,
+            volume: 7
+          }
         }
       }
     },

@@ -86,7 +86,7 @@ class Song extends Component {
           // If the phrase index exists,
           if (!_.isNil(phraseIndex)) {
             // get the phrase assigned to this channel.
-            const phrase = _.get(phrases, phraseIndex)
+            const phrase = _.get(phrases, phraseIndex, {})
 
             // Get the note element for this position.
             const noteElement = _.get(phrase.notes, notePosition)
