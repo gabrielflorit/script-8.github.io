@@ -14,7 +14,7 @@ const pulseOptions = {
 }
 
 const tempoToPlaybackRate = tempo => [1, 2, 3, 5, 8, 13, 21, 34][tempo]
-const tempoToSubdivision = tempo => [4, 8, 12, 20, 32, 52, 84, 136][tempo] + 'n'
+const tempoToSubdivision = tempo => tempoToPlaybackRate(tempo) * 4 + 'n'
 
 const createSynth = volumeNode => {
   const pulseSynth = new Tone.Synth(pulseOptions).toMaster()
