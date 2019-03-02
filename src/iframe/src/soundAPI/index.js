@@ -4,14 +4,26 @@ import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
 import settings from '../settings.js'
 
-const createSynth = volumeNode => {
-  const synth = new Tone.Synth()
-  if (volumeNode) {
-    synth.chain(volumeNode, Tone.Master)
-  } else {
-    synth.chain(Tone.Master)
+const pulseOptions = {
+  oscillator: {
+    type: 'triangle'
+  },
+  envelope: {
+    release: 0.07
   }
-  return synth
+}
+
+const tempoToPlaybackRate = tempo => [1, 2, 3, 5, 8, 13, 21, 34][tempo]
+const tempoToSubdivision = tempo => tempoToPlaybackRate(tempo) * 4 + 'n'
+
+const createSynth = volumeNode => {
+  const pulseSynth = new Tone.Synth(pulseOptions)
+  if (volumeNode) {
+    pulseSynth.chain(volumeNode, Tone.Master)
+  } else {
+    pulseSynth.chain(Tone.Master)
+  }
+  return pulseSynth
 }
 
 const playNote = ({
@@ -19,7 +31,8 @@ const playNote = ({
   octave,
   volume,
   time = Tone.context.currentTime,
-  synth
+  synth,
+  tempo
 }) => {
   // If time is not provided, we want to play the note right now - use currentTime.
   // If time is provided,
@@ -29,12 +42,8 @@ const playNote = ({
   if (time >= Tone.context.currentTime) {
     const normalizedVolume = normalize.volume(volume)
     const letter = toLetter(note + octave * 12, true, true)
-    synth.triggerAttackRelease(
-      letter,
-      settings.subdivision,
-      time,
-      normalizedVolume
-    )
+    const subdivision = tempoToSubdivision(tempo)
+    synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
   }
 }
 
@@ -120,7 +129,7 @@ const soundAPI = volumeNode => {
                 const phrase = _.get(phrases, phraseIndex)
 
                 // Get the note element for this position.
-                const noteElement = _.get(phrase, notePosition)
+                const noteElement = _.get(phrase.notes, notePosition)
 
                 // If we have a note,
                 if (!_.isNil(noteElement)) {
@@ -147,14 +156,13 @@ const soundAPI = volumeNode => {
         playNote({
           ...noteElement,
           time: time,
-          synth: chainSynths[channel]
+          synth: chainSynths[channel],
+          tempo: 0
         })
       })
     }
 
     const events = _.range(notePositions.length)
-
-    const subdivision = settings.subdivision
 
     // const after = Date.now()
     // console.log(`soundAPI.makeSongContainer() took ${after - before}ms`)
@@ -162,7 +170,6 @@ const soundAPI = volumeNode => {
     return {
       callback,
       events,
-      subdivision,
       sequence: null
     }
   }
@@ -179,9 +186,10 @@ const soundAPI = volumeNode => {
         value.sequence = new Tone.Sequence(
           value.callback,
           value.events,
-          value.subdivision
+          settings.subdivision
         )
         value.sequence.loop = loop
+        value.sequence.playbackRate = tempoToPlaybackRate(0)
         value.sequence.start(settings.startOffset)
       }
     })
@@ -198,19 +206,22 @@ const soundAPI = volumeNode => {
         popped.dispose()
       }
 
+      const { tempo } = phrase
+
       const sequence = new Tone.Sequence(
         (time, index) => {
-          const value = phrase[index]
+          const value = phrase.notes[index]
           if (value) {
             // console.log(`phraseSynth volume`)
             // console.log({ volume: phraseSynth.volume.value })
-            playNote({ ...value, time, synth: phraseSynth })
+            playNote({ ...value, time, synth: phraseSynth, tempo })
           }
         },
         _.range(settings.matrixLength),
         settings.subdivision
       )
       sequence.loop = false
+      sequence.playbackRate = tempoToPlaybackRate(tempo)
       sequence.start()
       phrasePool.push(sequence)
       // const after = Date.now()
@@ -225,6 +236,6 @@ const soundAPI = volumeNode => {
   }
 }
 
-export { createSynth, playNote }
+export { createSynth, playNote, tempoToPlaybackRate }
 
 export default soundAPI

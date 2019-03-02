@@ -16,6 +16,7 @@ import sound from './sound.js'
 import shelving from './shelving.js'
 import docHistories from './docHistories.js'
 import dismissedNotices from './dismissedNotices.js'
+import selectedUi from './selectedUi.js'
 
 const reducer = combineReducers({
   screen,
@@ -34,7 +35,8 @@ const reducer = combineReducers({
   sound,
   shelving,
   docHistories,
-  dismissedNotices
+  dismissedNotices,
+  selectedUi
 })
 
 export default reducer

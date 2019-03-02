@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
+import {
+  createSynth,
+  playNote,
+  tempoToPlaybackRate
+} from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import toLetter from '../iframe/src/toLetter.js'
@@ -13,9 +17,13 @@ const synth = createSynth()
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
-const mapStateToProps = ({ phrases }) => ({ phrases })
+const getCurrentPhrase = ({ phrases, selectedUi }) =>
+  _.get(phrases, [selectedUi.phrase], { tempo: 0, notes: [] })
+
+const mapStateToProps = ({ phrases, selectedUi }) => ({ phrases, selectedUi })
 
 const mapDispatchToProps = dispatch => ({
+  selectUi: payload => dispatch(actions.selectUi(payload)),
   updatePhrase: ({ phrase, index }) =>
     dispatch(
       actions.updatePhrase({
@@ -26,38 +34,44 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Phrase extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
+    this.createSequence = this.createSequence.bind(this)
+    this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
-    this.getCurrentPhrase = this.getCurrentPhrase.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
     this.drawCallback = this.drawCallback.bind(this)
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0,
-      phraseIndex: 0
+      playingIndex: 0
     }
   }
 
-  drawCallback (playingIndex) {
+  drawCallback(playingIndex) {
     this.setState({
       playingIndex
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Tone.context.resume()
 
-    this.sequence = new Tone.Sequence(
+    const phrase = getCurrentPhrase(this.props)
+    this.sequence = this.createSequence()
+    this.sequence.playbackRate = tempoToPlaybackRate(phrase.tempo)
+  }
+
+  createSequence() {
+    return new Tone.Sequence(
       (time, index) => {
-        const phrase = this.getCurrentPhrase()
-        const value = phrase[index]
+        const phrase = getCurrentPhrase(this.props)
+        const value = phrase.notes[index]
         if (value) {
-          playNote({ ...value, time, synth })
+          playNote({ ...value, time, synth, tempo: phrase.tempo })
         }
         Tone.Draw.schedule(() => {
           this.drawCallback(index)
@@ -68,13 +82,25 @@ class Phrase extends Component {
     )
   }
 
-  getCurrentPhrase () {
-    const { phrases } = this.props
-    const { phraseIndex } = this.state
-    return _.get(phrases, phraseIndex, {})
+  handleTempoChange(e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      // Update the sequence.
+      this.sequence.playbackRate = tempoToPlaybackRate(value)
+
+      // Update the store.
+      const { updatePhrase, selectedUi } = this.props
+      const phraseIndex = selectedUi.phrase
+      const phrase = getCurrentPhrase(this.props)
+      const newPhrase = {
+        ...phrase,
+        tempo: value
+      }
+      updatePhrase({ phrase: newPhrase, index: phraseIndex })
+    }
   }
 
-  handlePlay () {
+  handlePlay() {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
@@ -87,20 +113,24 @@ class Phrase extends Component {
     })
   }
 
-  handlePhraseIndexChange (e) {
+  handlePhraseIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
-      this.setState({
-        phraseIndex: value
+      const { selectUi, selectedUi } = this.props
+      selectUi({
+        ...selectedUi,
+        phrase: value
       })
     }
   }
 
-  handleVolumeClick (col) {
-    const { updatePhrase } = this.props
-    const { phraseIndex, isPlaying } = this.state
-    const phrase = this.getCurrentPhrase()
-    const position = phrase[col]
+  handleVolumeClick(col) {
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+    const { isPlaying } = this.state
+    const phrase = getCurrentPhrase(this.props)
+    const { tempo } = phrase
+    const position = phrase.notes[col]
     let newPosition
 
     // If we do not have a note on this column,
@@ -129,22 +159,27 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      playNote({ ...newPosition, synth })
+      playNote({ ...newPosition, synth, tempo })
     }
 
     const newPhrase = {
       ...phrase,
-      [col]: newPosition
+      notes: {
+        ...phrase.notes,
+        [col]: newPosition
+      }
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  handleNoteClick ({ row, col }) {
-    const { updatePhrase } = this.props
-    const { phraseIndex, isPlaying } = this.state
-    const phrase = this.getCurrentPhrase()
-    const position = phrase[col]
+  handleNoteClick({ row, col }) {
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+    const { isPlaying } = this.state
+    const phrase = getCurrentPhrase(this.props)
+    const { tempo } = phrase
+    const position = phrase.notes[col]
     let newNote
 
     // If we do not have a note on this column,
@@ -181,57 +216,82 @@ class Phrase extends Component {
     }
 
     if (newNote && !isPlaying) {
-      playNote({ ...newNote, synth })
+      playNote({ ...newNote, synth, tempo })
     }
 
     const newPhrase = {
       ...phrase,
-      [col]: newNote
+      notes: {
+        ...phrase.notes,
+        [col]: newNote
+      }
     }
 
     updatePhrase({ phrase: newPhrase, index: phraseIndex })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
   }
 
-  render () {
-    const { phraseIndex, isPlaying, playingIndex } = this.state
-    const phrase = this.getCurrentPhrase()
+  componentDidUpdate(prevProps) {
+    const oldPhrase = getCurrentPhrase(prevProps)
+    const newPhrase = getCurrentPhrase(this.props)
+    if (
+      prevProps.selectedUi.phrase !== this.props.selectedUi.phrase ||
+      oldPhrase.tempo !== newPhrase.tempo
+    ) {
+      this.sequence.playbackRate = tempoToPlaybackRate(newPhrase.tempo)
+    }
+  }
+
+  render() {
+    const { selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+
+    const { isPlaying, playingIndex } = this.state
+    const phrase = getCurrentPhrase(this.props)
 
     return (
-      <div className='Phrase two-rows-and-grid'>
-        <div className='main'>
-          <div className='settings'>
-            <div className='title'>Phrase</div>
+      <div className="Phrase two-rows-and-grid">
+        <div className="main">
+          <div className="settings">
+            <div className="title">Phrase</div>
             <TextInput
-              label='#'
+              label="#"
               value={phraseIndex.toString()}
               handleChange={this.handlePhraseIndexChange}
-              type='number'
+              type="number"
               options={{ min: 0, max: settings.phrases - 1 }}
             />
+            <div className="title">Tempo</div>
+            <TextInput
+              label="#"
+              value={phrase.tempo.toString()}
+              handleChange={this.handleTempoChange}
+              type="number"
+              options={{ min: 0, max: 7 }}
+            />
           </div>
-          <div className='matrix'>
+          <div className="matrix">
             <button
               className={classNames('play button', { active: isPlaying })}
               onClick={this.handlePlay}
             >
               {isPlaying ? 'stop' : 'play'}
             </button>
-            <table className='notes'>
+            <table className="notes">
               <tbody>
                 {_.range(11, -1).map(row => (
                   <tr key={row}>
                     <td>{toLetter(row)}</td>
                     {_.range(settings.matrixLength).map(col => {
-                      const value = phrase[col]
+                      const value = phrase.notes[col]
                       const match = value && value.note === row
                       const highlighter =
                         row === 11 && col === playingIndex && isPlaying ? (
-                          <span className='highlight' />
+                          <span className="highlight" />
                         ) : null
                       return (
                         <td
@@ -252,15 +312,15 @@ class Phrase extends Component {
                 ))}
               </tbody>
             </table>
-            <table className='volumes'>
+            <table className="volumes">
               <tbody>
                 <tr>
                   <td>v</td>
                   {_.range(settings.matrixLength).map(col => {
-                    const value = phrase[col]
+                    const value = phrase.notes[col]
                     const highlighter =
                       col === playingIndex && isPlaying ? (
-                        <span className='highlight' />
+                        <span className="highlight" />
                       ) : null
                     return (
                       <td
@@ -286,4 +346,7 @@ class Phrase extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Phrase)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Phrase)

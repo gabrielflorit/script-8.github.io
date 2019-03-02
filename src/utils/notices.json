@@ -1,5 +1,10 @@
 [
   {
+    "id": 3,
+    "date": "3-1-2019",
+    "text": "Added a TEMPO control to MUSIC phrases."
+  },
+  {
     "id": 2,
     "date": "2-28-2019",
     "text": "Added `LOGIN` button under the `SCRIPT-8` button on the menu."

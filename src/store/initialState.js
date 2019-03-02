@@ -24,6 +24,11 @@ const initialState = {
   songs: {},
   docHistories: {},
   dismissedNotices: [],
+  selectedUi: {
+    phrase: 0,
+    chain: 0,
+    song: 0
+  },
   // tutorial: {
   //   lessonIndex: 1,
   //   slideIndex: 0

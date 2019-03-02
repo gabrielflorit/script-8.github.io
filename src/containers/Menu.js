@@ -622,7 +622,7 @@ class Menu extends Component {
                 active: isMusicScreen
               })}
             >
-              <span className="full">{isMusicScreen ? screen : 'mus'}</span>
+              <span className="full">{isMusicScreen ? screen : 'music'}</span>
               <span className="mid">{isMusicScreen ? screen : 'mus'}</span>
               <span className="small">
                 {isMusicScreen ? screen.substring(0, 2) : 'mu'}
