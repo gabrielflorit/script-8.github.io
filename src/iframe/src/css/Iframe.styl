@@ -111,12 +111,14 @@ input {
 }
 
 ul
-  display flex
+  display grid
   list-style none
   min-height 3rem
+  grid-template-columns repeat(auto-fill, minmax(3rem, 1fr))
+  grid-row-gap 0.5rem
+  grid-column-gap 0.5rem
 
   li
-    margin-right 1.5rem
 
     button
       background-color rgba(0, 0, 0, 0)
