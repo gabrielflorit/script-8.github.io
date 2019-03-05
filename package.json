@@ -58,7 +58,7 @@
     "iframe-build": "cd src/iframe; react-scripts build",
     "iframe-test": "cd src/iframe; react-scripts test --env=jsdom",
     "iframe-eject": "cd src/iframe; react-scripts eject",
-    "iframe-rename": "cd src/iframe; mv build/index.html build/iframe.html",
+    "iframe-rename": "TAG=\"$(git describe --abbrev=0)\"; cd src/iframe; mv build/index.html \"build/iframe-$TAG.html\"",
     "iframe-copy": "cp -a src/iframe/build/. ../script8.github.io",
     "iframe-deploy": "cd ../script8.github.io; git add -A; git commit -m 'Update'; yarn version --patch; git push --follow-tags",
     "iframe": "npm-run-all -s iframe-build iframe-rename iframe-copy iframe-deploy",
