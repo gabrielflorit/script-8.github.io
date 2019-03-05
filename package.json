@@ -59,7 +59,7 @@
     "iframe-test": "cd src/iframe; react-scripts test --env=jsdom",
     "iframe-eject": "cd src/iframe; react-scripts eject",
     "iframe-rename": "cd src/iframe; mv build/index.html build/iframe.html",
-    "iframe-copy": "cp -a src/iframe/build/. ../script8.github.io/build",
+    "iframe-copy": "TAG=\"$(git describe --abbrev=0)\"; cp -a src/iframe/build/. \"../script8.github.io/$TAG\"",
     "iframe-deploy": "cd ../script8.github.io; bash copy.sh; git add -A; git commit -m 'Update'; git push",
     "iframe": "npm-run-all -s iframe-build iframe-rename iframe-copy iframe-deploy",
     "predeploy": "npm run build",
