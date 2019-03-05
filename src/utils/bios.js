@@ -40,7 +40,8 @@ update = (state, input, elapsed) => {
     state.modeIndex++
     state.totalElapsed = 0
     state.counter = 0
-  } else if (mode === 'ram' && state.counter > 64) {
+  } else if (mode === 'ram' && state.counter > 64 && _script8.end) {
+    // The _script8.end function is not defined until we're done fetching the gist.
     state.modeIndex++
     state.totalElapsed = 0
     state.counter++

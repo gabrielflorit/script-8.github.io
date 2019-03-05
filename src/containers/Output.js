@@ -139,6 +139,8 @@ class Output extends Component {
           {
             type: 'callCode',
             game: assembleOrderedGame(game),
+            isDoneFetching:
+              screen === screenTypes.BOOT && !gist.isFetching && gist.data,
             songs,
             chains,
             phrases,

@@ -401,7 +401,8 @@ class Iframe extends Component {
           phrases: payload.phrases,
           chains: payload.chains,
           songs: payload.songs,
-          isNew: payload.isNew
+          isNew: payload.isNew,
+          isDoneFetching: payload.isDoneFetching
         })
       } else if (type === 'findInvalidToken') {
         // Find the first invalid token in the provided tokens array.
@@ -438,17 +439,23 @@ class Iframe extends Component {
   evalCode() {
     const { shadows, state } = this
     // eslint-disable-next-line no-unused-vars
-    const { game, message, callbacks } = state
+    const { game, message, callbacks, isDoneFetching } = state
     try {
-      // Make available an end function, and call the callback once.
-      window._script8.end = once(() => {
-        if (Tone.context.state !== 'running') {
-          Tone.start()
-        }
-        message.ports[0].postMessage({
-          callback: callbacks.endCallback
+      // If we're done fetching,
+      if (isDoneFetching)
+        // define the following end function, which we can only call once:
+        window._script8.end = once(() => {
+          // If Tone.js is not running,
+          if (Tone.context.state !== 'running') {
+            // start it.
+            // This is allowed because the root event is a click event.
+            Tone.start()
+          }
+          // Then, call the callback once.
+          message.ports[0].postMessage({
+            callback: callbacks.endCallback
+          })
         })
-      })
       // Save previous initial state.
       this.previousInitialState = window.initialState
       // Eval the supplied game.
