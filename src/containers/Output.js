@@ -197,11 +197,6 @@ class Output extends Component {
 
     const tokenCount = throttledTokenCount(game)
 
-    const iframeUrl =
-      process.env.NODE_ENV !== 'production'
-        ? process.env.REACT_APP_IFRAME_URL
-        : process.env.REACT_APP_IFRAME_URL + '/v' + version + '/iframe.html'
-
     return (
       <div
         className={classNames('Output', {
@@ -209,7 +204,7 @@ class Output extends Component {
         })}
       >
         <iframe
-          src={iframeUrl}
+          src={process.env.REACT_APP_IFRAME_URL}
           title="SCRIPT-8"
           sandbox="allow-scripts allow-same-origin"
           onBlur={this.handleBlur}
