@@ -365,10 +365,12 @@ class Iframe extends Component {
       this.keys.delete('mousedown')
     }
     this.keydownHandler = event => {
+      event.preventDefault()
       event.stopPropagation()
       this.keys.add(event.key)
     }
     this.keyupHandler = event => {
+      event.preventDefault()
       event.stopPropagation()
       this.keys.delete(event.key)
     }
