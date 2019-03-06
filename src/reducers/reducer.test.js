@@ -1,9 +1,10 @@
 import reducer from './reducer.js'
 import actions from '../actions/actions.js'
-import initialState from '../store/initialState.js'
-import screenTypes from '../utils/screenTypes.js'
+import initialState from '../iframe/src/store/initialState.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
-import { parseGistGame, assembleMiscLines } from './game.js'
+import { assembleMiscLines } from './game.js'
+import { parseGistGame } from '../iframe/src/gistParsers/game.js'
 
 describe('dismissedNotices', () => {
   test('blank to one', () => {
@@ -363,57 +364,6 @@ describe('updatePhrase', () => {
     expect(reducer(before, action)).toEqual({
       ...before,
       phrases: {}
-    })
-  })
-})
-
-describe('updateSfx', () => {
-  test('complete', () => {
-    const before = initialState
-    const action = actions.updateSfx({
-      sfx: {
-        notes: ['c', 'c', 'c'],
-        volumes: [1, 2, 3]
-      },
-      index: 1
-    })
-    expect(reducer(before, action)).toEqual({
-      ...before,
-      sfxs: [
-        null,
-        {
-          notes: ['c', 'c', 'c'],
-          volumes: [1, 2, 3]
-        }
-      ]
-    })
-  })
-  test('partial', () => {
-    const before = {
-      ...initialState,
-      sfxs: [
-        null,
-        {
-          notes: ['c', 'c', 'b'],
-          volumes: [1, 2, 3]
-        }
-      ]
-    }
-    const action = actions.updateSfx({
-      sfx: {
-        notes: ['c', 'c', 'c']
-      },
-      index: 1
-    })
-    expect(reducer(before, action)).toEqual({
-      ...before,
-      sfxs: [
-        null,
-        {
-          notes: ['c', 'c', 'c'],
-          volumes: [1, 2, 3]
-        }
-      ]
     })
   })
 })

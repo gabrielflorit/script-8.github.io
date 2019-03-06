@@ -1,10 +1,13 @@
 import equal from 'deep-equal'
-import { parseGistGame, assembleOrderedGame } from '../reducers/game.js'
-import { extractGistMap } from '../reducers/map.js'
-import { extractGistSprites } from '../reducers/sprites.js'
-import { extractGistPhrases } from '../reducers/phrases.js'
-import { extractGistChains } from '../reducers/chains.js'
-import { extractGistSongs } from '../reducers/songs.js'
+import { extractGistMap } from '../iframe/src/gistParsers/map.js'
+import { extractGistSprites } from '../iframe/src/gistParsers/sprites.js'
+import { extractGistPhrases } from '../iframe/src/gistParsers/phrases.js'
+import { extractGistChains } from '../iframe/src/gistParsers/chains.js'
+import { extractGistSongs } from '../iframe/src/gistParsers/songs.js'
+import {
+  parseGistGame,
+  assembleOrderedGame
+} from '../iframe/src/gistParsers/game.js'
 
 const isDirty = ({ gist, game, sprites, map, phrases, chains, songs }) => {
   const gameIsDirty = !equal(

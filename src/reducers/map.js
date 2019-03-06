@@ -1,16 +1,7 @@
-import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
-
-const extractGistMap = data =>
-  JSON.parse(
-    _.get(
-      data,
-      'files["map.json"].content',
-      JSON.stringify(initialState.map, null, 2)
-    )
-  )
+import initialState from '../iframe/src/store/initialState.js'
+import { extractGistMap } from '../iframe/src/gistParsers/map.js'
 
 const map = handleActions(
   {
@@ -23,5 +14,3 @@ const map = handleActions(
 )
 
 export default map
-
-export { extractGistMap }

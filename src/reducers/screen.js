@@ -1,9 +1,9 @@
 import * as Tone from 'tone'
 import { handleActions } from 'redux-actions'
 import includes from 'lodash/includes'
-import screenTypes from '../utils/screenTypes.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
+import initialState from '../iframe/src/store/initialState.js'
 
 const screen = handleActions(
   {

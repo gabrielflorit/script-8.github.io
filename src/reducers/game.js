@@ -1,18 +1,10 @@
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
-import screenTypes from '../utils/screenTypes.js'
-import runningSum from '../utils/runningSum.js'
+import initialState from '../iframe/src/store/initialState.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
 import blank from '../iframe/src/blank.js'
-
-const assembleOrderedGame = game =>
-  _(game)
-    .orderBy((value, key) => key)
-    .map('text')
-    .filter(d => !_.isEmpty(d))
-    .value()
-    .join('\n')
+import { parseGistGame } from '../iframe/src/gistParsers/game.js'
 
 const assembleMiscLines = game =>
   _.range(8).map(d => {
@@ -27,34 +19,6 @@ const getActive = game => ({
   ...game[Object.keys(game).filter(key => game[key].active)],
   key: Object.keys(game).filter(key => game[key].active)[0]
 })
-
-const parseGistGame = data => {
-  const misc = JSON.parse(_.get(data, 'files["misc.json"].content', '{}'))
-  const content = _.get(data, 'files["code.js"].content', '')
-  if (misc.lines) {
-    const ranges = runningSum(misc.lines)
-    const contentLines = content.split('\n')
-    return ranges.reduce(
-      (acc, cur, idx) => ({
-        ...acc,
-        [idx]: {
-          text: contentLines.slice(...cur).join('\n'),
-          active: idx === 0,
-          key: idx
-        }
-      }),
-      {}
-    )
-  } else {
-    return {
-      0: {
-        text: content,
-        active: true,
-        key: 0
-      }
-    }
-  }
-}
 
 const game = handleActions(
   {
@@ -95,4 +59,4 @@ const game = handleActions(
 )
 
 export default game
-export { parseGistGame, getActive, assembleOrderedGame, assembleMiscLines }
+export { getActive, assembleMiscLines }

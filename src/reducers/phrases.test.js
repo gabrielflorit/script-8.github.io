@@ -1,4 +1,7 @@
-import { compressPhrases, expandPhrases } from './phrases.js'
+import {
+  compressPhrases,
+  expandPhrases
+} from '../iframe/src/gistParsers/phrases.js'
 
 test('compressPhrases', () => {
   const expanded = {

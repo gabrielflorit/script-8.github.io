@@ -1,17 +1,8 @@
-import _ from 'lodash'
 import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
-
-const extractGistChains = data =>
-  JSON.parse(
-    _.get(
-      data,
-      'files["chains.json"].content',
-      JSON.stringify(initialState.chains, null, 2)
-    )
-  )
+import initialState from '../iframe/src/store/initialState.js'
+import { extractGistChains } from '../iframe/src/gistParsers/chains.js'
 
 const chains = handleActions(
   {
@@ -28,5 +19,3 @@ const chains = handleActions(
 )
 
 export default chains
-
-export { extractGistChains }

@@ -1,5 +1,5 @@
 import equal from 'deep-equal'
-import initialState from '../store/initialState.js'
+import initialState from '../iframe/src/store/initialState.js'
 
 const isBlank = ({ game, sprites, map, phrases, chains, songs }) =>
   equal(game, initialState.game) &&

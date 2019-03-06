@@ -1,5 +1,5 @@
 import screenTypes from '../utils/screenTypes.js'
-import blank from '../iframe/src/blank.js'
+import blank from '../blank.js'
 
 // TODO: why do we have to make game keys?
 const initialState = {
@@ -16,7 +16,6 @@ const initialState = {
   },
   token: {},
   nextAction: null,
-  sfxs: [],
   sprites: {},
   map: [],
   phrases: {},

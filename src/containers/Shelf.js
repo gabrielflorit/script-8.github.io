@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import screenTypes from '../utils/screenTypes.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
 import frecency from '../utils/frecency.js'
 import actions, { setVisibility } from '../actions/actions.js'

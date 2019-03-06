@@ -1,5 +1,5 @@
-import { version } from '../iframe/package.json'
-import skeleton from '../iframe/src/skeleton.js'
+import { version } from '../../package.json'
+import skeleton from '../skeleton.js'
 const boot = `
 
 const modes = ['glitch', 'numbers', 'pre-ram', 'ram', 'run', 'end']

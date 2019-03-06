@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
+import initialState from '../iframe/src/store/initialState.js'
 
 const nextAction = handleActions(
   {
