@@ -1,4 +1,4 @@
-const key = 'script-8'
+const key = 'script-8-1'
 
 const loadState = () => {
   try {

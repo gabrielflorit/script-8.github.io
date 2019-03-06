@@ -31,7 +31,7 @@ class Notice extends Component {
       <div className="Notice">
         <div className="box">
           <div className="text">
-            <p className="title">NOTICE: SCRIPT-8 update</p>
+            <p className="title">SCRIPT-8 updates</p>
             {_(newNoticeIds)
               .map(id => notices.find(d => d.id === id))
               .sortBy('id')

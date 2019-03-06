@@ -70,7 +70,7 @@ class App extends Component {
   }
 
   render() {
-    const { screen, tutorial, dismissedNotices, token } = this.props
+    const { screen, tutorial, dismissedNotices } = this.props
 
     // show notice only if notices has a notice not in dismissed notices
     const newNoticeIds = _.difference(notices.map(d => d.id), dismissedNotices)
@@ -97,7 +97,7 @@ class App extends Component {
               tutorialRef={this.tutorialElement}
             />
           ) : null}
-          {!_.isEmpty(token) && newNoticeIds.length ? <Notice /> : null}
+          {newNoticeIds.length ? <Notice /> : null}
         </div>
       </ErrorBoundary>
     )

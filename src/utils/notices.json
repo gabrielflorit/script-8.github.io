@@ -1,18 +1,8 @@
 [
   {
-    "id": 4,
+    "id": 5,
     "date": "3-5-2019",
-    "text": "Added LOGOUT button under the SCRIPT-8 button on the menu. If you don't see your cassettes in SHELF,  click LOGOUT, then LOGIN."
-  },
-  {
-    "id": 3,
-    "date": "3-1-2019",
-    "text": "Added a TEMPO control to MUSIC phrases."
-  },
-  {
-    "id": 2,
-    "date": "2-28-2019",
-    "text": "Added LOGIN button under the SCRIPT-8 button on the menu."
+    "text": "Added LOGIN/LOGOUT buttons (under the top-left SCRIPT-8 menu button). If you don't see your cassettes in SHELF, please LOGIN."
   },
   {
     "id": 1,
