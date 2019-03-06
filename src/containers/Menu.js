@@ -16,8 +16,31 @@ import actions, {
 } from '../actions/actions.js'
 import { getActive } from '../reducers/game.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
+import getEmbedHtml from '../utils/getEmbedHtml.js'
 
 const { platform } = window.navigator
+
+const downloadHtml = html => {
+  const element = document.createElement('a')
+  element.setAttribute(
+    'href',
+    'data:text/plain;charset=utf-8,' + encodeURIComponent(html)
+  )
+  element.setAttribute('download', 'index.html')
+  element.style.display = 'none'
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
+const getGameTitle = game => {
+  let title
+  const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
+  if (match) {
+    title = match[1].trim()
+  }
+  return title
+}
 
 const mapStateToProps = ({
   gist,
@@ -90,6 +113,7 @@ class Menu extends Component {
   constructor(props) {
     super(props)
     this.keydown = this.keydown.bind(this)
+    this.onExport = this.onExport.bind(this)
     this.onRecordClick = this.onRecordClick.bind(this)
     this.onLoginClick = this.onLoginClick.bind(this)
     this.onInsertBlankClick = this.onInsertBlankClick.bind(this)
@@ -219,6 +243,14 @@ class Menu extends Component {
     window.removeEventListener('keydown', this.keydown)
   }
 
+  onExport() {
+    const { gist, game } = this.props
+    const title = getGameTitle(game).toUpperCase()
+    const gistId = _.get(gist, 'data.id', null)
+    const embedHtml = getEmbedHtml({ title, id: gistId })
+    downloadHtml(embedHtml)
+  }
+
   onClose(e) {
     const { gist, game, sprites, map, phrases, chains, songs } = this.props
     const dirty = isDirty({
@@ -279,11 +311,7 @@ class Menu extends Component {
     const gistId = _.get(gist, 'data.id', null)
     const isFork = !!_.get(gist, 'data.fork_of', null)
 
-    let title
-    const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
-    if (match) {
-      title = match[1].trim()
-    }
+    const title = getGameTitle(game)
 
     const payload = {
       user: gistUser,
@@ -544,6 +572,15 @@ class Menu extends Component {
                   className="button"
                 >
                   Put on public shelf
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={this.onExport}
+                  disabled={!canShelve}
+                  className="button"
+                >
+                  Export to HTML
                 </button>
               </li>
             </ul>
