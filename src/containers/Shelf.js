@@ -33,7 +33,12 @@ class Shelf extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true
     this.fetchCassettes()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   fetchCassettes() {
@@ -62,15 +67,19 @@ class Shelf extends Component {
             .reverse()
             .value()
 
-          this.setState({
-            yourPrivateCassettes,
-            fetching: false
-          })
+          if (this._isMounted) {
+            this.setState({
+              yourPrivateCassettes,
+              fetching: false
+            })
+          }
         })
     } else {
-      this.setState({
-        yourPrivateCassettes: []
-      })
+      if (this._isMounted) {
+        this.setState({
+          yourPrivateCassettes: []
+        })
+      }
     }
 
     window
@@ -107,12 +116,14 @@ class Shelf extends Component {
           ? recentCassettes.filter(cassette => cassette.user === currentLogin)
           : []
 
-        this.setState({
-          popularCassettes: popularCassettes.filter(d => !d.isFork),
-          recentCassettes: recentCassettes.filter(d => !d.isFork),
-          yourPublicCassettes,
-          fetching: false
-        })
+        if (this._isMounted) {
+          this.setState({
+            popularCassettes: popularCassettes.filter(d => !d.isFork),
+            recentCassettes: recentCassettes.filter(d => !d.isFork),
+            yourPublicCassettes,
+            fetching: false
+          })
+        }
       })
   }
 
