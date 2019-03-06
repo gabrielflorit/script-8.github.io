@@ -60,7 +60,7 @@
     "iframe-eject": "cd src/iframe; react-scripts eject",
     "iframe-rename": "TAG=\"$(git describe --abbrev=0)\"; cd src/iframe; mv build/index.html \"build/iframe-$TAG.html\"",
     "iframe-copy": "cp -a src/iframe/build/. ../script8.github.io",
-    "iframe-deploy": "cd ../script8.github.io; git add -A; git commit -m 'Update'",
+    "iframe-deploy": "cd ../script8.github.io; git add -A; git commit -m 'Update'; git push",
     "iframe": "npm-run-all -s iframe-build iframe-rename iframe-copy iframe-deploy",
     "predeploy": "npm run build",
     "deploy": "gh-pages -b master -d build",
