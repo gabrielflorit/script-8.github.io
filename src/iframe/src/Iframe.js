@@ -825,7 +825,11 @@ class Iframe extends Component {
 
             // Draw the timeLineIndex one last, not faded.
             const lastAlteredState = alteredStates[newTimelineIndex]
-            if (window.drawActors && lastAlteredState.actors) {
+            if (
+              window.drawActors &&
+              lastAlteredState &&
+              lastAlteredState.actors
+            ) {
               window.drawActors({
                 actors: lastAlteredState.actors.filter(d =>
                   selectedActors.includes(d.name)
