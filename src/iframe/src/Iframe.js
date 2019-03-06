@@ -364,11 +364,13 @@ class Iframe extends Component {
     this.mouseupHandler = () => {
       this.keys.delete('mousedown')
     }
-    this.keydownHandler = ({ key }) => {
-      this.keys.add(key)
+    this.keydownHandler = event => {
+      event.stopPropagation()
+      this.keys.add(event.key)
     }
-    this.keyupHandler = ({ key }) => {
-      this.keys.delete(key)
+    this.keyupHandler = event => {
+      event.stopPropagation()
+      this.keys.delete(event.key)
     }
 
     document.addEventListener('touchstart', this.mousedownHandler)
