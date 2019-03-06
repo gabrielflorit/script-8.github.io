@@ -4,6 +4,7 @@ import initialState from '../store/initialState.js'
 
 const token = handleActions(
   {
+    [actionTypes.CLEAR_TOKEN]: () => initialState.token,
     [actionTypes.TOKEN_REQUEST]: () => ({
       isFetching: true
     }),

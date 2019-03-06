@@ -67,6 +67,10 @@ class Shelf extends Component {
             fetching: false
           })
         })
+    } else {
+      this.setState({
+        yourPrivateCassettes: []
+      })
     }
 
     window
@@ -113,7 +117,10 @@ class Shelf extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.shelving && !this.props.shelving) {
+    if (
+      (prevProps.shelving && !this.props.shelving) ||
+      prevProps.token !== this.props.token
+    ) {
       this.fetchCassettes()
     }
   }

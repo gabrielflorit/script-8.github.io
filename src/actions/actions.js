@@ -12,6 +12,7 @@ import {
 } from '../reducers/game.js'
 
 const actions = createActions({
+  [actionTypes.CLEAR_TOKEN]: () => {},
   [actionTypes.SELECT_UI]: d => d,
   [actionTypes.DISMISS_NOTICES]: d => d,
   [actionTypes.TOGGLE_SOUND]: () => {},

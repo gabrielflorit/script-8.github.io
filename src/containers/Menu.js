@@ -47,6 +47,7 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  clearToken: () => dispatch(actions.clearToken()),
   setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   toggleSound: () => dispatch(actions.toggleSound()),
   clearNextAction: () => dispatch(actions.clearNextAction()),
@@ -236,13 +237,20 @@ class Menu extends Component {
   }
 
   onLoginClick() {
-    window.open(
-      `https://github.com/login/oauth/authorize?client_id=${
-        process.env.REACT_APP_CLIENT_ID
-      }&scope=gist`,
-      'popup',
-      'width=600,height=700'
-    )
+    const { token, clearToken } = this.props
+    const loggedIn = !!token.value
+
+    if (loggedIn) {
+      clearToken()
+    } else {
+      window.open(
+        `https://github.com/login/oauth/authorize?client_id=${
+          process.env.REACT_APP_CLIENT_ID
+        }&scope=gist`,
+        'popup',
+        'width=600,height=700'
+      )
+    }
   }
 
   onInsertBlankClick() {
@@ -460,6 +468,15 @@ class Menu extends Component {
                   disabled={loggedIn}
                 >
                   Login
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={this.onLoginClick}
+                  className="button"
+                  disabled={!loggedIn}
+                >
+                  Logout
                 </button>
               </li>
             </ul>
