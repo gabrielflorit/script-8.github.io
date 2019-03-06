@@ -5,7 +5,6 @@ import booted from './booted.js'
 import game from './game.js'
 import token from './token.js'
 import nextAction from './nextAction.js'
-import sfxs from './sfxs.js'
 import sprites from './sprites.js'
 import map from './map.js'
 import phrases from './phrases.js'
@@ -25,7 +24,6 @@ const reducer = combineReducers({
   token,
   game,
   nextAction,
-  sfxs,
   sprites,
   map,
   phrases,

@@ -12,6 +12,7 @@ import clamp from 'lodash/clamp'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
+import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
@@ -20,6 +21,12 @@ import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import createReducer from './createReducer.js'
 import skeleton from './skeleton.js'
+import { extractGistMap } from './gistParsers/map.js'
+import { extractGistSprites } from './gistParsers/sprites.js'
+import { extractGistPhrases } from './gistParsers/phrases.js'
+import { extractGistChains } from './gistParsers/chains.js'
+import { extractGistSongs } from './gistParsers/songs.js'
+import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
@@ -169,17 +176,20 @@ class Iframe extends Component {
   }
 
   logger(value) {
-    const { message, run } = this.state
-    // If we have something to log,
-    if (!run && !_.isNil(value)) {
-      // and it is different than the previous one,
-      if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
-        // update the log,
-        this.log = value
-        // and send to parent.
-        message.ports[0].postMessage({
-          log: this.log
-        })
+    // Don't use logger if we're on embed mode.
+    if (!this.isEmbed) {
+      const { message, run } = this.state
+      // If we have something to log,
+      if (!run && !_.isNil(value)) {
+        // and it is different than the previous one,
+        if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
+          // update the log,
+          this.log = value
+          // and send to parent.
+          message.ports[0].postMessage({
+            log: this.log
+          })
+        }
       }
     }
   }
@@ -194,9 +204,11 @@ class Iframe extends Component {
         // update the loggerErrors,
         this.loggerErrors[type] = errorMessage
         // and send to parent.
-        message.ports[0].postMessage({
-          errors: getUniqueErrorMessages(this.loggerErrors)
-        })
+        if (!this.isEmbed) {
+          message.ports[0].postMessage({
+            errors: getUniqueErrorMessages(this.loggerErrors)
+          })
+        }
       }
     } else {
       // If we don't have an error,
@@ -205,9 +217,11 @@ class Iframe extends Component {
         // update the loggerErrors for this type,
         this.loggerErrors[type] = null
         // and send to parent.
-        message.ports[0].postMessage({
-          errors: getUniqueErrorMessages(this.loggerErrors)
-        })
+        if (!this.isEmbed) {
+          message.ports[0].postMessage({
+            errors: getUniqueErrorMessages(this.loggerErrors)
+          })
+        }
       }
     }
 
@@ -365,7 +379,7 @@ class Iframe extends Component {
     document.addEventListener('keyup', this.keyupHandler)
 
     // Listen for callCode or validateToken parent messages.
-    window.addEventListener('message', message => {
+    const handleMessage = message => {
       const { type, ...payload } = message.data
       const { blacklist, shadows } = this
 
@@ -424,7 +438,42 @@ class Iframe extends Component {
         smallCanvas.getContext('2d').drawImage(this._canvas, 0, 0, size, size)
         message.ports[0].postMessage(smallCanvas.toDataURL())
       }
-    })
+    }
+
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const id = params.get('id')
+    // If there's an id in the query string,
+    if (id && window.self !== window.top) {
+      this.isEmbed = true
+      // try fetching the gist,
+      window
+        .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
+        .then(response => response.json())
+        .then(json => {
+          // parse the gist, then send data to `handleMessage`,
+          // which starts the game.
+          this.gist = json
+          handleMessage({
+            data: {
+              type: 'callCode',
+              game: bios,
+              isDoneFetching: true,
+              songs: extractGistSongs(json),
+              chains: extractGistChains(json),
+              phrases: extractGistPhrases(json),
+              sprites: extractGistSprites(json),
+              map: extractGistMap(json),
+              run: true,
+              callbacks: {},
+              sound: true
+            }
+          })
+        })
+    } else {
+      // Otherwise, wait for messages from parent.
+      window.addEventListener('message', handleMessage)
+    }
   }
 
   componentWillUnmount() {
@@ -445,6 +494,9 @@ class Iframe extends Component {
       if (isDoneFetching)
         // define the following end function, which we can only call once:
         window._script8.end = once(() => {
+          this.setState({
+            game: assembleOrderedGame(parseGistGame(this.gist))
+          })
           // If Tone.js is not running,
           if (Tone.context.state !== 'running') {
             // start it.
@@ -452,9 +504,11 @@ class Iframe extends Component {
             Tone.start()
           }
           // Then, call the callback once.
-          message.ports[0].postMessage({
-            callback: callbacks.endCallback
-          })
+          if (!this.isEmbed) {
+            message.ports[0].postMessage({
+              callback: callbacks.endCallback
+            })
+          }
         })
       // Save previous initial state.
       this.previousInitialState = window.initialState
@@ -843,7 +897,7 @@ class Iframe extends Component {
     if (message) {
       // send the height to parent.
       const height = document.body.querySelector('.container').scrollHeight
-      if (height !== this.heightSent) {
+      if (height !== this.heightSent && !this.isEmbed) {
         message.ports[0].postMessage({ height })
         this.heightSent = height
       }

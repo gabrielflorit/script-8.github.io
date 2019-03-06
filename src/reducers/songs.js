@@ -1,17 +1,8 @@
-import _ from 'lodash'
 import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
-
-const extractGistSongs = data =>
-  JSON.parse(
-    _.get(
-      data,
-      'files["songs.json"].content',
-      JSON.stringify(initialState.songs, null, 2)
-    )
-  )
+import initialState from '../iframe/src/store/initialState.js'
+import { extractGistSongs } from '../iframe/src/gistParsers/songs.js'
 
 const songs = handleActions(
   {
@@ -28,5 +19,3 @@ const songs = handleActions(
 )
 
 export default songs
-
-export { extractGistSongs }

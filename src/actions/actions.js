@@ -2,14 +2,14 @@ import { createActions } from 'redux-actions'
 import GitHub from 'github-api'
 import _ from 'lodash'
 import actionTypes from './actionTypes.js'
-import screenTypes from '../utils/screenTypes.js'
-import { compressPhrases } from '../reducers/phrases.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
+import { compressPhrases } from '../iframe/src/gistParsers/phrases.js'
 import throwError from '../utils/throwError.js'
+import { assembleMiscLines } from '../reducers/game.js'
 import {
   parseGistGame,
-  assembleOrderedGame,
-  assembleMiscLines
-} from '../reducers/game.js'
+  assembleOrderedGame
+} from '../iframe/src/gistParsers/game.js'
 
 const actions = createActions({
   [actionTypes.CLEAR_TOKEN]: () => {},

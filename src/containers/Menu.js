@@ -5,7 +5,7 @@ import _ from 'lodash'
 import screenTypes, {
   getPreviousScreen,
   getNextScreen
-} from '../utils/screenTypes.js'
+} from '../iframe/src/utils/screenTypes.js'
 import isDirty from '../utils/isDirty.js'
 import isBlank from '../utils/isBlank.js'
 import areYouSure from '../utils/areYouSure.js'
@@ -14,7 +14,8 @@ import actions, {
   fetchToken,
   putOnShelf
 } from '../actions/actions.js'
-import { getActive, assembleOrderedGame } from '../reducers/game.js'
+import { getActive } from '../reducers/game.js'
+import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
 
 const { platform } = window.navigator
 

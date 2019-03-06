@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import { connect } from 'react-redux'
-import screenTypes from '../utils/screenTypes.js'
+import screenTypes from '../iframe/src/utils/screenTypes.js'
 import actions, { fetchGist, counterCassette } from '../actions/actions.js'
 
 const mapStateToProps = ({ gist, booted, token }) => ({

@@ -1,17 +1,8 @@
-import _ from 'lodash'
 import omitEmpty from 'omit-empty'
 import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
-import initialState from '../store/initialState.js'
-
-const extractGistSprites = data =>
-  JSON.parse(
-    _.get(
-      data,
-      'files["sprites.json"].content',
-      JSON.stringify(initialState.sprites, null, 2)
-    )
-  )
+import initialState from '../iframe/src/store/initialState.js'
+import { extractGistSprites } from '../iframe/src/gistParsers/sprites.js'
 
 const sprites = handleActions(
   {
@@ -33,5 +24,3 @@ const sprites = handleActions(
 )
 
 export default sprites
-
-export { extractGistSprites }
