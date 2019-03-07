@@ -11,8 +11,8 @@ const drawSprite = ({ x, y, spriteIndex, darken, flipH, flipV, setPixel, sprites
             Math.floor(y) + (flipV ? 7 - rowIndex : rowIndex),
             clamped)
         }
-      });
-    });
+      })
+    })
   }
 }
 
