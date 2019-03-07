@@ -21,7 +21,8 @@ const cycleOrder = [
   screenTypes.CHAIN,
   screenTypes.SONG,
   screenTypes.HELP,
-  screenTypes.SHELF
+  screenTypes.SHELF,
+  screenTypes.RUN
 ]
 
 const getNextScreen = screen => {

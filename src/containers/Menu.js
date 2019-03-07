@@ -7,6 +7,7 @@ import screenTypes, {
   getNextScreen
 } from '../iframe/src/utils/screenTypes.js'
 import isDirty from '../utils/isDirty.js'
+import canRecord from '../utils/canRecord.js'
 import isBlank from '../utils/isBlank.js'
 import areYouSure from '../utils/areYouSure.js'
 import actions, {
@@ -120,47 +121,9 @@ class Menu extends Component {
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
     this.onClose = this.onClose.bind(this)
-    this.canRecord = this.canRecord.bind(this)
     window.script8.handleCode = props.fetchToken
 
     window.addEventListener('beforeunload', this.onClose)
-  }
-
-  canRecord() {
-    const {
-      gist,
-      token,
-      game,
-      sprites,
-      map,
-      phrases,
-      chains,
-      songs
-    } = this.props
-
-    const dirty = isDirty({
-      gist,
-      game,
-      sprites,
-      map,
-      phrases,
-      chains,
-      songs
-    })
-
-    // If gistLogin is null, gist was created anonymously.
-    const gistLogin = _.get(gist, 'data.owner.login', null)
-
-    // If gistLogin does not match currentLogin, gist wasn't created by us.
-    const currentLogin = _.get(token, 'user.login', null)
-
-    // RECORD can only be enabled when:
-    // - the gist is ours AND content is dirty
-    // - OR the gist is empty (new game)
-    const enableRecord =
-      (currentLogin && currentLogin === gistLogin && dirty) || _.isEmpty(gist)
-
-    return enableRecord
   }
 
   componentDidUpdate() {
@@ -177,27 +140,18 @@ class Menu extends Component {
   }
 
   keydown(event) {
-    const { screen, game, setCodeTab, setScreen } = this.props
+    const { screen, game, setCodeTab, setScreen, token } = this.props
 
     const { altKey, code, metaKey, ctrlKey } = event
-
-    const isCreationScreen = [
-      screenTypes.CODE,
-      screenTypes.SPRITE,
-      screenTypes.MAP,
-      screenTypes.SONG,
-      screenTypes.CHAIN,
-      screenTypes.PHRASE
-    ].includes(screen)
 
     // If we pressed Cmd-S or Ctrl-S,
     if (
       (metaKey && code === 'KeyS' && _.includes(platform, 'Mac')) ||
       (ctrlKey && code === 'KeyS' && !_.includes(platform, 'Mac'))
     ) {
-      // and we're on any creation screen,
+      // and we're logged in,
       // and we can save,
-      if (isCreationScreen && this.canRecord()) {
+      if (token.value && canRecord(this.props)) {
         // save.
         this.onRecordClick(false)
         event.preventDefault()
@@ -443,7 +397,7 @@ class Menu extends Component {
     // - OR content is not NEW_GAME template
     const enableInsertBlank = !_.isEmpty(gist) || !blank
 
-    const enableRecord = this.canRecord()
+    const enableRecord = canRecord(this.props)
 
     // RECORD TO BLANK can only be enabled when:
     // - gist is NOT empty AND

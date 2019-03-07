@@ -30,6 +30,8 @@ import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
+const { platform } = window.navigator
+
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
 const getUniqueErrorMessages = errors =>
@@ -365,8 +367,39 @@ class Iframe extends Component {
       this.keys.delete('mousedown')
     }
     this.keydownHandler = event => {
+      // Listen for record cassette and go to previous/next screen,
+      // and send them to parent.
+      const { altKey, metaKey, ctrlKey, key } = event
+      const { message } = this.state
+
+      // Ctrl-s / Cmd-s
+      if (
+        (metaKey && key === 's' && _.includes(platform, 'Mac')) ||
+        (ctrlKey && key === 's' && !_.includes(platform, 'Mac'))
+      ) {
+        event.preventDefault()
+        message.ports[0].postMessage({
+          shortcut: 'save'
+        })
+      }
+
+      // Alt-. / Alt-/
+      if (altKey) {
+        if (key === '.') {
+          event.preventDefault()
+          message.ports[0].postMessage({
+            shortcut: 'previous'
+          })
+        }
+        if (key === '/') {
+          event.preventDefault()
+          message.ports[0].postMessage({
+            shortcut: 'next'
+          })
+        }
+      }
+
       // Only handle the keys we want.
-      const { key } = event
       if (allowedKeys.includes(key)) {
         event.preventDefault()
         event.stopPropagation()

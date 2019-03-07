@@ -3,9 +3,13 @@ import classNames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { tokenizer } from 'acorn'
-import actions from '../actions/actions.js'
+import actions, { saveGist } from '../actions/actions.js'
 import bios from '../iframe/src/utils/bios.js'
-import screenTypes from '../iframe/src/utils/screenTypes.js'
+import screenTypes, {
+  getPreviousScreen,
+  getNextScreen
+} from '../iframe/src/utils/screenTypes.js'
+import canRecord from '../utils/canRecord.js'
 import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
@@ -22,6 +26,7 @@ const mapStateToProps = ({
   map,
   sound,
   gist,
+  token,
   tutorial
 }) => ({
   songs,
@@ -34,11 +39,27 @@ const mapStateToProps = ({
   screen,
   sound,
   gist,
+  token,
   tutorial
 })
 
 const mapDispatchToProps = dispatch => ({
-  finishBoot: () => dispatch(actions.finishBoot())
+  setScreen: screen => dispatch(actions.setScreen(screen)),
+  finishBoot: () => dispatch(actions.finishBoot()),
+  saveGist: ({ game, token, gist, sprites, map, phrases, chains, songs }) =>
+    dispatch(
+      saveGist({
+        game,
+        token,
+        gist,
+        sprites,
+        map,
+        phrases,
+        chains,
+        songs,
+        toBlank: false
+      })
+    )
 })
 
 const getTokenCount = game => {
@@ -126,7 +147,10 @@ class Output extends Component {
       map,
       screen,
       sound,
-      gist
+      gist,
+      setScreen,
+      saveGist,
+      token
     } = this.props
 
     // Create a closured function for eval'ing the game.
@@ -158,7 +182,7 @@ class Output extends Component {
           if (e.data.callback === 'finishBoot') {
             finishBoot()
           }
-          const { height, errors, log } = e.data
+          const { height, errors, log, shortcut } = e.data
           if (height && this._iframe) {
             this._iframe.height = height
           }
@@ -167,6 +191,22 @@ class Output extends Component {
           }
           if (!_.isNil(log)) {
             this.setState({ log })
+          }
+          if (shortcut) {
+            if (shortcut === 'save') {
+              // If we're logged in,
+              // and we can save,
+              if (token.value && canRecord(this.props)) {
+                // save.
+                saveGist(this.props)
+              }
+            }
+            if (shortcut === 'previous') {
+              setScreen(getPreviousScreen(screen))
+            }
+            if (shortcut === 'next') {
+              setScreen(getNextScreen(screen))
+            }
           }
         }
       }
