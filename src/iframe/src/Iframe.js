@@ -1048,8 +1048,13 @@ class Iframe extends Component {
                 this._ul = _ul
               }}
             >
-              {actors.map(actor => (
-                <li key={actor.name}>
+              {actors.map((actor, i) => (
+                <li
+                  key={actor.name}
+                  className={classNames({
+                    hide: i > 6
+                  })}
+                >
                   <button
                     className={classNames({
                       active: selectedActors.includes(actor.name)
