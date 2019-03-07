@@ -173,6 +173,10 @@ class Iframe extends Component {
       run: true,
       sound: true
     }
+
+    this._pixelBuffer = new ArrayBuffer(4 * CANVAS_SIZE * CANVAS_SIZE)
+    this._pixelBytes = new Uint8ClampedArray(this._pixelBuffer)
+    this._pixelIntegers = new Uint32Array(this._pixelBuffer)
   }
 
   logger(value) {
@@ -323,7 +327,7 @@ class Iframe extends Component {
         Array,
         log: this.logger,
         ...canvasAPI({
-          ctx: this._canvas.getContext('2d'),
+          pixels: this._pixelIntegers,
           width: CANVAS_SIZE,
           height: CANVAS_SIZE,
           sprites: this.state.sprites,
@@ -346,6 +350,12 @@ class Iframe extends Component {
       // and assign the key itself to window._script8.globalKeys.
       window._script8.globalKeys.add(key)
     })
+  }
+
+  drawPixels(pixelBytes) {
+    this._pixelData.data.set(this._pixelBytes)
+    let ctx = this._canvas.getContext('2d')
+    ctx.putImageData(this._pixelData, 0, 0)
   }
 
   componentDidMount() {
@@ -575,6 +585,7 @@ class Iframe extends Component {
 
         // Draw this state.
         window.draw && window.draw(this.store.getState())
+        this.drawPixels()
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
@@ -798,6 +809,7 @@ class Iframe extends Component {
             // Draw the timeline index state.
             const stateToDraw = alteredStates[newTimelineIndex]
             window.draw(stateToDraw)
+            this.drawPixels()
 
             // Get all unique actors.
             const allActors = flatten(
@@ -822,6 +834,7 @@ class Iframe extends Component {
                 this.updateGlobals({ log: NOOP })
                 window.drawActors &&
                   window.drawActors({ actors: matchingActors }, true)
+                this.drawPixels()
                 // Re-enable console.log.
                 this.updateGlobals({ log: this.logger })
               }
@@ -839,6 +852,7 @@ class Iframe extends Component {
                   selectedActors.includes(d.name)
                 )
               })
+              this.drawPixels()
             }
 
             // Finally, set the store to point to the timeLineIndex altered state,
@@ -891,6 +905,7 @@ class Iframe extends Component {
           })
 
           window.draw(this.store.getState())
+          this.drawPixels()
           tempCtx.restore()
         }
       }
@@ -930,7 +945,11 @@ class Iframe extends Component {
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
             ref={_canvas => {
-              this._canvas = _canvas
+              if (_canvas) {
+                this._canvas = _canvas
+                let ctx = this._canvas.getContext('2d')
+                this._pixelData = ctx.getImageData(0, 0, 128, 128)
+              }
             }}
           />
 

@@ -1,225 +1,152 @@
-import { get, isNil } from 'lodash'
+import { get } from 'lodash'
 import colors from '../colors.js'
-import circle from './circle.js'
-import line from './line.js'
-import polyStroke from './polyStroke.js'
-import print from './print.js'
-import sprite, { pixelSprite } from './sprite.js'
-import { getPixel, setPixel } from './pixel.js'
+import drawLine from './line.js'
+import drawPolyStroke from './polyStroke.js'
+import { drawRectStroke, drawRectFill } from './rect.js'
+import drawCircle from './circle.js'
+import drawSprite from './sprite.js'
+import drawText from './print.js'
 
-// let mapDraws = []
-// let avgDraws = []
-// let draws = 0
-// let skips = 0
+const backgroundColor = 7
 
 const canvasAPI = ({
-  ctx,
+  pixels,
   width: canvasWidth,
   height: canvasHeight,
   sprites,
-  map = []
+  map: initialMap = []
 }) => {
-  let _runningMap = JSON.parse(JSON.stringify(map))
-  ctx.setTransform(1, 0, 0, 1, 0, 0)
-
+  let _runningMap = JSON.parse(JSON.stringify(initialMap))
   let _cameraX = 0
-
   let _cameraY = 0
 
-  const _memoryCanvas = document.createElement('canvas')
-  _memoryCanvas.width = canvasWidth
-  _memoryCanvas.height = canvasHeight
-  const _mCtx = _memoryCanvas.getContext('2d')
+  const camera = (x = 0, y = 0) => {
+    _cameraX = Math.floor(x)
+    _cameraY = Math.floor(y)
+  }
 
-  Object.entries(sprites).forEach(([skey, value]) => {
-    const key = +skey
-    const row = Math.floor(key / 16)
-    const col = key % 16
-    pixelSprite({ x: col * 8, y: row * 8, grid: value, ctx: _mCtx })
-  })
+  const clear = (c = 7) => {
+    pixels.fill(colors.int(c))
+  }
+
+  const setPixel = (x, y, c = 0) => {
+    x = Math.floor(x - _cameraX)
+    y = Math.floor(y - _cameraY)
+    if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return
+    pixels[y * canvasWidth + x] = colors.int(c)
+  }
+
+  const getPixel = (x, y) => {
+    x = Math.floor(x - _cameraX)
+    y = Math.floor(y - _cameraY)
+    if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return backgroundColor
+    return colors.lookupInt(pixels[y * canvasHeight + x])
+  }
+
+  const line = (x1, y1, x2, y2, c = 0) => {
+    drawLine({ x1, y1, x2, y2, setPixel, color: c })
+  }
+
+  const polyStroke = (points, ...args) => {
+    drawPolyStroke({ points, args, line })
+  }
+
+  const rectStroke = (x, y, w, h, c = 0) => {
+    drawRectStroke({
+      x, y, w, h,
+      c, line
+    })
+  }
+
+  const rectFill = (x, y, w, h, c = 0) => {
+    drawRectFill({
+      x, y, w, h,
+      c, line
+    })
+  }
+
+  const circStroke = (x, y, r, c = 0) => {
+    drawCircle({
+      cx: Math.floor(x),
+      cy: Math.floor(y),
+      radius: Math.floor(r),
+      color: c,
+      onlyStroke: true,
+      setPixel,
+      line
+    })
+  }
+
+  const circFill = (x, y, r, c = 0) => {
+    drawCircle({
+      cx: Math.floor(x),
+      cy: Math.floor(y),
+      radius: Math.floor(r),
+      color: c,
+      setPixel,
+      line
+    })
+  }
+
+  const print = (x, y, letters, c = 0) => {
+    drawText({
+      x, y, letters, c,
+      setPixel,
+      cameraX: _cameraX,
+      cameraY: _cameraY
+    })
+  }
+
+  const sprite = (x, y, spriteIndex, darken = 0, flipH = false, flipV = false) => {
+    if (x < _cameraX - 8 || x > _cameraX + canvasWidth) return;
+    if (y < _cameraY - 8 || y > _cameraY + canvasHeight) return;
+
+    drawSprite({
+      x, y, spriteIndex,
+      darken, flipH, flipV,
+      setPixel, sprites
+    })
+  }
+
+  const getTile = (mx, my) => {
+    const tile = get(_runningMap, [my, mx], null)
+    let result = tile !== null ? sprites[tile] : null
+    if (result) {
+      result.type = result[8] || 0
+      result.number = tile
+    }
+    return result
+  };
+
+  const setTile = (mx, my, spriteNumber) => {
+    _runningMap[my][mx] = spriteNumber
+  }
+
+  const map = (x = 0, y = 0) => {
+    _runningMap.forEach((row, rowNumber) => {
+      row.forEach((spriteIndex, colNumber) => {
+        if (spriteIndex !== null) {
+          const dx = (colNumber + x) * 8
+          const dy = rowNumber * 8
+          sprite(dx, dy, spriteIndex)
+        }
+      })
+    })
+  }
+
+  const resetMap = () => {
+    _runningMap = JSON.parse(JSON.stringify(initialMap))
+  }
 
   return {
-    polyStroke(points, ...args) {
-      polyStroke({ points, args, ctx })
-    },
-
-    getTile(mx, my) {
-      const tile = get(_runningMap, [my, mx], null)
-      let result = tile !== null ? sprites[tile] : null
-      if (result) {
-        result.type = result[8] || 0
-        result.number = tile
-      }
-      return result
-    },
-
-    setTile(mx, my, spriteNumber) {
-      _runningMap[my][mx] = spriteNumber
-    },
-
-    line(x1, y1, x2, y2, c = 0) {
-      line({
-        x1: Math.floor(x1),
-        y1: Math.floor(y1),
-        x2: Math.floor(x2),
-        y2: Math.floor(y2),
-        ctx,
-        color: colors.rgb(c)
-      })
-    },
-
-    print(x, y, letters, c = 0) {
-      print({
-        x: x - _cameraX,
-        y: y - _cameraY,
-        letters,
-        c,
-        ctx
-      })
-    },
-
-    rectStroke(x, y, w, h, c = 0) {
-      ctx.strokeStyle = colors.rgb(c)
-      ctx.strokeRect(
-        Math.floor(x) + 0.5,
-        Math.floor(y) + 0.5,
-        Math.floor(w) - 1,
-        Math.floor(h) - 1
-      )
-    },
-
-    camera(x = 0, y = 0) {
-      _cameraX = Math.floor(x)
-      _cameraY = Math.floor(y)
-      ctx.setTransform(1, 0, 0, 1, 0, 0)
-      ctx.translate(-_cameraX, -_cameraY)
-    },
-
-    rectFill(x, y, w, h, c = 0) {
-      ctx.fillStyle = colors.rgb(c)
-      ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h))
-    },
-
-    resetMap() {
-      _runningMap = JSON.parse(JSON.stringify(map))
-    },
-
-    map(x = 0, y = 0) {
-      // const before = Date.now()
-      _runningMap.forEach((row, rowNumber) => {
-        row.forEach((spriteIndex, colNumber) => {
-          if (spriteIndex !== null) {
-            const sx = (spriteIndex % 16) * 8
-            const sy = Math.floor(spriteIndex / 16) * 8
-            const sWidth = 8
-            const sHeight = 8
-            const dx = (colNumber + x) * 8
-            const dy = rowNumber * 8
-            const dWidth = 8
-            const dHeight = 8
-
-            if (
-              dx + 7 >= _cameraX &&
-              dx < _cameraX + 128 &&
-              dy + 7 >= _cameraY &&
-              dy < _cameraY + 128
-            ) {
-              // ++draws
-              ctx.drawImage(
-                _memoryCanvas,
-                sx,
-                sy,
-                sWidth,
-                sHeight,
-                dx,
-                dy,
-                dWidth,
-                dHeight
-              )
-            } else {
-              // ++skips
-            }
-          }
-        })
-      })
-
-      // const after = Date.now()
-      // mapDraws.push(after - before)
-      // if (mapDraws.length > 60) {
-      //   const avg = sum(mapDraws) / mapDraws.length
-      //   // console.log(`map() avg: ${sum(mapDraws) / mapDraws.length}ms`)
-      //   // console.log({ _cameraX, _cameraY })
-      //   mapDraws = []
-      //   avgDraws.push(avg)
-      //   if (avgDraws.length % 10 === 0) {
-      //     console.log(`AVG AVG: ${sum(avgDraws) / avgDraws.length}ms`)
-      //     console.log(`DRAWS/SKIPS: ${draws / skips} (${draws}/${skips})`)
-      //   }
-      // }
-    },
-
-    sprite(x, y, spriteIndex, darken = 0, flipH = false, flipV = false) {
-      sprite({
-        x,
-        y,
-        spriteIndex,
-        darken,
-        flipH,
-        flipV,
-        sprites,
-        ctx
-      })
-    },
-
-    circStroke(x, y, r, c = 0) {
-      circle({
-        cx: Math.floor(x),
-        cy: Math.floor(y),
-        radius: Math.floor(r),
-        ctx,
-        color: colors.rgb(c),
-        onlyStroke: true
-      })
-    },
-
-    circFill(x, y, r, c = 0) {
-      circle({
-        cx: Math.floor(x),
-        cy: Math.floor(y),
-        radius: Math.floor(r),
-        ctx,
-        color: colors.rgb(c)
-      })
-    },
-
-    clear(c) {
-      ctx.save()
-      ctx.setTransform(1, 0, 0, 1, 0, 0)
-      if (!isNil(c)) {
-        ctx.fillStyle = colors.rgb(c)
-        ctx.fillRect(0, 0, 128, 128)
-      } else {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-      }
-      ctx.restore()
-    },
-
-    getPixel(x, y) {
-      return getPixel({
-        x: Math.floor(x - _cameraX),
-        y: Math.floor(y - _cameraY),
-        ctx
-      })
-    },
-
-    setPixel(x, y, c = 0) {
-      setPixel({
-        x: Math.floor(x),
-        y: Math.floor(y),
-        ctx,
-        color: colors.rgb(c)
-      })
-    }
+    camera, clear,
+    setPixel, getPixel,
+    line, polyStroke,
+    rectStroke, rectFill,
+    circStroke, circFill,
+    print, sprite,
+    getTile, setTile,
+    map, resetMap
   }
 }
 

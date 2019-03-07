@@ -1,11 +1,10 @@
-const line = ({ x1, y1, x2, y2, ctx, color }) => {
-  ctx.fillStyle = color
+const drawLine = ({ x1, y1, x2, y2, setPixel, color }) => {
   let steep = false
 
   if (Math.abs(x1 - x2) < Math.abs(y1 - y2)) {
     ;[x1, y1] = [y1, x1]
     ;[x2, y2] = [y2, x2]
-    steep = true
+    steep = true;
   }
   if (x1 > x2) {
     ;[x1, x2] = [x2, x1]
@@ -20,9 +19,9 @@ const line = ({ x1, y1, x2, y2, ctx, color }) => {
 
   for (let x = x1; x <= x2; x++) {
     if (steep) {
-      ctx.fillRect(y, x, 1, 1)
+      setPixel(y, x, color)
     } else {
-      ctx.fillRect(x, y, 1, 1)
+      setPixel(x, y, color)
     }
     error += derror
     if (error > dx) {
@@ -36,4 +35,4 @@ const line = ({ x1, y1, x2, y2, ctx, color }) => {
   }
 }
 
-export default line
+export default drawLine

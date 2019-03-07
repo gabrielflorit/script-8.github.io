@@ -8,7 +8,7 @@ const rgbs = [
   'rgb(32,57,79)',
   'rgb(15,42,63)',
   'rgb(8,20,30)'
-]
+];
 
 const triplets = [
   [246, 214, 189],
@@ -19,7 +19,21 @@ const triplets = [
   [32, 57, 79],
   [15, 42, 63],
   [8, 20, 30]
-]
+];
+
+let intLookup = [];
+for (let i = 0; i < 8; i++) {
+  let values = triplets[i];
+  intLookup[i] = ((255 << 24) |
+                  (values[2] << 16) |
+                  (values[1] << 8) |
+                  values[0]) >>> 0
+}
+
+let reverseIntLookup = {};
+for (let i = 0; i < 8; i++) {
+  reverseIntLookup[intLookup[i]] = i
+}
 
 // const hexes = [
 //   '#f6d6bd',
@@ -36,12 +50,17 @@ const colors = {
   rgb (i) {
     return rgbs[i % rgbs.length]
   },
+
   triplet (i) {
     return triplets[i % triplets.length]
   },
 
+  int (i) {
+    return intLookup[i % 8]
+  },
+
   // NOTE: if triplet isn't a color in the pallet, this will return undefined.
-  lookup (triplet) {
+  lookupTriplet (triplet) {
     for (let i = 0; i < triplets.length; i++) {
       let current = triplets[i]
       if (current[0] === triplet[0] &&
@@ -50,7 +69,14 @@ const colors = {
         return i
       }
     }
-    return undefined
+    return undefined;
+  },
+
+  lookupInt (int) {
+    if (int in reverseIntLookup) {
+      return reverseIntLookup[int]
+    }
+    return 7
   }
 }
 

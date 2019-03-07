@@ -1,7 +1,4 @@
-import colors from '../colors.js'
-import line from './line.js'
-
-const polyStroke = ({ points, args, ctx }) => {
+const drawPolyStroke = ({ points, args, line }) => {
   if (!points.length) {
     return
   }
@@ -42,23 +39,21 @@ const polyStroke = ({ points, args, ctx }) => {
       break
   }
   for (let i = 1; i < points.length; i++) {
-    line({
-      x1: Math.round(newPoints[i - 1][0]),
-      y1: Math.round(newPoints[i - 1][1]),
-      x2: Math.round(newPoints[i][0]),
-      y2: Math.round(newPoints[i][1]),
-      ctx,
-      color: colors.rgb(c)
-    })
+    line(
+      Math.round(newPoints[i - 1][0]), // x1
+      Math.round(newPoints[i - 1][1]), // y1
+      Math.round(newPoints[i][0]), // x2
+      Math.round(newPoints[i][1]), // y2
+      c
+    )
   }
-  line({
-    x1: Math.round(newPoints[newPoints.length - 1][0]),
-    y1: Math.round(newPoints[newPoints.length - 1][1]),
-    x2: Math.round(newPoints[0][0]),
-    y2: Math.round(newPoints[0][1]),
-    ctx,
-    color: colors.rgb(c)
-  })
+  line(
+    Math.round(newPoints[newPoints.length - 1][0]), // x1
+    Math.round(newPoints[newPoints.length - 1][1]), // y1
+    Math.round(newPoints[0][0]), // x2
+    Math.round(newPoints[0][1]), // y2
+    c
+  )
 }
 
-export default polyStroke
+export default drawPolyStroke
