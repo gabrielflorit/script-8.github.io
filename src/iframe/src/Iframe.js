@@ -18,7 +18,7 @@ import soundAPI from './soundAPI/index.js'
 import canvasAPI from './canvasAPI/index.js'
 import trimCanvas from './canvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
-import getUserInput from './getUserInput.js'
+import getUserInput, { allowedKeys } from './getUserInput.js'
 import createReducer from './createReducer.js'
 import skeleton from './skeleton.js'
 import { extractGistMap } from './gistParsers/map.js'
@@ -365,14 +365,22 @@ class Iframe extends Component {
       this.keys.delete('mousedown')
     }
     this.keydownHandler = event => {
-      event.preventDefault()
-      event.stopPropagation()
-      this.keys.add(event.key)
+      // Only handle the keys we want.
+      const { key } = event
+      if (allowedKeys.includes(key)) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      this.keys.add(key)
     }
     this.keyupHandler = event => {
-      event.preventDefault()
-      event.stopPropagation()
-      this.keys.delete(event.key)
+      // Only handle the keys we want.
+      const { key } = event
+      if (allowedKeys.includes(key)) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      this.keys.delete(key)
     }
 
     document.addEventListener('touchstart', this.mousedownHandler)

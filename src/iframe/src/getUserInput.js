@@ -1,5 +1,17 @@
 let previousUserInput = {}
 
+const allowedKeys = [
+  'mousedown',
+  'ArrowUp',
+  'ArrowRight',
+  'ArrowDown',
+  'ArrowLeft',
+  'a',
+  'b',
+  'Enter',
+  ' '
+]
+
 const getUserInput = keys => {
   const { buttons } = window.navigator.getGamepads
     ? window.navigator.getGamepads()[0] || {}
@@ -31,5 +43,7 @@ const getUserInput = keys => {
 
   return newUserInput
 }
+
+export { allowedKeys }
 
 export default getUserInput
