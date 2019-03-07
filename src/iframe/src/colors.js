@@ -8,7 +8,7 @@ const rgbs = [
   'rgb(32,57,79)',
   'rgb(15,42,63)',
   'rgb(8,20,30)'
-];
+]
 
 const triplets = [
   [246, 214, 189],
@@ -19,7 +19,7 @@ const triplets = [
   [32, 57, 79],
   [15, 42, 63],
   [8, 20, 30]
-];
+]
 
 let intLookup = [];
 for (let i = 0; i < 8; i++) {
