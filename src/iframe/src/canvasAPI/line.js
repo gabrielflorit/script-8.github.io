@@ -4,7 +4,7 @@ const drawLine = ({ x1, y1, x2, y2, setPixel, color }) => {
   if (Math.abs(x1 - x2) < Math.abs(y1 - y2)) {
     ;[x1, y1] = [y1, x1]
     ;[x2, y2] = [y2, x2]
-    steep = true;
+    steep = true
   }
   if (x1 > x2) {
     ;[x1, x2] = [x2, x1]
