@@ -485,15 +485,16 @@ class Iframe extends Component {
       }
     }
 
-    const { search } = window.location
-    const params = new window.URLSearchParams(search)
-    const id = params.get('id')
-    // If there's an id in the query string,
-    if (id && window.self !== window.top) {
+    // If there's an id in index.html,
+    if (window.SCRIPT_8_EMBEDDED_GIST_ID) {
       this.isEmbed = true
       // try fetching the gist,
       window
-        .fetch(`${process.env.REACT_APP_NOW}/gist/${id}`)
+        .fetch(
+          `${process.env.REACT_APP_NOW}/gist/${
+            window.SCRIPT_8_EMBEDDED_GIST_ID
+          }`
+        )
         .then(response => response.json())
         .then(json => {
           // parse the gist, then send data to `handleMessage`,

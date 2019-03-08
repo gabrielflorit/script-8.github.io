@@ -17,7 +17,7 @@ import actions, {
 } from '../actions/actions.js'
 import { getActive } from '../reducers/game.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
-import getEmbedHtml from '../utils/getEmbedHtml.js'
+import { version } from '../iframe/package.json'
 
 const { platform } = window.navigator
 
@@ -201,8 +201,19 @@ class Menu extends Component {
     const { gist, game } = this.props
     const title = getGameTitle(game).toUpperCase()
     const gistId = _.get(gist, 'data.id', null)
-    const embedHtml = getEmbedHtml({ title, id: gistId })
-    downloadHtml(embedHtml)
+
+    window
+      .fetch(`https://script8.github.io/iframe-v${version}.html`)
+      .then(response => response.text())
+      .then(text => {
+        const html = text
+          .replace('<title>script-8-iframe</title>', `<title>${title}</title>`)
+          .replace(
+            '<body>',
+            `<body><script>window.SCRIPT_8_EMBEDDED_GIST_ID="${gistId}"</script>`
+          )
+        downloadHtml(html)
+      })
   }
 
   onClose(e) {
