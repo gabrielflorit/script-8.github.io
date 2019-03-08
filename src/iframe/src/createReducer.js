@@ -9,12 +9,10 @@ const createReducer = logger => {
             newState = JSON.parse(JSON.stringify(state))
             window.update(newState, action.input, action.elapsed)
             if (newState.actors) {
-              // Find actors with no name.
-              const namelessActors = newState.actors.filter(
-                actor => !actor.name
-              )
+              // Find actors with no id.
+              const namelessActors = newState.actors.filter(actor => !actor.id)
               if (namelessActors.length) {
-                throw new Error('Actors must have a name property.')
+                throw new Error('Actors must have an id property.')
               }
             }
             logger({ type: 'reducerError' })

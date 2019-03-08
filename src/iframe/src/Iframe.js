@@ -845,7 +845,7 @@ class Iframe extends Component {
             const allActors = flatten(
               alteredStates.map(state => state.actors)
             ).filter(d => d)
-            const actors = uniqBy(allActors, d => d.name)
+            const actors = uniqBy(allActors, d => d.id)
 
             // For each altered state, minus the timeLineIndex one,
             // draw the actors, if they're selected, faded.
@@ -856,9 +856,7 @@ class Iframe extends Component {
               ) {
                 const matchingActors =
                   (state.actors &&
-                    state.actors.filter(d =>
-                      selectedActors.includes(d.name)
-                    )) ||
+                    state.actors.filter(d => selectedActors.includes(d.id))) ||
                   []
                 // Disable logging during window.draw calls.
                 this.updateGlobals({ log: NOOP })
@@ -878,7 +876,7 @@ class Iframe extends Component {
             ) {
               window.drawActors({
                 actors: lastAlteredState.actors.filter(d =>
-                  selectedActors.includes(d.name)
+                  selectedActors.includes(d.id)
                 )
               })
             }
@@ -1092,16 +1090,16 @@ class Iframe extends Component {
             >
               {actors.map((actor, i) => (
                 <li
-                  key={actor.name}
+                  key={actor.id}
                   className={classNames({
                     hide: i > 6
                   })}
                 >
                   <button
                     className={classNames({
-                      active: selectedActors.includes(actor.name)
+                      active: selectedActors.includes(actor.id)
                     })}
-                    onClick={() => this.handleActorClick(actor.name)}
+                    onClick={() => this.handleActorClick(actor.id)}
                   />
                 </li>
               ))}
