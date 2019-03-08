@@ -1,8 +1,8 @@
 import alphabet from './alphabet.js'
 
 const drawText = ({ x, y, letters, c, setPixel, cameraX, cameraY }) => {
-  let currentX = Math.floor(x - cameraX)
-  let currentY = Math.floor(y - cameraY)
+  let currentX = Math.floor(x)
+  let currentY = Math.floor(y)
 
   for (let letter of letters.toString().split('')) {
     const pixels = alphabet[letter.toLowerCase()]

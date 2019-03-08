@@ -33,7 +33,8 @@ const canvasAPI = ({
     x = Math.floor(x - _cameraX)
     y = Math.floor(y - _cameraY)
     if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return
-    pixels[y * canvasWidth + x] = colors.int(c)
+    let int = colors.int(c)
+    if (int) pixels[y * canvasWidth + x] = int
   }
 
   const getPixel = (x, y) => {
@@ -89,6 +90,9 @@ const canvasAPI = ({
   }
 
   const print = (x, y, letters, c = 0) => {
+    if (x - _cameraX < 0 || x - _cameraX > canvasWidth) return;
+    if (y - _cameraY < 0 || y - _cameraY > canvasHeight) return;
+
     drawText({
       x, y, letters, c,
       setPixel,
@@ -98,8 +102,8 @@ const canvasAPI = ({
   }
 
   const sprite = (x, y, spriteIndex, darken = 0, flipH = false, flipV = false) => {
-    if (x < _cameraX - 8 || x > _cameraX + canvasWidth) return;
-    if (y < _cameraY - 8 || y > _cameraY + canvasHeight) return;
+    if (x - _cameraX < -8 || x - _cameraX > canvasWidth) return;
+    if (y - _cameraY < -8 || y - _cameraY > canvasHeight) return;
 
     drawSprite({
       x, y, spriteIndex,
@@ -123,10 +127,13 @@ const canvasAPI = ({
   }
 
   const map = (x = 0, y = 0) => {
+    // Loop over every element in the map
     _runningMap.forEach((row, rowNumber) => {
       row.forEach((spriteIndex, colNumber) => {
+        // If the element has a sprite index,
         if (spriteIndex !== null) {
-          const dx = (colNumber + x) * 8
+          // Render at the correct offset position
+          const dx = colNumber * 8 + x
           const dy = rowNumber * 8
           sprite(dx, dy, spriteIndex)
         }

@@ -56,7 +56,7 @@ const colors = {
   },
 
   int (i) {
-    return intLookup[i % 8]
+    return intLookup[i % intLookup.length]
   },
 
   // NOTE: if triplet isn't a color in the pallet, this will return undefined.

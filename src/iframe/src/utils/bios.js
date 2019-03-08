@@ -7,7 +7,7 @@ const modes = ['glitch', 'numbers', 'pre-ram', 'ram', 'run', 'end']
 const size = range(128)
 const d = 1
 
-const rects = flatten(size.map(x => size.map(y => [x, y, d, d])))
+const rects = flatten(size.map(x => size.map(y => [x, y, d, 128])))
 
 const biosLines = range(18).map(() => {
   return (

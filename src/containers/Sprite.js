@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import classNames from 'classnames'
 import actions from '../actions/actions.js'
-import canvasAPI from '../iframe/src/canvasAPI/index.js'
+import canvasAPI from '../iframe/src/contextCanvasAPI/index.js'
 import { replaceAt } from '../utils/string.js'
 
 const mapStateToProps = ({ sprites }) => ({ sprites })

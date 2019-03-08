@@ -15,8 +15,9 @@ import isEmpty from 'lodash/isEmpty'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
-import canvasAPI from './canvasAPI/index.js'
-import trimCanvas from './canvasAPI/trimCanvas.js'
+import { default as frameBufferCanvasAPI } from './frameBufferCanvasAPI/index.js'
+import { default as contextCanvasAPI } from './contextCanvasAPI/index.js'
+import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
 import getUserInput from './getUserInput.js'
 import createReducer from './createReducer.js'
@@ -318,6 +319,11 @@ class Iframe extends Component {
     let globals
 
     if (!providedGlobals) {
+      let canvasAPI = contextCanvasAPI
+      if (this.renderer === "framebuffer") {
+        canvasAPI = frameBufferCanvasAPI
+      }
+
       globals = {
         console,
         StateMachine,
@@ -325,14 +331,15 @@ class Iframe extends Component {
         Math,
         Object,
         Array,
-        log: this.logger,
         ...canvasAPI({
           pixels: this._pixelIntegers,
+          ctx: this._canvas.getContext('2d'),
           width: CANVAS_SIZE,
           height: CANVAS_SIZE,
           sprites: this.state.sprites,
           map: this.state.map
         }),
+        log: this.logger,
         range,
         flatten,
         random,
@@ -351,18 +358,19 @@ class Iframe extends Component {
       window._script8.globalKeys.add(key)
     })
   }
-  
+
   drawUserGraphics(state) {
     if (window.draw) {
       window.draw(state)
-      this._pixelData.data.set(this._pixelBytes)
-      let ctx = this._canvas.getContext('2d')
-      ctx.putImageData(this._pixelData, 0, 0)
+      if (this.renderer === "framebuffer") {
+        this._pixelData.data.set(this._pixelBytes)
+        let ctx = this._canvas.getContext('2d')
+        ctx.putImageData(this._pixelData, 0, 0)
+      }
     }
   }
 
   componentDidMount() {
-    this.updateGlobals()
     this.soundFunctions = soundAPI(this.volumeNode)
     this.updateGlobals({
       playSong: this.soundFunctions.playSong,
@@ -491,6 +499,9 @@ class Iframe extends Component {
       // Otherwise, wait for messages from parent.
       window.addEventListener('message', handleMessage)
     }
+
+    this.renderer = params.get('renderer') || "framebuffer"
+    this.updateGlobals()
   }
 
   componentWillUnmount() {
