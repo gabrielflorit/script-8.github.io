@@ -12,9 +12,14 @@ const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
-const mapStateToProps = ({ chains, phrases }) => ({ chains, phrases })
+const mapStateToProps = ({ chains, phrases, selectedUi }) => ({
+  chains,
+  phrases,
+  selectedUi
+})
 
 const mapDispatchToProps = dispatch => ({
+  selectUi: payload => dispatch(actions.selectUi(payload)),
   updateChain: ({ chain, index }) =>
     dispatch(
       actions.updateChain({
@@ -36,8 +41,7 @@ class Chain extends Component {
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0,
-      chainIndex: 0
+      playingIndex: 0
     }
   }
 
@@ -103,9 +107,8 @@ class Chain extends Component {
   }
 
   getCurrentChain() {
-    const { chains } = this.props
-    const { chainIndex } = this.state
-    return _.get(chains, chainIndex, {})
+    const { chains, selectedUi } = this.props
+    return _.get(chains, [selectedUi.chain], {})
   }
 
   handlePlay() {
@@ -124,15 +127,17 @@ class Chain extends Component {
   handleChainIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
-      this.setState({
-        chainIndex: value
+      const { selectUi, selectedUi } = this.props
+      selectUi({
+        ...selectedUi,
+        chain: value
       })
     }
   }
 
   handlePhraseClick({ channel, col }) {
-    const { phrases, updateChain } = this.props
-    const { chainIndex } = this.state
+    const { phrases, updateChain, selectedUi } = this.props
+    const chainIndex = selectedUi.chain
     const chain = this.getCurrentChain()
     const newChain = _.cloneDeep(chain)
     let newPhrase = _.get(newChain, [col, channel])
@@ -174,7 +179,9 @@ class Chain extends Component {
   }
 
   render() {
-    const { chainIndex, isPlaying, playingIndex } = this.state
+    const { selectedUi } = this.props
+    const chainIndex = selectedUi.chain
+    const { isPlaying, playingIndex } = this.state
     const chain = this.getCurrentChain()
     const { phrases } = this.props
 
