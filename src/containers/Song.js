@@ -12,13 +12,15 @@ const synths = _.range(settings.chainChannels).map(() => createSynth())
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
-const mapStateToProps = ({ songs, chains, phrases }) => ({
+const mapStateToProps = ({ songs, chains, phrases, selectedUi }) => ({
   songs,
   chains,
-  phrases
+  phrases,
+  selectedUi
 })
 
 const mapDispatchToProps = dispatch => ({
+  selectUi: payload => dispatch(actions.selectUi(payload)),
   updateSong: ({ song, index }) =>
     dispatch(
       actions.updateSong({
@@ -40,8 +42,7 @@ class Song extends Component {
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0,
-      songIndex: 0
+      playingIndex: 0
     }
   }
 
@@ -114,9 +115,8 @@ class Song extends Component {
   }
 
   getCurrentSong() {
-    const { songs } = this.props
-    const { songIndex } = this.state
-    return _.get(songs, songIndex, {})
+    const { songs, selectedUi } = this.props
+    return _.get(songs, [selectedUi.song], {})
   }
 
   handlePlay() {
@@ -135,15 +135,17 @@ class Song extends Component {
   handleSongIndexChange(e) {
     const { validity, value } = e.target
     if (validity.valid) {
-      this.setState({
-        songIndex: value
+      const { selectUi, selectedUi } = this.props
+      selectUi({
+        ...selectedUi,
+        song: value
       })
     }
   }
 
   handleChainClick({ col }) {
-    const { chains, updateSong } = this.props
-    const { songIndex } = this.state
+    const { chains, updateSong, selectedUi } = this.props
+    const songIndex = selectedUi.song
     const song = this.getCurrentSong()
     let newChain = _.get(song, col)
 
@@ -186,7 +188,9 @@ class Song extends Component {
   }
 
   render() {
-    const { songIndex, isPlaying, playingIndex } = this.state
+    const { selectedUi } = this.props
+    const songIndex = selectedUi.song
+    const { isPlaying, playingIndex } = this.state
     const song = this.getCurrentSong()
     const { chains } = this.props
 
