@@ -207,7 +207,10 @@ class Menu extends Component {
       .then(response => response.text())
       .then(text => {
         const html = text
-          .replace('<title>script-8-iframe</title>', `<title>${title}</title>`)
+          .replace(
+            '<title>script-8-iframe</title>',
+            `<title>${title}</title><style>#root canvas.master { width: 100vmin; height: 100vmin; }</style>`
+          )
           .replace(
             '<body>',
             `<body><script>window.SCRIPT_8_EMBEDDED_GIST_ID="${gistId}"</script>`
