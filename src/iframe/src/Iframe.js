@@ -492,6 +492,10 @@ class Iframe extends Component {
           isPaused = false
         }
 
+        if (payload.useFrameBufferRenderer) {
+          this.updateGlobals()
+        }
+
         this.setState({
           game: payload.game,
           sprites: payload.sprites,
