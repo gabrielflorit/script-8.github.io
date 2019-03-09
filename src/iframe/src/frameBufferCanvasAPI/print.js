@@ -1,6 +1,6 @@
 import alphabet from './alphabet.js'
 
-const drawText = ({ x, y, letters, c, setPixel, cameraX, cameraY }) => {
+const drawText = ({ x, y, letters, c, setPixel }) => {
   let currentX = Math.floor(x)
   let currentY = Math.floor(y)
 

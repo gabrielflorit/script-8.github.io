@@ -101,17 +101,12 @@ const canvasAPI = ({
   }
 
   const print = (x, y, letters, c = 0) => {
-    if (x - _cameraX < 0 || x - _cameraX > canvasWidth) return
-    if (y - _cameraY < 0 || y - _cameraY > canvasHeight) return
-
     drawText({
       x,
       y,
       letters,
       c,
-      setPixel,
-      cameraX: _cameraX,
-      cameraY: _cameraY
+      setPixel
     })
   }
 
