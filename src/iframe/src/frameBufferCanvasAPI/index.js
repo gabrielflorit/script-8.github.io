@@ -159,7 +159,7 @@ const canvasAPI = ({
         // If the element has a sprite index,
         if (spriteIndex !== null) {
           // Render at the correct offset position
-          const dx = colNumber * 8 + x
+          const dx = (colNumber + x) * 8
           const dy = rowNumber * 8
           sprite(dx, dy, spriteIndex)
         }
