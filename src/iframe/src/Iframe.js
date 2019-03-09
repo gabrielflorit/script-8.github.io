@@ -493,6 +493,7 @@ class Iframe extends Component {
         }
 
         if (payload.useFrameBufferRenderer) {
+          this.useFrameBufferRenderer = true
           this.updateGlobals()
         }
 
@@ -568,10 +569,6 @@ class Iframe extends Component {
       // Otherwise, wait for messages from parent.
       window.addEventListener('message', handleMessage)
     }
-
-    // If we have `renderer` in the query param, use the framebuffer approach.
-    // this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
-    this.useFrameBufferRenderer = true
 
     // Update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
     // to the global scope for our user.
