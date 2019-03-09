@@ -566,7 +566,8 @@ class Iframe extends Component {
     }
 
     // If we have `renderer` in the query param, use the framebuffer approach.
-    this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
+    // this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
+    this.useFrameBufferRenderer = true
 
     // Update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
     // to the global scope for our user.
