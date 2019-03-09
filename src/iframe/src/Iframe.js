@@ -177,10 +177,10 @@ class Iframe extends Component {
       sound: true
     }
 
-    // Pixel data has the actual image data object which can be passed to putImageData
+    // Pixel data has the actual image data object which can be passed to putImageData.
     this._pixelData = new ImageData(CANVAS_SIZE, CANVAS_SIZE)
 
-    // The contains the actual binary data for setting on _pixelData. It cannot
+    // This contains the actual binary data for setting on _pixelData. It cannot
     // be accessed directly, but is instead modified through TypedArrays such as
     // Uint8ClampedArray and Uint32Array. Both the TypedArrays below refer to
     // the same backing buffer, so modifying values via one will be reflected in
@@ -188,9 +188,8 @@ class Iframe extends Component {
     this._pixelBuffer = new ArrayBuffer(4 * CANVAS_SIZE * CANVAS_SIZE)
 
     // The pixelBytes array is only used to set the data in the _pixelData
-    // object. ImageData only has an Uint8ClampedArray to access the underyling
-    // bytes, so a Uint8ClampedArray must be kept arround to copy the data
-    // around.
+    // object. ImageData only has an Uint8ClampedArray to access the underlying
+    // bytes, so a Uint8ClampedArray must be kept around to copy the data.
     this._pixelBytes = new Uint8ClampedArray(this._pixelBuffer)
 
     // It turns out that setting pixels all at once via a single integer is much
@@ -338,7 +337,7 @@ class Iframe extends Component {
     let globals
 
     if (!providedGlobals) {
-      let canvasAPI = this.useFrameBufferRenderer
+      const canvasAPI = this.useFrameBufferRenderer
         ? frameBufferCanvasAPI
         : contextCanvasAPI
 
@@ -382,14 +381,17 @@ class Iframe extends Component {
       window.draw(state)
       if (this.useFrameBufferRenderer) {
         this._pixelData.data.set(this._pixelBytes)
-        let ctx = this._canvas.getContext('2d')
+        const ctx = this._canvas.getContext('2d')
         ctx.putImageData(this._pixelData, 0, 0)
       }
     }
   }
 
   componentDidMount() {
+    // Initialize sound API with this Tone.js volumeNode.
     this.soundFunctions = soundAPI(this.volumeNode)
+
+    // Update globals with sound API functions.
     this.updateGlobals({
       playSong: this.soundFunctions.playSong,
       playPhrase: this.soundFunctions.playPhrase,
@@ -409,7 +411,7 @@ class Iframe extends Component {
       const { altKey, metaKey, ctrlKey, key } = event
       const { message } = this.state
 
-      // Ctrl-s / Cmd-s
+      // Listen to Ctrl-s / Cmd-s.
       if (
         (metaKey && key === 's' && _.includes(platform, 'Mac')) ||
         (ctrlKey && key === 's' && !_.includes(platform, 'Mac'))
@@ -420,7 +422,7 @@ class Iframe extends Component {
         })
       }
 
-      // Alt-. / Alt-/
+      // Listen Alt-. / Alt-/ .
       if (altKey) {
         if (key === '.') {
           event.preventDefault()
@@ -436,15 +438,20 @@ class Iframe extends Component {
         }
       }
 
-      // Only handle the keys we want.
+      // If we pressed an allowed key, e.g. up, down, a, etc,
       if (allowedKeys.includes(key)) {
+        // don't let it bubble up to the parent.
+        // The inverse of this means that something like Ctrl-R (reload on windows)
+        // will be indeed allowed to bubble up.
         event.preventDefault()
         event.stopPropagation()
       }
+
+      // Finally, add the keyDown to the keys object.
       this.keys.add(key)
     }
     this.keyupHandler = event => {
-      // Only handle the keys we want.
+      // Only handle the keys we want. Same as above.
       const { key } = event
       if (allowedKeys.includes(key)) {
         event.preventDefault()
@@ -558,7 +565,11 @@ class Iframe extends Component {
       window.addEventListener('message', handleMessage)
     }
 
+    // If we have `renderer` in the query param, use the framebuffer approach.
     this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
+
+    // Update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
+    // to the global scope for our user.
     this.updateGlobals()
   }
 
