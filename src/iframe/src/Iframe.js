@@ -938,6 +938,12 @@ class Iframe extends Component {
               })
             }
 
+            // If we're using the framebuffer renderer,
+            // draw it to canvas right now.
+            if (this.useFrameBufferRenderer) {
+              this.writePixelDataToCanvas()
+            }
+
             // Finally, set the store to point to the timeLineIndex altered state,
             // so that when we hit play, we can resume right from this point.
             this.store = createStore(this.reducer, stateToDraw)
@@ -961,9 +967,9 @@ class Iframe extends Component {
           let tempCtx = this._canvas.getContext('2d')
           actors.forEach((actor, i) => {
             // If we're using the framebuffer renderer,
-            // clear the screen.
+            // fill the buffer with 0.
             if (this.useFrameBufferRenderer) {
-              window.clear()
+              this._pixelIntegers.fill(0)
             } else {
               // Otherwise reset the context.
               tempCtx.save()
@@ -989,12 +995,6 @@ class Iframe extends Component {
             }
 
             // Get its canvas.
-            // ATTENTION:
-            // this assumes the canvas only has the actor pixels drawn.
-            // That way we can trim the canvas to just the actor pixels,
-            // because we want a tiny canvas that shows just the actor.
-            // But currently this doesn't work, because
-            // the framebuffer `clear` function fills the canvas with a color.
             const lilCanvas = trimCanvas({
               ctx: this._canvas.getContext('2d'),
               width: CANVAS_SIZE,
@@ -1006,7 +1006,9 @@ class Iframe extends Component {
           })
 
           this.drawUserGraphics(this.store.getState())
-          tempCtx.restore()
+          if (!this.useFrameBufferRenderer) {
+            tempCtx.restore()
+          }
         }
       }
     }
