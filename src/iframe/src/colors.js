@@ -33,6 +33,8 @@ for (let i = 0; i < 8; i++) {
   // table. A bitwise right shift of 0 places forces the number to be
   // interpreted as a positive integer.
   intLookup[i] = possiblyNegativeInteger >>> 0
+
+  // For example, intLookup[0] = 4290631414.
 }
 
 // The opposite of the intLookup. Each index is the color integer, and the value
