@@ -376,13 +376,17 @@ class Iframe extends Component {
     })
   }
 
+  writePixelDataToCanvas() {
+    this._pixelData.data.set(this._pixelBytes)
+    const ctx = this._canvas.getContext('2d')
+    ctx.putImageData(this._pixelData, 0, 0)
+  }
+
   drawUserGraphics(state) {
     if (window.draw) {
       window.draw(state)
       if (this.useFrameBufferRenderer) {
-        this._pixelData.data.set(this._pixelBytes)
-        const ctx = this._canvas.getContext('2d')
-        ctx.putImageData(this._pixelData, 0, 0)
+        this.writePixelDataToCanvas()
       }
     }
   }
@@ -956,12 +960,18 @@ class Iframe extends Component {
         if (buttons.length !== canvases.length) {
           let tempCtx = this._canvas.getContext('2d')
           actors.forEach((actor, i) => {
-            tempCtx.save()
-            tempCtx.setTransform(1, 0, 0, 1, 0, 0)
-            tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+            // If we're using the framebuffer renderer,
+            // clear the screen.
+            if (this.useFrameBufferRenderer) {
+              window.clear()
+            } else {
+              // Otherwise reset the context.
+              tempCtx.save()
+              tempCtx.setTransform(1, 0, 0, 1, 0, 0)
+              tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+            }
 
-            // For each actor,
-            // draw it on the canvas,
+            // Draw this actor on the center of the screen.
             window.drawActors({
               actors: [
                 {
@@ -972,7 +982,19 @@ class Iframe extends Component {
               ]
             })
 
-            // get its canvas,
+            // If we're using the framebuffer renderer,
+            // draw it to canvas right now.
+            if (this.useFrameBufferRenderer) {
+              this.writePixelDataToCanvas()
+            }
+
+            // Get its canvas.
+            // ATTENTION:
+            // this assumes the canvas only has the actor pixels drawn.
+            // That way we can trim the canvas to just the actor pixels,
+            // because we want a tiny canvas that shows just the actor.
+            // But currently this doesn't work, because
+            // the framebuffer `clear` function fills the canvas with a color.
             const lilCanvas = trimCanvas({
               ctx: this._canvas.getContext('2d'),
               width: CANVAS_SIZE,
