@@ -1,4 +1,6 @@
 // TODO: consolidate - avoid duplication
+
+// Lookup table for the css color strings
 const rgbs = [
   'rgb(246,214,189)',
   'rgb(195,163,138)',
@@ -10,6 +12,7 @@ const rgbs = [
   'rgb(8,20,30)'
 ]
 
+// Lookup table for triplet arrays containing R, G, and B values
 const triplets = [
   [246, 214, 189],
   [195, 163, 138],
@@ -21,16 +24,31 @@ const triplets = [
   [8, 20, 30]
 ]
 
-let intLookup = [];
+// Lookup tree for the combined integer representation of each color
+let intLookup = []
+
+// Loops over each of the color indexes, looks up associated color triplet, and
+// calculates the equivalent integer representation by bit shifting each byte
+// into the correct position.
 for (let i = 0; i < 8; i++) {
-  let values = triplets[i];
-  intLookup[i] = ((255 << 24) |
-                  (values[2] << 16) |
-                  (values[1] << 8) |
-                  values[0]) >>> 0
+  let values = triplets[i]
+
+  // Shift each byte into the correct integer position.
+  let possiblyNegativeInteger =
+    (255 << 24) | // Alpha byte
+    (values[2] << 16) | // B byte
+    (values[1] << 8) | // G byte
+    values[0] // R byte
+
+  // Set the positive version of the above calculated integer into the lookup
+  // table. A bitwise right shift of 0 places forces the number to be
+  // interpreted as a positive integer
+  intLookup[i] = possiblyNegativeInteger >>> 0
 }
 
-let reverseIntLookup = {};
+// The opposite of the intLookup. Each index is the color integer, and the value
+// is the SCRIPT-8 integer color.
+let reverseIntLookup = {}
 for (let i = 0; i < 8; i++) {
   reverseIntLookup[intLookup[i]] = i
 }
@@ -47,32 +65,21 @@ for (let i = 0; i < 8; i++) {
 // ]
 
 const colors = {
-  rgb (i) {
+  rgb(i) {
     return rgbs[i % rgbs.length]
   },
 
-  triplet (i) {
+  triplet(i) {
     return triplets[i % triplets.length]
   },
 
-  int (i) {
+  int(i) {
     return intLookup[i % intLookup.length]
   },
 
-  // NOTE: if triplet isn't a color in the pallet, this will return undefined.
-  lookupTriplet (triplet) {
-    for (let i = 0; i < triplets.length; i++) {
-      let current = triplets[i]
-      if (current[0] === triplet[0] &&
-          current[1] === triplet[1] &&
-          current[2] === triplet[2]) {
-        return i
-      }
-    }
-    return undefined;
-  },
-
-  lookupInt (int) {
+  // Looks up the integer value in the reverseIntLookup table. If it doesn't
+  // exist, then the background color of 7 is returned instead.
+  lookupInt(int) {
     if (int in reverseIntLookup) {
       return reverseIntLookup[int]
     }

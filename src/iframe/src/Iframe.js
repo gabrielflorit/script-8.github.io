@@ -175,8 +175,25 @@ class Iframe extends Component {
       sound: true
     }
 
+    // Pixel data has the actual image data object which can be passed to putImageData
+    this._pixelData = new ImageData(CANVAS_SIZE, CANVAS_SIZE)
+
+    // The contains the actual binary data for setting on _pixelData. It cannot
+    // be accessed directly, but is instead modified through TypedArrays such as
+    // Uint8ClampedArray and Uint32Array. Both the TypedArrays below refer to
+    // the same backing buffer, so modifying values via one will be reflected in
+    // the other.
     this._pixelBuffer = new ArrayBuffer(4 * CANVAS_SIZE * CANVAS_SIZE)
+
+    // The pixelBytes array is only used to set the data in the _pixelData
+    // object. ImageData only has an Uint8ClampedArray to access the underyling
+    // bytes, so a Uint8ClampedArray must be kept arround to copy the data
+    // around.
     this._pixelBytes = new Uint8ClampedArray(this._pixelBuffer)
+
+    // It turns out that setting pixels all at once via a single integer is much
+    // faster than setting each byte individually. So the pixel data is only
+    // ever modified via the Uint32Array for performance reasons.
     this._pixelIntegers = new Uint32Array(this._pixelBuffer)
   }
 
@@ -319,10 +336,9 @@ class Iframe extends Component {
     let globals
 
     if (!providedGlobals) {
-      let canvasAPI = contextCanvasAPI
-      if (this.renderer === "framebuffer") {
-        canvasAPI = frameBufferCanvasAPI
-      }
+      let canvasAPI = this.useFrameBufferRenderer
+        ? frameBufferCanvasAPI
+        : contextCanvasAPI
 
       globals = {
         console,
@@ -331,6 +347,7 @@ class Iframe extends Component {
         Math,
         Object,
         Array,
+        log: this.logger,
         ...canvasAPI({
           pixels: this._pixelIntegers,
           ctx: this._canvas.getContext('2d'),
@@ -339,7 +356,6 @@ class Iframe extends Component {
           sprites: this.state.sprites,
           map: this.state.map
         }),
-        log: this.logger,
         range,
         flatten,
         random,
@@ -362,7 +378,7 @@ class Iframe extends Component {
   drawUserGraphics(state) {
     if (window.draw) {
       window.draw(state)
-      if (this.renderer === "framebuffer") {
+      if (this.useFrameBufferRenderer) {
         this._pixelData.data.set(this._pixelBytes)
         let ctx = this._canvas.getContext('2d')
         ctx.putImageData(this._pixelData, 0, 0)
@@ -500,7 +516,7 @@ class Iframe extends Component {
       window.addEventListener('message', handleMessage)
     }
 
-    this.renderer = params.get('renderer') || "framebuffer"
+    this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
     this.updateGlobals()
   }
 
@@ -598,7 +614,7 @@ class Iframe extends Component {
         })
 
         // Draw this state.
-        this.drawUserGraphics(this.store.getState());
+        this.drawUserGraphics(this.store.getState())
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
@@ -954,11 +970,7 @@ class Iframe extends Component {
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
             ref={_canvas => {
-              if (_canvas) {
-                this._canvas = _canvas
-                let ctx = this._canvas.getContext('2d')
-                this._pixelData = ctx.getImageData(0, 0, 128, 128)
-              }
+              this._canvas = _canvas
             }}
           />
 

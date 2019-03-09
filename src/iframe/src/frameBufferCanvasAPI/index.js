@@ -40,7 +40,8 @@ const canvasAPI = ({
   const getPixel = (x, y) => {
     x = Math.floor(x - _cameraX)
     y = Math.floor(y - _cameraY)
-    if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return backgroundColor
+    if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight)
+      return backgroundColor
     return colors.lookupInt(pixels[y * canvasHeight + x])
   }
 
@@ -54,15 +55,23 @@ const canvasAPI = ({
 
   const rectStroke = (x, y, w, h, c = 0) => {
     drawRectStroke({
-      x, y, w, h,
-      c, line
+      x,
+      y,
+      w,
+      h,
+      c,
+      line
     })
   }
 
   const rectFill = (x, y, w, h, c = 0) => {
     drawRectFill({
-      x, y, w, h,
-      c, line
+      x,
+      y,
+      w,
+      h,
+      c,
+      line
     })
   }
 
@@ -90,25 +99,40 @@ const canvasAPI = ({
   }
 
   const print = (x, y, letters, c = 0) => {
-    if (x - _cameraX < 0 || x - _cameraX > canvasWidth) return;
-    if (y - _cameraY < 0 || y - _cameraY > canvasHeight) return;
+    if (x - _cameraX < 0 || x - _cameraX > canvasWidth) return
+    if (y - _cameraY < 0 || y - _cameraY > canvasHeight) return
 
     drawText({
-      x, y, letters, c,
+      x,
+      y,
+      letters,
+      c,
       setPixel,
       cameraX: _cameraX,
       cameraY: _cameraY
     })
   }
 
-  const sprite = (x, y, spriteIndex, darken = 0, flipH = false, flipV = false) => {
-    if (x - _cameraX < -8 || x - _cameraX > canvasWidth) return;
-    if (y - _cameraY < -8 || y - _cameraY > canvasHeight) return;
+  const sprite = (
+    x,
+    y,
+    spriteIndex,
+    darken = 0,
+    flipH = false,
+    flipV = false
+  ) => {
+    if (x - _cameraX < -8 || x - _cameraX > canvasWidth) return
+    if (y - _cameraY < -8 || y - _cameraY > canvasHeight) return
 
     drawSprite({
-      x, y, spriteIndex,
-      darken, flipH, flipV,
-      setPixel, sprites
+      x,
+      y,
+      spriteIndex,
+      darken,
+      flipH,
+      flipV,
+      setPixel,
+      sprites
     })
   }
 
@@ -120,7 +144,7 @@ const canvasAPI = ({
       result.number = tile
     }
     return result
-  };
+  }
 
   const setTile = (mx, my, spriteNumber) => {
     _runningMap[my][mx] = spriteNumber
@@ -146,14 +170,22 @@ const canvasAPI = ({
   }
 
   return {
-    camera, clear,
-    setPixel, getPixel,
-    line, polyStroke,
-    rectStroke, rectFill,
-    circStroke, circFill,
-    print, sprite,
-    getTile, setTile,
-    map, resetMap
+    camera,
+    clear,
+    setPixel,
+    getPixel,
+    line,
+    polyStroke,
+    rectStroke,
+    rectFill,
+    circStroke,
+    circFill,
+    print,
+    sprite,
+    getTile,
+    setTile,
+    map,
+    resetMap
   }
 }
 
