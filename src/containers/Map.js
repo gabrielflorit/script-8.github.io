@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import classNames from 'classnames'
-import canvasAPI from '../iframe/src/canvasAPI/index.js'
+import canvasAPI from '../iframe/src/contextCanvasAPI/index.js'
 import actions from '../actions/actions.js'
 
 const mapStateToProps = ({ sprites, map }) => ({ sprites, map })

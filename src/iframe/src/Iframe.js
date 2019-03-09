@@ -15,8 +15,9 @@ import isEmpty from 'lodash/isEmpty'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
-import canvasAPI from './canvasAPI/index.js'
-import trimCanvas from './canvasAPI/trimCanvas.js'
+import { default as frameBufferCanvasAPI } from './frameBufferCanvasAPI/index.js'
+import { default as contextCanvasAPI } from './contextCanvasAPI/index.js'
+import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
 import getUserInput, { allowedKeys } from './getUserInput.js'
 import createReducer from './createReducer.js'
@@ -175,6 +176,27 @@ class Iframe extends Component {
       run: true,
       sound: true
     }
+
+    // Pixel data has the actual image data object which can be passed to putImageData
+    this._pixelData = new ImageData(CANVAS_SIZE, CANVAS_SIZE)
+
+    // The contains the actual binary data for setting on _pixelData. It cannot
+    // be accessed directly, but is instead modified through TypedArrays such as
+    // Uint8ClampedArray and Uint32Array. Both the TypedArrays below refer to
+    // the same backing buffer, so modifying values via one will be reflected in
+    // the other.
+    this._pixelBuffer = new ArrayBuffer(4 * CANVAS_SIZE * CANVAS_SIZE)
+
+    // The pixelBytes array is only used to set the data in the _pixelData
+    // object. ImageData only has an Uint8ClampedArray to access the underyling
+    // bytes, so a Uint8ClampedArray must be kept arround to copy the data
+    // around.
+    this._pixelBytes = new Uint8ClampedArray(this._pixelBuffer)
+
+    // It turns out that setting pixels all at once via a single integer is much
+    // faster than setting each byte individually. So the pixel data is only
+    // ever modified via the Uint32Array for performance reasons.
+    this._pixelIntegers = new Uint32Array(this._pixelBuffer)
   }
 
   logger(value) {
@@ -316,6 +338,10 @@ class Iframe extends Component {
     let globals
 
     if (!providedGlobals) {
+      let canvasAPI = this.useFrameBufferRenderer
+        ? frameBufferCanvasAPI
+        : contextCanvasAPI
+
       globals = {
         console,
         StateMachine,
@@ -325,6 +351,7 @@ class Iframe extends Component {
         Array,
         log: this.logger,
         ...canvasAPI({
+          pixels: this._pixelIntegers,
           ctx: this._canvas.getContext('2d'),
           width: CANVAS_SIZE,
           height: CANVAS_SIZE,
@@ -350,8 +377,18 @@ class Iframe extends Component {
     })
   }
 
+  drawUserGraphics(state) {
+    if (window.draw) {
+      window.draw(state)
+      if (this.useFrameBufferRenderer) {
+        this._pixelData.data.set(this._pixelBytes)
+        let ctx = this._canvas.getContext('2d')
+        ctx.putImageData(this._pixelData, 0, 0)
+      }
+    }
+  }
+
   componentDidMount() {
-    this.updateGlobals()
     this.soundFunctions = soundAPI(this.volumeNode)
     this.updateGlobals({
       playSong: this.soundFunctions.playSong,
@@ -520,6 +557,9 @@ class Iframe extends Component {
       // Otherwise, wait for messages from parent.
       window.addEventListener('message', handleMessage)
     }
+
+    this.useFrameBufferRenderer = params.get('renderer') === 'framebuffer'
+    this.updateGlobals()
   }
 
   componentWillUnmount() {
@@ -616,7 +656,7 @@ class Iframe extends Component {
         })
 
         // Draw this state.
-        window.draw && window.draw(this.store.getState())
+        this.drawUserGraphics(this.store.getState())
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
@@ -839,7 +879,7 @@ class Iframe extends Component {
 
             // Draw the timeline index state.
             const stateToDraw = alteredStates[newTimelineIndex]
-            window.draw(stateToDraw)
+            this.drawUserGraphics(stateToDraw)
 
             // Get all unique actors.
             const allActors = flatten(
@@ -930,7 +970,7 @@ class Iframe extends Component {
             buttons[i].appendChild(lilCanvas)
           })
 
-          window.draw(this.store.getState())
+          this.drawUserGraphics(this.store.getState())
           tempCtx.restore()
         }
       }
