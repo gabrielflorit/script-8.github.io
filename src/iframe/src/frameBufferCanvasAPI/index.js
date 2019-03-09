@@ -14,6 +14,7 @@ const canvasAPI = ({
   width: canvasWidth,
   height: canvasHeight,
   sprites,
+  // Rename to initialMap, since we have a function named map.
   map: initialMap = []
 }) => {
   let _runningMap = JSON.parse(JSON.stringify(initialMap))
@@ -35,7 +36,7 @@ const canvasAPI = ({
     x = Math.floor(x - _cameraX)
     y = Math.floor(y - _cameraY)
     if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return
-    let int = colors.int(c)
+    const int = colors.int(c)
     if (int) pixels[y * canvasWidth + x] = int
   }
 
@@ -140,7 +141,7 @@ const canvasAPI = ({
 
   const getTile = (mx, my) => {
     const tile = get(_runningMap, [my, mx], null)
-    let result = tile !== null ? sprites[tile] : null
+    const result = tile !== null ? sprites[tile] : null
     if (result) {
       result.type = result[8] || 0
       result.number = tile
