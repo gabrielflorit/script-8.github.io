@@ -15,6 +15,7 @@ import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
 import { version } from '../iframe/package.json'
+import { getGameTitle } from '../containers/Menu.js'
 
 const mapStateToProps = ({
   screen,
@@ -246,6 +247,8 @@ class Output extends Component {
   render() {
     const { errors, log } = this.state
     const { run, tutorial, game } = this.props
+    const title = getGameTitle(this.props.game)!=undefined ? getGameTitle(this.props.game).toUpperCase() + ' - ' : ''
+    document.title = title + 'SCRIPT-8'
 
     const tokenCount = throttledTokenCount(game)
 
