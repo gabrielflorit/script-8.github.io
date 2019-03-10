@@ -423,10 +423,12 @@ class Menu extends Component {
       !_.isEmpty(gist) &&
       (gistLogin === null || gistLogin !== currentLogin || !contentIsEmpty)
 
+    const isMine = currentLogin && currentLogin === gistLogin
+
     // SHELVE can only happen when:
     // - gist is ours AND
     // - content is NOT dirty
-    const canShelve = currentLogin && currentLogin === gistLogin && !dirty
+    const canShelve = isMine && !dirty
 
     const isMusicScreen = [
       screenTypes.SONG,
@@ -545,13 +547,15 @@ class Menu extends Component {
                 </button>
               </li>
               <li>
-                <button
-                  onClick={this.onExport}
-                  disabled={!canShelve}
-                  className="button"
-                >
-                  Export to HTML
-                </button>
+                {isMine ? (
+                  <button
+                    onClick={this.onExport}
+                    disabled={!canShelve}
+                    className="button"
+                  >
+                    Export to HTML
+                  </button>
+                ) : null}
               </li>
             </ul>
           </li>
