@@ -35,11 +35,8 @@ const downloadHtml = html => {
 }
 
 const getGameTitle = game => {
-  let title
   const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
-  if (match) {
-    title = match[1].trim()
-  }
+  const title = match ? match[1].trim().toUpperCase() : null
   return title
 }
 
@@ -781,4 +778,4 @@ export default connect(
   mapDispatchToProps
 )(Menu)
 
-export { getGameTitle } 
+export { getGameTitle }

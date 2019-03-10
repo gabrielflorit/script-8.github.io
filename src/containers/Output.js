@@ -247,8 +247,8 @@ class Output extends Component {
   render() {
     const { errors, log } = this.state
     const { run, tutorial, game } = this.props
-    const title = getGameTitle(this.props.game)!=undefined ? getGameTitle(this.props.game).toUpperCase() + ' - ' : ''
-    document.title = title + 'SCRIPT-8'
+    const gameTitle = getGameTitle(game)
+    document.title = [gameTitle, 'SCRIPT-8'].filter(d => d).join(' - ')
 
     const tokenCount = throttledTokenCount(game)
 
