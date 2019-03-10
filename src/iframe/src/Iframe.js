@@ -481,7 +481,7 @@ class Iframe extends Component {
     document.addEventListener('keyup', this.keyupHandler)
 
     // Listen for callCode or validateToken parent messages.
-    const handleMessage = message => {
+    const handleData = message => {
       const { type, ...payload } = message.data
       const { blacklist, shadows } = this
 
@@ -559,10 +559,10 @@ class Iframe extends Component {
         )
         .then(response => response.json())
         .then(json => {
-          // parse the gist, then send data to `handleMessage`,
+          // parse the gist, then send data to `handleData`,
           // which starts the game.
           this.gist = json
-          handleMessage({
+          handleData({
             data: {
               type: 'callCode',
               game: bios,
@@ -580,7 +580,7 @@ class Iframe extends Component {
         })
     } else {
       // Otherwise, wait for messages from parent.
-      window.addEventListener('message', handleMessage)
+      window.addEventListener('message', handleData)
     }
 
     // Update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
@@ -635,6 +635,7 @@ class Iframe extends Component {
       // The inception eval allows the user to declare vars (e.g. screen).
       eval(innerSkeleton)
       eval(game)
+      embedState = JSON.parse(JSON.stringify(initialState))
       if (initialState && typeof initialState === 'function') {
         initialState = this.previousInitialState
       }
@@ -675,14 +676,20 @@ class Iframe extends Component {
 
         // Update the redux store.
         const userInput = getUserInput(this.keys)
-        this.store.dispatch({
-          type: 'TICK',
-          input: userInput,
-          elapsed: tickLength
-        })
+        if (this.isEmbed) {
+          window.update(window.embedState, userInput, tickLength)
+        } else {
+          this.store.dispatch({
+            type: 'TICK',
+            input: userInput,
+            elapsed: tickLength
+          })
+        }
 
         // Draw this state.
-        this.drawUserGraphics(this.store.getState())
+        this.drawUserGraphics(
+          this.isEmbed ? window.embedState : this.store.getState()
+        )
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
