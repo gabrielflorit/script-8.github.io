@@ -1158,7 +1158,7 @@ class Iframe extends Component {
 
             <div
               className={classNames('fps', {
-                hide: isPaused
+                hide: isPaused || true
               })}
             >
               fps (avg): <span>{fps}</span>
