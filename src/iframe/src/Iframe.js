@@ -160,6 +160,7 @@ class Iframe extends Component {
     this.songSequences = null
 
     this.state = {
+      started: false,
       fps: null,
       game: '',
       sprites: {},
@@ -608,7 +609,8 @@ class Iframe extends Component {
         // define the following end function, which we can only call once:
         window._script8.end = once(() => {
           this.setState({
-            game: assembleOrderedGame(parseGistGame(this.gist))
+            game: assembleOrderedGame(parseGistGame(this.gist)),
+            started: true
           })
           // If Tone.js is not running,
           if (Tone.context.state !== 'running') {
@@ -1055,7 +1057,8 @@ class Iframe extends Component {
       timelineIndex,
       selectedActors,
       fps,
-      run
+      run,
+      started
     } = this.state
     return (
       <div className="Iframe">
@@ -1139,11 +1142,7 @@ class Iframe extends Component {
               Start
             </div>
           </div>
-          <div
-            className={classNames('stats', {
-              hide: run
-            })}
-          >
+          <div className={classNames('stats', { invisible: run && !started })}>
             <button className="button play" onClick={this.handlePauseClick}>
               {isPaused ? 'play' : 'pause'}
             </button>
