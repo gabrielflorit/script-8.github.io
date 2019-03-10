@@ -194,6 +194,11 @@ class Menu extends Component {
     const title = getGameTitle(game).toUpperCase()
     const gistId = _.get(gist, 'data.id', null)
 
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const renderer = params.get('renderer')
+    const useFrameBufferRenderer = renderer && renderer === 'framebuffer'
+
     window
       .fetch(`https://script8.github.io/iframe-v${version}.html`)
       .then(response => response.text())
@@ -205,7 +210,7 @@ class Menu extends Component {
           )
           .replace(
             '<body>',
-            `<body><script>window.SCRIPT_8_EMBEDDED_GIST_ID="${gistId}"</script>`
+            `<body><script>window.SCRIPT_8_EMBEDDED_GIST_ID="${gistId}"; window.USE_FRAME_BUFFER_RENDERER=${useFrameBufferRenderer};</script>`
           )
         downloadHtml(html)
       })

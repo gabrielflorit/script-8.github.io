@@ -262,6 +262,10 @@ class Iframe extends Component {
         )
         // Now print the error message in white.
         window.print(0, 0, errorMessages, 0)
+
+        // If we're in framebuffer mode,
+        // draw it now.
+        this.writePixelDataToCanvas()
       }
     }
   }
@@ -392,6 +396,10 @@ class Iframe extends Component {
   }
 
   componentDidMount() {
+    if (window.USE_FRAME_BUFFER_RENDERER) {
+      this.useFrameBufferRenderer = true
+    }
+
     // Initialize sound API with this Tone.js volumeNode.
     this.soundFunctions = soundAPI(this.volumeNode)
 
