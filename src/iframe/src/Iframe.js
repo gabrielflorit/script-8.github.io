@@ -31,6 +31,9 @@ import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
+// window.USE_FRAME_BUFFER_RENDERER = true
+// window.SCRIPT_8_EMBEDDED_GIST_ID = '28ffa97d6a6a04a1d15bb191ed66322e'
+
 const { platform } = window.navigator
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
