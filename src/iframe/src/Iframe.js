@@ -425,7 +425,8 @@ class Iframe extends Component {
 
       // Listen to Ctrl-s / Cmd-s.
       if (
-        (metaKey && key === 's' && _.includes(platform, 'Mac')) ||
+        (!this.isEmbed &&
+          (metaKey && key === 's' && _.includes(platform, 'Mac'))) ||
         (ctrlKey && key === 's' && !_.includes(platform, 'Mac'))
       ) {
         event.preventDefault()
@@ -435,7 +436,7 @@ class Iframe extends Component {
       }
 
       // Listen Alt-. / Alt-/ .
-      if (altKey) {
+      if (!this.isEmbed && altKey) {
         if (key === '.') {
           event.preventDefault()
           message.ports[0].postMessage({
