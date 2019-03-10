@@ -313,22 +313,27 @@ class Menu extends Component {
   onRecordClick(toBlank) {
     const { token, setNextAction } = this.props
 
-    // If we're not logged in,
-    if (!token.value) {
-      // remind ourselves to record next,
-      setNextAction(toBlank ? 'recordtoblank' : 'record')
+    if (
+      toBlank &&
+      window.confirm('Do you really want to record to a blank cassette?')
+    ) {
+      // If we're not logged in,
+      if (!token.value) {
+        // remind ourselves to record next,
+        setNextAction(toBlank ? 'recordtoblank' : 'record')
 
-      // and log in.
-      window.open(
-        `https://github.com/login/oauth/authorize?client_id=${
-          process.env.REACT_APP_CLIENT_ID
-        }&scope=gist`,
-        'popup',
-        'width=600,height=700'
-      )
-    } else {
-      // If we are logged in, record.
-      this.record(toBlank)
+        // and log in.
+        window.open(
+          `https://github.com/login/oauth/authorize?client_id=${
+            process.env.REACT_APP_CLIENT_ID
+          }&scope=gist`,
+          'popup',
+          'width=600,height=700'
+        )
+      } else {
+        // If we are logged in, record.
+        this.record(toBlank)
+      }
     }
   }
 
