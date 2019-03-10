@@ -47,6 +47,7 @@ window.initialState = null
 window.update = null
 window.drawActors = null
 window.draw = null
+window.embedState = {}
 window._script8 = {
   globalKeys: new Set()
 }
