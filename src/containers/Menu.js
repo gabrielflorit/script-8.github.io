@@ -7,6 +7,7 @@ import screenTypes, {
   getNextScreen
 } from '../iframe/src/utils/screenTypes.js'
 import isDirty from '../utils/isDirty.js'
+import getGameTitle from '../utils/getGameTitle.js'
 import canRecord from '../utils/canRecord.js'
 import isBlank from '../utils/isBlank.js'
 import areYouSure from '../utils/areYouSure.js'
@@ -32,12 +33,6 @@ const downloadHtml = html => {
   document.body.appendChild(element)
   element.click()
   document.body.removeChild(element)
-}
-
-const getGameTitle = game => {
-  const match = game[0].text.split('\n')[0].match(/\/\/\s*title:\s*(\S.*)/)
-  const title = match ? match[1].trim().toUpperCase() : null
-  return title
 }
 
 const mapStateToProps = ({
@@ -777,5 +772,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Menu)
-
-export { getGameTitle }

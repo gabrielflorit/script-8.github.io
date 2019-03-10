@@ -15,7 +15,7 @@ import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
 import { version } from '../iframe/package.json'
-import { getGameTitle } from '../containers/Menu.js'
+import getGameTitle from '../utils/getGameTitle'
 
 const mapStateToProps = ({
   screen,
