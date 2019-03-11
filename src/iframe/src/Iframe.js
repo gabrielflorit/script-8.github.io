@@ -31,8 +31,8 @@ import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
-window.USE_FRAME_BUFFER_RENDERER = true
-window.SCRIPT_8_EMBEDDED_GIST_ID = 'd5dacf8f639a775996c4ed9f9156d4d5'
+// window.USE_FRAME_BUFFER_RENDERER = true
+// window.SCRIPT_8_EMBEDDED_GIST_ID = 'd5dacf8f639a775996c4ed9f9156d4d5'
 
 const { platform } = window.navigator
 
