@@ -31,6 +31,9 @@ import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
+window.USE_FRAME_BUFFER_RENDERER = true
+window.SCRIPT_8_EMBEDDED_GIST_ID = 'd5dacf8f639a775996c4ed9f9156d4d5'
+
 const { platform } = window.navigator
 
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
@@ -627,6 +630,11 @@ class Iframe extends Component {
         })
       // Save previous initial state.
       this.previousInitialState = window.initialState
+
+      const embedStateString = this.isEmbed
+        ? `embedState = JSON.parse(JSON.stringify(initialState))`
+        : ''
+
       // Eval the supplied game.
       const shadowString = `var ${[...shadows].join(',')}`
       // eslint-disable-next-line no-unused-vars
@@ -638,7 +646,7 @@ class Iframe extends Component {
       // The inception eval allows the user to declare vars (e.g. screen).
       eval(innerSkeleton)
       eval(game)
-      embedState = JSON.parse(JSON.stringify(initialState))
+      ${embedStateString}
       if (initialState && typeof initialState === 'function') {
         initialState = this.previousInitialState
       }
@@ -734,6 +742,7 @@ class Iframe extends Component {
 
   handleRestartClick() {
     window.initialState = Date.now()
+    window.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
     window.resetMap()
     this.forceUpdate()
@@ -812,45 +821,60 @@ class Iframe extends Component {
       this.volumeNode.mute = false
     }
 
-    // If we're playing,
+    // If we're playing, check for two overall scenarios:
     if (!isPaused) {
-      // and we came back from being paused, or the game is different,
-      // or the run mode was different,
-      if (
-        prevState.isPaused ||
-        game !== prevState.game ||
-        run !== prevState.run ||
-        (!this.isEmbed &&
-          !equal(window.initialState, this.previousInitialState))
-      ) {
-        // evaluate user code,
-        // get redux state,
-        // and create redux store.
-
-        // Evaluate user code.
-        this.evalCode({ ...state, shadows })
-
-        // Before we create a redux store, let's think about what state we want.
-        // If the user has changed initialState, use that.
-        // This way we let the user start over when they modify initialState.
-        // This is an escape hatch of sorts.
-        // Otherwise use the current store state. This will enable us to modify game
-        // code and not lose game state.
-        let storeState
-        if (!equal(window.initialState, this.previousInitialState)) {
-          storeState = window.initialState
-          this.reduxHistory = []
-        } else {
-          storeState = (this.store && this.store.getState()) || {}
+      // 1 - We're embedded.
+      if (this.isEmbed) {
+        // Then, if the game is different,
+        // or the initialState has changed,
+        if (
+          game !== prevState.game ||
+          window.embedState === 'SCRIPT-8-RESTART'
+        ) {
+          // evaluate user code.
+          this.evalCode({ ...state, shadows })
         }
-        // Now we can create the store.
-        // Notice that we'll pass in reduxLogger as middleware.
-        // This enables us to save each action. We'll need them for the time debugger.
-        this.store = createStore(
-          this.reducer,
-          storeState || undefined,
-          applyMiddleware(this.reduxLogger)
-        )
+      } else {
+        // 2 - We're not embedded.
+        // Then, if we came back from being paused,
+        // or the game is different,
+        // or the run mode was different,
+        // or the initialState has changed,
+        if (
+          prevState.isPaused ||
+          game !== prevState.game ||
+          run !== prevState.run ||
+          !equal(window.initialState, this.previousInitialState)
+        ) {
+          // evaluate user code,
+          // get redux state,
+          // and create redux store.
+
+          // Evaluate user code.
+          this.evalCode({ ...state, shadows })
+
+          // Before we create a redux store, let's think about what state we want.
+          // If the user has changed initialState, use that.
+          // This way we let the user start over when they modify initialState.
+          // This is an escape hatch of sorts.
+          // Otherwise use the current store state. This will enable us to modify game
+          // code and not lose game state.
+          let storeState
+          if (!equal(window.initialState, this.previousInitialState)) {
+            storeState = window.initialState
+            this.reduxHistory = []
+          } else {
+            storeState = (this.store && this.store.getState()) || {}
+          }
+          // Now we can create the store.
+          // Notice that we'll pass in reduxLogger as middleware.
+          // This enables us to save each action. We'll need them for the time debugger.
+          this.store = createStore(
+            this.reducer,
+            storeState || undefined,
+            applyMiddleware(this.reduxLogger)
+          )
+        }
       }
     } else {
       // If we're not playing,
