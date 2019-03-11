@@ -314,7 +314,7 @@ class Menu extends Component {
     const { token, setNextAction } = this.props
 
     if (
-      toBlank &&
+      !toBlank ||
       window.confirm('Do you really want to record to a blank cassette?')
     ) {
       // If we're not logged in,
