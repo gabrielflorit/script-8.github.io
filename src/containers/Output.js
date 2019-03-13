@@ -79,6 +79,7 @@ class Output extends Component {
 
     this.evaluate = this.evaluate.bind(this)
     this.handleClickSize = this.handleClickSize.bind(this)
+    this.handleClickError = this.handleClickError.bind(this)
     this.resize = _.debounce(this.resize.bind(this), 100)
     this.handleBlur = this.handleBlur.bind(this)
 
@@ -111,6 +112,10 @@ class Output extends Component {
     if (this.props.run) {
       e.currentTarget.focus()
     }
+  }
+
+  handleClickError(position) {
+    console.log(position)
   }
 
   componentDidMount() {
@@ -282,8 +287,10 @@ class Output extends Component {
               <div className="log">log: {JSON.stringify(log)}</div>
             ) : null}
             <ul className="errors">
-              {errors.map(({ type, message }) => (
-                <li key={type}>error: {message}</li>
+              {errors.map(({ type, data: { message, position } }) => (
+                <li key={type} onClick={() => this.handleClickError(position)}>
+                  error: {message}
+                </li>
               ))}
             </ul>
             <div className="stats">TOKENS: {tokenCount}</div>

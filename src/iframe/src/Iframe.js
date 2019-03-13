@@ -28,6 +28,7 @@ import { extractGistPhrases } from './gistParsers/phrases.js'
 import { extractGistChains } from './gistParsers/chains.js'
 import { extractGistSongs } from './gistParsers/songs.js'
 import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
+import { getEvaledErrorPosition } from './errorLocation'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
@@ -40,10 +41,10 @@ console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
 const getUniqueErrorMessages = errors =>
   _(errors)
-    .map((message, type) => ({ type, message }))
-    .filter(d => d.message && d.type)
+    .map((data, type) => ({ type, data }))
+    .filter(d => d.data && d.type)
     .sortBy('type')
-    .uniqBy('message')
+    .uniqBy('data')
     .value()
 
 window.initialState = null
@@ -226,11 +227,15 @@ class Iframe extends Component {
     const { message, run } = this.state
     // If we have an error,
     if (error) {
-      const errorMessage = error.message
+      let errorData = {
+        message: error.message,
+        position: getEvaledErrorPosition(error)
+      };
+
       // and it is different than the previous one,
-      if (this.loggerErrors[type] !== errorMessage) {
+      if (JSON.stringify(this.loggerErrors[type]) !== JSON.stringify(errorData)) {
         // update the loggerErrors,
-        this.loggerErrors[type] = errorMessage
+        this.loggerErrors[type] = errorData
         // and send to parent.
         if (!this.isEmbed) {
           message.ports[0].postMessage({
