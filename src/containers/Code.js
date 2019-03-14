@@ -5,10 +5,11 @@ import CodeEditor from '../components/CodeEditor.js'
 import actions from '../actions/actions.js'
 import { getActive } from '../reducers/game.js'
 
-const mapStateToProps = ({ game, tutorial, docHistories }) => ({
+const mapStateToProps = ({ game, tutorial, docHistories, errorLine }) => ({
   game,
   tutorial,
-  docHistories
+  docHistories,
+  errorLine
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -37,7 +38,8 @@ class Code extends Component {
       tutorial,
       setScrollData,
       docHistories,
-      updateHistory
+      updateHistory,
+      errorLine
     } = this.props
 
     return (
@@ -48,6 +50,7 @@ class Code extends Component {
       >
         <div className="main">
           <CodeEditor
+            errorLine={errorLine}
             game={game}
             updateContent={this.handleTabUpdates}
             setScrollData={setScrollData}

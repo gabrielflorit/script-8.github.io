@@ -3,6 +3,7 @@ import blank from '../blank.js'
 
 // TODO: why do we have to make game keys?
 const initialState = {
+  errorLine: null,
   screen: screenTypes.BOOT,
   // screen: screenTypes.CODE,
   booted: false,

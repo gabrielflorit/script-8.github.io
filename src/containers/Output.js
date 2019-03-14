@@ -46,6 +46,8 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  clearErrorLine: () => dispatch(actions.clearErrorLine()),
+  setErrorLine: line => dispatch(actions.setErrorLine(line)),
   setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
@@ -117,7 +119,7 @@ class Output extends Component {
   }
 
   handleClickError({ line, column }) {
-    const { game, setCodeTab } = this.props
+    const { game, setCodeTab, setErrorLine, clearErrorLine } = this.props
     const tabAndTabLine = gameLineToTabLine({
       game,
       gameLine: line
@@ -125,6 +127,8 @@ class Output extends Component {
     if (tabAndTabLine) {
       const { tab, tabLine } = tabAndTabLine
       setCodeTab(tab)
+      clearErrorLine()
+      setErrorLine({ line: tabLine - 1, timestamp: Date.now() })
     }
   }
 

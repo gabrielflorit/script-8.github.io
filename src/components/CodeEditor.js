@@ -5,6 +5,7 @@
 //    if we are on code, updateContent is called with the prefix
 
 import React, { Component } from 'react'
+import { isNil } from 'lodash'
 import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
@@ -58,6 +59,7 @@ class CodeEditor extends Component {
 
     this.codeMirror.on('change', cm => {
       const content = cm.getValue()
+      document.querySelector('#highlighter-box').classList.add('hide')
       this.props.updateContent(content)
     })
 
@@ -109,6 +111,7 @@ class CodeEditor extends Component {
     const height =
       this.codeMirror.defaultTextHeight() * (1 + lastLine - firstLine)
 
+    document.querySelector('#highlighter-box').classList.remove('hide')
     this.codeMirror.addWidget(
       { line: firstLine, ch: whiteSpaces },
       document.querySelector('#highlighter-box'),
@@ -226,8 +229,10 @@ class CodeEditor extends Component {
       this.setContents(blank)
       // and clear the doc history.
       this.codeMirror.getDoc().clearHistory()
-    } else if (nextProps.game[0].text.startsWith('SCRIPT-8 LESSON')) {
+    } else if (
       // If the incoming game is a lesson,
+      nextProps.game[0].text.startsWith('SCRIPT-8 LESSON')
+    ) {
       // set the lesson,
       this.setContents(nextProps.game[0].text.replace('SCRIPT-8 LESSON', ''))
 
@@ -243,11 +248,10 @@ class CodeEditor extends Component {
         }
       }
     } else if (
-      getActive(this.props.game).key !== getActive(nextProps.game).key
-    ) {
       // If the incoming tab is different than this one,
       // we are about to switch tabs.
-
+      getActive(this.props.game).key !== getActive(nextProps.game).key
+    ) {
       // Save current doc's history.
       this.props.updateHistory({
         index: getActive(this.props.game).key,
@@ -293,6 +297,43 @@ class CodeEditor extends Component {
       // Give editor focus.
       this.codeMirror.focus()
     }
+
+    if (
+      JSON.stringify(nextProps.errorLine) !==
+      JSON.stringify(this.props.errorLine)
+    ) {
+      if (!isNil(nextProps.errorLine)) {
+        // Declare a setTimeout id.
+        let id
+
+        // Function to check if codemirror has active game loaded.
+        const isReady = () =>
+          this.codeMirror.getValue() === getActive(this.props.game).text
+
+        // Function to highlight the line.
+        const highlight = () => {
+          this.highlightText(nextProps.errorLine.line.toString())
+        }
+
+        // Function that checks if we're ready, and if so, stops the interval,
+        // and highlights the text.
+        const checkFunction = () => {
+          if (isReady()) {
+            clearInterval(id)
+            highlight()
+          }
+        }
+
+        // Now we can begin.
+        // If we're already ready, just highlight.
+        if (isReady()) {
+          highlight()
+        } else {
+          // Otherwise start checking.
+          id = setInterval(checkFunction, 250)
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -300,7 +341,11 @@ class CodeEditor extends Component {
     const activeGame = getActive(this.props.game)
     const scrollInfo = this.codeMirror.getScrollInfo()
     const cursorPosition = this.codeMirror.getCursor()
-    const scrollData = { top: scrollInfo.top, left: scrollInfo.left, cursorPosition }
+    const scrollData = {
+      top: scrollInfo.top,
+      left: scrollInfo.left,
+      cursorPosition
+    }
     this.props.setScrollData({ scrollData, tab: activeGame.key })
     this.props.updateHistory({
       index: activeGame.key,
