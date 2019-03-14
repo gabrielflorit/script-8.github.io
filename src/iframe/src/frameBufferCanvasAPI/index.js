@@ -21,8 +21,6 @@ const canvasAPI = ({
   let _cameraX = 0
   let _cameraY = 0
 
-  console.log('using frameBufferCanvasAPI')
-
   const camera = (x = 0, y = 0) => {
     _cameraX = Math.floor(x)
     _cameraY = Math.floor(y)

@@ -9,8 +9,5 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "dependencies": {
-    "detect-browser": "^4.1.0"
   }
 }

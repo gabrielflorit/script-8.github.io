@@ -45,9 +45,9 @@ const regexLookup = {
 }
 
 export function getEvaledErrorPosition(error) {
-  let regex = regexLookup[browser.name]
+  const regex = regexLookup[browser.name]
   if (regex && error.stack) {
-    let match = regex.exec(error.stack)
+    const match = regex.exec(error.stack)
     if (match) {
       return {
         line: match[1],

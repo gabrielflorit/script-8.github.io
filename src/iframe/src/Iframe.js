@@ -28,7 +28,7 @@ import { extractGistPhrases } from './gistParsers/phrases.js'
 import { extractGistChains } from './gistParsers/chains.js'
 import { extractGistSongs } from './gistParsers/songs.js'
 import { parseGistGame, assembleOrderedGame } from './gistParsers/game.js'
-import { getEvaledErrorPosition } from './errorLocation'
+import { getEvaledErrorPosition } from './utils/errorLocation.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
@@ -227,13 +227,15 @@ class Iframe extends Component {
     const { message, run } = this.state
     // If we have an error,
     if (error) {
-      let errorData = {
+      const errorData = {
         message: error.message,
         position: getEvaledErrorPosition(error)
-      };
+      }
 
       // and it is different than the previous one,
-      if (JSON.stringify(this.loggerErrors[type]) !== JSON.stringify(errorData)) {
+      if (
+        JSON.stringify(this.loggerErrors[type]) !== JSON.stringify(errorData)
+      ) {
         // update the loggerErrors,
         this.loggerErrors[type] = errorData
         // and send to parent.
