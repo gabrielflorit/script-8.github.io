@@ -289,7 +289,7 @@ class Output extends Component {
             <ul className="errors">
               {errors.map(({ type, data: { message, position } }) => (
                 <li key={type} onClick={() => this.handleClickError(position)}>
-                  error: {message}
+                  > error: {message}
                 </li>
               ))}
             </ul>
