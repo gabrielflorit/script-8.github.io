@@ -16,6 +16,7 @@ import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
 import { version } from '../iframe/package.json'
 import getGameTitle from '../utils/getGameTitle'
+import gameLineToTabLine from '../iframe/src/utils/gameLineToTabLine.js'
 
 const mapStateToProps = ({
   screen,
@@ -45,6 +46,7 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   saveGist: ({ game, token, gist, sprites, map, phrases, chains, songs }) =>
@@ -114,8 +116,16 @@ class Output extends Component {
     }
   }
 
-  handleClickError(position) {
-    console.log(position)
+  handleClickError({ line, column }) {
+    const { game, setCodeTab } = this.props
+    const tabAndTabLine = gameLineToTabLine({
+      game,
+      gameLine: line
+    })
+    if (tabAndTabLine) {
+      const { tab, tabLine } = tabAndTabLine
+      setCodeTab(tab)
+    }
   }
 
   componentDidMount() {
