@@ -303,8 +303,10 @@ class CodeEditor extends Component {
       JSON.stringify(this.props.errorLine)
     ) {
       if (!isNil(nextProps.errorLine)) {
-        // Declare a setTimeout id.
+        // We'll use this to store the setTimeout id.
         let id
+
+        // This counter will prevent the setTimeout running indefinitely.
         let counter
 
         // Function to check if codemirror has active game loaded.
