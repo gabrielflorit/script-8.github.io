@@ -1,4 +1,5 @@
 const { detect } = require('detect-browser')
+import once from 'lodash/once'
 
 const browser = detect()
 
@@ -53,6 +54,11 @@ export function getEvaledErrorPosition(error) {
         line: match[1],
         column: match[2]
       }
+    }
+  } else if (browser.name === 'safari') {
+    return {
+      line: error.line,
+      column: error.column
     }
   }
 }
