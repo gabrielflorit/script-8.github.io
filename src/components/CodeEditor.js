@@ -305,6 +305,7 @@ class CodeEditor extends Component {
       if (!isNil(nextProps.errorLine)) {
         // Declare a setTimeout id.
         let id
+        let counter
 
         // Function to check if codemirror has active game loaded.
         const isReady = () =>
@@ -321,15 +322,22 @@ class CodeEditor extends Component {
           if (isReady()) {
             clearInterval(id)
             highlight()
+          } else if (counter >= 7) {
+            clearInterval(id)
           }
+          counter++
         }
 
         // Now we can begin.
-        // If we're already ready, just highlight.
+        // If we're already ready,
         if (isReady()) {
+          // just highlight.
           highlight()
         } else {
-          // Otherwise start checking.
+          // Otherwise,
+          // reset the counter variable,
+          counter = 0
+          // and start checking.
           id = setInterval(checkFunction, 250)
         }
       }
