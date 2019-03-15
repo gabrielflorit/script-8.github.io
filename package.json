@@ -33,7 +33,7 @@
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.5",
+    "react-scripts": "2.0.3",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
@@ -57,7 +57,7 @@
     "iframe-watch-css": "cd src/iframe; stylus src/css/Iframe.styl -o src/css -w",
     "iframe-start": "npm-run-all -p iframe-start-js iframe-watch-css",
     "iframe-build": "cd src/iframe; stylus src/css/Iframe.styl -o src/css; react-scripts build",
-    "iframe-test": "cd src/iframe; react-scripts test --env=jsdom",
+    "iframe-test": "cd src/iframe; react-scripts test",
     "iframe-eject": "cd src/iframe; react-scripts eject",
     "iframe-rename": "TAG=\"$(git describe --abbrev=0)\"; cd src/iframe; mv build/index.html \"build/iframe-$TAG.html\"",
     "iframe-copy": "cp -a src/iframe/build/. ../script8.github.io",
@@ -73,7 +73,7 @@
     "build": "npm-run-all -s parse-lessons parse-apiDocs parse-howTo parse-shortcuts build-css build-js iframe",
     "serve": "serve -s build",
     "build-dev": "npm-run-all -s build serve",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   }
 }
