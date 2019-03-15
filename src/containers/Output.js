@@ -16,6 +16,7 @@ import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
 import { version } from '../iframe/package.json'
 import getGameTitle from '../utils/getGameTitle'
+import gameLineToTabLine from '../iframe/src/utils/gameLineToTabLine.js'
 
 const mapStateToProps = ({
   screen,
@@ -45,6 +46,8 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setErrorLine: line => dispatch(actions.setErrorLine(line)),
+  setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
   saveGist: ({ game, token, gist, sprites, map, phrases, chains, songs }) =>
@@ -79,6 +82,7 @@ class Output extends Component {
 
     this.evaluate = this.evaluate.bind(this)
     this.handleClickSize = this.handleClickSize.bind(this)
+    this.handleClickError = this.handleClickError.bind(this)
     this.resize = _.debounce(this.resize.bind(this), 100)
     this.handleBlur = this.handleBlur.bind(this)
 
@@ -110,6 +114,19 @@ class Output extends Component {
   handleBlur(e) {
     if (this.props.run) {
       e.currentTarget.focus()
+    }
+  }
+
+  handleClickError({ line, column }) {
+    const { game, setCodeTab, setErrorLine } = this.props
+    const tabAndTabLine = gameLineToTabLine({
+      game,
+      gameLine: line
+    })
+    if (tabAndTabLine) {
+      const { tab, tabLine } = tabAndTabLine
+      setCodeTab(tab)
+      setErrorLine({ line: tabLine - 1, timestamp: Date.now() })
     }
   }
 
@@ -282,8 +299,10 @@ class Output extends Component {
               <div className="log">log: {JSON.stringify(log)}</div>
             ) : null}
             <ul className="errors">
-              {errors.map(({ type, message }) => (
-                <li key={type}>error: {message}</li>
+              {errors.map(({ type, data: { message, position } }) => (
+                <li key={type} onClick={() => this.handleClickError(position)}>
+                  > error: {message}
+                </li>
               ))}
             </ul>
             <div className="stats">TOKENS: {tokenCount}</div>

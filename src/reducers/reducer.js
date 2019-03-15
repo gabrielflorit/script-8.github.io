@@ -16,8 +16,10 @@ import shelving from './shelving.js'
 import docHistories from './docHistories.js'
 import dismissedNotices from './dismissedNotices.js'
 import selectedUi from './selectedUi.js'
+import errorLine from './errorLine.js'
 
 const reducer = combineReducers({
+  errorLine,
   screen,
   gist,
   booted,
