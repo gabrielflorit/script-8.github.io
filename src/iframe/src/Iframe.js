@@ -264,20 +264,28 @@ class Iframe extends Component {
     if (run) {
       // create one string with all the unique error messages.
       const errorMessages = getUniqueErrorMessages(this.loggerErrors)
-        .map(({ message }) => `error: ${message}`)
+        .map(error => `error: ${error.data.message}`)
         .join('. ')
+      // console.log(errorMessages)
 
       if (errorMessages.length) {
         // Print the error message in black, offset.
-        range(5).forEach(x =>
-          range(5).forEach(y => window.print(-2 + x, -2 + y, errorMessages, 7))
-        )
-        // Now print the error message in white.
-        window.print(0, 0, errorMessages, 0)
+        _.chunk(errorMessages, 32).forEach((errorMessage, i) => {
+          const theString = errorMessage.join('')
+          range(3).forEach(x =>
+            range(3).forEach(y =>
+              window.print(1 + x, 1 + y + i * 8, theString, 7)
+            )
+          )
+          // Now print the error message in white.
+          window.print(2, 2 + i * 8, theString, 0)
+        })
 
         // If we're in framebuffer mode,
-        // draw it now.
-        this.writePixelDataToCanvas()
+        if (this.useFrameBufferRenderer) {
+          // draw it now.
+          this.writePixelDataToCanvas()
+        }
       }
     }
   }
