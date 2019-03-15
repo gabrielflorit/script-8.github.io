@@ -1,4 +1,4 @@
-const { detect } = require('detect-browser')
+import { detect } from 'detect-browser'
 import once from 'lodash/once'
 
 const browser = detect()
