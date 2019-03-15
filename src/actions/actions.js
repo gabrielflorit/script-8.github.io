@@ -13,7 +13,6 @@ import {
 
 const actions = createActions({
   [actionTypes.SET_ERROR_LINE]: d => d,
-  [actionTypes.CLEAR_ERROR_LINE]: () => {},
   [actionTypes.CLEAR_TOKEN]: () => {},
   [actionTypes.SELECT_UI]: d => d,
   [actionTypes.DISMISS_NOTICES]: d => d,
