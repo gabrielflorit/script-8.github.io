@@ -12,6 +12,7 @@ import clamp from 'lodash/clamp'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
+import throttle from 'lodash/throttle'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
@@ -124,9 +125,9 @@ class Iframe extends Component {
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
     this.handleRestartClick = this.handleRestartClick.bind(this)
-    this.errorLogger = this.errorLogger.bind(this)
+    this.errorLogger = throttle(this.errorLogger.bind(this), 150)
     this.loggerErrors = {}
-    this.logger = this.logger.bind(this)
+    this.logger = throttle(this.logger.bind(this), 150)
     this.log = null
 
     this.heightSent = 0
