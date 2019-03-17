@@ -35,16 +35,24 @@ import { version } from '../package.json'
 // window.USE_FRAME_BUFFER_RENDERER = true
 // window.SCRIPT_8_EMBEDDED_GIST_ID = 'd5dacf8f639a775996c4ed9f9156d4d5'
 
+// Get the browser platform.
 const { platform } = window.navigator
 
+// Print the SCRIPT-8 version to the console.
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
+// This function takes an object of errors,
+// keyed by type, and converts them to
+// an array of objects with properties { type, data },
+// filters down to errors that have both type and data,
+// sorts by type,
+// and only keeps those with unique data.
 const getUniqueErrorMessages = errors =>
   _(errors)
     .map((data, type) => ({ type, data }))
     .filter(d => d.data && d.type)
     .sortBy('type')
-    .uniqBy('data')
+    .uniqBy(d => JSON.stringify(d.data))
     .value()
 
 window.initialState = null
@@ -53,7 +61,7 @@ window.drawActors = null
 window.draw = null
 window.embedState = {}
 window._script8 = {
-  globalKeys: new Set()
+  reservedTokens: new Set()
 }
 
 const NOOP = () => {}
@@ -395,8 +403,8 @@ class Iframe extends Component {
       // assign the corresponding global object to window,
       window[key] = globals[key]
 
-      // and assign the key itself to window._script8.globalKeys.
-      window._script8.globalKeys.add(key)
+      // and assign the key itself to window._script8.reservedTokens.
+      window._script8.reservedTokens.add(key)
     })
   }
 
@@ -552,7 +560,7 @@ class Iframe extends Component {
             !validateToken({
               token,
               blacklist,
-              globals: window._script8.globalKeys,
+              globals: window._script8.reservedTokens,
               shadows
             })
         )
@@ -662,6 +670,9 @@ class Iframe extends Component {
       eval(innerSkeleton)
       eval(game)
       ${embedStateString}
+      // TODO: why do we set initialState back to previousInitialState,
+      // after evaling? Doesn't this effectively mean
+      // the evaled initialState never matters?
       if (initialState && typeof initialState === 'function') {
         initialState = this.previousInitialState
       }
@@ -756,6 +767,8 @@ class Iframe extends Component {
   }
 
   handleRestartClick() {
+    // TODO: I think this is done so that initialState
+    // will be different, which means something happens.
     window.initialState = Date.now()
     window.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
@@ -876,6 +889,7 @@ class Iframe extends Component {
           // code and not lose game state.
           let storeState
           if (!equal(window.initialState, this.previousInitialState)) {
+            // TODO: shouldn't we resetMap here?
             storeState = window.initialState
             this.reduxHistory = []
           } else {
