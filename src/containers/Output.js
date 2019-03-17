@@ -146,7 +146,42 @@ class Output extends Component {
       this._iframe.focus()
     }
     if (this.isLoaded) {
-      this.evaluate()
+      if (
+        JSON.stringify([
+          prevProps.game,
+          prevProps.finishBoot,
+          prevProps.run,
+          prevProps.songs,
+          prevProps.chains,
+          prevProps.phrases,
+          prevProps.sprites,
+          prevProps.map,
+          prevProps.screen,
+          prevProps.sound,
+          prevProps.gist,
+          prevProps.setScreen,
+          prevProps.saveGist,
+          prevProps.token
+        ]) !==
+        JSON.stringify([
+          this.props.game,
+          this.props.finishBoot,
+          this.props.run,
+          this.props.songs,
+          this.props.chains,
+          this.props.phrases,
+          this.props.sprites,
+          this.props.map,
+          this.props.screen,
+          this.props.sound,
+          this.props.gist,
+          this.props.setScreen,
+          this.props.saveGist,
+          this.props.token
+        ])
+      ) {
+        this.evaluate()
+      }
     }
     if (
       assembleOrderedGame(this.props.game) !==
