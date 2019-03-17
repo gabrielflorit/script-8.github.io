@@ -51,6 +51,7 @@ class ShelfCassettes extends Component {
             onClick={e => {
               handleOnClick({ e, id: gist })
             }}
+            rel="noopener noreferrer"
             target="_blank"
           >
             <img className="background" alt="" src="./cassette-bg.png" />
