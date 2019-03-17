@@ -55,25 +55,44 @@ const getUniqueErrorMessages = errors =>
     .uniqBy(d => JSON.stringify(d.data))
     .value()
 
+// These four are part of the SCRIPT-8 API.
 window.initialState = null
 window.update = null
 window.drawActors = null
 window.draw = null
-window.embedState = {}
+
+// Create window-scoped variables under the _script8 object.
+// This key will be passed to a validation function,
+// to prevent the user from using them.
 window._script8 = {
+  embedState: {},
   reservedTokens: new Set()
 }
 
+// Convenience function.
 const NOOP = () => {}
+
+// Use this to set SCRIPT-8's desired FPS.
 const FPS = 60
-const SECONDS = 2
+
+// Use this to set how far in the past we want to rewind.
+const REDUX_HISTORY_SECONDS = 2
+
+// Convenience constant placeholder for 128. Theoretically this could enable
+// us to adjust the canvas size, but in reality this will never happen.
 const CANVAS_SIZE = 128
+
+// Number of frames to skip when drawing an actor's past.
+// If we were to draw every single frame, we wouldn't be able to
+// distinguish the actor's trail.
 const ACTOR_FRAME_SKIP = 5
 
 class Iframe extends Component {
   constructor(props) {
     super(props)
 
+    // The following ref-binding functions set up
+    // keyboard listeners.
     this.ArrowUpElement = null
     this.setArrowUpRef = e => {
       this.ArrowUpElement = e
@@ -163,7 +182,7 @@ class Iframe extends Component {
           state: store.getState(),
           action
         }
-      ].slice(-(FPS * SECONDS))
+      ].slice(-(FPS * REDUX_HISTORY_SECONDS))
 
       return next(action)
     }
@@ -655,7 +674,7 @@ class Iframe extends Component {
       this.previousInitialState = window.initialState
 
       const embedStateString = this.isEmbed
-        ? `embedState = JSON.parse(JSON.stringify(initialState))`
+        ? `_script8.embedState = JSON.parse(JSON.stringify(initialState))`
         : ''
 
       // Eval the supplied game.
@@ -714,7 +733,7 @@ class Iframe extends Component {
         // Update the redux store.
         const userInput = getUserInput(this.keys)
         if (this.isEmbed) {
-          window.update(window.embedState, userInput, tickLength)
+          window.update(window._script8.embedState, userInput, tickLength)
         } else {
           this.store.dispatch({
             type: 'TICK',
@@ -725,7 +744,7 @@ class Iframe extends Component {
 
         // Draw this state.
         this.drawUserGraphics(
-          this.isEmbed ? window.embedState : this.store.getState()
+          this.isEmbed ? window._script8.embedState : this.store.getState()
         )
 
         // Update fps, only if we had a new measurement.
@@ -770,7 +789,7 @@ class Iframe extends Component {
     // TODO: I think this is done so that initialState
     // will be different, which means something happens.
     window.initialState = Date.now()
-    window.embedState = 'SCRIPT-8-RESTART'
+    window._script8.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
     window.resetMap()
     this.forceUpdate()
@@ -857,7 +876,7 @@ class Iframe extends Component {
         // or the initialState has changed,
         if (
           game !== prevState.game ||
-          window.embedState === 'SCRIPT-8-RESTART'
+          window._script8.embedState === 'SCRIPT-8-RESTART'
         ) {
           // evaluate user code.
           this.evalCode({ ...state, shadows })
