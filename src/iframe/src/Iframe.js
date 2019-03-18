@@ -12,6 +12,7 @@ import clamp from 'lodash/clamp'
 import once from 'lodash/once'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
+import chunk from 'lodash/chunk'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
@@ -144,6 +145,11 @@ class Iframe extends Component {
     this.touchendEnter = this.touchendEnter.bind(this)
     this.touchendSpace = this.touchendSpace.bind(this)
 
+    this.logger = this.logger.bind(this)
+    this.log = null
+    this.errorLogger = this.errorLogger.bind(this)
+    this.loggerErrors = {}
+
     this.updateGlobals = this.updateGlobals.bind(this)
     this.evalCode = this.evalCode.bind(this)
     this.startTimer = this.startTimer.bind(this)
@@ -151,10 +157,6 @@ class Iframe extends Component {
     this.handleActorClick = this.handleActorClick.bind(this)
     this.handlePauseClick = this.handlePauseClick.bind(this)
     this.handleRestartClick = this.handleRestartClick.bind(this)
-    this.errorLogger = this.errorLogger.bind(this)
-    this.loggerErrors = {}
-    this.logger = this.logger.bind(this)
-    this.log = null
 
     this.heightSent = 0
 
@@ -231,92 +233,8 @@ class Iframe extends Component {
     this._pixelIntegers = new Uint32Array(this._pixelBuffer)
   }
 
-  logger(value) {
-    // Don't use logger if we're on embed mode.
-    if (!this.isEmbed) {
-      const { message, run } = this.state
-      // If we have something to log,
-      if (!run && !_.isNil(value)) {
-        // and it is different than the previous one,
-        if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
-          // update the log,
-          this.log = value
-          // and send to parent.
-          message.ports[0].postMessage({
-            log: this.log
-          })
-        }
-      }
-    }
-  }
-
-  errorLogger({ type, error = null }) {
-    const { message, run } = this.state
-    // If we have an error,
-    if (error) {
-      const errorData = {
-        message: error.message,
-        position: getEvaledErrorPosition(error)
-      }
-
-      // and it is different than the previous one,
-      if (
-        JSON.stringify(this.loggerErrors[type]) !== JSON.stringify(errorData)
-      ) {
-        // update the loggerErrors,
-        this.loggerErrors[type] = errorData
-        // and send to parent.
-        if (!this.isEmbed) {
-          message.ports[0].postMessage({
-            errors: getUniqueErrorMessages(this.loggerErrors)
-          })
-        }
-      }
-    } else {
-      // If we don't have an error,
-      // and we had one before,
-      if (this.loggerErrors[type]) {
-        // update the loggerErrors for this type,
-        this.loggerErrors[type] = null
-        // and send to parent.
-        if (!this.isEmbed) {
-          message.ports[0].postMessage({
-            errors: getUniqueErrorMessages(this.loggerErrors)
-          })
-        }
-      }
-    }
-
-    // If we're on run mode,
-    if (run) {
-      // create one string with all the unique error messages.
-      const errorMessages = getUniqueErrorMessages(this.loggerErrors)
-        .map(error => `error: ${error.data.message}`)
-        .join('. ')
-      // console.log(errorMessages)
-
-      if (errorMessages.length) {
-        // Print the error message in black, offset.
-        _.chunk(errorMessages, 32).forEach((errorMessage, i) => {
-          const theString = errorMessage.join('')
-          range(3).forEach(x =>
-            range(3).forEach(y =>
-              window.print(1 + x, 1 + y + i * 8, theString, 7)
-            )
-          )
-          // Now print the error message in white.
-          window.print(2, 2 + i * 8, theString, 0)
-        })
-
-        // If we're in framebuffer mode,
-        if (this.useFrameBufferRenderer) {
-          // draw it now.
-          this.writePixelDataToCanvas()
-        }
-      }
-    }
-  }
-
+  // The following event listeners add/remove css classes from the DOM elements,
+  // and also add/remove keys from the input object.
   touchstartArrowUp() {
     this.ArrowUpElement.classList.add('on')
     this.keys.add('ArrowUp')
@@ -383,8 +301,98 @@ class Iframe extends Component {
     this.keys.delete(' ')
   }
 
+  // Send log message to parent.
+  logger(value) {
+    // Also print to console.
+    console.log(value)
+    // Don't use logger if we're on embed mode.
+    if (!this.isEmbed) {
+      const { message, run } = this.state
+      // If we have something to log,
+      if (!run && !_.isNil(value)) {
+        // and it is different than the previous one,
+        if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
+          // update the log,
+          this.log = value
+          // and send to parent.
+          message.ports[0].postMessage({
+            log: this.log
+          })
+        }
+      }
+    }
+  }
+
+  // Send error message to parent,
+  // and if in RUN mode, print it to cassette screen.
+  errorLogger({ type, error = null }) {
+    const { message, run } = this.state
+    // If we have an error,
+    if (error) {
+      const errorData = {
+        message: error.message,
+        position: getEvaledErrorPosition(error)
+      }
+
+      // and it is different than the previous one,
+      if (
+        JSON.stringify(this.loggerErrors[type]) !== JSON.stringify(errorData)
+      ) {
+        // update the loggerErrors,
+        this.loggerErrors[type] = errorData
+        // and send to parent.
+        if (!this.isEmbed) {
+          message.ports[0].postMessage({
+            errors: getUniqueErrorMessages(this.loggerErrors)
+          })
+        }
+      }
+    } else {
+      // If we don't have an error,
+      // and we had one before,
+      if (this.loggerErrors[type]) {
+        // update the loggerErrors for this type,
+        this.loggerErrors[type] = null
+        // and send to parent.
+        if (!this.isEmbed) {
+          message.ports[0].postMessage({
+            errors: getUniqueErrorMessages(this.loggerErrors)
+          })
+        }
+      }
+    }
+
+    // If we're on run mode,
+    if (run) {
+      // create one string with all the unique error messages.
+      const errorMessages = getUniqueErrorMessages(this.loggerErrors)
+        .map(error => `error: ${error.data.message}`)
+        .join('. ')
+
+      if (errorMessages.length) {
+        // Print the error message in black, offset.
+        chunk(errorMessages, 32).forEach((errorMessage, i) => {
+          const theString = errorMessage.join('')
+          range(3).forEach(x =>
+            range(3).forEach(y =>
+              window.print(1 + x, 1 + y + i * 8, theString, 7)
+            )
+          )
+          // Now print the error message in white.
+          window.print(2, 2 + i * 8, theString, 0)
+        })
+
+        // If we're in framebuffer mode,
+        if (this.useFrameBufferRenderer) {
+          // draw it now.
+          this.writePixelDataToCanvas()
+        }
+      }
+    }
+  }
+
+  // Assign various properties to global scope, for the user.
   updateGlobals(providedGlobals) {
-    // Assign various properties to global scope, for the user.
     let globals
 
     if (!providedGlobals) {
@@ -422,7 +430,7 @@ class Iframe extends Component {
       // assign the corresponding global object to window,
       window[key] = globals[key]
 
-      // and assign the key itself to window._script8.reservedTokens.
+      // and add the key to the list of reserved tokens.
       window._script8.reservedTokens.add(key)
     })
   }
@@ -644,6 +652,7 @@ class Iframe extends Component {
     document.removeEventListener('keyup', this.keyupHandler)
   }
 
+  // Call `eval` on user-supplied code.
   evalCode() {
     const { shadows, state } = this
     // eslint-disable-next-line no-unused-vars
@@ -708,6 +717,7 @@ class Iframe extends Component {
     }
   }
 
+  // Start the timer that calls update and draw every tick.
   startTimer() {
     const timerCallback = elapsed => {
       try {
