@@ -145,10 +145,13 @@ class Iframe extends Component {
     this.touchendEnter = this.touchendEnter.bind(this)
     this.touchendSpace = this.touchendSpace.bind(this)
 
-    this.logger = this.logger.bind(this)
+    this.sendLogToParent = this.sendLogToParent.bind(this)
     this.log = null
-    this.errorLogger = this.errorLogger.bind(this)
+    this.sendErrorToParent = this.sendErrorToParent.bind(this)
     this.loggerErrors = {}
+    this.printErrorsToCassetteScreen = this.printErrorsToCassetteScreen.bind(
+      this
+    )
 
     this.updateGlobals = this.updateGlobals.bind(this)
     this.evalCode = this.evalCode.bind(this)
@@ -170,7 +173,7 @@ class Iframe extends Component {
 
     this.volumeNode = new Tone.Volume()
 
-    this.reducer = createReducer(this.errorLogger)
+    this.reducer = createReducer(this.sendErrorToParent)
     this.store = null
     this.previousInitialState = null
     this.reduxHistory = []
@@ -302,10 +305,10 @@ class Iframe extends Component {
   }
 
   // Send log message to parent.
-  logger(value) {
+  sendLogToParent(value) {
     // Also print to console.
     console.log(value)
-    // Don't use logger if we're on embed mode.
+    // Don't use sendLogToParent if we're on embed mode.
     if (!this.isEmbed) {
       const { message, run } = this.state
       // If we have something to log,
@@ -325,7 +328,7 @@ class Iframe extends Component {
 
   // Send error message to parent,
   // and if in RUN mode, print it to cassette screen.
-  errorLogger({ type, error = null }) {
+  sendErrorToParent({ type, error = null }) {
     const { message, run } = this.state
     // If we have an error,
     if (error) {
@@ -364,34 +367,40 @@ class Iframe extends Component {
 
     // If we're on run mode,
     if (run) {
-      // create one string with all the unique error messages.
-      const errorMessages = getUniqueErrorMessages(this.loggerErrors)
-        .map(error => `error: ${error.data.message}`)
-        .join('. ')
+      printErrorsToCassetteScreen()
+    }
+  }
 
-      if (errorMessages.length) {
-        // Print the error message in black, offset.
-        chunk(errorMessages, 32).forEach((errorMessage, i) => {
-          const theString = errorMessage.join('')
-          range(3).forEach(x =>
-            range(3).forEach(y =>
-              window.print(1 + x, 1 + y + i * 8, theString, 7)
-            )
-          )
-          // Now print the error message in white.
-          window.print(2, 2 + i * 8, theString, 0)
+  // Print errors to cassette screen.
+  printErrorsToCassetteScreen() {
+    // create one string with all the unique error messages.
+    const errorMessages = getUniqueErrorMessages(this.loggerErrors)
+      .map(error => `error: ${error.data.message}`)
+      .join('. ')
+
+    if (errorMessages.length) {
+      // Print the error message in black, offset.
+      chunk(errorMessages, 32).forEach((errorMessage, i) => {
+        const theString = errorMessage.join('')
+        range(3).forEach(x => {
+          range(3).forEach(y => {
+            window.print(1 + x, 1 + y + i * 8, theString, 7)
+          })
         })
+        // Now print the error message in white.
+        window.print(2, 2 + i * 8, theString, 0)
+      })
 
-        // If we're in framebuffer mode,
-        if (this.useFrameBufferRenderer) {
-          // draw it now.
-          this.writePixelDataToCanvas()
-        }
+      // If we're in framebuffer mode,
+      if (this.useFrameBufferRenderer) {
+        // draw it now.
+        this.writePixelDataToCanvas()
       }
     }
   }
 
   // Assign various properties to global scope, for the user.
+  // Also add them to the list of reserved tokens.
   updateGlobals(providedGlobals) {
     let globals
 
@@ -407,7 +416,7 @@ class Iframe extends Component {
         Math,
         Object,
         Array,
-        log: this.logger,
+        log: this.sendLogToParent,
         ...canvasAPI({
           pixels: this._pixelIntegers,
           ctx: this._canvas.getContext('2d'),
@@ -435,12 +444,15 @@ class Iframe extends Component {
     })
   }
 
+  // Writes pixel data buffer to canvas.
   writePixelDataToCanvas() {
     this._pixelData.data.set(this._pixelBytes)
     const ctx = this._canvas.getContext('2d')
     ctx.putImageData(this._pixelData, 0, 0)
   }
 
+  // Calls window.draw(state) .
+  // Works with either context or frame buffer renderer.
   drawUserGraphics(state) {
     if (window.draw) {
       window.draw(state)
@@ -451,6 +463,8 @@ class Iframe extends Component {
   }
 
   componentDidMount() {
+    // If the framebuffer flag is set (this should only happen in embed mode),
+    // use the framebuffer renderer.
     if (window.USE_FRAME_BUFFER_RENDERER) {
       this.useFrameBufferRenderer = true
     }
@@ -465,13 +479,15 @@ class Iframe extends Component {
       stopSong: this.soundFunctions.stopSong
     })
 
-    // Keep track of what keys we're pressing.
+    // Listen for mouse down / up events.
     this.mousedownHandler = () => {
       this.keys.add('mousedown')
     }
     this.mouseupHandler = () => {
       this.keys.delete('mousedown')
     }
+
+    // Listen for key down events.
     this.keydownHandler = event => {
       // Listen for record cassette and go to previous/next screen,
       // and send them to parent.
@@ -705,9 +721,9 @@ class Iframe extends Component {
         initialState = this.previousInitialState
       }
     `)
-      this.errorLogger({ type: 'evalCode' })
+      this.sendErrorToParent({ type: 'evalCode' })
     } catch (e) {
-      this.errorLogger({ type: 'evalCode', error: e })
+      this.sendErrorToParent({ type: 'evalCode', error: e })
     }
   }
 
@@ -763,9 +779,9 @@ class Iframe extends Component {
             fps: newFps
           })
         }
-        this.errorLogger({ type: 'startTimer' })
+        this.sendErrorToParent({ type: 'startTimer' })
       } catch (e) {
-        this.errorLogger({ type: 'startTimer', error: e })
+        this.sendErrorToParent({ type: 'startTimer', error: e })
       }
     }
     if (this.timer) {
@@ -975,7 +991,7 @@ class Iframe extends Component {
             this.reduxHistory.forEach(({ state, action }, i) => {
               if (i === timelineIndex - 1) {
                 // Enable logging only if this is the selected frame.
-                this.updateGlobals({ log: this.logger })
+                this.updateGlobals({ log: this.sendLogToParent })
               } else {
                 this.updateGlobals({ log: NOOP })
               }
@@ -984,7 +1000,7 @@ class Iframe extends Component {
             })
 
             // Re-enable logging.
-            this.updateGlobals({ log: this.logger })
+            this.updateGlobals({ log: this.sendLogToParent })
 
             alteredStates = alteredStates.filter(d => !isEmpty(d))
 
@@ -1022,7 +1038,7 @@ class Iframe extends Component {
                 window.drawActors &&
                   window.drawActors({ actors: matchingActors }, true)
                 // Re-enable console.log.
-                this.updateGlobals({ log: this.logger })
+                this.updateGlobals({ log: this.sendLogToParent })
               }
             })
 
@@ -1056,9 +1072,9 @@ class Iframe extends Component {
               timelineIndex: newTimelineIndex
             })
           }
-          this.errorLogger({ type: 'isPaused' })
+          this.sendErrorToParent({ type: 'isPaused' })
         } catch (e) {
-          this.errorLogger({ type: 'isPaused', error: e })
+          this.sendErrorToParent({ type: 'isPaused', error: e })
         }
       } else {
         // If the ul buttons don't have any canvases, add them!
