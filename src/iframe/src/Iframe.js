@@ -209,7 +209,7 @@ class Iframe extends Component {
       selectedActors: [],
       message: null,
       callbacks: {},
-      isPaused: true,
+      isPaused: false,
       alteredStates: [],
       run: true,
       sound: true
@@ -367,7 +367,7 @@ class Iframe extends Component {
 
     // If we're on run mode,
     if (run) {
-      printErrorsToCassetteScreen()
+      this.printErrorsToCassetteScreen()
     }
   }
 
@@ -565,6 +565,7 @@ class Iframe extends Component {
         // it means we are getting new game data (e.g. code, sprites, etc).
         type === 'callCode'
       ) {
+        console.log('callCode')
         // If the payload says to use the frame buffer renderer,
         // (i.e. the parent, via query param)
         if (payload.useFrameBufferRenderer) {
@@ -614,10 +615,11 @@ class Iframe extends Component {
       }
     }
 
-    // If there's an id in index.html,
+    // If there's an id in the embed,
     if (window.SCRIPT_8_EMBEDDED_GIST_ID) {
+      // set the isEmbed flag,
       this.isEmbed = true
-      // try fetching the gist,
+      // and try fetching the gist.
       window
         .fetch(
           `${process.env.REACT_APP_NOW}/gist/${
@@ -626,7 +628,7 @@ class Iframe extends Component {
         )
         .then(response => response.json())
         .then(json => {
-          // parse the gist, then send data to `handleData`,
+          // Then, parse the gist, and send data to `handleData`,
           // which starts the game.
           this.gist = json
           handleData({
@@ -650,7 +652,7 @@ class Iframe extends Component {
       window.addEventListener('message', handleData)
     }
 
-    // Update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
+    // Finally, update globals - e.g. set `console`, `range`, the canvasAPI functions, etc
     // to the global scope for our user.
     this.updateGlobals()
   }
@@ -674,6 +676,9 @@ class Iframe extends Component {
       if (isDoneFetching)
         // define the following end function, which we can only call once:
         window._script8.end = once(() => {
+          // when the user calls this (which should only happen once, in bios),
+          // TODO: why do we set state?
+          // TODO: why do we set started = true?
           this.setState({
             game: assembleOrderedGame(parseGistGame(this.gist)),
             started: true
@@ -684,7 +689,8 @@ class Iframe extends Component {
             // This is allowed because the root event is a click event.
             Tone.start()
           }
-          // Then, call the callback once.
+          // Then, call the callback once, if we're not in embed mode
+          // (if we're in embed mode, there's no parent to talk to).
           if (!this.isEmbed) {
             message.ports[0].postMessage({
               callback: callbacks.endCallback
@@ -692,16 +698,24 @@ class Iframe extends Component {
           }
         })
       // Save previous initial state.
+      // TODO: why?
       this.previousInitialState = window.initialState
 
-      const embedStateString = this.isEmbed
+      // TODO: what's this for?
+      const stringThatSetsEmbedStateToInitialState = this.isEmbed
         ? `_script8.embedState = JSON.parse(JSON.stringify(initialState))`
         : ''
 
-      // Eval the supplied game.
+      // Get ready to eval the supplied game:
+
+      // First, create a list of variables we want to shadow.
       const shadowString = `var ${[...shadows].join(',')}`
+
+      // Declare a locally-scoped variable pointing to skeleton, so we can eval it.
       // eslint-disable-next-line no-unused-vars
       const innerSkeleton = skeleton
+
+      // Eval!
       // eslint-disable-next-line no-eval
       eval(`
       // Shadow variables we don't want available.
@@ -709,7 +723,7 @@ class Iframe extends Component {
       // The inception eval allows the user to declare vars (e.g. screen).
       eval(innerSkeleton)
       eval(game)
-      ${embedStateString}
+      ${stringThatSetsEmbedStateToInitialState}
       // TODO: why do we set initialState back to previousInitialState,
       // after evaling? Doesn't this effectively mean
       // the evaled initialState never matters?
@@ -717,8 +731,11 @@ class Iframe extends Component {
         initialState = this.previousInitialState
       }
     `)
+
+      // If we got to this point, send a null error to parent.
       this.sendErrorToParent({ type: 'evalCode' })
     } catch (e) {
+      // Error! Send it to parent.
       this.sendErrorToParent({ type: 'evalCode', error: e })
     }
   }
