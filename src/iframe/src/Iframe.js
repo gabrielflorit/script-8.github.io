@@ -544,6 +544,7 @@ class Iframe extends Component {
       this.keys.delete(key)
     }
 
+    // Add touch / mouse / key event handlers.
     document.addEventListener('touchstart', this.mousedownHandler)
     document.addEventListener('mousedown', this.mousedownHandler)
     document.addEventListener('touchend', this.mouseupHandler)
@@ -551,53 +552,40 @@ class Iframe extends Component {
     document.addEventListener('keydown', this.keydownHandler)
     document.addEventListener('keyup', this.keyupHandler)
 
-    // Listen for callCode or validateToken parent messages.
+    // Listen for `callCode`, `findInvalidToken`, or `image` messages.
+    // `callCode` can come from either the parent
+    // or from here, if we're in embed mode.
+    // The other two will come from the parent.
     const handleData = message => {
       const { type, ...payload } = message.data
       const { blacklist, shadows } = this
 
-      // Run user code.
-      if (type === 'callCode') {
-        let isPaused = payload.run === true ? false : this.state.isPaused
-
-        // If we're in run mode (e.g. BOOT or RUN screens),
-        // and we're paused,
-        // and the timer already exists (e.g. we came here from CODE),
-        // resume.
-        if (payload.run && this.state.isPaused) {
-          this.handlePauseClick()
-          isPaused = false
-        }
-
-        // If we're paused, and this is a new cassette,
-        // and it wasn't new before, resume.
-        if (this.state.isPaused && payload.isNew && !this.state.isNew) {
-          this.handlePauseClick()
-          isPaused = false
-        }
-
+      if (
+        // If the message is of type callCode,
+        // it means we are getting new game data (e.g. code, sprites, etc).
+        type === 'callCode'
+      ) {
+        // If the payload says to use the frame buffer renderer,
+        // (i.e. the parent, via query param)
         if (payload.useFrameBufferRenderer) {
+          // set the frame buffer renderer flag,
           this.useFrameBufferRenderer = true
+          // and update the globals.
+          // so that the drawing functions come from the fb renderer.
           this.updateGlobals()
         }
 
+        // Finally, set this react state with payload data,
+        // and also add the message.
         this.setState({
-          game: payload.game,
-          sprites: payload.sprites,
-          map: payload.map,
-          message,
-          run: payload.run,
-          isPaused,
-          sound: payload.sound,
-          callbacks: payload.callbacks,
-          phrases: payload.phrases,
-          chains: payload.chains,
-          songs: payload.songs,
-          isNew: payload.isNew,
-          isDoneFetching: payload.isDoneFetching
+          ...payload,
+          message
         })
-      } else if (type === 'findInvalidToken') {
-        // Find the first invalid token in the provided tokens array.
+      } else if (
+        // If we're trying to find an invalid token,
+        type === 'findInvalidToken'
+      ) {
+        // Find the first invalid token in the provided tokens array,
         const invalidTokenIndex = payload.tokens.findIndex(
           token =>
             !validateToken({
@@ -607,13 +595,21 @@ class Iframe extends Component {
               shadows
             })
         )
+        // and if found, send to parent.
         message.ports[0].postMessage(invalidTokenIndex)
-      } else if (type === 'image') {
+      } else if (
+        // If we want an image, e.g. the parent wants a cassette screenshot,
+        type === 'image'
+      ) {
+        // create a temporary canvas,
         const smallCanvas = document.createElement('canvas')
+        // set its dimensions,
         const size = 128
         smallCanvas.width = size
         smallCanvas.height = size
+        // draw onto it the pixels from the main canvas,
         smallCanvas.getContext('2d').drawImage(this._canvas, 0, 0, size, size)
+        // and send the dataURL to the parent.
         message.ports[0].postMessage(smallCanvas.toDataURL())
       }
     }
