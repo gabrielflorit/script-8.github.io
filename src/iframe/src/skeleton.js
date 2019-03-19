@@ -1,4 +1,5 @@
-export default `initialState = {
+export default `
+init = state => {
 }
 
 update = (state, input, elapsed) => {

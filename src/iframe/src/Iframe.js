@@ -58,7 +58,7 @@ const getUniqueErrorMessages = errors =>
     .value()
 
 // These four are part of the SCRIPT-8 API.
-window.initialState = null
+window.init = null
 window.update = null
 window.drawActors = null
 window.draw = null
@@ -176,7 +176,7 @@ class Iframe extends Component {
 
     this.reducer = createReducer(this.sendErrorToParent)
     this.store = null
-    this.previousInitialState = null
+    this.previousInit = null
     this.reduxHistory = []
     this.reduxLogger = store => next => action => {
       // Add this state and action to history,
@@ -566,7 +566,6 @@ class Iframe extends Component {
         // it means we are getting new game data (e.g. code, sprites, etc).
         type === 'callCode'
       ) {
-        console.log('callCode')
         // If the payload says to use the frame buffer renderer,
         // (i.e. the parent, via query param)
         if (payload.useFrameBufferRenderer) {
@@ -668,6 +667,8 @@ class Iframe extends Component {
   }
 
   // Call `eval` on user-supplied code.
+  // TODO: for some reason all usages of this function did this:
+  // evalCode({ ...state, shadows })
   evalCode() {
     const { shadows, state } = this
     // eslint-disable-next-line no-unused-vars
@@ -846,6 +847,7 @@ class Iframe extends Component {
     window.initialState = Date.now()
     window._script8.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
+    this.pastFpsValues = []
     window.resetMap()
     this.forceUpdate()
   }
@@ -934,7 +936,7 @@ class Iframe extends Component {
           window._script8.embedState === 'SCRIPT-8-RESTART'
         ) {
           // evaluate user code.
-          this.evalCode({ ...state, shadows })
+          this.evalCode()
         }
       } else {
         // 2 - We're not embedded.
@@ -953,7 +955,7 @@ class Iframe extends Component {
           // and create redux store.
 
           // Evaluate user code.
-          this.evalCode({ ...state, shadows })
+          this.evalCode()
 
           // Before we create a redux store, let's think about what state we want.
           // If the user has changed initialState, use that.
@@ -1007,7 +1009,7 @@ class Iframe extends Component {
         try {
           if (this.reduxHistory.length) {
             // Evaluate user code.
-            this.evalCode({ ...state, shadows })
+            this.evalCode()
 
             // Create the store with the first item in reduxHistory as initial state.
             // Save that state to alteredStates.
