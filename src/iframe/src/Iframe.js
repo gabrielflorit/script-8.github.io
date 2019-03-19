@@ -5,6 +5,7 @@ import * as Tone from 'tone'
 import { interval } from 'd3-timer'
 import { createStore, applyMiddleware } from 'redux'
 import _ from 'lodash'
+import sum from 'lodash/sum'
 import range from 'lodash/range'
 import flatten from 'lodash/flatten'
 import random from 'lodash/random'
@@ -169,7 +170,7 @@ class Iframe extends Component {
 
     this.timer = null
     this.previousElapsed = 0
-    this.fpsValues = []
+    this.pastFpsValues = []
 
     this.volumeNode = new Tone.Volume()
 
@@ -748,32 +749,41 @@ class Iframe extends Component {
 
   // Start the timer that calls update and draw every tick.
   startTimer() {
+    // Create a function that d3.interval calls every tick.
     const timerCallback = elapsed => {
+      // Wrap it in try/catch, since the reducer may throw errors.
       try {
-        // Calculate the actual FPS,
+        // Calculate the actual FPS by looking at the difference
+        // between now and the last time the tick was called.
         const tickLength = elapsed - this.previousElapsed
         const fps = Math.round(1000 / tickLength)
 
-        // add fps to array,
-        this.fpsValues.push(fps)
+        // Save this fps.
+        this.pastFpsValues.push(fps)
 
-        // and update fps stats once per second.
+        // Every 60 ticks,
+        // calculate the average FPS for those 60 ticks,
+        // and clear out the pastFpsValues array.
         let newFps
-        if (this.fpsValues.length % 60 === 0) {
-          const avg =
-            this.fpsValues.reduce((acc, current) => acc + current) /
-            this.fpsValues.length
-          newFps = Math.round(avg)
+        if (this.pastFpsValues.length > 60) {
+          newFps = Math.round(
+            sum(this.pastFpsValues) / this.pastFpsValues.length
+          )
+          this.pastFpsValues = []
         }
 
-        // Save current elapsed.
+        // Save current elapsed so we can use it next tick to calculate FPS.
         this.previousElapsed = elapsed
 
-        // Update the redux store.
+        // Get the user input (keys pressed / released, mouse down / up).
         const userInput = getUserInput(this.keys)
+
+        // If we're running in embed mode,
         if (this.isEmbed) {
+          // call window.update with the `embedState`.
           window.update(window._script8.embedState, userInput, tickLength)
         } else {
+          // Otherwise update the redux store with the user input and tick length.
           this.store.dispatch({
             type: 'TICK',
             input: userInput,
@@ -792,15 +802,21 @@ class Iframe extends Component {
             fps: newFps
           })
         }
+
+        // If we got to this point, send a null error to parent.
         this.sendErrorToParent({ type: 'startTimer' })
       } catch (e) {
+        // Error! Send it to parent.
         this.sendErrorToParent({ type: 'startTimer', error: e })
       }
     }
+    // If the timer exists, make sure to stop it first.
     if (this.timer) {
       this.timer.stop()
     }
+    // Clear out previousElapsed before we start the timer.
     this.previousElapsed = 0
+    // Start the timer at our desired FPS rate.
     this.timer = interval(timerCallback, 1000 / FPS)
   }
 
