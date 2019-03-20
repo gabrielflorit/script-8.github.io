@@ -312,7 +312,7 @@ class Output extends Component {
 
   render() {
     const { errors, log } = this.state
-    const { run, tutorial, game } = this.props
+    const { run, tutorial, game, iframeVersion } = this.props
     const gameTitle = getGameTitle(game)
     document.title = [gameTitle, 'SCRIPT-8'].filter(d => d).join(' - ')
 
