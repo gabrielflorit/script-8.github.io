@@ -187,6 +187,7 @@ export const fetchToken = code => dispatch => {
 }
 
 export const saveGist = ({
+  iframeVersion,
   toBlank,
   game,
   token,
@@ -209,6 +210,10 @@ export const saveGist = ({
   const preparePayload = id => {
     const link = createLink(id)
     const README = `This is a [SCRIPT-8](https://script-8.github.io) cassette.${link}`
+
+    const miscJson = {
+      iframeVersion
+    }
 
     let payload = {
       public: true,
@@ -244,15 +249,7 @@ export const saveGist = ({
       payload.files['code.js'] = {
         content: assembledGame
       }
-      payload.files['misc.json'] = {
-        content: JSON.stringify(
-          {
-            lines: assembleMiscLines(game)
-          },
-          null,
-          2
-        )
-      }
+      miscJson.lines = assembleMiscLines(game)
     } else {
       // So the game has no length.
       // But if the previous gist had game,
@@ -260,6 +257,10 @@ export const saveGist = ({
       if (assembledGistGame.length) {
         payload.files['code.js'] = null
       }
+    }
+
+    payload.files['misc.json'] = {
+      content: JSON.stringify(miscJson, null, 2)
     }
 
     return payload

@@ -14,11 +14,11 @@ import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
-import { version } from '../iframe/package.json'
 import getGameTitle from '../utils/getGameTitle'
 import gameLineToTabLine from '../iframe/src/utils/gameLineToTabLine.js'
 
 const mapStateToProps = ({
+  iframeVersion,
   screen,
   game,
   songs,
@@ -31,6 +31,7 @@ const mapStateToProps = ({
   token,
   tutorial
 }) => ({
+  iframeVersion,
   songs,
   chains,
   phrases,
@@ -50,9 +51,20 @@ const mapDispatchToProps = dispatch => ({
   setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   finishBoot: () => dispatch(actions.finishBoot()),
-  saveGist: ({ game, token, gist, sprites, map, phrases, chains, songs }) =>
+  saveGist: ({
+    iframeVersion,
+    game,
+    token,
+    gist,
+    sprites,
+    map,
+    phrases,
+    chains,
+    songs
+  }) =>
     dispatch(
       saveGist({
+        iframeVersion,
         game,
         token,
         gist,
@@ -148,6 +160,7 @@ class Output extends Component {
     if (this.isLoaded) {
       if (
         JSON.stringify([
+          prevProps.iframeVersion,
           prevProps.game,
           prevProps.finishBoot,
           prevProps.run,
@@ -164,6 +177,7 @@ class Output extends Component {
           prevProps.token
         ]) !==
         JSON.stringify([
+          this.props.iframeVersion,
           this.props.game,
           this.props.finishBoot,
           this.props.run,
@@ -307,7 +321,7 @@ class Output extends Component {
     const iframeUrl =
       process.env.NODE_ENV !== 'production'
         ? process.env.REACT_APP_IFRAME_URL
-        : `${process.env.REACT_APP_IFRAME_URL}/iframe-v${version}.html`
+        : `${process.env.REACT_APP_IFRAME_URL}/iframe-v${iframeVersion}.html`
 
     return (
       <div

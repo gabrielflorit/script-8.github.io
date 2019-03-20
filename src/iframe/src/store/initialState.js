@@ -1,8 +1,10 @@
 import screenTypes from '../utils/screenTypes.js'
 import blank from '../blank.js'
+import { version } from '../../package.json'
 
 // TODO: why do we have to make game keys?
 const initialState = {
+  iframeVersion: version,
   errorLine: null,
   screen: screenTypes.BOOT,
   // screen: screenTypes.CODE,

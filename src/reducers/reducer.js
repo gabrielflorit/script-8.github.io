@@ -17,8 +17,10 @@ import docHistories from './docHistories.js'
 import dismissedNotices from './dismissedNotices.js'
 import selectedUi from './selectedUi.js'
 import errorLine from './errorLine.js'
+import iframeVersion from './iframeVersion.js'
 
 const reducer = combineReducers({
+  iframeVersion,
   errorLine,
   screen,
   gist,
