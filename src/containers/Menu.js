@@ -36,6 +36,7 @@ const downloadHtml = html => {
 }
 
 const mapStateToProps = ({
+  iframeVersion,
   gist,
   game,
   sprites,
@@ -49,6 +50,7 @@ const mapStateToProps = ({
   nextAction,
   sound
 }) => ({
+  iframeVersion,
   screen,
   gist,
   game,
@@ -75,6 +77,7 @@ const mapDispatchToProps = dispatch => ({
       putOnShelf({ user, gist, cover, title, isFork, isPrivate, token })
     ),
   saveGist: ({
+    iframeVersion,
     game,
     token,
     gist,
@@ -87,6 +90,7 @@ const mapDispatchToProps = dispatch => ({
   }) =>
     dispatch(
       saveGist({
+        iframeVersion,
         game,
         token,
         gist,
@@ -339,6 +343,7 @@ class Menu extends Component {
 
   record(toBlank) {
     const {
+      iframeVersion,
       token,
       game,
       saveGist,
@@ -350,6 +355,7 @@ class Menu extends Component {
       songs
     } = this.props
     saveGist({
+      iframeVersion,
       token,
       game,
       sprites,
