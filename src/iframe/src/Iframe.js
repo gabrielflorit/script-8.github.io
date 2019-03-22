@@ -1,6 +1,5 @@
 /*
   TODO:
-  - make rewind work
   - make it work in embed
  */
 

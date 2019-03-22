@@ -4,7 +4,13 @@ const createReducer = logger => {
       case 'INIT': {
         let newState
         try {
-          newState = window.init ? window.init() || {} : {}
+          // This approach mutates state.
+          newState = JSON.parse(JSON.stringify(state))
+          window.init(newState)
+
+          // This approach does not mutate state.
+          // newState = window.init() || {}
+
           if (newState.actors) {
             // Find actors with no id.
             const namelessActors = newState.actors.filter(actor => !actor.id)
@@ -23,9 +29,13 @@ const createReducer = logger => {
       case 'UPDATE': {
         let newState
         try {
-          newState = window.update
-            ? window.update(state, action.input, action.elapsed) || {}
-            : {}
+          // This approach mutates state.
+          newState = JSON.parse(JSON.stringify(state))
+          window.update(newState, action.input, action.elapsed)
+
+          // This approach does not mutate state.
+          // newState = window.update(state, action.input, action.elapsed) || {}
+
           if (newState.actors) {
             // Find actors with no id.
             const namelessActors = newState.actors.filter(actor => !actor.id)
