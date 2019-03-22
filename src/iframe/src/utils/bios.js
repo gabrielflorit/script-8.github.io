@@ -18,11 +18,11 @@ const biosLines = range(18).map(() => {
   )
 })
 
-initialState = {
+init = () => ({
   counter: 0,
   totalElapsed: 0,
   modeIndex: 0
-}
+})
 
 update = (state, input, elapsed) => {
   const mode = modes[state.modeIndex]
@@ -51,6 +51,8 @@ update = (state, input, elapsed) => {
       _script8.end()
     }
   }
+
+  return JSON.parse(JSON.stringify(state))
 }
 
 draw = state => {

@@ -1,9 +1,9 @@
 /*
   TODO:
-  - make it work in embed
-  - make rewind work
   - make bios work
   - make bios / isdonefetching work
+  - make rewind work
+  - make it work in embed
  */
 
 import React, { Component } from 'react'
@@ -75,7 +75,7 @@ window.draw = null
 // to prevent the user from using them.
 window._script8 = {
   embedState: {},
-  reservedTokens: new Set()
+  reservedTokens: new Set(['init', 'update', 'drawActors', 'draw'])
 }
 
 // Convenience function.
@@ -341,6 +341,10 @@ class Iframe extends Component {
       const errorData = {
         message: error.message,
         position: getEvaledErrorPosition(error)
+      }
+
+      if (errorData.message.startsWith('enhancer(...) is not a function')) {
+        errorData.message = 'The init or update functions are invalid.'
       }
 
       // and it is different than the previous one,
@@ -683,12 +687,10 @@ class Iframe extends Component {
         // define the following end function, which we can only call once:
         window._script8.end = once(() => {
           // when the user calls this (which should only happen once, in bios),
-          // TODO: why do we set state?
-          // TODO: why do we set started = true?
-          // perhaps something to do with bios, and fetching being done so we
-          // can show the cassette?
           this.setState({
+            // assemble the game code,
             game: assembleOrderedGame(parseGistGame(this.gist)),
+            // and let us know we can show the play/pause buttons.
             started: true
           })
           // If Tone.js is not running,
@@ -884,296 +886,306 @@ class Iframe extends Component {
       run
     } = state
 
-    // If the sprites or map have changed, update the globals.
-    if (!equal(sprites, prevState.sprites) || !equal(map, prevState.map)) {
-      this.updateGlobals()
-    }
+    try {
+      // If the sprites or map have changed, update the globals.
+      if (!equal(sprites, prevState.sprites) || !equal(map, prevState.map)) {
+        this.updateGlobals()
+      }
 
-    // If soundon/soundoff has changed,
-    // toggle volume.
-    // Also resume AudioContext IF it's not running.
-    if (!equal(sound, prevState.sound)) {
-      Tone.Master.mute = !sound
-    }
+      // If soundon/soundoff has changed,
+      // toggle volume.
+      // Also resume AudioContext IF it's not running.
+      if (!equal(sound, prevState.sound)) {
+        Tone.Master.mute = !sound
+      }
 
-    // If the music data changed,
-    if (
-      !equal(songs, prevState.songs) ||
-      !equal(chains, prevState.chains) ||
-      !equal(phrases, prevState.phrases)
-    ) {
-      // make sequences,
-      this.soundFunctions.makeSongs({
-        songs,
-        chains,
-        phrases
-      })
-      // and restart game.
-      this.handleRestartClick()
-    }
+      // If the music data changed,
+      if (
+        !equal(songs, prevState.songs) ||
+        !equal(chains, prevState.chains) ||
+        !equal(phrases, prevState.phrases)
+      ) {
+        // make sequences,
+        this.soundFunctions.makeSongs({
+          songs,
+          chains,
+          phrases
+        })
+        // and restart game.
+        this.handleRestartClick()
+      }
 
-    // If we are not on a run screen,
-    if (!run) {
-      // mute the volume node.
-      this.volumeNode.mute = true
-    } else {
-      // If we are on the run screen,
-      // unmute the volume node.
-      this.volumeNode.mute = false
-    }
-
-    // If we're playing, check for two overall scenarios:
-    if (!isPaused) {
-      // 1 - We're embedded.
-      if (this.isEmbed) {
-        // Then, if the game is different,
-        // or the initialState has changed,
-        if (
-          game !== prevState.game ||
-          window._script8.embedState === 'SCRIPT-8-RESTART'
-        ) {
-          // evaluate user code,
-          this.evalCode()
-          // and run init.
-          window._script8.embedState = window.init() || {}
-        }
+      // If we are not on a run screen,
+      if (!run) {
+        // mute the volume node.
+        this.volumeNode.mute = true
       } else {
-        // 2 - We're not embedded.
-        // Then, if we came back from being paused,
-        // or the game is different,
-        // or the run mode was different,
-        // or init has changed,
-        if (
-          prevState.isPaused ||
-          game !== prevState.game ||
-          run !== prevState.run ||
-          !equal(
-            window.init ? window.init.toString() : null,
-            this.previousInitString
-          )
-        ) {
-          // evaluate user code,
-          // get redux state,
-          // and create redux store.
+        // If we are on the run screen,
+        // unmute the volume node.
+        this.volumeNode.mute = false
+      }
 
-          // Evaluate user code.
-          this.evalCode()
-
-          // Before we create a redux store, let's think about what state we want.
-          // If the user has changed init, use that.
-          // This way we let the user start over when they modify init.
-          // This is an escape hatch of sorts.
-          // Otherwise use the current store state. This will enable us to modify game
-          // code and not lose game state.
+      // If we're playing, check for two overall scenarios:
+      if (!isPaused) {
+        // 1 - We're embedded.
+        if (this.isEmbed) {
+          // Then, if the game is different,
+          // or the initialState has changed,
           if (
+            game !== prevState.game ||
+            window._script8.embedState === 'SCRIPT-8-RESTART'
+          ) {
+            // evaluate user code,
+            this.evalCode()
+            // and run init.
+            window._script8.embedState = window.init() || {}
+          }
+        } else {
+          // 2 - We're not embedded.
+          // Then, if we came back from being paused,
+          // or the game is different,
+          // or the run mode was different,
+          // or init has changed,
+          if (
+            prevState.isPaused ||
+            game !== prevState.game ||
+            run !== prevState.run ||
             !equal(
               window.init ? window.init.toString() : null,
               this.previousInitString
             )
           ) {
-            // If init has changed, first create the store,
-            this.store = createStore(
-              this.reducer,
-              {},
-              applyMiddleware(this.reduxLogger)
-            )
-            // initialize the game,
-            this.store.dispatch({
-              type: 'INIT'
-            })
-            // and clear out the redux history.
-            this.reduxHistory = []
-          } else {
-            // If init hasn't changed, get the store state,
-            const storeState = (this.store && this.store.getState()) || {}
-            // and create a new store with this state.
-            this.store = createStore(
-              this.reducer,
-              storeState,
-              applyMiddleware(this.reduxLogger)
-            )
-          }
-        }
-      }
-    } else {
-      // If we're not playing,
-      // we can have several different kinds of inputs:
-      // - game has changed
-      // - sprites have changed
-      // - timelineIndex has changed
-      // - selectedActors has changed
-      // Stop the timer (ONLY when pause was clicked).
-      // Evaluate user code (ONLY when game has changed).
-      // Create array of alteredStates (ONLY when game has changed).
-      // Populated list of actor buttons (ONLY when game has changed).
-      // Set timeline length to alteredStates' length (ONLY when pause was clicked).
-      // Set timeline index to max (ONLY when pause was clicked).
-      // Draw the last state, and draw selected actors (highlight timeline index actors).
+            // evaluate user code,
+            // get redux state,
+            // and create redux store.
 
-      // If we're paused,
-      // and either game, timelineIndex, or selectedActors is different:
-      if (
-        !equal(isPaused, prevState.isPaused) ||
-        !equal(game, prevState.game) ||
-        !equal(sprites, prevState.sprites) ||
-        !equal(map, prevState.map) ||
-        !equal(timelineIndex, prevState.timelineIndex) ||
-        !equal(selectedActors, prevState.selectedActors)
-      ) {
-        try {
-          if (this.reduxHistory.length) {
             // Evaluate user code.
             this.evalCode()
 
-            // Create the store with the first item in reduxHistory as initial state.
-            // Save that state to alteredStates.
-            // Then, for all next actions in the history, dispatch the action,
-            // and save resulting state to alteredStates.
-            let alteredStates = []
-            this.store = createStore(this.reducer, this.reduxHistory[0].state)
-            alteredStates.push(this.store.getState())
-
-            this.reduxHistory.forEach(({ state, action }, i) => {
-              if (i === timelineIndex - 1) {
-                // Enable logging only if this is the selected frame.
-                this.updateGlobals({ log: this.sendLogToParent })
-              } else {
-                this.updateGlobals({ log: NOOP })
-              }
-              this.store.dispatch(action)
-              alteredStates.push(this.store.getState())
-            })
-
-            // Re-enable logging.
-            this.updateGlobals({ log: this.sendLogToParent })
-
-            alteredStates = alteredStates.filter(d => !isEmpty(d))
-
-            // If we were previously in pause mode,
-            // use the provided timelineIndex.
-            // Otherwise,
-            // set the timeline to the max.
-            const newTimelineIndex = prevState.isPaused
-              ? timelineIndex
-              : alteredStates.length - 1
-
-            // Draw the timeline index state.
-            const stateToDraw = alteredStates[newTimelineIndex]
-            this.drawUserGraphics(stateToDraw)
-
-            // Get all unique actors.
-            const allActors = flatten(
-              alteredStates.map(state => state.actors)
-            ).filter(d => d)
-            const actors = uniqBy(allActors, d => d.id)
-
-            // For each altered state, minus the timeLineIndex one,
-            // draw the actors, if they're selected, faded.
-            alteredStates.forEach((state, i) => {
-              if (
-                (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
-                i === alteredStates.length - 1
-              ) {
-                const matchingActors =
-                  (state.actors &&
-                    state.actors.filter(d => selectedActors.includes(d.id))) ||
-                  []
-                // Disable logging during window.draw calls.
-                this.updateGlobals({ log: NOOP })
-                window.drawActors &&
-                  window.drawActors({ actors: matchingActors }, true)
-                // Re-enable console.log.
-                this.updateGlobals({ log: this.sendLogToParent })
-              }
-            })
-
-            // Draw the timeLineIndex one last, not faded.
-            const lastAlteredState = alteredStates[newTimelineIndex]
+            // Before we create a redux store, let's think about what state we want.
+            // If the user has changed init, use that.
+            // This way we let the user start over when they modify init.
+            // This is an escape hatch of sorts.
+            // Otherwise use the current store state. This will enable us to modify game
+            // code and not lose game state.
             if (
-              window.drawActors &&
-              lastAlteredState &&
-              lastAlteredState.actors
+              !equal(
+                window.init ? window.init.toString() : null,
+                this.previousInitString
+              )
             ) {
-              window.drawActors({
-                actors: lastAlteredState.actors.filter(d =>
-                  selectedActors.includes(d.id)
-                )
+              // If init has changed, first create the store,
+              this.store = createStore(
+                this.reducer,
+                {},
+                applyMiddleware(this.reduxLogger)
+              )
+              // initialize the game,
+              this.store.dispatch({
+                type: 'INIT'
               })
+              // and clear out the redux history.
+              this.reduxHistory = []
+            } else {
+              // If init hasn't changed, get the store state,
+              const storeState = (this.store && this.store.getState()) || {}
+              // and create a new store with this state.
+              this.store = createStore(
+                this.reducer,
+                storeState,
+                applyMiddleware(this.reduxLogger)
+              )
             }
-
-            // If we're using the framebuffer renderer,
-            // draw it to canvas right now.
-            if (this.useFrameBufferRenderer) {
-              this.writePixelDataToCanvas()
-            }
-
-            // Finally, set the store to point to the timeLineIndex altered state,
-            // so that when we hit play, we can resume right from this point.
-            this.store = createStore(this.reducer, stateToDraw)
-
-            this.setState({
-              alteredStates,
-              actors,
-              timelineIndex: newTimelineIndex
-            })
           }
-          this.sendErrorToParent({ type: 'isPaused' })
-        } catch (e) {
-          this.sendErrorToParent({ type: 'isPaused', error: e })
         }
       } else {
-        // If the ul buttons don't have any canvases, add them!
-        const buttons = [...this._ul.querySelectorAll('button')]
-        const canvases = [...this._ul.querySelectorAll('canvas')]
+        // If we're not playing,
+        // we can have several different kinds of inputs:
+        // - game has changed
+        // - sprites have changed
+        // - timelineIndex has changed
+        // - selectedActors has changed
+        // Stop the timer (ONLY when pause was clicked).
+        // Evaluate user code (ONLY when game has changed).
+        // Create array of alteredStates (ONLY when game has changed).
+        // Populated list of actor buttons (ONLY when game has changed).
+        // Set timeline length to alteredStates' length (ONLY when pause was clicked).
+        // Set timeline index to max (ONLY when pause was clicked).
+        // Draw the last state, and draw selected actors (highlight timeline index actors).
 
-        if (buttons.length !== canvases.length) {
-          let tempCtx = this._canvas.getContext('2d')
-          actors.forEach((actor, i) => {
-            // If we're using the framebuffer renderer,
-            // fill the buffer with 0.
-            if (this.useFrameBufferRenderer) {
-              this._pixelIntegers.fill(0)
-            } else {
-              // Otherwise reset the context.
-              tempCtx.save()
-              tempCtx.setTransform(1, 0, 0, 1, 0, 0)
-              tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
-            }
+        // If we're paused,
+        // and either game, timelineIndex, or selectedActors is different:
+        if (
+          !equal(isPaused, prevState.isPaused) ||
+          !equal(game, prevState.game) ||
+          !equal(sprites, prevState.sprites) ||
+          !equal(map, prevState.map) ||
+          !equal(timelineIndex, prevState.timelineIndex) ||
+          !equal(selectedActors, prevState.selectedActors)
+        ) {
+          try {
+            if (this.reduxHistory.length) {
+              // Evaluate user code.
+              this.evalCode()
 
-            // Draw this actor on the center of the screen.
-            window.drawActors({
-              actors: [
-                {
-                  ...actor,
-                  x: 64,
-                  y: 64
+              // Create the store with the first item in reduxHistory as initial state.
+              // Save that state to alteredStates.
+              // Then, for all next actions in the history, dispatch the action,
+              // and save resulting state to alteredStates.
+              let alteredStates = []
+              this.store = createStore(this.reducer, this.reduxHistory[0].state)
+              alteredStates.push(this.store.getState())
+
+              this.reduxHistory.forEach(({ state, action }, i) => {
+                if (i === timelineIndex - 1) {
+                  // Enable logging only if this is the selected frame.
+                  this.updateGlobals({ log: this.sendLogToParent })
+                } else {
+                  this.updateGlobals({ log: NOOP })
                 }
-              ]
-            })
+                this.store.dispatch(action)
 
-            // If we're using the framebuffer renderer,
-            // draw it to canvas right now.
-            if (this.useFrameBufferRenderer) {
-              this.writePixelDataToCanvas()
+                alteredStates.push(this.store.getState())
+              })
+
+              // Re-enable logging.
+              this.updateGlobals({ log: this.sendLogToParent })
+
+              alteredStates = alteredStates.filter(d => !isEmpty(d))
+
+              // If we were previously in pause mode,
+              // use the provided timelineIndex.
+              // Otherwise,
+              // set the timeline to the max.
+              const newTimelineIndex = prevState.isPaused
+                ? timelineIndex
+                : alteredStates.length - 1
+
+              // Draw the timeline index state.
+              const stateToDraw = alteredStates[newTimelineIndex]
+              this.drawUserGraphics(stateToDraw)
+
+              // Get all unique actors.
+              const allActors = flatten(
+                alteredStates.map(state => state.actors)
+              ).filter(d => d)
+              const actors = uniqBy(allActors, d => d.id)
+
+              // For each altered state, minus the timeLineIndex one,
+              // draw the actors, if they're selected, faded.
+              alteredStates.forEach((state, i) => {
+                if (
+                  (i !== newTimelineIndex && i % ACTOR_FRAME_SKIP === 0) ||
+                  i === alteredStates.length - 1
+                ) {
+                  const matchingActors =
+                    (state.actors &&
+                      state.actors.filter(d =>
+                        selectedActors.includes(d.id)
+                      )) ||
+                    []
+                  // Disable logging during window.draw calls.
+                  this.updateGlobals({ log: NOOP })
+                  window.drawActors &&
+                    window.drawActors({ actors: matchingActors }, true)
+                  // Re-enable console.log.
+                  this.updateGlobals({ log: this.sendLogToParent })
+                }
+              })
+
+              // Draw the timeLineIndex one last, not faded.
+              const lastAlteredState = alteredStates[newTimelineIndex]
+              if (
+                window.drawActors &&
+                lastAlteredState &&
+                lastAlteredState.actors
+              ) {
+                window.drawActors({
+                  actors: lastAlteredState.actors.filter(d =>
+                    selectedActors.includes(d.id)
+                  )
+                })
+              }
+
+              // If we're using the framebuffer renderer,
+              // draw it to canvas right now.
+              if (this.useFrameBufferRenderer) {
+                this.writePixelDataToCanvas()
+              }
+
+              // Finally, set the store to point to the timeLineIndex altered state,
+              // so that when we hit play, we can resume right from this point.
+              this.store = createStore(this.reducer, stateToDraw)
+
+              this.setState({
+                alteredStates,
+                actors,
+                timelineIndex: newTimelineIndex
+              })
             }
+            this.sendErrorToParent({ type: 'isPaused' })
+          } catch (e) {
+            this.sendErrorToParent({ type: 'isPaused', error: e })
+          }
+        } else {
+          // If the ul buttons don't have any canvases, add them!
+          const buttons = [...this._ul.querySelectorAll('button')]
+          const canvases = [...this._ul.querySelectorAll('canvas')]
 
-            // Get its canvas.
-            const lilCanvas = trimCanvas({
-              ctx: this._canvas.getContext('2d'),
-              width: CANVAS_SIZE,
-              height: CANVAS_SIZE
+          if (buttons.length !== canvases.length) {
+            let tempCtx = this._canvas.getContext('2d')
+            actors.forEach((actor, i) => {
+              // If we're using the framebuffer renderer,
+              // fill the buffer with 0.
+              if (this.useFrameBufferRenderer) {
+                this._pixelIntegers.fill(0)
+              } else {
+                // Otherwise reset the context.
+                tempCtx.save()
+                tempCtx.setTransform(1, 0, 0, 1, 0, 0)
+                tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+              }
+
+              // Draw this actor on the center of the screen.
+              window.drawActors({
+                actors: [
+                  {
+                    ...actor,
+                    x: 64,
+                    y: 64
+                  }
+                ]
+              })
+
+              // If we're using the framebuffer renderer,
+              // draw it to canvas right now.
+              if (this.useFrameBufferRenderer) {
+                this.writePixelDataToCanvas()
+              }
+
+              // Get its canvas.
+              const lilCanvas = trimCanvas({
+                ctx: this._canvas.getContext('2d'),
+                width: CANVAS_SIZE,
+                height: CANVAS_SIZE
+              })
+
+              // and append to button.
+              buttons[i].appendChild(lilCanvas)
             })
 
-            // and append to button.
-            buttons[i].appendChild(lilCanvas)
-          })
-
-          this.drawUserGraphics(this.store.getState())
-          if (!this.useFrameBufferRenderer) {
-            tempCtx.restore()
+            this.drawUserGraphics(this.store.getState())
+            if (!this.useFrameBufferRenderer) {
+              tempCtx.restore()
+            }
           }
         }
       }
+      // If we got to this point, send a null error to parent.
+      this.sendErrorToParent({ type: 'componentDidMount' })
+    } catch (e) {
+      // Error! Send it to parent.
+      this.sendErrorToParent({ type: 'componentDidMount', error: e })
     }
 
     // If we haven't started the timer yet, do so now.

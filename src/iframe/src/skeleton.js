@@ -1,11 +1,9 @@
-export default `init = () => {
-  return {
-  }
-}
+export default `init = () => ({
+})
 
-update = (state, input, elapsed) => {
-  return state
-}
+update = (state, input, elapsed) => ({
+  ...state,
+})
 
 drawActors = (state, fade) =>
   state.actors && state.actors.forEach(actor =>

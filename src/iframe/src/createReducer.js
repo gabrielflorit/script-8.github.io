@@ -4,7 +4,7 @@ const createReducer = logger => {
       case 'INIT': {
         let newState
         try {
-          newState = window.init() || {}
+          newState = window.init ? window.init() || {} : {}
           if (newState.actors) {
             // Find actors with no id.
             const namelessActors = newState.actors.filter(actor => !actor.id)
@@ -23,7 +23,9 @@ const createReducer = logger => {
       case 'UPDATE': {
         let newState
         try {
-          newState = window.update(state, action.input, action.elapsed) || {}
+          newState = window.update
+            ? window.update(state, action.input, action.elapsed) || {}
+            : {}
           if (newState.actors) {
             // Find actors with no id.
             const namelessActors = newState.actors.filter(actor => !actor.id)
