@@ -6,8 +6,8 @@ import { version } from '../../package.json'
 const initialState = {
   iframeVersion: version,
   errorLine: null,
-  screen: screenTypes.BOOT,
-  // screen: screenTypes.CODE,
+  // screen: screenTypes.BOOT,
+  screen: screenTypes.HOME,
   booted: false,
   gist: {},
   game: {

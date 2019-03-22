@@ -1,28 +1,42 @@
 const createReducer = logger => {
-  // Create the reducer, with the script8 state or an empty object.
-  const reducer = (state = window.initialState || {}, action) => {
+  const reducer = (state = {}, action) => {
     switch (action.type) {
-      case 'TICK': {
-        if (window.update) {
-          let newState
-          try {
-            newState = JSON.parse(JSON.stringify(state))
-            window.update(newState, action.input, action.elapsed)
-            if (newState.actors) {
-              // Find actors with no id.
-              const namelessActors = newState.actors.filter(actor => !actor.id)
-              if (namelessActors.length) {
-                throw new Error('Actors must have an id property.')
-              }
+      case 'INIT': {
+        let newState
+        try {
+          newState = window.init() || {}
+          if (newState.actors) {
+            // Find actors with no id.
+            const namelessActors = newState.actors.filter(actor => !actor.id)
+            if (namelessActors.length) {
+              throw new Error('Actors must have an id property.')
             }
-            logger({ type: 'reducerError' })
-          } catch (error) {
-            logger({ type: 'reducerError', error })
-            return state
           }
+          logger({ type: 'reducerError' })
+        } catch (error) {
+          newState = state
+          logger({ type: 'reducerError', error })
+        } finally {
           return newState
-        } else {
-          return state
+        }
+      }
+      case 'UPDATE': {
+        let newState
+        try {
+          newState = window.update(state, action.input, action.elapsed) || {}
+          if (newState.actors) {
+            // Find actors with no id.
+            const namelessActors = newState.actors.filter(actor => !actor.id)
+            if (namelessActors.length) {
+              throw new Error('Actors must have an id property.')
+            }
+          }
+          logger({ type: 'reducerError' })
+        } catch (error) {
+          newState = state
+          logger({ type: 'reducerError', error })
+        } finally {
+          return newState
         }
       }
       default:

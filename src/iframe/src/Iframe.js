@@ -1,3 +1,11 @@
+/*
+  TODO:
+  - make it work in embed
+  - make rewind work
+  - make bios work
+  - make bios / isdonefetching work
+ */
+
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import equal from 'deep-equal'
@@ -40,12 +48,11 @@ import { version } from '../package.json'
 // Get the browser platform.
 const { platform } = window.navigator
 
-// Print the SCRIPT-8 version to the console.
+// Print the SCRIPT-8 iframe version to the console.
 console.log(JSON.stringify(`SCRIPT-8 iframe v ${version}`, null, 2))
 
-// This function takes an object of errors,
-// keyed by type, and converts them to
-// an array of objects with properties { type, data },
+// This function takes an object of errors, keyed by type, and converts them
+// to an array of objects with properties { type, data },
 // filters down to errors that have both type and data,
 // sorts by type,
 // and only keeps those with unique data.
@@ -84,17 +91,15 @@ const REDUX_HISTORY_SECONDS = 2
 // us to adjust the canvas size, but in reality this will never happen.
 const CANVAS_SIZE = 128
 
-// Number of frames to skip when drawing an actor's past.
-// If we were to draw every single frame, we wouldn't be able to
-// distinguish the actor's trail.
+// Number of frames to skip when drawing an actor's past. If we were to draw
+// every single frame, we wouldn't be able to distinguish the actor's trail.
 const ACTOR_FRAME_SKIP = 5
 
 class Iframe extends Component {
   constructor(props) {
     super(props)
 
-    // The following ref-binding functions set up
-    // keyboard listeners.
+    // The following ref-binding functions set up keyboard listeners.
     this.ArrowUpElement = null
     this.setArrowUpRef = e => {
       this.ArrowUpElement = e
@@ -176,7 +181,7 @@ class Iframe extends Component {
 
     this.reducer = createReducer(this.sendErrorToParent)
     this.store = null
-    this.previousInit = null
+    this.previousInitString = null
     this.reduxHistory = []
     this.reduxLogger = store => next => action => {
       // Add this state and action to history,
@@ -352,8 +357,7 @@ class Iframe extends Component {
         }
       }
     } else {
-      // If we don't have an error,
-      // and we had one before,
+      // If we don't have an error, and we had one before,
       if (this.loggerErrors[type]) {
         // update the loggerErrors for this type,
         this.loggerErrors[type] = null
@@ -374,7 +378,7 @@ class Iframe extends Component {
 
   // Print errors to cassette screen.
   printErrorsToCassetteScreen() {
-    // create one string with all the unique error messages.
+    // Create one string with all the unique error messages.
     const errorMessages = getUniqueErrorMessages(this.loggerErrors)
       .map(error => `error: ${error.data.message}`)
       .join('. ')
@@ -681,6 +685,8 @@ class Iframe extends Component {
           // when the user calls this (which should only happen once, in bios),
           // TODO: why do we set state?
           // TODO: why do we set started = true?
+          // perhaps something to do with bios, and fetching being done so we
+          // can show the cassette?
           this.setState({
             game: assembleOrderedGame(parseGistGame(this.gist)),
             started: true
@@ -699,14 +705,11 @@ class Iframe extends Component {
             })
           }
         })
-      // Save previous initial state.
-      // TODO: why?
-      this.previousInitialState = window.initialState
 
-      // TODO: what's this for?
-      const stringThatSetsEmbedStateToInitialState = this.isEmbed
-        ? `_script8.embedState = JSON.parse(JSON.stringify(initialState))`
-        : ''
+      // Save previous init. Why?
+      // Because if it has changed, we take it the user wants to restart
+      // the game. So we will run init again.
+      this.previousInitString = window.init ? window.init.toString() : null
 
       // Get ready to eval the supplied game:
 
@@ -725,13 +728,6 @@ class Iframe extends Component {
       // The inception eval allows the user to declare vars (e.g. screen).
       eval(innerSkeleton)
       eval(game)
-      ${stringThatSetsEmbedStateToInitialState}
-      // TODO: why do we set initialState back to previousInitialState,
-      // after evaling? Doesn't this effectively mean
-      // the evaled initialState never matters?
-      if (initialState && typeof initialState === 'function') {
-        initialState = this.previousInitialState
-      }
     `)
 
       // If we got to this point, send a null error to parent.
@@ -781,12 +777,14 @@ class Iframe extends Component {
 
         // If we're running in embed mode,
         if (this.isEmbed) {
-          // call window.update with the `embedState`.
-          window.update(window._script8.embedState, userInput, tickLength)
+          // update the embed state.
+          window._script8.embedState =
+            window.update(window._script8.embedState, userInput, tickLength) ||
+            {}
         } else {
           // Otherwise update the redux store with the user input and tick length.
           this.store.dispatch({
-            type: 'TICK',
+            type: 'UPDATE',
             input: userInput,
             elapsed: tickLength
           })
@@ -842,13 +840,12 @@ class Iframe extends Component {
   }
 
   handleRestartClick() {
-    // TODO: I think this is done so that initialState
-    // will be different, which means something happens.
-    window.initialState = Date.now()
+    // Make init be something unique. This will force it to be reset.
+    window.init = () => 'SCRIPT-8-RESTART'
+    // If we're embedded, setting embedState to this string will also force a reset.
     window._script8.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
     this.pastFpsValues = []
-    window.resetMap()
     this.forceUpdate()
   }
 
@@ -870,7 +867,7 @@ class Iframe extends Component {
 
   // When the app's UI state has changed,
   componentDidUpdate(prevProps, prevState) {
-    const { state, shadows } = this
+    const { state } = this
     const {
       message,
       isPaused,
@@ -935,20 +932,25 @@ class Iframe extends Component {
           game !== prevState.game ||
           window._script8.embedState === 'SCRIPT-8-RESTART'
         ) {
-          // evaluate user code.
+          // evaluate user code,
           this.evalCode()
+          // and run init.
+          window._script8.embedState = window.init() || {}
         }
       } else {
         // 2 - We're not embedded.
         // Then, if we came back from being paused,
         // or the game is different,
         // or the run mode was different,
-        // or the initialState has changed,
+        // or init has changed,
         if (
           prevState.isPaused ||
           game !== prevState.game ||
           run !== prevState.run ||
-          !equal(window.initialState, this.previousInitialState)
+          !equal(
+            window.init ? window.init.toString() : null,
+            this.previousInitString
+          )
         ) {
           // evaluate user code,
           // get redux state,
@@ -958,27 +960,39 @@ class Iframe extends Component {
           this.evalCode()
 
           // Before we create a redux store, let's think about what state we want.
-          // If the user has changed initialState, use that.
-          // This way we let the user start over when they modify initialState.
+          // If the user has changed init, use that.
+          // This way we let the user start over when they modify init.
           // This is an escape hatch of sorts.
           // Otherwise use the current store state. This will enable us to modify game
           // code and not lose game state.
-          let storeState
-          if (!equal(window.initialState, this.previousInitialState)) {
-            // TODO: shouldn't we resetMap here?
-            storeState = window.initialState
+          if (
+            !equal(
+              window.init ? window.init.toString() : null,
+              this.previousInitString
+            )
+          ) {
+            // If init has changed, first create the store,
+            this.store = createStore(
+              this.reducer,
+              {},
+              applyMiddleware(this.reduxLogger)
+            )
+            // initialize the game,
+            this.store.dispatch({
+              type: 'INIT'
+            })
+            // and clear out the redux history.
             this.reduxHistory = []
           } else {
-            storeState = (this.store && this.store.getState()) || {}
+            // If init hasn't changed, get the store state,
+            const storeState = (this.store && this.store.getState()) || {}
+            // and create a new store with this state.
+            this.store = createStore(
+              this.reducer,
+              storeState,
+              applyMiddleware(this.reduxLogger)
+            )
           }
-          // Now we can create the store.
-          // Notice that we'll pass in reduxLogger as middleware.
-          // This enables us to save each action. We'll need them for the time debugger.
-          this.store = createStore(
-            this.reducer,
-            storeState || undefined,
-            applyMiddleware(this.reduxLogger)
-          )
         }
       }
     } else {

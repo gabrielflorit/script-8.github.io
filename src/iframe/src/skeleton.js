@@ -1,8 +1,10 @@
-export default `
-init = state => {
+export default `init = () => {
+  return {
+  }
 }
 
 update = (state, input, elapsed) => {
+  return state
 }
 
 drawActors = (state, fade) =>
