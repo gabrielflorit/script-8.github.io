@@ -1,7 +1,5 @@
 /*
   TODO:
-  - make bios work
-  - make bios / isdonefetching work
   - make rewind work
   - make it work in embed
  */
@@ -843,7 +841,7 @@ class Iframe extends Component {
 
   handleRestartClick() {
     // Make init be something unique. This will force it to be reset.
-    window.init = () => 'SCRIPT-8-RESTART'
+    window.init = Date.now()
     // If we're embedded, setting embedState to this string will also force a reset.
     window._script8.embedState = 'SCRIPT-8-RESTART'
     this.reduxHistory = []
