@@ -348,11 +348,19 @@ class Output extends Component {
               <div className="log">log: {JSON.stringify(log)}</div>
             ) : null}
             <ul className="errors">
-              {errors.map(({ type, data: { message, position } }) => (
-                <li key={type} onClick={() => this.handleClickError(position)}>
-                  > error: {message}
-                </li>
-              ))}
+              {errors.map(({ type, data: { message, position } }) =>
+                position ? (
+                  <li
+                    className="clickable"
+                    key={type}
+                    onClick={() => this.handleClickError(position)}
+                  >
+                    > error: {message}
+                  </li>
+                ) : (
+                  <li key={type}>error: {message}</li>
+                )
+              )}
             </ul>
             <div className="stats">TOKENS: {tokenCount}</div>
           </div>

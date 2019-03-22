@@ -37,11 +37,14 @@
     text-transform uppercase
     font-size $font-medium
     overflow hidden
-    .log, .errors
+    .log
+      color $palette-1
+    .errors > li
+      color $palette-2
+    .errors > li.clickable
       color $palette-1
       :hover
         color $palette-0
+      cursor pointer
     .stats
       color $palette-4
-    .errors > li
-      cursor pointer
