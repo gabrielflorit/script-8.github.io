@@ -2,7 +2,7 @@ import thunkMiddleware from 'redux-thunk'
 import { createStore, applyMiddleware, compose } from 'redux'
 import reducer from '../reducers/reducer.js'
 import { loadState, saveState } from './localStorage.js'
-import setupSocket from './setupSocket.js'
+// import setupSocket from './setupSocket.js'
 
 const persistedState = loadState()
 
@@ -14,9 +14,9 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunkMiddleware))
 )
 
-if (process.env.NODE_ENV !== 'production') {
-  setupSocket(store.dispatch)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   setupSocket(store.dispatch)
+// }
 
 store.subscribe(() => {
   saveState({
