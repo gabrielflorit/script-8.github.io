@@ -1,8 +1,5 @@
 /*
   TODO:
-  - #4 add a notice
-  - DEPLOY
-  - #5 add UPGRADE button
   - #6 upgrade all my creations
  */
 

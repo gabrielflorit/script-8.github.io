@@ -1,18 +1,14 @@
--
-  - What is SCRIPT-8's resolution?
+- - What is SCRIPT-8's resolution?
   - 128 pixels by 128 pixels.
--
-  - How do I use colors?
-  - "There are 8 colors, from 0 (brightest) to 7 (darkest). But they wrap around: 8 is 0 is 16, etc."
--
-  - What is the frame rate?
-  - "SCRIPT-8 tries to draw at 60fps, or a new frame every 16.6ms. This might vary due to many factors: device capabilities, game code, battery status, etc."
--
-  - How do I use the slider?
+- - How do I use colors?
+  - 'There are 8 colors, from 0 (brightest) to 7 (darkest). But they wrap around: 8 is 0 is 16, etc.'
+- - What is the frame rate?
+  - 'SCRIPT-8 tries to draw at 60fps, or a new frame every 16.6ms. This might vary due to many factors: device capabilities, game code, battery status, etc.'
+- - How do I use the slider?
   - In CODE, click on a number. Hold the Shift key (or Command, if you're on a Mac) and move the slider.
--
-  - How do I display my cassette's title in SHELF?
-  - "In CODE, set the first line as `// title: My Title`. Once you put the cassette on SHELF, your title will show up."
--
-  - How do I copy someone else's cassette to my own cassette?
+- - How do I display my cassette's title in SHELF?
+  - 'In CODE, set the first line as `// title: My Title`. Once you put the cassette on SHELF, your title will show up.'
+- - How do I copy someone else's cassette to my own cassette?
   - Load the cassette (go to the URL). Then mouse over CASSETTE and click RECORD TO BLANK. The other person's cassette has now been copied to your own cassette. The URL has changed. Your changes here won't affect the original cassette. This is a great way to learn.
+- - How do I make my existing cassette work with `init`?
+  - You can UPDATE a cassette to the latest SCRIPT-8 API by mousing over CASSETTE and then choosing UPDATE API. You cannot revert this change.

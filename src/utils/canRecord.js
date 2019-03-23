@@ -9,7 +9,8 @@ const canRecord = ({
   map,
   phrases,
   chains,
-  songs
+  songs,
+  iframeVersion
 }) => {
   const dirty = isDirty({
     gist,
@@ -18,7 +19,8 @@ const canRecord = ({
     map,
     phrases,
     chains,
-    songs
+    songs,
+    iframeVersion
   })
 
   // If gistLogin is null, gist was created anonymously.

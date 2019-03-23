@@ -66,6 +66,7 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  updateIframeVersion: () => dispatch(actions.updateIframeVersion()),
   clearToken: () => dispatch(actions.clearToken()),
   setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   toggleSound: () => dispatch(actions.toggleSound()),
@@ -117,6 +118,7 @@ class Menu extends Component {
     this.onPutOnShelfClick = this.onPutOnShelfClick.bind(this)
     this.record = this.record.bind(this)
     this.onClose = this.onClose.bind(this)
+    this.onUpdateIframeVersion = this.onUpdateIframeVersion.bind(this)
     window.script8.handleCode = props.fetchToken
 
     window.addEventListener('beforeunload', this.onClose)
@@ -193,6 +195,16 @@ class Menu extends Component {
     window.removeEventListener('keydown', this.keydown)
   }
 
+  onUpdateIframeVersion() {
+    if (
+      window.confirm(
+        'Do you really want to update to the latest SCRIPT-8 API? This change cannot be reverted.'
+      )
+    ) {
+      this.props.updateIframeVersion()
+    }
+  }
+
   onExport() {
     const { gist, game } = this.props
     const title = getGameTitle(game).toUpperCase()
@@ -221,7 +233,16 @@ class Menu extends Component {
   }
 
   onClose(e) {
-    const { gist, game, sprites, map, phrases, chains, songs } = this.props
+    const {
+      gist,
+      game,
+      sprites,
+      map,
+      phrases,
+      chains,
+      songs,
+      iframeVersion
+    } = this.props
     const dirty = isDirty({
       gist,
       game,
@@ -229,7 +250,8 @@ class Menu extends Component {
       map,
       phrases,
       chains,
-      songs
+      songs,
+      iframeVersion
     })
     if (dirty) {
       const message = 'Leave site? Changes you made may not be saved.'
@@ -256,7 +278,16 @@ class Menu extends Component {
   }
 
   onInsertBlankClick() {
-    const { gist, game, sprites, map, phrases, chains, songs } = this.props
+    const {
+      gist,
+      game,
+      sprites,
+      map,
+      phrases,
+      chains,
+      songs,
+      iframeVersion
+    } = this.props
 
     const dirty = isDirty({
       gist,
@@ -265,7 +296,8 @@ class Menu extends Component {
       map,
       phrases,
       chains,
-      songs
+      songs,
+      iframeVersion
     })
 
     if (!dirty || areYouSure()) {
@@ -383,7 +415,8 @@ class Menu extends Component {
       sound,
       toggleSound,
       setCodeTab,
-      isFetching
+      isFetching,
+      iframeVersion
     } = this.props
 
     // If the game isn't equal to the gist,
@@ -395,7 +428,8 @@ class Menu extends Component {
       map,
       phrases,
       chains,
-      songs
+      songs,
+      iframeVersion
     })
 
     const blank = isBlank({ game, sprites, map, phrases, chains, songs })
@@ -448,6 +482,8 @@ class Menu extends Component {
     const codeTabSuffix = screen === screenTypes.CODE ? ` ${codeTab}` : ''
 
     const loggedIn = !!token.value
+
+    const canUpdateIframeVersion = iframeVersion && iframeVersion !== version
 
     return (
       <nav className="Menu">
@@ -560,6 +596,16 @@ class Menu extends Component {
                     className="button"
                   >
                     Export to HTML
+                  </button>
+                ) : null}
+              </li>
+              <li>
+                {canUpdateIframeVersion ? (
+                  <button
+                    onClick={this.onUpdateIframeVersion}
+                    className="button"
+                  >
+                    UPDATE SCRIPT-8 API
                   </button>
                 ) : null}
               </li>

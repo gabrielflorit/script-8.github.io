@@ -1,5 +1,10 @@
 [
   {
+    "id": 7,
+    "date": "3-23-2019",
+    "text": "BREAKING CHANGE: Replaced `initialState` with `init`, a function. This only affects new cassettes. Consult HELP for more information."
+  },
+  {
     "id": 6,
     "date": "3-8-2019",
     "text": "BREAKING CHANGE: Renamed `actor.name` to `actor.id`. This only applies if you're have an `actors` array in `initialState`. If so, please update your cassettes."
