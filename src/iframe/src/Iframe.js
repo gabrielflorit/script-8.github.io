@@ -1,6 +1,5 @@
 /*
   TODO:
-  - #3 rework the tutorials
   - #4 add a notice
   - DEPLOY
   - #5 add UPGRADE button

@@ -427,7 +427,7 @@
 
       draw = () => {
   - text:
-    - SCRIPT-8 is a state-based engine. You define the game's initial state at the beginning.
+    - SCRIPT-8 is a state-based engine. You initialize the game's state in `init`.
     - Then, during every `update`, modify the state as needed.
     - And draw your game in `draw`, which receives one parameter, `state`.
     linesToHighlight: 3-3
@@ -436,13 +436,13 @@
       draw = (state) => {
   - text:
     - That's the game loop! Nothing to it.
-    - I've added `initialState`. It's empty now. What do we want to put in there?
+    - I've added `init`. It's empty now. What do we want to put in there?
     - How about our squares' rotation angle?
     linesToHighlight: 0-1
     screen: CODE
     game: |-
       REP0-0
-      initialState = {
+      init = state => {
       }
 
       update = (state, input, elapsed) => {
@@ -453,7 +453,7 @@
     screen: CODE
     game: |-
       ADD1
-        angle: 5 // the rotation angle
+        state.angle = 5 // the rotation angle
   - text:
     - Notice how we're not declaring `angle` inside `draw`.
     - Instead, we'll get it from `state`.
@@ -500,8 +500,8 @@
     - "Like so:"
     screen: CODE
     game: |-
-      initialState = {
-        angle: 5 // the rotation angle
+      init = state => {
+        state.angle = 5 // the rotation angle
       }
 
       update = (state, input, elapsed) => {
@@ -537,7 +537,7 @@
           polyStroke([topLeft, topRight, bottomRight, bottomLeft], customAngle, color)
   - text:
     - We also need a way to keep track of total time passed.
-    - Let's add that to `initialState`.
+    - Let's add that to `init`.
     linesToHighlight: 4-8
     screen: CODE
     game: |-
@@ -555,11 +555,11 @@
     screen: CODE
     game: |-
       ADD1
-        totalElapsed: 0, // total time passed
+        state.totalElapsed = 0 // total time passed
   - text:
     - How should we store each square's rotation?
     - A good place to do this is your game's state.
-    - "Add a `rotations` array to `initialState`:"
+    - "Add a `rotations` array to `init`:"
     linesToHighlight: 12-12
     screen: CODE
     game: |-
@@ -571,7 +571,7 @@
     screen: CODE
     game: |-
       ADD2
-        rotations: [], // each rectangle's individual rotation
+        state.rotations = [] // each rectangle's individual rotation
   - text:
     - OK. Now we get to draw our squares.
     - Use `rotations` in `draw`. Each `polyStroke` call should reference this array instead of `angle`.
@@ -624,7 +624,7 @@
       REP0-0
       // title: Swirly squares
 
-      initialState = {
+      init = state => {
   - text:
     - If everything went well (and why shouldn't it?) you'll see your cassette on the SHELF.
     - The SHELF is a good place to put your cassette for others to see.
@@ -844,16 +844,16 @@
 
       draw = state => {
   - text:
-    - Yes, we should. Let's add `initialState` so we can track the plumber's state there.
+    - Yes, we should. Let's add `init` so we can track the plumber's state there.
     - "Like so:"
   - text:
     - And update `draw` so it uses state instead of the hardcoded numbers.
     screen: CODE
     game: |-
       REP0-0
-      initialState = {
-        x: 0,
-        y: 112
+      init = state => {
+        state.x = 0
+        state.y = 112
       }
 
       update = (state, input) => {
@@ -901,7 +901,7 @@
     - XXsprite(x, y, spriteIndex, [brighten, flipH, flipV])
     - "`brighten` brightens or darkens the sprite. `flipH` flips it horizontally. `flipV` flips it vertically."
   - text:
-    - First, we should add `flipH` to `initialState`. We need to keep track of it somehow.
+    - First, we should add `flipH` to `init`. We need to keep track of it somehow.
     screen: CODE
   - text:
     - Next, update the input-handling code.
@@ -910,8 +910,8 @@
     screen: CODE
     game: |-
       REP2
-        y: 112,
-        flipH: false
+        state.y = 112
+        state.flipH = false
   - text:
     - Finally, change the sprite call.
     - Remember to ignore `brighten` for now (the fourth parameter).
@@ -1003,10 +1003,10 @@
         - "34453447"
         - "47754777"
     game: |-
-      initialState = {
-        x: 0,
-        y: 112,
-        flipH: false
+      init = state => {
+        state.x = 0
+        state.y = 112
+        state.flipH = false
       }
 
       update = (state, input) => {
@@ -1110,24 +1110,27 @@
   - text:
     - OK. We now have 1 standing sprite and 6 walking sprites.
     - We'll need to track what sprite to draw.
-    - "Let's add `sprite` to our `initialState`."
+    - "Let's add `sprite` to `init`."
     screen: CODE
   - text:
     - Good. And we might as well update our `draw` function.
     - Use `state.sprite` in the `sprite()` call.
+    linesToHighlight: 3-3
     game: |-
       ADD3
-        sprite: 0,
+        state.sprite = 0
     screen: CODE
   - text:
     - Now for the interesting part.
     - If we're pressing left or right we'll use the walking sprites.
+    linesToHighlight: 22-22
     screen: CODE
     game: |-
       REP22
         sprite(state.x, state.y, state.sprite, 0, state.flipH)
   - text:
     - And if we're not pressing either left or right we'll use the standing sprite.
+    linesToHighlight: 18-20
     screen: CODE
     game: |-
       REP16
@@ -1140,6 +1143,7 @@
     - OK let's try it.
     - Click on the preview screen and move our plumber (or go to RUN).
     - Does it look right?
+    linesToHighlight: 21-21
     screen: CODE
     game: |-
       REP20
@@ -1161,8 +1165,9 @@
     - OK then!
     - First we need to make an array of the walking sprites.
   - text:
-    - Next add a `counter` to `initialState`.
+    - Next add a `counter` to `init`.
     screen: CODE
+    linesToHighlight: 7-7
     game: |-
       REP5-7
       }
@@ -1173,13 +1178,15 @@
   - text:
     - We'll increment this every time we're walking.
     - Watch line 24.
+    linesToHighlight: 4-4
     screen: CODE
     game: |-
       ADD4
-        counter: 0,
+        state.counter = 0
   - text:
     - If we stop walking, we'll reset the counter to 0.
     screen: CODE
+    linesToHighlight: 23-23
     game: |-
       ADD23
           state.counter++
@@ -1187,6 +1194,7 @@
     - Finally, if we're walking, use the counter to set the sprite.
     - I'll do this in line 23.
     - Notice the use of modulus arithmetic.
+    linesToHighlight: 26-26
     screen: CODE
     game: |-
       ADD26
@@ -1195,6 +1203,7 @@
     - Time to test it.
     - Click on the preview screen and make Mr. M move.
     - What do you think?
+    linesToHighlight: 22-22
     screen: CODE
     game: |-
       REP22
@@ -1209,6 +1218,7 @@
     - I'll put it right above the modulus arithmetic line.
   - text:
     - Next we'll use it in the line below.
+    linesToHighlight: 22-22
     screen: CODE
     game: |-
       ADD22
@@ -1218,12 +1228,14 @@
     - Divide by something and make sure to round the number down.
     - We need `slowCounter` to stay an integer.
     screen: CODE
+    linesToHighlight: 23-23
     game: |-
       REP23
           state.sprite = walkCycle[slowCounter % 6]
   - text:
     - Try it.
     - Not bad!
+    linesToHighlight: 22-22
     screen: CODE
     game: |-
       REP22
