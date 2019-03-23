@@ -18,13 +18,21 @@ const biosLines = range(18).map(() => {
   )
 })
 
-init = state => {
-  state.counter = 0
-  state.totalElapsed = 0
-  state.modeIndex = 0
-}
+// init = state => {
+//   state.counter = 0
+//   state.totalElapsed = 0
+//   state.modeIndex = 0
+// }
 
+let hasStarted = false
 update = (state, input, elapsed) => {
+  if (!hasStarted) {
+    state.counter = 0
+    state.totalElapsed = 0
+    state.modeIndex = 0
+    hasStarted = true
+  }
+
   const mode = modes[state.modeIndex]
 
   state.counter++
