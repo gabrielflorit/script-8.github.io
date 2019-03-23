@@ -1,7 +1,5 @@
 /*
   TODO:
-  - #1 make it work in embed
-  - #2 document init, remove initialstate
   - #3 rework the tutorials
   - #4 add a notice
   - DEPLOY
