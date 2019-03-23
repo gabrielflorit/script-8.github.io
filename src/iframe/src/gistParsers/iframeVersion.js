@@ -5,7 +5,7 @@ const parseGistIframeVersion = data =>
   _.get(
     JSON.parse(_.get(data, 'files["misc.json"].content', '{}')),
     'iframeVersion',
-    initialState.iframeVersion
+    '0.1.247'
   )
 
 export { parseGistIframeVersion }
