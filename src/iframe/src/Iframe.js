@@ -1,6 +1,12 @@
 /*
   TODO:
-  - make it work in embed
+  - #1 make it work in embed
+  - #2 document init, remove initialstate
+  - #3 rework the tutorials
+  - #4 add a notice
+  - DEPLOY
+  - #5 add UPGRADE button
+  - #6 upgrade all my creations
  */
 
 import React, { Component } from 'react'
