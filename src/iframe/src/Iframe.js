@@ -783,9 +783,7 @@ class Iframe extends Component {
         // If we're running in embed mode,
         if (this.isEmbed) {
           // update the embed state.
-          window._script8.embedState =
-            window.update(window._script8.embedState, userInput, tickLength) ||
-            {}
+          window.update(window._script8.embedState, userInput, tickLength)
         } else {
           // Otherwise update the redux store with the user input and tick length.
           this.store.dispatch({
@@ -941,7 +939,8 @@ class Iframe extends Component {
             // evaluate user code,
             this.evalCode()
             // and run init.
-            window._script8.embedState = window.init() || {}
+            window._script8.embedState = {}
+            window.init(window._script8.embedState)
           }
         } else {
           // 2 - We're not embedded.
