@@ -148,8 +148,9 @@ class Iframe extends Component {
     this.touchendEnter = this.touchendEnter.bind(this)
     this.touchendSpace = this.touchendSpace.bind(this)
 
-    this.sendLogToParent = this.sendLogToParent.bind(this)
-    this.log = null
+    this.addLog = this.addLog.bind(this)
+    this.sendLogsToParent = this.sendLogsToParent.bind(this)
+    this.logs = []
     this.sendErrorToParent = this.sendErrorToParent.bind(this)
     this.loggerErrors = {}
     this.printErrorsToCassetteScreen = this.printErrorsToCassetteScreen.bind(
@@ -307,24 +308,28 @@ class Iframe extends Component {
     this.keys.delete(' ')
   }
 
-  // Send log message to parent.
-  sendLogToParent(value) {
+  sendLogsToParent() {
+    if (!this.isEmbed) {
+      const { message, run } = this.state
+      if (!run) {
+        message.ports[0].postMessage({
+          logs: this.logs
+        })
+      }
+    }
+    this.logs = []
+  }
+
+  // Add log to logs array.
+  addLog(value) {
     // Also print to console.
-    console.log(value)
-    // Don't use sendLogToParent if we're on embed mode.
+    // Don't use if we're on embed mode.
     if (!this.isEmbed) {
       const { message, run } = this.state
       // If we have something to log,
       if (!run && !_.isNil(value)) {
-        // and it is different than the previous one,
-        if (JSON.stringify(this.log) !== JSON.stringify(this.value)) {
-          // update the log,
-          this.log = value
-          // and send to parent.
-          message.ports[0].postMessage({
-            log: this.log
-          })
-        }
+        // update the logs.
+        this.logs.push(value)
       }
     }
   }
@@ -422,7 +427,7 @@ class Iframe extends Component {
         Math,
         Object,
         Array,
-        log: this.sendLogToParent,
+        log: this.addLog,
         ...canvasAPI({
           pixels: this._pixelIntegers,
           ctx: this._canvas.getContext('2d'),
@@ -791,6 +796,8 @@ class Iframe extends Component {
         this.drawUserGraphics(
           this.isEmbed ? window._script8.embedState : this.store.getState()
         )
+        // Clear logs after drawing.
+        this.sendLogsToParent()
 
         // Update fps, only if we had a new measurement.
         if (newFps !== undefined && newFps !== this.state.fps) {
@@ -1035,7 +1042,7 @@ class Iframe extends Component {
               this.reduxHistory.forEach(({ state, action }, i) => {
                 if (i === timelineIndex - 1) {
                   // Enable logging only if this is the selected frame.
-                  this.updateGlobals({ log: this.sendLogToParent })
+                  this.updateGlobals({ log: this.addLog })
                 } else {
                   this.updateGlobals({ log: NOOP })
                 }
@@ -1045,7 +1052,7 @@ class Iframe extends Component {
               })
 
               // Re-enable logging.
-              this.updateGlobals({ log: this.sendLogToParent })
+              this.updateGlobals({ log: this.addLog })
 
               alteredStates = alteredStates.filter(d => !isEmpty(d))
 
@@ -1085,7 +1092,7 @@ class Iframe extends Component {
                   window.drawActors &&
                     window.drawActors({ actors: matchingActors }, true)
                   // Re-enable console.log.
-                  this.updateGlobals({ log: this.sendLogToParent })
+                  this.updateGlobals({ log: this.addLog })
                 }
               })
 
@@ -1102,6 +1109,9 @@ class Iframe extends Component {
                   )
                 })
               }
+
+              // Clear logs after drawing.
+              this.sendLogsToParent()
 
               // If we're using the framebuffer renderer,
               // draw it to canvas right now.

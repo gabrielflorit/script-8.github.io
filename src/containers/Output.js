@@ -105,7 +105,7 @@ class Output extends Component {
     this.state = {
       showSize: false,
       errors: [],
-      log: null
+      logs: []
     }
   }
 
@@ -202,7 +202,7 @@ class Output extends Component {
       assembleOrderedGame(prevProps.game)
     ) {
       this.setState({
-        log: null
+        logs: []
       })
     }
   }
@@ -259,15 +259,15 @@ class Output extends Component {
           if (e.data.callback === 'finishBoot') {
             finishBoot()
           }
-          const { height, errors, log, shortcut } = e.data
+          const { height, errors, logs, shortcut } = e.data
           if (height && this._iframe) {
             this._iframe.height = height
           }
           if (errors) {
             this.setState({ errors })
           }
-          if (!_.isNil(log)) {
-            this.setState({ log })
+          if (!_.isNil(logs)) {
+            this.setState({ logs })
           }
           if (shortcut) {
             if (shortcut === 'save') {
@@ -311,7 +311,7 @@ class Output extends Component {
   }
 
   render() {
-    const { errors, log } = this.state
+    const { errors, logs } = this.state
     const { run, tutorial, game, iframeVersion } = this.props
     const gameTitle = getGameTitle(game)
     document.title = [gameTitle, 'SCRIPT-8'].filter(d => d).join(' - ')
@@ -344,9 +344,9 @@ class Output extends Component {
         />
         {!run ? (
           <div className="errors-and-stats">
-            {!_.isNil(log) ? (
+            {logs.map(log => (
               <div className="log">log: {JSON.stringify(log)}</div>
-            ) : null}
+            ))}
             <ul className="errors">
               {errors.map(({ type, data: { message, position } }) =>
                 position ? (
@@ -362,6 +362,7 @@ class Output extends Component {
                 )
               )}
             </ul>
+
             <div className="stats">TOKENS: {tokenCount}</div>
           </div>
         ) : null}
