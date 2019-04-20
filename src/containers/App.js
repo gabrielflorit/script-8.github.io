@@ -35,6 +35,15 @@ const mapStateToProps = ({ screen, tutorial, dismissedNotices, token }) => ({
 
 const mapDispatchToProps = () => ({})
 
+// Show notice only if notices has a notice not in dismissed notices.
+const shouldShowNotice = props => {
+  const newNoticeIds = _.difference(
+    notices.map(d => d.id),
+    props.dismissedNotices
+  )
+  return newNoticeIds.length
+}
+
 const options = {
   [screenTypes.BOOT]: () => <Boot />,
   [screenTypes.HOME]: () => <Home />,
@@ -67,13 +76,20 @@ class App extends Component {
     } else {
       this.appElement.style.paddingBottom = '0'
     }
+
+    const showNotice = shouldShowNotice(this.props)
+
+    if (showNotice) {
+      document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
+    }
   }
 
   render() {
-    const { screen, tutorial, dismissedNotices } = this.props
+    const { screen, tutorial } = this.props
 
-    // show notice only if notices has a notice not in dismissed notices
-    const newNoticeIds = _.difference(notices.map(d => d.id), dismissedNotices)
+    const showNotice = shouldShowNotice(this.props)
 
     return (
       <ErrorBoundary>
@@ -97,7 +113,7 @@ class App extends Component {
               tutorialRef={this.tutorialElement}
             />
           ) : null}
-          {newNoticeIds.length ? <Notice /> : null}
+          {showNotice ? <Notice /> : null}
         </div>
       </ErrorBoundary>
     )
