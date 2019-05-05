@@ -100,8 +100,6 @@ class Output extends Component {
 
     window.addEventListener('resize', this.resize)
 
-    this.useFrameBufferRenderer = false
-
     this.state = {
       showSize: false,
       errors: [],
@@ -144,13 +142,6 @@ class Output extends Component {
 
   componentDidMount() {
     this._iframe.focus()
-
-    const { search } = window.location
-    const params = new window.URLSearchParams(search)
-    const renderer = params.get('renderer')
-    if (renderer && renderer === 'framebuffer') {
-      this.useFrameBufferRenderer = true
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -249,8 +240,7 @@ class Output extends Component {
             run,
             callbacks,
             sound,
-            isNew: blank && gistIsEmpty,
-            useFrameBufferRenderer: this.useFrameBufferRenderer
+            isNew: blank && gistIsEmpty
           },
           '*',
           [channel.port2]

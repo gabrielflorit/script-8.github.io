@@ -1,8 +1,3 @@
-/*
-  TODO:
-  - #6 upgrade all my creations
- */
-
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import equal from 'deep-equal'
@@ -23,7 +18,6 @@ import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import { default as frameBufferCanvasAPI } from './frameBufferCanvasAPI/index.js'
-import { default as contextCanvasAPI } from './contextCanvasAPI/index.js'
 import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
 import getUserInput, { allowedKeys } from './getUserInput.js'
@@ -39,7 +33,6 @@ import { getEvaledErrorPosition } from './utils/errorLocation.js'
 import './css/Iframe.css'
 import { version } from '../package.json'
 
-// window.USE_FRAME_BUFFER_RENDERER = true
 // window.SCRIPT_8_EMBEDDED_GIST_ID = 'd5dacf8f639a775996c4ed9f9156d4d5'
 
 // Get the browser platform.
@@ -325,7 +318,7 @@ class Iframe extends Component {
     // Also print to console.
     // Don't use if we're on embed mode.
     if (!this.isEmbed) {
-      const { message, run } = this.state
+      const { run } = this.state
       // If we have something to log,
       if (!run && !_.isNil(value)) {
         // update the logs.
@@ -402,11 +395,7 @@ class Iframe extends Component {
         window.print(2, 2 + i * 8, theString, 0)
       })
 
-      // If we're in framebuffer mode,
-      if (this.useFrameBufferRenderer) {
-        // draw it now.
-        this.writePixelDataToCanvas()
-      }
+      this.writePixelDataToCanvas()
     }
   }
 
@@ -416,9 +405,7 @@ class Iframe extends Component {
     let globals
 
     if (!providedGlobals) {
-      const canvasAPI = this.useFrameBufferRenderer
-        ? frameBufferCanvasAPI
-        : contextCanvasAPI
+      const canvasAPI = frameBufferCanvasAPI
 
       globals = {
         console,
@@ -467,19 +454,11 @@ class Iframe extends Component {
   drawUserGraphics(state) {
     if (window.draw) {
       window.draw(state)
-      if (this.useFrameBufferRenderer) {
-        this.writePixelDataToCanvas()
-      }
+      this.writePixelDataToCanvas()
     }
   }
 
   componentDidMount() {
-    // If the framebuffer flag is set (this should only happen in embed mode),
-    // use the framebuffer renderer.
-    if (window.USE_FRAME_BUFFER_RENDERER) {
-      this.useFrameBufferRenderer = true
-    }
-
     // Initialize sound API with this Tone.js volumeNode.
     this.soundFunctions = soundAPI(this.volumeNode)
 
@@ -576,15 +555,9 @@ class Iframe extends Component {
         // it means we are getting new game data (e.g. code, sprites, etc).
         type === 'callCode'
       ) {
-        // If the payload says to use the frame buffer renderer,
-        // (i.e. the parent, via query param)
-        if (payload.useFrameBufferRenderer) {
-          // set the frame buffer renderer flag,
-          this.useFrameBufferRenderer = true
-          // and update the globals.
-          // so that the drawing functions come from the fb renderer.
-          this.updateGlobals()
-        }
+        // Update the globals,
+        // so that the drawing functions come from the fb renderer.
+        this.updateGlobals()
 
         // Finally, set this react state with payload data,
         // and also add the message.
@@ -1113,11 +1086,8 @@ class Iframe extends Component {
               // Clear logs after drawing.
               this.sendLogsToParent()
 
-              // If we're using the framebuffer renderer,
-              // draw it to canvas right now.
-              if (this.useFrameBufferRenderer) {
-                this.writePixelDataToCanvas()
-              }
+              // Draw to canvas right now.
+              this.writePixelDataToCanvas()
 
               // Finally, set the store to point to the timeLineIndex altered state,
               // so that when we hit play, we can resume right from this point.
@@ -1139,18 +1109,9 @@ class Iframe extends Component {
           const canvases = [...this._ul.querySelectorAll('canvas')]
 
           if (buttons.length !== canvases.length) {
-            let tempCtx = this._canvas.getContext('2d')
             actors.forEach((actor, i) => {
-              // If we're using the framebuffer renderer,
-              // fill the buffer with 0.
-              if (this.useFrameBufferRenderer) {
-                this._pixelIntegers.fill(0)
-              } else {
-                // Otherwise reset the context.
-                tempCtx.save()
-                tempCtx.setTransform(1, 0, 0, 1, 0, 0)
-                tempCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
-              }
+              // Fill the buffer with 0.
+              this._pixelIntegers.fill(0)
 
               // Draw this actor on the center of the screen.
               window.drawActors({
@@ -1163,11 +1124,8 @@ class Iframe extends Component {
                 ]
               })
 
-              // If we're using the framebuffer renderer,
-              // draw it to canvas right now.
-              if (this.useFrameBufferRenderer) {
-                this.writePixelDataToCanvas()
-              }
+              // Draw to canvas right now.
+              this.writePixelDataToCanvas()
 
               // Get its canvas.
               const lilCanvas = trimCanvas({
@@ -1181,9 +1139,6 @@ class Iframe extends Component {
             })
 
             this.drawUserGraphics(this.store.getState())
-            if (!this.useFrameBufferRenderer) {
-              tempCtx.restore()
-            }
           }
         }
       }
