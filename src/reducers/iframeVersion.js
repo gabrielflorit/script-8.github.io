@@ -7,7 +7,6 @@ const iframeVersion = handleActions(
   {
     [actionTypes.UPDATE_IFRAME_VERSION]: () => initialState.iframeVersion,
     [actionTypes.NEW_GAME]: () => initialState.iframeVersion,
-
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistIframeVersion(action.payload)
   },

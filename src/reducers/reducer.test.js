@@ -496,6 +496,9 @@ test('fetchGistSuccess good data', () => {
       'code.js': {
         content: 'my game'
       },
+      'misc.json': {
+        content: JSON.stringify({ iframeVersion: '0.1.250' })
+      },
       'phrases.json': {
         content: JSON.stringify(
           {
@@ -508,8 +511,10 @@ test('fetchGistSuccess good data', () => {
     }
   }
   const action = actions.fetchGistSuccess(data)
-  expect(reducer(before, action)).toEqual({
+  const after = reducer(before, action)
+  expect(after).toEqual({
     ...before,
+    iframeVersion: '0.1.250',
     game: { 0: { text: 'my game', active: true, key: 0 } },
     phrases: {
       0: {
@@ -545,6 +550,7 @@ test('fetchGistSuccess bad data', () => {
   const action = actions.fetchGistSuccess(data)
   expect(reducer(before, action)).toEqual({
     ...before,
+    iframeVersion: '0.1.247',
     game: { 0: { text: '', active: true, key: 0 } },
     phrases: {},
     gist: {
