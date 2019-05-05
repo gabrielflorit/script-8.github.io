@@ -55,6 +55,10 @@
       - Offsets the top-left corner from subsequent draw coordinates. Call `camera()` to reset it.
 - title: Utility
   dl:
+    - - colorSwap(from, to)
+      - Swaps one color with another. Applies to any drawing calls. Reset with `colorSwap()`.
+    - - colorSwap()
+      - Resets any previous color swaps.
     - - range([start=0], end, [step=1])
       - Creates an array of numbers from `start` up to `end`, not inclusive. <a class='text' href='https://lodash.com/docs/4.17.11#range'>By Lodash</a>.
     - - flatten(array)

@@ -20,6 +20,7 @@ const canvasAPI = ({
   let _runningMap = JSON.parse(JSON.stringify(initialMap))
   let _cameraX = 0
   let _cameraY = 0
+  let _colorSwaps = {}
 
   const camera = (x = 0, y = 0) => {
     _cameraX = Math.floor(x)
@@ -30,12 +31,23 @@ const canvasAPI = ({
     pixels.fill(colors.int(c))
   }
 
+  const colorSwap = (from, to) => {
+    if (from === undefined && to === undefined) {
+      _colorSwaps = {}
+    } else {
+      _colorSwaps[colors.int(from)] = colors.int(to)
+    }
+  }
+
   const setPixel = (x, y, c = 0) => {
     x = Math.floor(x - _cameraX)
     y = Math.floor(y - _cameraY)
     if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return
     const int = colors.int(c)
-    if (int) pixels[y * canvasWidth + x] = int
+    if (int) {
+      const newColor = _colorSwaps[int] || int
+      pixels[y * canvasWidth + x] = newColor
+    }
   }
 
   const getPixel = (x, y) => {
@@ -168,6 +180,7 @@ const canvasAPI = ({
   return {
     camera,
     clear,
+    colorSwap,
     setPixel,
     getPixel,
     line,
