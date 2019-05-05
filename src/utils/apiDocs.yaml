@@ -1,7 +1,7 @@
 - title: Game loop
   dl:
-    - - init
-      - "This function is called first before anything else. Assign your game's initial state here. Note that your game's state must be a serializable object, e.g. don't put a function in there. You may also do non-state initialization logic here, e.g. call `resetMap()`."
+    - - init(state)
+      - "This function is called first before anything else. Set your game's initial state here. Note that your game's state must be a serializable object, e.g. don't put a function in there. You may also do non-state initialization logic here, e.g. call `resetMap()`."
     - - update(state, input, elapsed)
       - "This function is called before `draw`. `state` is your game's state. Mutate state here. Note that you should not assign a new variable to `state`. Instead, assign individual properties. For example, don't do this: `state = { lives: 0}`. Do this: `state.lives = 0`. `elapsed` is time passed since last `update` call. See below for an explanation of `input`."
     - - drawActors(state)
