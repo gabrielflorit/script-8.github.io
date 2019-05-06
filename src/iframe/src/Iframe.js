@@ -555,10 +555,6 @@ class Iframe extends Component {
         // it means we are getting new game data (e.g. code, sprites, etc).
         type === 'callCode'
       ) {
-        // Update the globals,
-        // so that the drawing functions come from the fb renderer.
-        this.updateGlobals()
-
         // Finally, set this react state with payload data,
         // and also add the message.
         this.setState({
