@@ -114,7 +114,7 @@ const canvasAPI = ({
             const sWidth = 8
             const sHeight = 8
             const dx = (colNumber + x) * 8
-            const dy = rowNumber * 8
+            const dy = (rowNumber + y) * 8
             const dWidth = 8
             const dHeight = 8
 
