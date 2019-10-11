@@ -166,7 +166,7 @@ const canvasAPI = ({
         if (spriteIndex !== null) {
           // Render at the correct offset position
           const dx = (colNumber + x) * 8
-          const dy = rowNumber * 8
+          const dy = (rowNumber + y) * 8
           sprite(dx, dy, spriteIndex)
         }
       })
