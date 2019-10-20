@@ -481,14 +481,14 @@ class Iframe extends Component {
     this.keydownHandler = event => {
       // Listen for record cassette and go to previous/next screen,
       // and send them to parent.
-      const { altKey, metaKey, ctrlKey, key } = event
+      const { altKey, metaKey, ctrlKey, key, code } = event
       const { message } = this.state
 
       // Listen to Ctrl-s / Cmd-s.
       if (
         (!this.isEmbed &&
-          (metaKey && key === 's' && _.includes(platform, 'Mac'))) ||
-        (ctrlKey && key === 's' && !_.includes(platform, 'Mac'))
+          (metaKey && code === 'KeyS' && _.includes(platform, 'Mac'))) ||
+        (ctrlKey && code === 'KeyS' && !_.includes(platform, 'Mac'))
       ) {
         event.preventDefault()
         message.ports[0].postMessage({
@@ -498,13 +498,13 @@ class Iframe extends Component {
 
       // Listen Alt-. / Alt-/ .
       if (!this.isEmbed && altKey) {
-        if (key === '.') {
+        if (code === 'Period') {
           event.preventDefault()
           message.ports[0].postMessage({
             shortcut: 'previous'
           })
         }
-        if (key === '/') {
+        if (code === 'Slash') {
           event.preventDefault()
           message.ports[0].postMessage({
             shortcut: 'next'
