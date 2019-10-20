@@ -460,12 +460,29 @@ test('finishBoot', () => {
   })
 })
 
-test('setScreen', () => {
-  const before = initialState
-  const action = actions.setScreen('RUN')
-  expect(reducer(before, action)).toEqual({
-    ...before,
-    screen: 'RUN'
+describe('setScreen', () => {
+  test('going into RUN should also hide menu', () => {
+    const before = initialState
+    expect(before.hideMenu).toEqual(true)
+
+    const action = actions.setScreen('RUN')
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      screen: 'RUN',
+      hideMenu: true
+    })
+  })
+
+  test('going into not BOOT or RUN should also show menu', () => {
+    const before = initialState
+    expect(before.hideMenu).toEqual(true)
+
+    const action = actions.setScreen('CODE')
+    expect(reducer(before, action)).toEqual({
+      ...before,
+      screen: 'CODE',
+      hideMenu: false
+    })
   })
 })
 
