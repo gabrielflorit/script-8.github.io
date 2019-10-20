@@ -461,15 +461,17 @@ test('finishBoot', () => {
 })
 
 describe('setScreen', () => {
-  test('going into RUN should also hide menu', () => {
-    const before = initialState
-    expect(before.hideMenu).toEqual(true)
+  test('going into RUN should leave menu alone', () => {
+    const before = {
+      ...initialState,
+      hideMenu: false
+    }
 
     const action = actions.setScreen('RUN')
     expect(reducer(before, action)).toEqual({
       ...before,
       screen: 'RUN',
-      hideMenu: true
+      hideMenu: false
     })
   })
 
