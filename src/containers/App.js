@@ -26,11 +26,18 @@ import '../css/App.css'
 
 console.log(JSON.stringify(`SCRIPT-8 app v ${version}`, null, 2))
 
-const mapStateToProps = ({ screen, tutorial, dismissedNotices, token }) => ({
+const mapStateToProps = ({
   screen,
   tutorial,
   dismissedNotices,
-  token
+  token,
+  hideMenu
+}) => ({
+  screen,
+  tutorial,
+  dismissedNotices,
+  token,
+  hideMenu
 })
 
 const mapDispatchToProps = () => ({})
@@ -87,7 +94,7 @@ class App extends Component {
   }
 
   render() {
-    const { screen, tutorial } = this.props
+    const { screen, tutorial, hideMenu } = this.props
 
     const showNotice = shouldShowNotice(this.props)
 
@@ -102,7 +109,7 @@ class App extends Component {
             )
           })}
         >
-          <TopBar />
+          <TopBar hideMenu={hideMenu} />
           {options[screen]()}
           <Output />
           {tutorial ? (
