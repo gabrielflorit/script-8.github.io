@@ -12,6 +12,7 @@ import {
 } from '../iframe/src/gistParsers/game.js'
 
 const actions = createActions({
+  [actionTypes.TOGGLE_MENU]: () => {},
   [actionTypes.UPDATE_IFRAME_VERSION]: () => {},
   [actionTypes.SET_ERROR_LINE]: d => d,
   [actionTypes.CLEAR_TOKEN]: () => {},

@@ -18,8 +18,10 @@ import dismissedNotices from './dismissedNotices.js'
 import selectedUi from './selectedUi.js'
 import errorLine from './errorLine.js'
 import iframeVersion from './iframeVersion.js'
+import hideMenu from './hideMenu.js'
 
 const reducer = combineReducers({
+  hideMenu,
   iframeVersion,
   errorLine,
   screen,

@@ -18,6 +18,7 @@ import getGameTitle from '../utils/getGameTitle'
 import gameLineToTabLine from '../iframe/src/utils/gameLineToTabLine.js'
 
 const mapStateToProps = ({
+  hideMenu,
   iframeVersion,
   screen,
   game,
@@ -31,6 +32,7 @@ const mapStateToProps = ({
   token,
   tutorial
 }) => ({
+  hideMenu,
   iframeVersion,
   songs,
   chains,
@@ -47,6 +49,7 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  toggleMenu: () => dispatch(actions.toggleMenu()),
   setErrorLine: line => dispatch(actions.setErrorLine(line)),
   setCodeTab: tab => dispatch(actions.setCodeTab(tab)),
   setScreen: screen => dispatch(actions.setScreen(screen)),
@@ -92,6 +95,7 @@ class Output extends Component {
   constructor(props) {
     super(props)
 
+    this.handleToggleMenuClick = this.handleToggleMenuClick.bind(this)
     this.evaluate = this.evaluate.bind(this)
     this.handleClickSize = this.handleClickSize.bind(this)
     this.handleClickError = this.handleClickError.bind(this)
@@ -113,6 +117,10 @@ class Output extends Component {
     if (this.isLoaded) {
       this.evaluate()
     }
+  }
+
+  handleToggleMenuClick() {
+    this.props.toggleMenu()
   }
 
   handleClickSize() {
@@ -302,7 +310,7 @@ class Output extends Component {
 
   render() {
     const { errors, logs } = this.state
-    const { run, tutorial, game, iframeVersion } = this.props
+    const { run, tutorial, game, iframeVersion, hideMenu, screen } = this.props
     const gameTitle = getGameTitle(game)
     document.title = [gameTitle, 'SCRIPT-8'].filter(d => d).join(' - ')
 
@@ -352,10 +360,16 @@ class Output extends Component {
                 )
               )}
             </ul>
-
             <div className="stats">TOKENS: {tokenCount}</div>
           </div>
-        ) : null}
+        ) : screen === screenTypes.BOOT ? null : (
+          <button
+            className="button togglemenu"
+            onClick={this.handleToggleMenuClick}
+          >
+            {hideMenu ? 'show' : 'hide'} menu
+          </button>
+        )}
       </div>
     )
   }

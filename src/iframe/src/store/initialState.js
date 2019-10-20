@@ -4,6 +4,7 @@ import { version } from '../../package.json'
 
 // TODO: why do we have to make game keys?
 const initialState = {
+  hideMenu: true,
   iframeVersion: version,
   errorLine: null,
   screen: screenTypes.BOOT,

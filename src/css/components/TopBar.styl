@@ -1,6 +1,10 @@
 .TopBar
   background $palette-7
   border-bottom solid $palette-6 2px
+  visibility hidden
+  &.show
+    visibility visible
+    z-index 100
   .mid, .small
     display none
   @media screen and (max-width: 43rem)
