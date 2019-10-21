@@ -754,17 +754,22 @@ class Iframe extends Component {
           window.update(window._script8.embedState, userInput, tickLength)
         } else {
           // Otherwise update the redux store with the user input and tick length.
-          this.store.dispatch({
-            type: 'UPDATE',
-            input: userInput,
-            elapsed: tickLength
-          })
+          if (this.store && this.store.dispatch) {
+            this.store.dispatch({
+              type: 'UPDATE',
+              input: userInput,
+              elapsed: tickLength
+            })
+          }
         }
 
         // Draw this state.
-        this.drawUserGraphics(
-          this.isEmbed ? window._script8.embedState : this.store.getState()
-        )
+        if (this.store && this.store.dispatch) {
+          this.drawUserGraphics(
+            this.isEmbed ? window._script8.embedState : this.store.getState()
+          )
+        }
+
         // Clear logs after drawing.
         this.sendLogsToParent()
 
