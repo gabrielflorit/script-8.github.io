@@ -124,13 +124,17 @@
             .load
               display inline-block
 
-        button
-          display block
-          margin 0.125em auto
-          font-size $font-small
-          padding 0.25rem
-          color $palette-5
-          border solid @color 1px
-          &:hover
-            color $palette-3
-            border-color @color
+        .buttons
+          display flex
+          justify-content space-between
+
+          button
+            display block
+            margin 0.125em auto
+            font-size $font-small
+            padding 0.25rem
+            color $palette-5
+            border solid @color 1px
+            &:hover
+              color $palette-3
+              border-color @color

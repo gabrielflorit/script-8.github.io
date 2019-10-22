@@ -10,7 +10,6 @@ import isDirty from '../utils/isDirty.js'
 import getGameTitle from '../utils/getGameTitle.js'
 import canRecord from '../utils/canRecord.js'
 import isBlank from '../utils/isBlank.js'
-import areYouSure from '../utils/areYouSure.js'
 import actions, {
   saveGist,
   fetchToken,
@@ -295,7 +294,12 @@ class Menu extends Component {
       iframeVersion
     })
 
-    if (!dirty || areYouSure()) {
+    if (
+      !dirty ||
+      window.confirm(
+        'You have not recorded the cassette. Changes will be lost. Are you sure?'
+      )
+    ) {
       this.props.newGame(this.props.screen)
     }
   }

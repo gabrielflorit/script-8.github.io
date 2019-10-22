@@ -4,6 +4,8 @@ import initialState from '../iframe/src/store/initialState.js'
 
 const shelving = handleActions(
   {
+    [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => true,
+    [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: () => false,
     [actionTypes.SHELVE_CASSETTE_REQUEST]: () => true,
     [actionTypes.SHELVE_CASSETTE_SUCCESS]: () => false,
     [actionTypes.SET_VISIBILITY_REQUEST]: () => true,

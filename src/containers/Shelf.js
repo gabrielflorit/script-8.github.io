@@ -4,7 +4,7 @@ import _ from 'lodash'
 import screenTypes from '../iframe/src/utils/screenTypes.js'
 import throwError from '../utils/throwError.js'
 import frecency from '../utils/frecency.js'
-import actions, { setVisibility } from '../actions/actions.js'
+import actions, { setVisibility, unshelveCassette } from '../actions/actions.js'
 import ShelfCassettes from '../components/ShelfCassettes.js'
 
 const mapStateToProps = ({ gist, token, shelving }) => ({
@@ -14,6 +14,8 @@ const mapStateToProps = ({ gist, token, shelving }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  unshelveCassette: ({ token, gistId }) =>
+    dispatch(unshelveCassette({ token, gistId })),
   setScreen: screen => dispatch(actions.setScreen(screen)),
   setVisibility: ({ token, gistId, isPrivate }) =>
     dispatch(setVisibility({ token, gistId, isPrivate }))
@@ -25,6 +27,7 @@ class Shelf extends Component {
     this.fetchCassettes = this.fetchCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
     this.handleSetVisibility = this.handleSetVisibility.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
     this.state = {
       fetching: true,
       popularCassettes: [],
@@ -149,6 +152,17 @@ class Shelf extends Component {
     setVisibility({ token, gistId, isPrivate })
   }
 
+  handleRemove({ gistId }) {
+    const { token, unshelveCassette } = this.props
+    if (
+      window.confirm(
+        'Do you really want to remove this cassette from the shelf?'
+      )
+    ) {
+      unshelveCassette({ gistId, token })
+    }
+  }
+
   render() {
     const {
       popularCassettes,
@@ -160,6 +174,8 @@ class Shelf extends Component {
 
     const tokenLogin = _.get(this.props, 'token.user.login', null)
 
+    // TODO: consolidate duplication below.
+
     return (
       <div className="Shelf">
         <div className="main">
@@ -170,6 +186,7 @@ class Shelf extends Component {
               {yourPrivateCassettes && yourPrivateCassettes.length ? (
                 <ShelfCassettes
                   handleSetVisibility={this.handleSetVisibility}
+                  handleRemove={this.handleRemove}
                   tokenLogin={tokenLogin}
                   handleOnClick={this.handleOnClick}
                   cassettes={yourPrivateCassettes}
@@ -179,6 +196,7 @@ class Shelf extends Component {
               {yourPublicCassettes && yourPublicCassettes.length ? (
                 <ShelfCassettes
                   handleSetVisibility={this.handleSetVisibility}
+                  handleRemove={this.handleRemove}
                   tokenLogin={tokenLogin}
                   handleOnClick={this.handleOnClick}
                   cassettes={yourPublicCassettes}
@@ -187,6 +205,7 @@ class Shelf extends Component {
               ) : null}
               <ShelfCassettes
                 handleSetVisibility={this.handleSetVisibility}
+                handleRemove={this.handleRemove}
                 tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={popularCassettes}
@@ -194,6 +213,7 @@ class Shelf extends Component {
               />
               <ShelfCassettes
                 handleSetVisibility={this.handleSetVisibility}
+                handleRemove={this.handleRemove}
                 tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={recentCassettes}

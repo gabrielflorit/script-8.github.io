@@ -28,7 +28,12 @@ class ShelfCassettes extends Component {
   }
 
   renderCassette({ cassette, i, now }) {
-    const { handleOnClick, tokenLogin, handleSetVisibility } = this.props
+    const {
+      handleOnClick,
+      tokenLogin,
+      handleSetVisibility,
+      handleRemove
+    } = this.props
     const { isPrivate, gist, visits } = cassette
     const visitsCount = visits ? _.sum(Object.values(visits)) : 0
     const counter = visitsCount + cassette.counter
@@ -69,14 +74,24 @@ class ShelfCassettes extends Component {
           </div>{' '}
         </div>
         {tokenLogin === cassette.user ? (
-          <button
-            className="button"
-            onClick={() => {
-              handleSetVisibility({ gistId: gist, isPrivate: !isPrivate })
-            }}
-          >
-            make {isPrivate ? 'public' : 'private'}
-          </button>
+          <div className="buttons">
+            <button
+              className="button"
+              onClick={() => {
+                handleSetVisibility({ gistId: gist, isPrivate: !isPrivate })
+              }}
+            >
+              make {isPrivate ? 'public' : 'private'}
+            </button>
+            <button
+              className="button"
+              onClick={() => {
+                handleRemove({ gistId: gist })
+              }}
+            >
+              remove
+            </button>
+          </div>
         ) : null}
       </li>
     )

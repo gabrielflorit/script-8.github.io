@@ -42,6 +42,8 @@ const actions = createActions({
   [actionTypes.CLOSE_TUTORIAL]: () => {},
   [actionTypes.SHELVE_CASSETTE_REQUEST]: () => {},
   [actionTypes.SHELVE_CASSETTE_SUCCESS]: d => d,
+  [actionTypes.UNSHELVE_CASSETTE_REQUEST]: () => {},
+  [actionTypes.UNSHELVE_CASSETTE_SUCCESS]: d => d,
   [actionTypes.SET_VISIBILITY_REQUEST]: d => d,
   [actionTypes.SET_VISIBILITY_SUCCESS]: d => d,
   [actionTypes.COUNTER_CASSETTE_REQUEST]: () => {},
@@ -89,6 +91,28 @@ export const setVisibility = ({ token, gistId, isPrivate }) => dispatch => {
         })
     )
     .then(() => dispatch(actions.setVisibilitySuccess()))
+}
+
+export const unshelveCassette = ({ token, gistId }) => dispatch => {
+  dispatch(actions.shelveCassetteRequest())
+
+  return window
+    .fetch(`${process.env.REACT_APP_NOW}/delete`, {
+      method: 'POST',
+      body: JSON.stringify({
+        token: token.value,
+        gist: gistId
+      })
+    })
+    .then(
+      response => response.json(),
+      error =>
+        throwError({
+          error,
+          message: `Could not delete.`
+        })
+    )
+    .then(() => dispatch(actions.shelveCassetteSuccess()))
 }
 
 export const putOnShelf = ({
