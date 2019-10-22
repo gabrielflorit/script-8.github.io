@@ -10,7 +10,7 @@ import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
 import commands from '../utils/commands.js'
-import blank from '../iframe/src/blank.js'
+import blankTemplate from '../iframe/src/blankTemplate.js'
 import { getActive } from '../reducers/game.js'
 import lessons from '../utils/lessons.json'
 
@@ -225,8 +225,8 @@ class CodeEditor extends Component {
   componentWillReceiveProps(nextProps) {
     // If the incoming game is the empty game code,
     if (nextProps.game[0].text === 'SCRIPT-8 NEW') {
-      // set CodeMirror's value to '',
-      this.setContents(blank)
+      // set CodeMirror's value to the blank template,
+      this.setContents(blankTemplate)
       // and clear the doc history.
       this.codeMirror.getDoc().clearHistory()
     } else if (

@@ -1,5 +1,5 @@
 import screenTypes from '../utils/screenTypes.js'
-import blank from '../blank.js'
+import blankTemplate from '../blankTemplate.js'
 import { version } from '../../package.json'
 
 // TODO: why do we have to make game keys?
@@ -13,7 +13,7 @@ const initialState = {
   gist: {},
   game: {
     0: {
-      text: blank,
+      text: blankTemplate,
       active: true,
       key: 0
     }
