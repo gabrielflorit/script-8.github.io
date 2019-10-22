@@ -9,6 +9,7 @@ import {
   parseGistGame,
   assembleOrderedGame
 } from '../iframe/src/gistParsers/game.js'
+import blankTemplate from '../iframe/src/blankTemplate.js'
 
 const isDirty = ({
   gist,
@@ -20,10 +21,21 @@ const isDirty = ({
   songs,
   iframeVersion
 }) => {
-  const gameIsDirty = !equal(
-    assembleOrderedGame(parseGistGame(gist.data)),
-    assembleOrderedGame(game)
-  )
+  const gistGame = assembleOrderedGame(parseGistGame(gist.data))
+  const thisGame = assembleOrderedGame(game)
+
+  let gameIsDirty = false
+
+  // If there is no game in the gist,
+  if (gistGame === '') {
+    // decide the game is dirty if it's not the blank template.
+    gameIsDirty = !equal(blankTemplate, thisGame)
+  } else {
+    // If there is game in the gist,
+    // then decide if it's dirty as per usual.
+    gameIsDirty = !equal(gistGame, thisGame)
+  }
+
   const mapIsDirty = !equal(extractGistMap(gist.data), map)
   const spritesIsDirty = !equal(extractGistSprites(gist.data), sprites)
   const phrasesIsDirty = !equal(extractGistPhrases(gist.data), phrases)
