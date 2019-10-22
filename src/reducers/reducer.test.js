@@ -2,7 +2,7 @@ import reducer from './reducer.js'
 import actions from '../actions/actions.js'
 import initialState from '../iframe/src/store/initialState.js'
 import screenTypes from '../iframe/src/utils/screenTypes.js'
-import blank from '../iframe/src/blank.js'
+import blankTemplate from '../iframe/src/blankTemplate.js'
 import { assembleMiscLines } from './game.js'
 import { parseGistGame } from '../iframe/src/gistParsers/game.js'
 
@@ -396,7 +396,7 @@ test('newGame from SONG', () => {
   expect(reducer(before, action)).toEqual({
     ...before,
     gist: {},
-    game: { 0: { text: blank, active: true, key: 0 } }
+    game: { 0: { text: blankTemplate, active: true, key: 0 } }
   })
 })
 

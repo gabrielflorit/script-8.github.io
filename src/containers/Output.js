@@ -10,7 +10,6 @@ import screenTypes, {
   getNextScreen
 } from '../iframe/src/utils/screenTypes.js'
 import canRecord from '../utils/canRecord.js'
-import isBlank from '../utils/isBlank.js'
 import { getLintErrors } from '../utils/setupLinter.js'
 import { numberWithCommas } from '../utils/string.js'
 import { assembleOrderedGame } from '../iframe/src/gistParsers/game.js'
@@ -76,7 +75,7 @@ const mapDispatchToProps = dispatch => ({
         phrases,
         chains,
         songs,
-        toBlank: false
+        toFork: false
       })
     )
 })
@@ -232,8 +231,6 @@ class Output extends Component {
     const sendPayload = (callbacks = {}) => {
       const channel = new window.MessageChannel()
       if (this._iframe) {
-        const blank = isBlank({ game, sprites, map, phrases, chains, songs })
-        const gistIsEmpty = _.isEmpty(gist)
         this._iframe.contentWindow.postMessage(
           {
             type: 'callCode',
@@ -247,8 +244,7 @@ class Output extends Component {
             map,
             run,
             callbacks,
-            sound,
-            isNew: blank && gistIsEmpty
+            sound
           },
           '*',
           [channel.port2]

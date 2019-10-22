@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions'
 import actionTypes from '../actions/actionTypes.js'
 import initialState from '../iframe/src/store/initialState.js'
 import screenTypes from '../iframe/src/utils/screenTypes.js'
-import blank from '../iframe/src/blank.js'
+import blankTemplate from '../iframe/src/blankTemplate.js'
 import { parseGistGame } from '../iframe/src/gistParsers/game.js'
 
 const assembleMiscLines = game =>
@@ -25,7 +25,7 @@ const game = handleActions(
     [actionTypes.NEW_GAME]: (state, action) =>
       action.payload === screenTypes.CODE
         ? { 0: { text: 'SCRIPT-8 NEW', active: true, key: 0 } }
-        : { 0: { text: blank, active: true, key: 0 } },
+        : { 0: { text: blankTemplate, active: true, key: 0 } },
 
     [actionTypes.SET_CODE_TAB]: (state, { payload }) =>
       _.mapValues(

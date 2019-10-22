@@ -86,7 +86,7 @@ const mapDispatchToProps = dispatch => ({
     phrases,
     chains,
     songs,
-    toBlank
+    toFork
   }) =>
     dispatch(
       saveGist({
@@ -99,7 +99,7 @@ const mapDispatchToProps = dispatch => ({
         phrases,
         chains,
         songs,
-        toBlank
+        toFork
       })
     ),
   setNextAction: nextAction => dispatch(actions.setNextAction(nextAction)),
@@ -130,7 +130,7 @@ class Menu extends Component {
       if (nextAction === 'record') {
         this.record()
       }
-      if (nextAction === 'recordtoblank') {
+      if (nextAction === 'recordToFork') {
         this.record(true)
       }
     }
@@ -345,17 +345,17 @@ class Menu extends Component {
     }
   }
 
-  onRecordClick(toBlank) {
+  onRecordClick(toFork) {
     const { token, setNextAction } = this.props
 
     if (
-      !toBlank ||
+      !toFork ||
       window.confirm('Do you really want to record to a blank cassette?')
     ) {
       // If we're not logged in,
       if (!token.value) {
         // remind ourselves to record next,
-        setNextAction(toBlank ? 'recordtoblank' : 'record')
+        setNextAction(toFork ? 'recordToFork' : 'record')
 
         // and log in.
         window.open(
@@ -367,12 +367,12 @@ class Menu extends Component {
         )
       } else {
         // If we are logged in, record.
-        this.record(toBlank)
+        this.record(toFork)
       }
     }
   }
 
-  record(toBlank) {
+  record(toFork) {
     const {
       iframeVersion,
       token,
@@ -395,7 +395,7 @@ class Menu extends Component {
       chains,
       songs,
       gist,
-      toBlank
+      toFork
     })
   }
 
@@ -454,11 +454,11 @@ class Menu extends Component {
 
     const enableRecord = canRecord(this.props)
 
-    // RECORD TO BLANK can only be enabled when:
+    // RECORD TO FORK can only be enabled when:
     // - gist is NOT empty AND
     //    - gist is not ours (anonymous or user that is not us)
     //    - OR there is something to save (content is non-null)
-    const enableRecordToBlank =
+    const enableRecordToFork =
       !_.isEmpty(gist) &&
       (gistLogin === null || gistLogin !== currentLogin || !contentIsEmpty)
 
@@ -559,7 +559,7 @@ class Menu extends Component {
                     this.onRecordClick(true)
                   }}
                   className="button"
-                  disabled={!enableRecordToBlank}
+                  disabled={!enableRecordToFork}
                 >
                   Record to blank
                 </button>

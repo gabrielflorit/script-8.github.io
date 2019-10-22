@@ -214,7 +214,7 @@ export const fetchToken = code => dispatch => {
 
 export const saveGist = ({
   iframeVersion,
-  toBlank,
+  toFork,
   game,
   token,
   gist,
@@ -332,7 +332,7 @@ export const saveGist = ({
   // If there is no gist, create it.
   if (!gist.data) {
     return createGist()
-  } else if (toBlank) {
+  } else if (toFork) {
     // If we want to record to blank,
     // if it's ours, create a new one.
     if (_.get(gist, 'data.owner.login', null) === token.user.login) {
