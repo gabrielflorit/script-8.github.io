@@ -76,7 +76,7 @@ const mapDispatchToProps = dispatch => ({
         phrases,
         chains,
         songs,
-        toBlank: false
+        toFork: false
       })
     )
 })
