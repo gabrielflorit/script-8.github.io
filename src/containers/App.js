@@ -42,12 +42,28 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = () => ({})
 
-// Show notice only if notices has a notice not in dismissed notices.
+// Show notice only if:
+// - we're logged in
+// - we're the owner of this cassette
+// - there is at least one notice we haven't dismissed
 const shouldShowNotice = props => {
+  const { gist, token } = props
+
+  // If gistLogin is null, gist was created anonymously.
+  const gistLogin = _.get(gist, 'data.owner.login', null)
+
+  // If gistLogin does not match currentLogin, gist wasn't created by us.
+  const currentLogin = _.get(token, 'user.login', null)
+
+  // Are we owner of this cassette?
+  const isMine = currentLogin && currentLogin === gistLogin
+
+  // Is there at least one notice we haven't dismissed?
   const newNoticeIds = _.difference(
     notices.map(d => d.id),
     props.dismissedNotices
   )
+
   return newNoticeIds.length
 }
 
