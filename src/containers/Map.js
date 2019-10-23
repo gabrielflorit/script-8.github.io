@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import classNames from 'classnames'
-import canvasAPI from '../iframe/src/contextCanvasAPI/index.js'
+import canvasAPI from '../iframe/src/frameBufferCanvasAPI/index.js'
+import pixelData from '../iframe/src/frameBufferCanvasAPI/pixelData.js'
 import actions from '../actions/actions.js'
 
 const mapStateToProps = ({ sprites, map }) => ({ sprites, map })
@@ -12,7 +13,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Map extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
     this.handleOnMouseEnter = this.handleOnMouseEnter.bind(this)
@@ -20,8 +21,12 @@ class Map extends Component {
     this.handleOnTouchMove = this.handleOnTouchMove.bind(this)
     this.handleSpriteClick = this.handleSpriteClick.bind(this)
     this.handleRoomClick = this.handleRoomClick.bind(this)
+
+    this.spritePixelData = pixelData({ width: 128, height: 64 })
     this.drawSprite = this.drawSprite.bind(this)
+    this.roomPixelData = pixelData({ width: 128, height: 128 })
     this.drawRoom = this.drawRoom.bind(this)
+    this.mapPixelData = pixelData({ width: 128 * 8, height: 128 * 4 })
     this.drawMap = this.drawMap.bind(this)
     this.getCurrentRoom = this.getCurrentRoom.bind(this)
     this.setMode = this.setMode.bind(this)
@@ -34,17 +39,17 @@ class Map extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.drawSprites()
     this.drawRoom()
     this.drawMap()
   }
 
-  drawSprites () {
+  drawSprites() {
     const { sprites } = this.props
 
     this.spriteCanvasAPI = canvasAPI({
-      ctx: this._spriteCanvas.getContext('2d'),
+      pixels: this.spritePixelData.pixels,
       width: 128,
       height: 64,
       sprites
@@ -56,16 +61,19 @@ class Map extends Component {
       const col = key % 16
       this.spriteCanvasAPI.sprite(col * 8, row * 8, key)
     })
+    this.spritePixelData.writePixelDataToCanvas(
+      this._spriteCanvas.getContext('2d')
+    )
   }
 
-  drawRoom () {
+  drawRoom() {
     const before = Date.now()
 
     const { sprites, map } = this.props
     const { roomIndex } = this.state
 
     this.roomCanvasAPI = canvasAPI({
-      ctx: this._roomCanvas.getContext('2d'),
+      pixels: this.roomPixelData.pixels,
       width: 128,
       height: 128,
       sprites
@@ -81,17 +89,18 @@ class Map extends Component {
         this.roomCanvasAPI.sprite(colN * 8, rowN * 8, sprite)
       })
     })
+    this.roomPixelData.writePixelDataToCanvas(this._roomCanvas.getContext('2d'))
 
     const after = Date.now()
     console.log(`this.drawRoom() took: ${after - before}ms`)
   }
 
-  drawMap () {
+  drawMap() {
     const before = Date.now()
 
     const { map, sprites } = this.props
     this.mapCanvasAPI = canvasAPI({
-      ctx: this._mapCanvas.getContext('2d'),
+      pixels: this.mapPixelData.pixels,
       width: 128 * 8,
       height: 128 * 4,
       sprites,
@@ -104,17 +113,18 @@ class Map extends Component {
         this.mapCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
       })
     })
+    this.mapPixelData.writePixelDataToCanvas(this._mapCanvas.getContext('2d'))
 
     const after = Date.now()
     console.log(`this.drawMap() took: ${after - before}ms`)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.drawRoom()
     this.drawMap()
   }
 
-  handleOnMouseDown (e) {
+  handleOnMouseDown(e) {
     this.setState({
       mouseDown: true
     })
@@ -122,20 +132,20 @@ class Map extends Component {
     this.drawSprite({ row: +row, col: +col })
   }
 
-  handleOnMouseEnter (e) {
+  handleOnMouseEnter(e) {
     if (this.state.mouseDown) {
       const { row, col } = e.target.dataset
       this.drawSprite({ row: +row, col: +col })
     }
   }
 
-  handleOnMouseUp () {
+  handleOnMouseUp() {
     this.setState({
       mouseDown: false
     })
   }
 
-  handleOnTouchMove (e) {
+  handleOnTouchMove(e) {
     if (this.state.mouseDown) {
       const touchLocation = e.changedTouches[0]
       const dataset = document.elementFromPoint(
@@ -149,15 +159,15 @@ class Map extends Component {
     }
   }
 
-  handleSpriteClick (spriteIndex) {
+  handleSpriteClick(spriteIndex) {
     this.setState({ spriteIndex, mode: '+' })
   }
 
-  handleRoomClick (roomIndex) {
+  handleRoomClick(roomIndex) {
     this.setState({ roomIndex })
   }
 
-  drawSprite ({ row, col }) {
+  drawSprite({ row, col }) {
     const { roomIndex, spriteIndex, mode } = this.state
     const { updateMap } = this.props
     const map = this.getCurrentRoom()
@@ -167,30 +177,30 @@ class Map extends Component {
     updateMap(newMap)
   }
 
-  getCurrentRoom () {
+  getCurrentRoom() {
     const { map } = this.props
     return map.length ? map : Map.createBlankMap()
   }
 
-  setMode (mode) {
+  setMode(mode) {
     this.setState({
       mode
     })
   }
 
-  render () {
+  render() {
     const { roomIndex, spriteIndex, mode } = this.state
     const { map } = this.props
     return (
       <div
         onMouseUp={this.handleOnMouseUp}
         onTouchEnd={this.handleOnMouseUp}
-        className='Map two-rows-and-grid'
+        className="Map two-rows-and-grid"
       >
-        <div className='main'>
-          <div className='MapEditor'>
-            <div className='room-and-tools'>
-              <div className='room'>
+        <div className="main">
+          <div className="MapEditor">
+            <div className="room-and-tools">
+              <div className="room">
                 <table>
                   <tbody>
                     {_.range(16).map(row => (
@@ -209,7 +219,7 @@ class Map extends Component {
                                 onMouseEnter={this.handleOnMouseEnter}
                                 onTouchStart={this.handleOnMouseDown}
                                 onTouchMove={this.handleOnTouchMove}
-                                className='background-'
+                                className="background-"
                               >
                                 {_.isNil(sprite) ? 'x' : ''}
                               </button>
@@ -228,7 +238,7 @@ class Map extends Component {
                   }}
                 />
               </div>
-              <div className='tools'>
+              <div className="tools">
                 <button
                   className={classNames('button', {
                     active: mode === '+'
@@ -252,8 +262,8 @@ class Map extends Component {
                 </button>
               </div>
             </div>
-            <div className='sprites-and-map'>
-              <div className='sprites'>
+            <div className="sprites-and-map">
+              <div className="sprites">
                 <table>
                   <tbody>
                     {_.range(8).map(row => (
@@ -289,7 +299,7 @@ class Map extends Component {
                   }}
                 />
               </div>
-              <div className='map'>
+              <div className="map">
                 <table>
                   <tbody>
                     {_.range(4).map(row => (

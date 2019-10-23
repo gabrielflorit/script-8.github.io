@@ -18,6 +18,7 @@ import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
 import { default as frameBufferCanvasAPI } from './frameBufferCanvasAPI/index.js'
+import pixelData from './frameBufferCanvasAPI/pixelData.js'
 import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
 import getUserInput, { allowedKeys } from './getUserInput.js'
@@ -212,25 +213,7 @@ class Iframe extends Component {
       sound: true
     }
 
-    // Pixel data has the actual image data object which can be passed to putImageData.
-    this._pixelData = new ImageData(CANVAS_SIZE, CANVAS_SIZE)
-
-    // This contains the actual binary data for setting on _pixelData. It cannot
-    // be accessed directly, but is instead modified through TypedArrays such as
-    // Uint8ClampedArray and Uint32Array. Both the TypedArrays below refer to
-    // the same backing buffer, so modifying values via one will be reflected in
-    // the other.
-    this._pixelBuffer = new ArrayBuffer(4 * CANVAS_SIZE * CANVAS_SIZE)
-
-    // The pixelBytes array is only used to set the data in the _pixelData
-    // object. ImageData only has an Uint8ClampedArray to access the underlying
-    // bytes, so a Uint8ClampedArray must be kept around to copy the data.
-    this._pixelBytes = new Uint8ClampedArray(this._pixelBuffer)
-
-    // It turns out that setting pixels all at once via a single integer is much
-    // faster than setting each byte individually. So the pixel data is only
-    // ever modified via the Uint32Array for performance reasons.
-    this._pixelIntegers = new Uint32Array(this._pixelBuffer)
+    this._pixelData = pixelData({ width: CANVAS_SIZE, height: CANVAS_SIZE })
   }
 
   // The following event listeners add/remove css classes from the DOM elements,
@@ -416,7 +399,7 @@ class Iframe extends Component {
         Array,
         log: this.addLog,
         ...canvasAPI({
-          pixels: this._pixelIntegers,
+          pixels: this._pixelData.pixels,
           ctx: this._canvas.getContext('2d'),
           width: CANVAS_SIZE,
           height: CANVAS_SIZE,
@@ -444,9 +427,7 @@ class Iframe extends Component {
 
   // Writes pixel data buffer to canvas.
   writePixelDataToCanvas() {
-    this._pixelData.data.set(this._pixelBytes)
-    const ctx = this._canvas.getContext('2d')
-    ctx.putImageData(this._pixelData, 0, 0)
+    this._pixelData.writePixelDataToCanvas(this._canvas.getContext('2d'))
   }
 
   // Calls window.draw(state) .
@@ -601,9 +582,7 @@ class Iframe extends Component {
       // and try fetching the gist.
       window
         .fetch(
-          `${process.env.REACT_APP_NOW}/gist/${
-            window.SCRIPT_8_EMBEDDED_GIST_ID
-          }`
+          `${process.env.REACT_APP_NOW}/gist/${window.SCRIPT_8_EMBEDDED_GIST_ID}`
         )
         .then(response => response.json())
         .then(json => {
@@ -1112,7 +1091,7 @@ class Iframe extends Component {
           if (buttons.length !== canvases.length) {
             actors.forEach((actor, i) => {
               // Fill the buffer with 0.
-              this._pixelIntegers.fill(0)
+              this._pixelData.pixels.fill(0)
 
               // Draw this actor on the center of the screen.
               window.drawActors({
