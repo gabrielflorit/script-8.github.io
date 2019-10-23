@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import classNames from 'classnames'
-import canvasAPI from '../iframe/src/contextCanvasAPI/index.js'
+import canvasAPI from '../iframe/src/frameBufferCanvasAPI/index.js'
+import pixelData from '../iframe/src/frameBufferCanvasAPI/pixelData.js'
 import actions from '../actions/actions.js'
 
 const mapStateToProps = ({ sprites, map }) => ({ sprites, map })
@@ -20,8 +21,12 @@ class Map extends Component {
     this.handleOnTouchMove = this.handleOnTouchMove.bind(this)
     this.handleSpriteClick = this.handleSpriteClick.bind(this)
     this.handleRoomClick = this.handleRoomClick.bind(this)
+
+    this.spritePixelData = pixelData({ width: 128, height: 64 });
     this.drawSprite = this.drawSprite.bind(this)
+    this.roomPixelData = pixelData({ width: 128, height: 128 });
     this.drawRoom = this.drawRoom.bind(this)
+    this.mapPixelData = pixelData({ width: 128 * 8, height: 128 * 4});
     this.drawMap = this.drawMap.bind(this)
     this.getCurrentRoom = this.getCurrentRoom.bind(this)
     this.setMode = this.setMode.bind(this)
@@ -44,7 +49,7 @@ class Map extends Component {
     const { sprites } = this.props
 
     this.spriteCanvasAPI = canvasAPI({
-      ctx: this._spriteCanvas.getContext('2d'),
+      pixels: this.spritePixelData.pixels,
       width: 128,
       height: 64,
       sprites
@@ -56,6 +61,7 @@ class Map extends Component {
       const col = key % 16
       this.spriteCanvasAPI.sprite(col * 8, row * 8, key)
     })
+    this.spritePixelData.writePixelDataToCanvas(this._spriteCanvas.getContext('2d'))
   }
 
   drawRoom () {
@@ -65,7 +71,7 @@ class Map extends Component {
     const { roomIndex } = this.state
 
     this.roomCanvasAPI = canvasAPI({
-      ctx: this._roomCanvas.getContext('2d'),
+      pixels: this.roomPixelData.pixels,
       width: 128,
       height: 128,
       sprites
@@ -81,6 +87,7 @@ class Map extends Component {
         this.roomCanvasAPI.sprite(colN * 8, rowN * 8, sprite)
       })
     })
+    this.roomPixelData.writePixelDataToCanvas(this._roomCanvas.getContext('2d'))
 
     const after = Date.now()
     console.log(`this.drawRoom() took: ${after - before}ms`)
@@ -91,7 +98,7 @@ class Map extends Component {
 
     const { map, sprites } = this.props
     this.mapCanvasAPI = canvasAPI({
-      ctx: this._mapCanvas.getContext('2d'),
+      pixels: this.mapPixelData.pixels,
       width: 128 * 8,
       height: 128 * 4,
       sprites,
@@ -104,6 +111,7 @@ class Map extends Component {
         this.mapCanvasAPI.sprite(colNumber * 8, rowNumber * 8, col)
       })
     })
+    this.mapPixelData.writePixelDataToCanvas(this._mapCanvas.getContext('2d'))
 
     const after = Date.now()
     console.log(`this.drawMap() took: ${after - before}ms`)
