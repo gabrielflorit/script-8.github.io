@@ -17,12 +17,10 @@ body
   align-items center
   overflow hidden
 
-.mobile-buttons
-  display none
-
-@media screen and (max-width: 26rem)
   .mobile-buttons
-    display grid
+    display none
+    &.show
+      display grid
     margin-top 0.5rem
     grid-template-columns 15% 20% 15% 10% 20% 20%
     grid-template-rows 1rem 1rem 1rem 1rem 1rem 1rem 

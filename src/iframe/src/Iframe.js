@@ -209,8 +209,11 @@ class Iframe extends Component {
       callbacks: {},
       isPaused: false,
       alteredStates: [],
+      // NOTE: Output.js defines this as:
+      //   run: [screenTypes.BOOT, screenTypes.RUN].includes(screen)
       run: true,
-      sound: true
+      sound: true,
+      isTouchScreen: false
     }
 
     this._pixelData = pixelData({ width: CANVAS_SIZE, height: CANVAS_SIZE })
@@ -516,7 +519,12 @@ class Iframe extends Component {
     }
 
     // Add touch / mouse / key event handlers.
-    document.addEventListener('touchstart', this.mousedownHandler)
+    document.addEventListener('touchstart', () => {
+      this.setState({
+        isTouchScreen: true
+      })
+      this.mousedownHandler()
+    })
     document.addEventListener('mousedown', this.mousedownHandler)
     document.addEventListener('touchend', this.mouseupHandler)
     document.addEventListener('mouseup', this.mouseupHandler)
@@ -582,9 +590,7 @@ class Iframe extends Component {
       // and try fetching the gist.
       window
         .fetch(
-          `${process.env.REACT_APP_NOW}/gist/${
-            window.SCRIPT_8_EMBEDDED_GIST_ID
-          }`
+          `${process.env.REACT_APP_NOW}/gist/${window.SCRIPT_8_EMBEDDED_GIST_ID}`
         )
         .then(response => response.json())
         .then(json => {
@@ -1156,8 +1162,10 @@ class Iframe extends Component {
       selectedActors,
       fps,
       run,
-      started
+      started,
+      isTouchScreen
     } = this.state
+
     return (
       <div className="Iframe">
         <div className="container">
@@ -1172,7 +1180,7 @@ class Iframe extends Component {
 
           <div
             className={classNames('mobile-buttons', {
-              hide: !run
+              show: run && isTouchScreen
             })}
           >
             <div
