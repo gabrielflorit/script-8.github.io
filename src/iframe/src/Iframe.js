@@ -582,7 +582,9 @@ class Iframe extends Component {
       // and try fetching the gist.
       window
         .fetch(
-          `${process.env.REACT_APP_NOW}/gist/${window.SCRIPT_8_EMBEDDED_GIST_ID}`
+          `${process.env.REACT_APP_NOW}/gist/${
+            window.SCRIPT_8_EMBEDDED_GIST_ID
+          }`
         )
         .then(response => response.json())
         .then(json => {
