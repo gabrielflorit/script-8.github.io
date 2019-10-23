@@ -213,7 +213,7 @@ class Iframe extends Component {
       sound: true
     }
 
-    this._pixelData = pixelData({ width: CANVAS_SIZE, height: CANVAS_SIZE})
+    this._pixelData = pixelData({ width: CANVAS_SIZE, height: CANVAS_SIZE })
   }
 
   // The following event listeners add/remove css classes from the DOM elements,
@@ -582,9 +582,7 @@ class Iframe extends Component {
       // and try fetching the gist.
       window
         .fetch(
-          `${process.env.REACT_APP_NOW}/gist/${
-            window.SCRIPT_8_EMBEDDED_GIST_ID
-          }`
+          `${process.env.REACT_APP_NOW}/gist/${window.SCRIPT_8_EMBEDDED_GIST_ID}`
         )
         .then(response => response.json())
         .then(json => {

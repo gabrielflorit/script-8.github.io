@@ -1,6 +1,4 @@
-const pixelData = ({
-  width, height
-}) => {
+const pixelData = ({ width, height }) => {
   // Pixel data has the actual image data object which can be passed to putImageData.
   const _pixelData = new ImageData(width, height)
 
@@ -21,15 +19,15 @@ const pixelData = ({
   // ever modified via the Uint32Array for performance reasons.
   const _pixelIntegers = new Uint32Array(_pixelBuffer)
 
-  const writePixelDataToCanvas = (ctx) => {
+  const writePixelDataToCanvas = ctx => {
     _pixelData.data.set(_pixelBytes)
     ctx.putImageData(_pixelData, 0, 0)
-  };
+  }
 
   return {
     pixels: _pixelIntegers,
     writePixelDataToCanvas
-  };
-};
+  }
+}
 
-export default pixelData;
+export default pixelData
