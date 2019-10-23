@@ -64,7 +64,7 @@ const shouldShowNotice = props => {
     props.dismissedNotices
   )
 
-  return newNoticeIds.length
+  return isMine && newNoticeIds.length
 }
 
 const options = {
