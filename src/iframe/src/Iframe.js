@@ -761,11 +761,11 @@ class Iframe extends Component {
         this.sendLogsToParent()
 
         // Update fps, only if we had a new measurement.
-        if (newFps !== undefined && newFps !== this.state.fps) {
-          this.setState({
-            fps: newFps
-          })
-        }
+        // if (newFps !== undefined && newFps !== this.state.fps) {
+        //   this.setState({
+        //     fps: newFps
+        //   })
+        // }
 
         // If we got to this point, send a null error to parent.
         this.sendErrorToParent({ type: 'startTimer' })
