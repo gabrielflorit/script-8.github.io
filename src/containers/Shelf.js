@@ -25,6 +25,7 @@ class Shelf extends Component {
   constructor(props) {
     super(props)
     this.fetchCassettes = this.fetchCassettes.bind(this)
+    this.makeShelfCassettes = this.makeShelfCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
     this.handleSetVisibility = this.handleSetVisibility.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
@@ -163,6 +164,20 @@ class Shelf extends Component {
     }
   }
 
+  // NOTE: this is currently not in use
+  makeShelfCassettes({ cassettes, title, tokenLogin }) {
+    return (
+      <ShelfCassettes
+        handleSetVisibility={this.handleSetVisibility}
+        handleRemove={this.handleRemove}
+        tokenLogin={tokenLogin}
+        handleOnClick={this.handleOnClick}
+        cassettes={cassettes}
+        title={title}
+      />
+    )
+  }
+
   render() {
     const {
       popularCassettes,
@@ -174,6 +189,12 @@ class Shelf extends Component {
 
     const tokenLogin = _.get(this.props, 'token.user.login', null)
 
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const user = params.get('user')
+
+    const userPublicCassettes = recentCassettes.filter(d => d.user === user)
+
     // TODO: consolidate duplication below.
 
     return (
@@ -181,6 +202,40 @@ class Shelf extends Component {
         <div className="main">
           {fetching ? (
             <p className="loading">loading cassettes...</p>
+          ) : user ? (
+            user === tokenLogin ? (
+              <Fragment>
+                {yourPrivateCassettes && yourPrivateCassettes.length ? (
+                  <ShelfCassettes
+                    handleSetVisibility={this.handleSetVisibility}
+                    handleRemove={this.handleRemove}
+                    tokenLogin={tokenLogin}
+                    handleOnClick={this.handleOnClick}
+                    cassettes={yourPrivateCassettes}
+                    title="Your private cassettes"
+                  />
+                ) : null}
+                {yourPublicCassettes && yourPublicCassettes.length ? (
+                  <ShelfCassettes
+                    handleSetVisibility={this.handleSetVisibility}
+                    handleRemove={this.handleRemove}
+                    tokenLogin={tokenLogin}
+                    handleOnClick={this.handleOnClick}
+                    cassettes={yourPublicCassettes}
+                    title="Your public cassettes"
+                  />
+                ) : null}
+              </Fragment>
+            ) : userPublicCassettes.length ? (
+              <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                handleRemove={this.handleRemove}
+                tokenLogin={tokenLogin}
+                handleOnClick={this.handleOnClick}
+                cassettes={userPublicCassettes}
+                title={`${user}'s cassettes`}
+              />
+            ) : null
           ) : (
             <Fragment>
               {yourPrivateCassettes && yourPrivateCassettes.length ? (
