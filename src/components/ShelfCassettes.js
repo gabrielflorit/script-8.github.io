@@ -63,7 +63,9 @@ class ShelfCassettes extends Component {
               <img className="cover" src={cassette.cover} alt="" />
             ) : null}
           </a>
-          <span className="author">by {cassette.user}</span>
+          <span className="author">
+            by <a href={`/?shelf=${cassette.user}`}>{cassette.user}</a>
+          </span>
           <div className="date-info">
             <span className="date">{timeAgo({ now, before: date })}</span>
             <span className="booted">
@@ -96,32 +98,47 @@ class ShelfCassettes extends Component {
   }
 
   render() {
-    const { cassettes, title, step } = this.props
+    const {
+      cassettes,
+      title,
+      step,
+      showAllButton,
+      handleOnShowAllClick
+    } = this.props
     const { index } = this.state
     const now = new Date()
 
     return (
       <div className="ShelfCassettes">
-        <div className="title-nav">
-          <span className="title">{title}</span>
-          <button
-            disabled={index <= 0}
-            className="button"
-            onClick={this.handlePrevious}
-          >
-            &lt;
-          </button>
-          <button
-            disabled={index >= cassettes.length - step}
-            className="button"
-            onClick={this.handleNext}
-          >
-            &gt;
-          </button>
-          <span className="count">
-            {index + 1} - {Math.min(index + step, cassettes.length)} (
-            {cassettes.length} total)
-          </span>
+        <div className="title-nav-and-show-all">
+          <div className="title-nav">
+            <span className="title">{title}</span>
+            <button
+              disabled={index <= 0}
+              className="button"
+              onClick={this.handlePrevious}
+            >
+              &lt;
+            </button>
+            <button
+              disabled={index >= cassettes.length - step}
+              className="button"
+              onClick={this.handleNext}
+            >
+              &gt;
+            </button>
+            <span className="count">
+              {index + 1} - {Math.min(index + step, cassettes.length)} (
+              {cassettes.length} total)
+            </span>
+          </div>
+          {showAllButton ? (
+            <div className="show-all">
+              <button className="button" onClick={handleOnShowAllClick}>
+                show all cassettes
+              </button>
+            </div>
+          ) : null}
         </div>
         <ul className="cassettes">
           {_(cassettes)
@@ -135,7 +152,8 @@ class ShelfCassettes extends Component {
 }
 
 ShelfCassettes.defaultProps = {
-  step: 5
+  step: 5,
+  showAllButton: false
 }
 
 export default ShelfCassettes

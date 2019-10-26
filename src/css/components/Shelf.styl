@@ -17,14 +17,28 @@
       font-size $font-xlarge
       color $palette-5
 
-    .title-nav
+    .title-nav-and-show-all
+      display flex
+      justify-content space-between
       margin-left 1.5rem
       margin-top 1.5rem
+      @media screen and (max-width: 48rem)
+        display block
+        .show-all
+          margin-top 0.5rem
 
       span.title
         text-transform uppercase
         font-size $font-xlarge
         margin-right 0.5rem
+      .show-all button
+        padding 0
+        color $palette-3
+        &:hover
+          color $palette-1
+        text-transform uppercase
+        font-size $font-xlarge
+        margin-right 1.5rem
       span.count
         font-size $font-small
       button
@@ -101,6 +115,11 @@
           color $palette-4
           text-align center
           width 100%
+          pointer-events auto
+          a
+            color $palette-4
+            &:hover
+              color $palette-2
 
         .date-info
           display flex
