@@ -191,9 +191,11 @@ class Shelf extends Component {
 
     const { search } = window.location
     const params = new window.URLSearchParams(search)
-    const user = params.get('user')
+    const shelfUser = params.get('shelf')
 
-    const userPublicCassettes = recentCassettes.filter(d => d.user === user)
+    const userPublicCassettes = recentCassettes.filter(
+      d => d.user === shelfUser
+    )
 
     // TODO: consolidate duplication below.
 
@@ -202,38 +204,16 @@ class Shelf extends Component {
         <div className="main">
           {fetching ? (
             <p className="loading">loading cassettes...</p>
-          ) : user ? (
-            user === tokenLogin ? (
-              <Fragment>
-                {yourPrivateCassettes && yourPrivateCassettes.length ? (
-                  <ShelfCassettes
-                    handleSetVisibility={this.handleSetVisibility}
-                    handleRemove={this.handleRemove}
-                    tokenLogin={tokenLogin}
-                    handleOnClick={this.handleOnClick}
-                    cassettes={yourPrivateCassettes}
-                    title="Your private cassettes"
-                  />
-                ) : null}
-                {yourPublicCassettes && yourPublicCassettes.length ? (
-                  <ShelfCassettes
-                    handleSetVisibility={this.handleSetVisibility}
-                    handleRemove={this.handleRemove}
-                    tokenLogin={tokenLogin}
-                    handleOnClick={this.handleOnClick}
-                    cassettes={yourPublicCassettes}
-                    title="Your public cassettes"
-                  />
-                ) : null}
-              </Fragment>
-            ) : userPublicCassettes.length ? (
+          ) : shelfUser ? (
+            userPublicCassettes.length ? (
               <ShelfCassettes
                 handleSetVisibility={this.handleSetVisibility}
                 handleRemove={this.handleRemove}
                 tokenLogin={tokenLogin}
                 handleOnClick={this.handleOnClick}
                 cassettes={userPublicCassettes}
-                title={`${user}'s cassettes`}
+                title={`${shelfUser}'s cassettes`}
+                step={20}
               />
             ) : null
           ) : (

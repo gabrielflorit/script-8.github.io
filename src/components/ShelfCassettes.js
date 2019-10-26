@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import timeAgo from '../utils/timeAgo.js'
 
-const STEP = 5
-
 class ShelfCassettes extends Component {
   constructor(props) {
     super(props)
@@ -17,13 +15,13 @@ class ShelfCassettes extends Component {
 
   handleNext() {
     this.setState({
-      index: this.state.index + STEP
+      index: this.state.index + this.props.step
     })
   }
 
   handlePrevious() {
     this.setState({
-      index: Math.max(this.state.index - STEP, 0)
+      index: Math.max(this.state.index - this.props.step, 0)
     })
   }
 
@@ -98,7 +96,7 @@ class ShelfCassettes extends Component {
   }
 
   render() {
-    const { cassettes, title } = this.props
+    const { cassettes, title, step } = this.props
     const { index } = this.state
     const now = new Date()
 
@@ -114,26 +112,30 @@ class ShelfCassettes extends Component {
             &lt;
           </button>
           <button
-            disabled={index >= cassettes.length - STEP}
+            disabled={index >= cassettes.length - step}
             className="button"
             onClick={this.handleNext}
           >
             &gt;
           </button>
           <span className="count">
-            {index + 1} - {Math.min(index + STEP, cassettes.length)} (
+            {index + 1} - {Math.min(index + step, cassettes.length)} (
             {cassettes.length} total)
           </span>
         </div>
         <ul className="cassettes">
           {_(cassettes)
-            .slice(index, index + STEP)
+            .slice(index, index + step)
             .map((d, i) => this.renderCassette({ cassette: d, i, now }))
             .value()}
         </ul>
       </div>
     )
   }
+}
+
+ShelfCassettes.defaultProps = {
+  step: 5
 }
 
 export default ShelfCassettes
