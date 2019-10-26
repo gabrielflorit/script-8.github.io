@@ -25,7 +25,9 @@ class Shelf extends Component {
   constructor(props) {
     super(props)
     this.fetchCassettes = this.fetchCassettes.bind(this)
+    this.makeShelfCassettes = this.makeShelfCassettes.bind(this)
     this.handleOnClick = this.handleOnClick.bind(this)
+    this.handleOnShowAllClick = this.handleOnShowAllClick.bind(this)
     this.handleSetVisibility = this.handleSetVisibility.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.state = {
@@ -48,7 +50,14 @@ class Shelf extends Component {
     const { token } = this.props
     const currentLogin = _.get(token, 'user.login', null)
 
-    if (token.value) {
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const shelfUser = params.get('shelf')
+
+    // If querystring doesn't have `shelf` and we are logged in,
+    // load our cassettes.
+
+    if (token.value && !shelfUser) {
       window
         .fetch(`${process.env.REACT_APP_NOW}/private-cassettes`, {
           method: 'POST',
@@ -135,8 +144,19 @@ class Shelf extends Component {
       (prevProps.shelving && !this.props.shelving) ||
       prevProps.token !== this.props.token
     ) {
+      this.setState({
+        fetching: true
+      })
       this.fetchCassettes()
     }
+  }
+
+  handleOnShowAllClick() {
+    window.history.pushState(null, null, '/')
+    this.setState({
+      fetching: true
+    })
+    this.fetchCassettes()
   }
 
   handleOnClick({ e, id }) {
@@ -163,6 +183,20 @@ class Shelf extends Component {
     }
   }
 
+  // NOTE: this is currently not in use
+  makeShelfCassettes({ cassettes, title, tokenLogin }) {
+    return (
+      <ShelfCassettes
+        handleSetVisibility={this.handleSetVisibility}
+        handleRemove={this.handleRemove}
+        tokenLogin={tokenLogin}
+        handleOnClick={this.handleOnClick}
+        cassettes={cassettes}
+        title={title}
+      />
+    )
+  }
+
   render() {
     const {
       popularCassettes,
@@ -174,6 +208,14 @@ class Shelf extends Component {
 
     const tokenLogin = _.get(this.props, 'token.user.login', null)
 
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const shelfUser = params.get('shelf')
+
+    const userPublicCassettes = recentCassettes.filter(
+      d => d.user === shelfUser
+    )
+
     // TODO: consolidate duplication below.
 
     return (
@@ -181,6 +223,22 @@ class Shelf extends Component {
         <div className="main">
           {fetching ? (
             <p className="loading">loading cassettes...</p>
+          ) : shelfUser ? (
+            userPublicCassettes.length ? (
+              <ShelfCassettes
+                handleSetVisibility={this.handleSetVisibility}
+                handleRemove={this.handleRemove}
+                tokenLogin={tokenLogin}
+                handleOnClick={this.handleOnClick}
+                cassettes={userPublicCassettes}
+                title={`${shelfUser}'s ${
+                  shelfUser === tokenLogin ? 'public' : ''
+                } cassettes`}
+                step={20}
+                showAllButton={true}
+                handleOnShowAllClick={this.handleOnShowAllClick}
+              />
+            ) : null
           ) : (
             <Fragment>
               {yourPrivateCassettes && yourPrivateCassettes.length ? (

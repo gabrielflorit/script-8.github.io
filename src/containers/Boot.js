@@ -23,10 +23,15 @@ class Boot extends Component {
     const { search } = window.location
     const params = new window.URLSearchParams(search)
     const id = params.get('id')
+    const shelfUser = params.get('shelf')
     // If there's an id in the query string,
     if (id) {
       // try fetching the gist.
       fetchGist({ id, token })
+    } else if (shelfUser) {
+      // If there's a user in the query string,
+      // show shelf.
+      setScreen(screenTypes.SHELF)
     } else {
       // If there is no id,
       // show home.
