@@ -210,10 +210,10 @@ class Shelf extends Component {
 
     const { search } = window.location
     const params = new window.URLSearchParams(search)
-    const shelfUser = params.get('shelf')
+    const shelfUser = params.get('shelf').toLowerCase()
 
     const userPublicCassettes = recentCassettes.filter(
-      d => d.user === shelfUser
+      d => d.user.toLowerCase() === shelfUser
     )
 
     // TODO: consolidate duplication below.
@@ -232,7 +232,7 @@ class Shelf extends Component {
                 handleOnClick={this.handleOnClick}
                 cassettes={userPublicCassettes}
                 title={`${shelfUser}'s ${
-                  shelfUser === tokenLogin ? 'public' : ''
+                  shelfUser === tokenLogin.toLowerCase() ? 'public' : ''
                 } cassettes`}
                 step={20}
                 showAllButton={true}
