@@ -44,7 +44,13 @@ class Shelf extends Component {
 
   componentWillUnmount() {
     this._isMounted = false
-    window.history.pushState(null, null, '/')
+    const { search } = window.location
+    const params = new window.URLSearchParams(search)
+    const gameId = params.get('id')
+    const shelfUser = params.get('shelf')
+    if (!gameId && shelfUser) {
+      window.history.pushState(null, null, '/')
+    }
   }
 
   fetchCassettes() {
