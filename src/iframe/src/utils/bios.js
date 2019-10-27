@@ -18,11 +18,13 @@ const biosLines = range(18).map(() => {
   )
 })
 
-initialState = {
-  counter: 0,
-  totalElapsed: 0,
-  modeIndex: 0,
-  hasStarted: false
+if (typeof(initialState) !== 'undefined') {
+  initialState = {
+    counter: 0,
+    totalElapsed: 0,
+    modeIndex: 0,
+    hasStarted: false
+  }
 }
 
 init = state => {
