@@ -238,7 +238,9 @@ class Shelf extends Component {
                 showAllButton={true}
                 handleOnShowAllClick={this.handleOnShowAllClick}
               />
-            ) : null
+            ) : (
+              <p className="loading">no cassettes found</p>
+            )
           ) : (
             <Fragment>
               {yourPrivateCassettes && yourPrivateCassettes.length ? (
