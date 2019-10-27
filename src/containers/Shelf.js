@@ -44,6 +44,7 @@ class Shelf extends Component {
 
   componentWillUnmount() {
     this._isMounted = false
+    window.history.pushState(null, null, '/')
   }
 
   fetchCassettes() {
@@ -210,7 +211,7 @@ class Shelf extends Component {
 
     const { search } = window.location
     const params = new window.URLSearchParams(search)
-    const shelfUser = params.get('shelf').toLowerCase()
+    const shelfUser = (params.get('shelf') || '').toLowerCase()
 
     const userPublicCassettes = recentCassettes.filter(
       d => d.user.toLowerCase() === shelfUser
