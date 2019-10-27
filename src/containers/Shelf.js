@@ -233,7 +233,9 @@ class Shelf extends Component {
                 handleOnClick={this.handleOnClick}
                 cassettes={userPublicCassettes}
                 title={`${shelfUser}'s ${
-                  shelfUser === tokenLogin.toLowerCase() ? 'public' : ''
+                  tokenLogin && shelfUser === tokenLogin.toLowerCase()
+                    ? 'public'
+                    : ''
                 } cassettes`}
                 step={20}
                 showAllButton={true}
