@@ -53,7 +53,13 @@ const game = handleActions(
     }),
 
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
-      parseGistGame(action.payload)
+      parseGistGame(action.payload),
+
+    [actionTypes.SET_MOUSE_CODE_POSITION]: (state, { payload }) => ({
+      ...state,
+      [payload.tab]: { ...state[payload.tab], mouseCodePosition: payload.mouseCodePosition }
+    })
+
   },
   initialState.game
 )

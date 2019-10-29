@@ -50,7 +50,8 @@ const actions = createActions({
   [actionTypes.COUNTER_CASSETTE_SUCCESS]: d => d,
   [actionTypes.SET_SCROLL_DATA]: d => d,
   [actionTypes.SET_CODE_TAB]: d => d,
-  [actionTypes.UPDATE_HISTORY]: d => d
+  [actionTypes.UPDATE_HISTORY]: d => d,
+  [actionTypes.SET_MOUSE_CODE_POSITION]: d => d
 })
 
 export default actions

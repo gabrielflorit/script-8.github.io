@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, transform } from 'lodash'
 import colors from '../colors.js'
 import drawLine from './line.js'
 import drawPolyStroke from './polyStroke.js'
@@ -6,6 +6,12 @@ import { drawRectStroke, drawRectFill } from './rect.js'
 import drawCircle from './circle.js'
 import drawSprite from './sprite.js'
 import drawText from './print.js'
+
+export const highlightSymbol = Symbol()
+export const drawFunctionNames = [
+  "clear", "colorSwap", "setPixel", "line", "polyStroke", "rectStroke", "rectFill",
+  "circStroke", "circFill", "print", "sprite", "map"
+];
 
 const backgroundColor = 7
 
@@ -17,6 +23,19 @@ const canvasAPI = ({
   // Rename to initialMap, since we have a function named map.
   map: initialMap = []
 }) => {
+  let _shouldHighlight = false
+  const _injectHighlight = (drawCall) => {
+    return (...args) => {
+      if (args[0] == highlightSymbol) {
+        args.shift()
+        _shouldHighlight = true
+      } else {
+        _shouldHighlight = false
+      }
+      drawCall.apply(null, args)
+    }
+  }
+
   let _runningMap = JSON.parse(JSON.stringify(initialMap))
   let _cameraX = 0
   let _cameraY = 0
@@ -43,7 +62,7 @@ const canvasAPI = ({
     x = Math.floor(x - _cameraX)
     y = Math.floor(y - _cameraY)
     if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight) return
-    const int = colors.int(c)
+    const int = colors.int(c + (_shouldHighlight ? -1 : 0))
     if (int) {
       const newColor = _colorSwaps[int] || int
       pixels[y * canvasWidth + x] = newColor
@@ -177,7 +196,7 @@ const canvasAPI = ({
     _runningMap = JSON.parse(JSON.stringify(initialMap))
   }
 
-  return {
+  return transform({
     camera,
     clear,
     colorSwap,
@@ -195,7 +214,7 @@ const canvasAPI = ({
     setTile,
     map,
     resetMap
-  }
+  }, (result, apiFunction, name) => result[name] = _injectHighlight(apiFunction))
 }
 
 export default canvasAPI

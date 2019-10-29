@@ -18,7 +18,9 @@ const mapDispatchToProps = dispatch => ({
   setScrollData: ({ tab, scrollData }) =>
     dispatch(actions.setScrollData({ tab, scrollData })),
   updateHistory: ({ index, history }) =>
-    dispatch(actions.updateHistory({ index, history }))
+    dispatch(actions.updateHistory({ index, history })),
+  setMouseCodePosition: ({ tab, mouseCodePosition }) =>
+    dispatch(actions.setMouseCodePosition({ tab, mouseCodePosition }))
 })
 
 class Code extends Component {
@@ -37,6 +39,7 @@ class Code extends Component {
       game,
       tutorial,
       setScrollData,
+      setMouseCodePosition,
       docHistories,
       updateHistory,
       errorLine
@@ -54,6 +57,7 @@ class Code extends Component {
             game={game}
             updateContent={this.handleTabUpdates}
             setScrollData={setScrollData}
+            setMouseCodePosition={setMouseCodePosition}
             docHistories={docHistories}
             updateHistory={updateHistory}
             tutorial={tutorial}

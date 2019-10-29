@@ -17,7 +17,7 @@ import chunk from 'lodash/chunk'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
-import { default as frameBufferCanvasAPI } from './frameBufferCanvasAPI/index.js'
+import { default as frameBufferCanvasAPI, highlightSymbol } from './frameBufferCanvasAPI/index.js'
 import pixelData from './frameBufferCanvasAPI/pixelData.js'
 import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
@@ -66,7 +66,8 @@ window.draw = null
 // to prevent the user from using them.
 window._script8 = {
   embedState: {},
-  reservedTokens: new Set(['init', 'update', 'drawActors', 'draw'])
+  reservedTokens: new Set(['init', 'update', 'drawActors', 'draw']),
+  highlightSymbol
 }
 
 // Convenience function.

@@ -1,10 +1,28 @@
 import _ from 'lodash'
 import runningSum from '../utils/runningSum.js'
+import { drawFunctionNames } from '../frameBufferCanvasAPI';
 
-const assembleOrderedGame = game =>
+const decorateTabCode = (tab, decorate) => {
+  if (tab.mouseCodePosition && tab.text && decorate) {
+    if (drawFunctionNames.includes(tab.mouseCodePosition.callee.name)) {
+      if (tab.mouseCodePosition.arguments.length == 0) {
+        return tab.text;
+      }
+      let firstArgIndex = tab.mouseCodePosition.arguments[0].start;
+      let insertedArg = "_script8.highlightSymbol";
+      if (tab.mouseCodePosition.arguments.length != 1) {
+        insertedArg += ", ";
+      }
+      return tab.text.slice(0, firstArgIndex) + insertedArg + tab.text.slice(firstArgIndex);
+    }
+  }
+  return tab.text
+};
+
+const assembleOrderedGame = (game, decorate = true) =>
   _(game)
     .orderBy((value, key) => key)
-    .map('text')
+    .map(tab => decorateTabCode(tab, decorate))
     .filter(d => !_.isEmpty(d))
     .value()
     .join('\n')

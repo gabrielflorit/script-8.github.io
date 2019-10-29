@@ -4,6 +4,8 @@
 //    if we're not on code, updateContent is called as is
 //    if we are on code, updateContent is called with the prefix
 
+import { parse } from 'acorn'
+import { simple as walk } from 'acorn-walk'
 import React, { Component } from 'react'
 import { isNil } from 'lodash'
 import get from 'lodash/get'
@@ -72,6 +74,34 @@ class CodeEditor extends Component {
         if (e.key === 'Shift') {
           this.activateSlider()
         }
+      }
+    })
+
+    window.addEventListener('mousemove', e => {
+      let tab = getActive(this.props.game)
+      let setMouseCodePosition = (node) => {
+        this.props.setMouseCodePosition({ tab: tab.key, mouseCodePosition: node })
+      }
+      let content = this.codeMirror.getValue()
+      let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
+      let set = false
+      try {
+        walk(parse(content, {locations: true}), {
+          CallExpression(node) {
+            if (!mousePos.outside &&
+                mousePos.line + 1 >= node.loc.start.line &&
+                mousePos.line + 1 <= node.loc.end.line) {
+              if (node.callee.type === "Identifier") {
+                setMouseCodePosition(node)
+                set = true;
+              }
+            }
+          }
+        })
+      } catch { }
+
+      if (!set) {
+        setMouseCodePosition(null)
       }
     })
 

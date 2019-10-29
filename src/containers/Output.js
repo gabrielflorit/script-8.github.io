@@ -292,7 +292,7 @@ class Output extends Component {
     } else {
       // Validate code before drawing.
       getLintErrors({
-        text: assembleOrderedGame(game)
+        text: assembleOrderedGame(game, false)
       }).then(errors => {
         if (!errors.length) {
           sendPayload()
