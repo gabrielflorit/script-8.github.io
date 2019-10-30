@@ -58,6 +58,8 @@ const colors = {
 
   int(i) {
     let index = i % intLookup.length;
+    // `shouldHighlight` is injected in the use code when the current call is under the mouse. If it is true, all colors
+    // drawn are brightened by 2 steps if they can be, or darkened by two steps if they are already too bright
     if (shouldHighlight) {
       if (index > 2) index = clamp(+index - 2, 0, 7)
       else index += 2

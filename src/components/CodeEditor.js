@@ -6,7 +6,7 @@
 import { parse } from 'acorn'
 import { simple as walk } from 'acorn-walk'
 import React, { Component } from 'react'
-import { isNil } from 'lodash'
+import { isNil, throttle } from 'lodash'
 import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'
@@ -77,61 +77,71 @@ class CodeEditor extends Component {
       }
     })
 
+    // Track current mouse position in the code
     window.addEventListener('mousemove', e => {
       let tab = getActive(this.props.game)
-      let setMouseCodePosition = (position) => {
-        this.props.setMouseCodePosition({ tab: tab.key, mouseCodePosition: position })
+      let setCallUnderMouse = (node) => {
+        this.props.setCallUnderMouse({ tab: tab.key, callUnderMouse: node })
       }
-      let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
-      if (!mousePos.outside) {
-        let overlappingNodes = []
-        try {
-          walk(parse(tab.text, {locations: true}), {
-            CallExpression(node) {
-              console.log(node.loc)
-              if (!mousePos.outside &&
-                  mousePos.line + 1 >= node.loc.start.line &&
-                  mousePos.line + 1 <= node.loc.end.line &&
-                  mousePos.ch >= node.loc.start.column &&
-                  mousePos.ch <= node.loc.end.column) {
-                overlappingNodes.push(node)
+
+      // We only want this to show up if the user is holding control. Otherwise selection and cursor position can get
+      // confusing.
+      if (e.ctrlKey) {
+        // Lookup the text position of the mouse
+        let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
+        if (!mousePos.outside) {
+          let smallestNode = null
+          let smallestSize = Infinity
+          try {
+            // Use Acorn to walk over the parsed code looking for each call expression. If the mouse is currently inside
+            // the call expression text bounds, and is smaller than the previously smallest node, then store it away
+            walk(parse(tab.text, {locations: true}), {
+              // Call expression is used because it is pretty consistent.
+              // https://github.com/estree/estree/blob/master/es5.md#callexpression
+              CallExpression(node) {
+                // If the mouse is in bounds, then continue to checking node size
+                if (!mousePos.outside &&
+                    mousePos.line + 1 >= node.loc.start.line &&
+                    mousePos.line + 1 <= node.loc.end.line &&
+                    mousePos.ch >= node.loc.start.column &&
+                    mousePos.ch <= node.loc.end.column) {
+                  let nodeSize = node.end - node.start
+                  if (!smallestNode || nodeSize < smallestSize) {
+                    smallestNode = node
+                    smallestSize = nodeSize
+                  }
+                }
               }
-            }
-          })
-        } catch { }
+            })
+          } catch { }
 
-        let smallestNode = null
-        let smallestSize = Infinity;
-        for (let node of overlappingNodes) {
-          let nodeSize = node.end - node.start
-          if (!smallestNode || nodeSize < smallestSize) {
-            smallestNode = node
-            smallestSize = nodeSize
+          // If a CallExpression node was found, highlight it to indicate to the user what is going on
+          this.hoverMark && this.hoverMark.clear()
+          if (smallestNode) {
+            // and mark this expression.
+            this.hoverMark = this.codeMirror.markText(
+              {
+                line: smallestNode.loc.start.line - 1,
+                ch: smallestNode.loc.start.column
+              },
+              {
+                line: smallestNode.loc.end.line - 1,
+                ch: smallestNode.loc.end.column
+              },
+              {
+                className: 'slider-token'
+              }
+            )
           }
-        }
 
-        this.hoverMark && this.hoverMark.clear()
-        if (smallestNode) {
-          // and mark this expression.
-          console.log(smallestNode)
-          this.hoverMark = this.codeMirror.markText(
-            {
-              line: smallestNode.loc.start.line - 1,
-              ch: smallestNode.loc.start.column
-            },
-            {
-              line: smallestNode.loc.end.line - 1,
-              ch: smallestNode.loc.end.column
-            },
-            {
-              className: 'slider-token'
-            }
-          )
+          // Store the smallest node in the redux store
+          setCallUnderMouse(smallestNode)
+        } else {
+          setCallUnderMouse(null)
         }
-
-        setMouseCodePosition(smallestNode)
       } else {
-        setMouseCodePosition(null)
+        setCallUnderMouse(null)
+        this.hoverMark && this.hoverMark.clear()
       }
     })
 

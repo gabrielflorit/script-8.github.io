@@ -1,4 +1,4 @@
-import { get, transform } from 'lodash'
+import { get } from 'lodash'
 import colors from '../colors.js'
 import drawLine from './line.js'
 import drawPolyStroke from './polyStroke.js'
@@ -9,6 +9,10 @@ import drawText from './print.js'
 
 const backgroundColor = 7
 
+// This function is used in the hover highlight functionality. It is stored on the user inaccessible _script8 global
+// variable and takes as argument a lambda wrapping some user expression. The flag `shouldHighlight` is then set to true
+// while the passed in code is running and returned to false when it finishes. `shouldHighlight` is used to modify
+// colors while true to indicate to the user how a given function call effects the drawing on the screen
 export let shouldHighlight = false
 export const injectHighlight = (code) => {
   shouldHighlight  = true

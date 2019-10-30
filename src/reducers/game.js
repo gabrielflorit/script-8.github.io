@@ -55,9 +55,9 @@ const game = handleActions(
     [actionTypes.FETCH_GIST_SUCCESS]: (state, action) =>
       parseGistGame(action.payload),
 
-    [actionTypes.SET_MOUSE_CODE_POSITION]: (state, { payload }) => ({
+    [actionTypes.SET_CALL_UNDER_MOUSE]: (state, { payload }) => ({
       ...state,
-      [payload.tab]: { ...state[payload.tab], mouseCodePosition: payload.mouseCodePosition }
+      [payload.tab]: { ...state[payload.tab], callUnderMouse: payload.callUnderMouse }
     })
 
   },
