@@ -6,7 +6,7 @@
 import { parse } from 'acorn'
 import { simple as walk } from 'acorn-walk'
 import React, { Component } from 'react'
-import { isNil, throttle } from 'lodash'
+import { isNil } from 'lodash'
 import get from 'lodash/get'
 import includes from 'lodash/includes'
 import setupLinter from '../utils/setupLinter.js'

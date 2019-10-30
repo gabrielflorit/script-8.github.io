@@ -292,7 +292,8 @@ class Output extends Component {
     } else {
       // Validate code before drawing.
       getLintErrors({
-        text: assembleOrderedGame(game, false)
+        // Don't decorate the code because it does lint disallowed things
+        text: assembleOrderedGame(game, false) 
       }).then(errors => {
         if (!errors.length) {
           sendPayload()
