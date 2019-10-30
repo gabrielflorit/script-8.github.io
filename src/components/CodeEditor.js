@@ -3,7 +3,6 @@
 // - in Tutorial, if slide has game,
 //    if we're not on code, updateContent is called as is
 //    if we are on code, updateContent is called with the prefix
-
 import { parse } from 'acorn'
 import { simple as walk } from 'acorn-walk'
 import React, { Component } from 'react'
@@ -22,7 +21,8 @@ class CodeEditor extends Component {
   constructor(props) {
     super(props)
 
-    this.mark = null
+    this.sliderMark = null
+    this.hoverMark = null
     this.setContents = this.setContents.bind(this)
     this.handleSlider = this.handleSlider.bind(this)
     this.activateSlider = this.activateSlider.bind(this)
@@ -79,28 +79,58 @@ class CodeEditor extends Component {
 
     window.addEventListener('mousemove', e => {
       let tab = getActive(this.props.game)
-      let setMouseCodePosition = (node) => {
-        this.props.setMouseCodePosition({ tab: tab.key, mouseCodePosition: node })
+      let setMouseCodePosition = (position) => {
+        this.props.setMouseCodePosition({ tab: tab.key, mouseCodePosition: position })
       }
-      let content = this.codeMirror.getValue()
       let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
-      let set = false
-      try {
-        walk(parse(content, {locations: true}), {
-          CallExpression(node) {
-            if (!mousePos.outside &&
-                mousePos.line + 1 >= node.loc.start.line &&
-                mousePos.line + 1 <= node.loc.end.line) {
-              if (node.callee.type === "Identifier") {
-                setMouseCodePosition(node)
-                set = true;
+      if (!mousePos.outside) {
+        let overlappingNodes = []
+        try {
+          walk(parse(tab.text, {locations: true}), {
+            CallExpression(node) {
+              console.log(node.loc)
+              if (!mousePos.outside &&
+                  mousePos.line + 1 >= node.loc.start.line &&
+                  mousePos.line + 1 <= node.loc.end.line &&
+                  mousePos.ch >= node.loc.start.column &&
+                  mousePos.ch <= node.loc.end.column) {
+                overlappingNodes.push(node)
               }
             }
-          }
-        })
-      } catch { }
+          })
+        } catch { }
 
-      if (!set) {
+        let smallestNode = null
+        let smallestSize = Infinity;
+        for (let node of overlappingNodes) {
+          let nodeSize = node.end - node.start
+          if (!smallestNode || nodeSize < smallestSize) {
+            smallestNode = node
+            smallestSize = nodeSize
+          }
+        }
+
+        this.hoverMark && this.hoverMark.clear()
+        if (smallestNode) {
+          // and mark this expression.
+          console.log(smallestNode)
+          this.hoverMark = this.codeMirror.markText(
+            {
+              line: smallestNode.loc.start.line - 1,
+              ch: smallestNode.loc.start.column
+            },
+            {
+              line: smallestNode.loc.end.line - 1,
+              ch: smallestNode.loc.end.column
+            },
+            {
+              className: 'slider-token'
+            }
+          )
+        }
+
+        setMouseCodePosition(smallestNode)
+      } else {
         setMouseCodePosition(null)
       }
     })
@@ -120,7 +150,7 @@ class CodeEditor extends Component {
   }
 
   hideSlider() {
-    this.mark && this.mark.clear()
+    this.sliderMark && this.sliderMark.clear()
     this._slider.classList.add('hide')
   }
 
@@ -170,10 +200,10 @@ class CodeEditor extends Component {
     // If it's a number,
     if (token && token.type === 'number') {
       // clear out the previous mark,
-      this.mark && this.mark.clear()
+      this.sliderMark && this.sliderMark.clear()
 
       // and mark this token.
-      this.mark = this.codeMirror.markText(
+      this.sliderMark = this.codeMirror.sliderMarkText(
         {
           line: cursor.line,
           ch: token.start
@@ -226,7 +256,7 @@ class CodeEditor extends Component {
 
   handleSlider(e) {
     // Get mark positions.
-    const { from, to } = this.mark.find()
+    const { from, to } = this.sliderMark.find()
 
     // Calculate new token.
     const newToken = e.target.value.toString()
@@ -235,7 +265,7 @@ class CodeEditor extends Component {
     this.codeMirror.replaceRange(newToken, from, to)
 
     // Re-select token.
-    this.mark = this.codeMirror.markText(
+    this.sliderMark = this.codeMirror.markText(
       from,
       {
         ...from,

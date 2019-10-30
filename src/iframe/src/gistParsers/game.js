@@ -1,20 +1,13 @@
 import _ from 'lodash'
 import runningSum from '../utils/runningSum.js'
-import { drawFunctionNames } from '../frameBufferCanvasAPI';
 
 const decorateTabCode = (tab, decorate) => {
   if (tab.mouseCodePosition && tab.text && decorate) {
-    if (drawFunctionNames.includes(tab.mouseCodePosition.callee.name)) {
-      if (tab.mouseCodePosition.arguments.length == 0) {
-        return tab.text;
-      }
-      let firstArgIndex = tab.mouseCodePosition.arguments[0].start;
-      let insertedArg = "_script8.highlightSymbol";
-      if (tab.mouseCodePosition.arguments.length != 1) {
-        insertedArg += ", ";
-      }
-      return tab.text.slice(0, firstArgIndex) + insertedArg + tab.text.slice(firstArgIndex);
-    }
+    let node = tab.mouseCodePosition
+    let before = tab.text.slice(0, node.start)
+    let nodeCode = tab.text.slice(node.start, node.end)
+    let after = tab.text.slice(node.end)
+    return `${before}_script8.injectHighlight(() => ${nodeCode})${after}`
   }
   return tab.text
 };

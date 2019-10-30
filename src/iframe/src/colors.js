@@ -1,3 +1,6 @@
+import clamp from 'lodash/clamp'
+import { shouldHighlight } from './frameBufferCanvasAPI/index'
+
 // Lookup table for triplet arrays containing R, G, and B values.
 const triplets = [
   [246, 214, 189],
@@ -54,7 +57,12 @@ const colors = {
   },
 
   int(i) {
-    return intLookup[i % intLookup.length]
+    let index = i % intLookup.length;
+    if (shouldHighlight) {
+      if (index > 2) index = clamp(+index - 2, 0, 7)
+      else index += 2
+    }
+    return intLookup[index]
   },
 
   // Looks up the integer value in the reverseIntLookup table. If it doesn't
