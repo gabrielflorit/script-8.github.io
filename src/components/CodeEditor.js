@@ -28,6 +28,7 @@ class CodeEditor extends Component {
     this.activateSlider = this.activateSlider.bind(this)
     this.hideSlider = this.hideSlider.bind(this)
     this.highlightText = this.highlightText.bind(this)
+    this.mouseMove = this.mouseMove.bind(this)
   }
 
   componentDidMount() {
@@ -74,74 +75,6 @@ class CodeEditor extends Component {
         if (e.key === 'Shift') {
           this.activateSlider()
         }
-      }
-    })
-
-    // Track current mouse position in the code
-    window.addEventListener('mousemove', e => {
-      let tab = getActive(this.props.game)
-      let setCallUnderMouse = (node) => {
-        this.props.setCallUnderMouse({ tab: tab.key, callUnderMouse: node })
-      }
-
-      // We only want this to show up if the user is holding control. Otherwise selection and cursor position can get
-      // confusing.
-      if (e.ctrlKey) {
-        // Lookup the text position of the mouse
-        let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
-        if (!mousePos.outside) {
-          let smallestNode = null
-          let smallestSize = Infinity
-          try {
-            // Use Acorn to walk over the parsed code looking for each call expression. If the mouse is currently inside
-            // the call expression text bounds, and is smaller than the previously smallest node, then store it away
-            walk(parse(tab.text, {locations: true}), {
-              // Call expression is used because it is pretty consistent.
-              // https://github.com/estree/estree/blob/master/es5.md#callexpression
-              CallExpression(node) {
-                // If the mouse is in bounds, then continue to checking node size
-                if (!mousePos.outside &&
-                    mousePos.line + 1 >= node.loc.start.line &&
-                    mousePos.line + 1 <= node.loc.end.line &&
-                    mousePos.ch >= node.loc.start.column &&
-                    mousePos.ch <= node.loc.end.column) {
-                  let nodeSize = node.end - node.start
-                  if (!smallestNode || nodeSize < smallestSize) {
-                    smallestNode = node
-                    smallestSize = nodeSize
-                  }
-                }
-              }
-            })
-          } catch { }
-
-          // If a CallExpression node was found, highlight it to indicate to the user what is going on
-          this.hoverMark && this.hoverMark.clear()
-          if (smallestNode) {
-            // and mark this expression.
-            this.hoverMark = this.codeMirror.markText(
-              {
-                line: smallestNode.loc.start.line - 1,
-                ch: smallestNode.loc.start.column
-              },
-              {
-                line: smallestNode.loc.end.line - 1,
-                ch: smallestNode.loc.end.column
-              },
-              {
-                className: 'slider-token'
-              }
-            )
-          }
-
-          // Store the smallest node in the redux store
-          setCallUnderMouse(smallestNode)
-        } else {
-          setCallUnderMouse(null)
-        }
-      } else {
-        setCallUnderMouse(null)
-        this.hoverMark && this.hoverMark.clear()
       }
     })
 
@@ -213,7 +146,7 @@ class CodeEditor extends Component {
       this.sliderMark && this.sliderMark.clear()
 
       // and mark this token.
-      this.sliderMark = this.codeMirror.sliderMarkText(
+      this.sliderMark = this.codeMirror.markText(
         {
           line: cursor.line,
           ch: token.start
@@ -416,6 +349,77 @@ class CodeEditor extends Component {
     }
   }
 
+  // Track current mouse position in the code
+  mouseMove(e) {
+    let tab = getActive(this.props.game)
+    let setCallUnderMouse = (node) => {
+      this.props.setCallUnderMouse({ tab: tab.key, callUnderMouse: node })
+    }
+    let clearCallUnderMouse = () => {
+      this.props.clearCallUnderMouse({ tab: tab.key })
+    }
+
+    // We only want this to show up if the user is holding control. Otherwise selection and cursor position can get
+    // confusing.
+    if (e.ctrlKey) {
+      // Lookup the text position of the mouse
+      let mousePos = this.codeMirror.coordsChar({ left: e.pageX, top: e.pageY });
+      if (!mousePos.outside) {
+        let smallestNode = null
+        let smallestSize = Infinity
+        try {
+          // Use Acorn to walk over the parsed code looking for each call expression. If the mouse is currently inside
+          // the call expression text bounds, and is smaller than the previously smallest node, then store it away
+          walk(parse(tab.text, {locations: true}), {
+            // Call expression is used because it is pretty consistent.
+            // https://github.com/estree/estree/blob/master/es5.md#callexpression
+            CallExpression(node) {
+              // If the mouse is in bounds, then continue to checking node size
+              if (!mousePos.outside &&
+                  mousePos.line + 1 >= node.loc.start.line &&
+                  mousePos.line + 1 <= node.loc.end.line &&
+                  mousePos.ch >= node.loc.start.column &&
+                  mousePos.ch <= node.loc.end.column) {
+                let nodeSize = node.end - node.start
+                if (!smallestNode || nodeSize < smallestSize) {
+                  smallestNode = node
+                  smallestSize = nodeSize
+                }
+              }
+            }
+          })
+        } catch { }
+
+        // If a CallExpression node was found, highlight it to indicate to the user what is going on
+        this.hoverMark && this.hoverMark.clear()
+        if (smallestNode) {
+          // and mark this expression.
+          this.hoverMark = this.codeMirror.markText(
+            {
+              line: smallestNode.loc.start.line - 1,
+              ch: smallestNode.loc.start.column
+            },
+            {
+              line: smallestNode.loc.end.line - 1,
+              ch: smallestNode.loc.end.column
+            },
+            {
+              className: 'slider-token'
+            }
+          )
+        }
+
+        // Store the smallest node in the redux store
+        setCallUnderMouse(smallestNode)
+      } else {
+        clearCallUnderMouse()
+      }
+    } else {
+      clearCallUnderMouse()
+      this.hoverMark && this.hoverMark.clear()
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('keyup', this.hideSlider)
     const activeGame = getActive(this.props.game)
@@ -439,7 +443,7 @@ class CodeEditor extends Component {
 
   render() {
     return (
-      <div className="CodeEditor">
+      <div className="CodeEditor" onMouseMove={this.mouseMove}>
         <div
           className="wrapper"
           ref={_wrapper => {

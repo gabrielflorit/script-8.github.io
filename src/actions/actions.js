@@ -51,7 +51,8 @@ const actions = createActions({
   [actionTypes.SET_SCROLL_DATA]: d => d,
   [actionTypes.SET_CODE_TAB]: d => d,
   [actionTypes.UPDATE_HISTORY]: d => d,
-  [actionTypes.SET_CALL_UNDER_MOUSE]: d => d
+  [actionTypes.SET_CALL_UNDER_MOUSE]: d => d,
+  [actionTypes.CLEAR_CALL_UNDER_MOUSE]: d => d
 })
 
 export default actions

@@ -58,8 +58,12 @@ const game = handleActions(
     [actionTypes.SET_CALL_UNDER_MOUSE]: (state, { payload }) => ({
       ...state,
       [payload.tab]: { ...state[payload.tab], callUnderMouse: payload.callUnderMouse }
-    })
+    }),
 
+    [actionTypes.CLEAR_CALL_UNDER_MOUSE]: (state, { payload }) => ({
+      ...state,
+      [payload.tab]: { ...state[payload.tab], callUnderMouse: null }
+    })
   },
   initialState.game
 )
