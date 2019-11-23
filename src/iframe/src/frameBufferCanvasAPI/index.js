@@ -9,6 +9,18 @@ import drawText from './print.js'
 
 const backgroundColor = 7
 
+// This function is used in the hover highlight functionality. It is stored on the user inaccessible _script8 global
+// variable and takes as argument a lambda wrapping some user expression. The flag `shouldHighlight` is then set to true
+// while the passed in code is running and returned to false when it finishes. `shouldHighlight` is used to modify
+// colors while true to indicate to the user how a given function call effects the drawing on the screen
+export let shouldHighlight = false
+export const injectHighlight = (code) => {
+  shouldHighlight  = true
+  let result = code()
+  shouldHighlight = false
+  return result
+}
+
 const canvasAPI = ({
   pixels,
   width: canvasWidth,
@@ -17,6 +29,7 @@ const canvasAPI = ({
   // Rename to initialMap, since we have a function named map.
   map: initialMap = []
 }) => {
+
   let _runningMap = JSON.parse(JSON.stringify(initialMap))
   let _cameraX = 0
   let _cameraY = 0
