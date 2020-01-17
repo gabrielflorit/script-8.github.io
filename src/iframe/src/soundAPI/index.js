@@ -136,7 +136,8 @@ const soundAPI = volumeNode => {
                   // add it to the result.
                   result = {
                     channel,
-                    noteElement
+                    noteElement,
+                    tempo: chain.tempo || 0
                   }
                 }
               }
@@ -152,12 +153,12 @@ const soundAPI = volumeNode => {
 
     const callback = (time, position) => {
       notePositions[position].forEach(d => {
-        const { channel, noteElement } = d
+        const { channel, noteElement, tempo } = d
         playNote({
           ...noteElement,
           time: time,
           synth: chainSynths[channel],
-          tempo: 0
+          tempo: tempo
         })
       })
     }
@@ -189,7 +190,7 @@ const soundAPI = volumeNode => {
           settings.subdivision
         )
         value.sequence.loop = loop
-        value.sequence.playbackRate = tempoToPlaybackRate(0)
+        value.sequence.playbackRate = tempoToPlaybackRate(3)
         value.sequence.start(settings.startOffset)
       }
     })

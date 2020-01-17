@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
+import {
+  createSynth,
+  playNote,
+  tempoToPlaybackRate
+} from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../iframe/src/settings.js'
@@ -16,6 +20,11 @@ const mapStateToProps = ({ chains, phrases, selectedUi }) => ({
   chains,
   phrases,
   selectedUi
+})
+
+const getCurrentChain = ({ chains, selectedUi }) => ({
+  tempo: 0,
+  ..._.get(chains, [selectedUi.chain], {})
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -33,9 +42,9 @@ class Chain extends Component {
   constructor(props) {
     super(props)
 
+    this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
     this.handlePhraseClick = this.handlePhraseClick.bind(this)
-    this.getCurrentChain = this.getCurrentChain.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
     this.drawCallback = this.drawCallback.bind(this)
 
@@ -55,10 +64,11 @@ class Chain extends Component {
     Tone.context.resume()
 
     const { phrases } = this.props
+    const chain = getCurrentChain(this.props)
 
     this.sequence = new Tone.Sequence(
       (time, index) => {
-        const chain = this.getCurrentChain()
+        const chain = getCurrentChain(this.props)
 
         // Get the phrase and note positions by using base math.
         const [phrasePosition, notePosition] = _.padStart(
@@ -92,7 +102,7 @@ class Chain extends Component {
                 ...noteElement,
                 time,
                 synth: synths[channel],
-                tempo: 0
+                tempo: chain.tempo
               })
             }
           }
@@ -104,11 +114,24 @@ class Chain extends Component {
       _.range(Math.pow(settings.matrixLength, 2)),
       settings.subdivision
     )
+
+    this.sequence.playbackRate = tempoToPlaybackRate(chain.tempo)
   }
 
-  getCurrentChain() {
-    const { chains, selectedUi } = this.props
-    return _.get(chains, [selectedUi.chain], {})
+  handleTempoChange(e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      // Update the sequence.
+      this.sequence.playbackRate = tempoToPlaybackRate(value)
+
+      // Update the store.
+      const { updateChain, selectedUi } = this.props
+      const chain = getCurrentChain(this.props)
+      const newChain = _.cloneDeep(chain)
+      newChain.tempo = value
+      const chainIndex = selectedUi.chain
+      updateChain({ chain: newChain, index: chainIndex })
+    }
   }
 
   handlePlay() {
@@ -138,7 +161,7 @@ class Chain extends Component {
   handlePhraseClick({ channel, col }) {
     const { phrases, updateChain, selectedUi } = this.props
     const chainIndex = selectedUi.chain
-    const chain = this.getCurrentChain()
+    const chain = getCurrentChain(this.props)
     const newChain = _.cloneDeep(chain)
     let newPhrase = _.get(newChain, [col, channel])
 
@@ -181,8 +204,10 @@ class Chain extends Component {
   render() {
     const { selectedUi } = this.props
     const chainIndex = selectedUi.chain
+
     const { isPlaying, playingIndex } = this.state
-    const chain = this.getCurrentChain()
+    const chain = getCurrentChain(this.props)
+    // console.log({ old: chain, newer: getCurrentChain(this.props) })
     const { phrases } = this.props
 
     return (
@@ -199,6 +224,14 @@ class Chain extends Component {
               handleChange={this.handleChainIndexChange}
               type="number"
               options={{ min: 0, max: settings.chains - 1 }}
+            />
+            <div className="title">Tempo</div>
+            <TextInput
+              label="#"
+              value={chain.tempo.toString()}
+              handleChange={this.handleTempoChange}
+              type="number"
+              options={{ min: 0, max: 7 }}
             />
           </div>
           <div className={classNames('matrix', { hide: _.isEmpty(phrases) })}>
