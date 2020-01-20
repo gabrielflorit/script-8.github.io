@@ -17,7 +17,10 @@ import chunk from 'lodash/chunk'
 import bios from './utils/bios.js'
 import StateMachine from 'javascript-state-machine'
 import soundAPI from './soundAPI/index.js'
-import { default as frameBufferCanvasAPI, injectHighlight } from './frameBufferCanvasAPI/index.js'
+import {
+  default as frameBufferCanvasAPI,
+  injectHighlight
+} from './frameBufferCanvasAPI/index.js'
 import pixelData from './frameBufferCanvasAPI/pixelData.js'
 import trimCanvas from './contextCanvasAPI/trimCanvas.js'
 import validateToken from './validateToken.js'
@@ -449,8 +452,10 @@ class Iframe extends Component {
 
     // Update globals with sound API functions.
     this.updateGlobals({
-      playSong: this.soundFunctions.playSong,
       playPhrase: this.soundFunctions.playPhrase,
+      playChain: this.soundFunctions.playChain,
+      stopChain: this.soundFunctions.stopChain,
+      playSong: this.soundFunctions.playSong,
       stopSong: this.soundFunctions.stopSong
     })
 
@@ -870,7 +875,7 @@ class Iframe extends Component {
         !equal(phrases, prevState.phrases)
       ) {
         // make sequences,
-        this.soundFunctions.makeSongs({
+        this.soundFunctions.makeSongsAndChains({
           songs,
           chains,
           phrases

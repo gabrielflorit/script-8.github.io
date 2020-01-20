@@ -57,8 +57,17 @@ const soundAPI = volumeNode => {
   Tone.Transport.start(settings.startOffset)
 
   let songContainers = {}
+  let chainContainers = {}
   let localPhrases = {}
   let phrasePool = []
+
+  const stopChain = () => {
+    _.forEach(chainContainers, ({ sequence }, key) => {
+      if (sequence) {
+        sequence.stop()
+      }
+    })
+  }
 
   const stopSong = () => {
     // Stop all sequences.
@@ -74,16 +83,94 @@ const soundAPI = volumeNode => {
     // console.log(`soundAPI.stopSong() END ${after - before}ms`)
   }
 
-  const makeSongs = ({ songs, chains, phrases }) => {
+  const makeSongsAndChains = ({ songs, chains, phrases }) => {
     // console.log(`soundAPI.makeSongs() BEGIN----------`)
     // const before = Date.now()
     stopSong()
+    stopChain()
     localPhrases = phrases
     songContainers = _.mapValues(songs, song =>
       makeSongContainer({ song, chains, phrases })
     )
+    chainContainers = _.mapValues(chains, chain =>
+      makeChainContainer({ chain, phrases })
+    )
     // const after = Date.now()
     // console.log(`soundAPI.makeSongs() END ${after - before}ms`)
+  }
+
+  const makeChainContainer = ({ chain, phrases }) => {
+    const notePositions = _(_.range(Math.pow(settings.matrixLength, 2)))
+      .map(index => {
+        // Get the phrase and note positions by using base math.
+        const [phrasePosition, notePosition] = _.padStart(
+          index.toString(settings.matrixLength),
+          2,
+          0
+        )
+          .split('')
+          .map(d => parseInt(d, settings.matrixLength))
+
+        // Get the phrase indices for this position, e.g. { 0: 0, 1: 11, 2: 2 }
+        const phrasesIndices = _.get(chain, phrasePosition)
+
+        // For each channel,
+        return (
+          _.range(settings.chainChannels)
+            .map(channel => {
+              // get the phrase index.
+              const phraseIndex = _.get(phrasesIndices, channel)
+
+              let result
+              // If the phrase index exists,
+              if (!_.isNil(phraseIndex)) {
+                // get the phrase assigned to this channel.
+                const phrase = _.get(phrases, phraseIndex, {})
+
+                // Get the note element for this position.
+                const noteElement = _.get(phrase.notes, notePosition)
+
+                // If we have a note,
+                if (!_.isNil(noteElement)) {
+                  // add it to the result.
+                  result = {
+                    channel,
+                    noteElement,
+                    tempo: chain.tempo
+                  }
+                }
+              }
+              return result
+              //   })
+            })
+            // Only keep non-null elements.
+            .filter(d => d)
+        )
+      })
+      // NOW we can drop from right.
+      .dropRightWhile(_.isEmpty)
+      .value()
+
+    const callback = (time, position) => {
+      notePositions[position].forEach(d => {
+        const { channel, noteElement, tempo } = d
+        playNote({
+          ...noteElement,
+          time: time,
+          synth: chainSynths[channel],
+          tempo: tempo
+        })
+      })
+    }
+
+    const events = _.range(notePositions.length)
+
+    return {
+      callback,
+      events,
+      sequence: null,
+      tempo: chain.tempo
+    }
   }
 
   const makeSongContainer = ({ song, chains, phrases }) => {
@@ -199,6 +286,29 @@ const soundAPI = volumeNode => {
     // console.log(`soundAPI.playSong() END took ${after - before}ms`)
   }
 
+  const playChain = (number, loop = false) => {
+    // console.log(`soundAPI.playSong() BEGIN----------`)
+    // const before = Date.now()
+    stopChain()
+
+    // console.log(`going to play song with key ${number}`)
+    _.forEach(chainContainers, (value, key) => {
+      if (+key === number) {
+        // console.log(`found one: key ${key}`)
+        value.sequence = new Tone.Sequence(
+          value.callback,
+          value.events,
+          settings.subdivision
+        )
+        value.sequence.loop = loop
+        value.sequence.playbackRate = tempoToPlaybackRate(value.tempo)
+        value.sequence.start(settings.startOffset)
+      }
+    })
+    // const after = Date.now()
+    // console.log(`soundAPI.playSong() END took ${after - before}ms`)
+  }
+
   const playPhrase = number => {
     // const before = Date.now()
     const phrase = _.get(localPhrases, number)
@@ -231,10 +341,12 @@ const soundAPI = volumeNode => {
     }
   }
   return {
+    playPhrase,
+    playChain,
+    stopChain,
     playSong,
-    makeSongs,
     stopSong,
-    playPhrase
+    makeSongsAndChains
   }
 }
 
