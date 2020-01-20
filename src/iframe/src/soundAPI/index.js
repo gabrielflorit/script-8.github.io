@@ -137,7 +137,7 @@ const soundAPI = volumeNode => {
                   result = {
                     channel,
                     noteElement,
-                    tempo: chain.tempo || 0
+                    tempo: song.tempo
                   }
                 }
               }
@@ -171,7 +171,8 @@ const soundAPI = volumeNode => {
     return {
       callback,
       events,
-      sequence: null
+      sequence: null,
+      tempo: song.tempo
     }
   }
 
@@ -190,7 +191,7 @@ const soundAPI = volumeNode => {
           settings.subdivision
         )
         value.sequence.loop = loop
-        value.sequence.playbackRate = tempoToPlaybackRate(3)
+        value.sequence.playbackRate = tempoToPlaybackRate(value.tempo)
         value.sequence.start(settings.startOffset)
       }
     })
