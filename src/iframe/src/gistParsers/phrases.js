@@ -29,7 +29,7 @@ const expandPhrases = phrases => {
       // If phrase is an array, it's an old kind. We have to convert it.
       const phraseIsArray = Array.isArray(phrase)
       const notes = _(phraseIsArray ? phrase : phrase.notes)
-        .map(note => note.match(/^(\d+)(.*)(\d)(\d)/).slice(1, 5))
+        .map(note => note.match(/^(\d+)([a-g]#?)(-?\d)(\d)/).slice(1, 5))
         .map(match => ({
           index: match[0],
           note: letterToNumber(match[1]),

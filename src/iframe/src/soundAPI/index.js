@@ -1,10 +1,9 @@
 // TODO
-// - at the moment you can set a sustain note anywhere, not only to the right of a sustain or a valid note
-// - fix the notes compresser/expander/parser (it should handle both old and new format)
 // - check that this all works in chains and songs
-// - if sustain exists, volume should also just show `-`
+
 // - work on the correct synth triangle/pulse/sin/noise settings
 // - when playing a phrase, let me choose the kind of synth (e.g. triangle/noise)
+// - if sustain exists, volume should also just show `-`
 // - in chain, show the synth name instead of 0-1-2-3
 // - add new API functions to docs and remove `not stable`
 
