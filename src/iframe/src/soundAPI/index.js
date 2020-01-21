@@ -1,3 +1,13 @@
+// TODO
+// - at the moment you can set a sustain note anywhere, not only to the right of a sustain or a valid note
+// - fix the notes compresser/expander/parser (it should handle both old and new format)
+// - check that this all works in chains and songs
+// - if sustain exists, volume should also just show `-`
+// - work on the correct synth triangle/pulse/sin/noise settings
+// - when playing a phrase, let me choose the kind of synth (e.g. triangle/noise)
+// - in chain, show the synth name instead of 0-1-2-3
+// - add new API functions to docs and remove `not stable`
+
 import * as Tone from 'tone'
 import _ from 'lodash'
 import toLetter from '../toLetter.js'
@@ -80,24 +90,28 @@ const playNote = ({
     const subdivision = tempoToSubdivision(tempo)
 
     if (synth.script8Name === 'synth') {
-      if (tempo) {
-        // note, duration, time, velocity
-        synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
+      // If the octave is -1, it means we should sustain the previous note.
+      // In other words, do nothing.
+      if (octave === -1) {
       } else {
-        // note, time, velocity
-        synth.triggerAttack(letter, time, normalizedVolume)
+        // If the octave is 0 or higher, do something.
+        if (typeof tempo === 'undefined') {
+          // note, time, velocity
+          synth.triggerAttack(letter, time, normalizedVolume)
+        } else {
+          // note, duration, time, velocity
+          synth.triggerAttackRelease(
+            letter,
+            subdivision,
+            time,
+            normalizedVolume
+          )
+        }
       }
-
-      // console.log({
-      //   tempo,
-      //   note: letter,
-      //   duration: subdivision,
-      //   time,
-      //   velocity: normalizedVolume
-      // })
     } else {
+      // TODO: handle noise synths
       // duration, time, velocity
-      synth.triggerAttackRelease(subdivision, time, normalizedVolume)
+      // synth.triggerAttackRelease(subdivision, time, normalizedVolume)
     }
   }
 }

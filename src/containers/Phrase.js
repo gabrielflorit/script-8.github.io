@@ -209,8 +209,8 @@ class Phrase extends Component {
         }
       } else {
         // If we have a note on this very column and row,
-        // and we're not at 0,
-        if (octave > 0) {
+        // and we're not at -1,
+        if (octave > -1) {
           // decrease it.
           newNote = {
             ...position,
@@ -311,7 +311,13 @@ class Phrase extends Component {
                           })}
                         >
                           {highlighter}
-                          <button>{match ? value.octave : ' '}</button>
+                          <button>
+                            {match
+                              ? value.octave > -1
+                                ? value.octave
+                                : '-'
+                              : ' '}
+                          </button>
                         </td>
                       )
                     })}

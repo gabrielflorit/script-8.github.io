@@ -209,7 +209,6 @@ class Chain extends Component {
 
     const { isPlaying, playingIndex } = this.state
     const chain = getCurrentChain(this.props)
-    // console.log({ old: chain, newer: getCurrentChain(this.props) })
     const { phrases } = this.props
 
     return (
