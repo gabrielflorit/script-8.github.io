@@ -31,8 +31,12 @@ const synthOptions = [
   }
 ]
 
-const tempoToPlaybackRate = tempo => [1, 2, 3, 5, 8, 13, 21, 34][tempo]
-const tempoToSubdivision = tempo => tempoToPlaybackRate(tempo) * 4 + 'n'
+const slowToFastTempo = [1, 2, 3, 5, 8, 12, 20, 32]
+const fastToSlowTempo = [...slowToFastTempo].reverse()
+
+const tempoToPlaybackRate = tempo => slowToFastTempo[tempo]
+const tempoToSubdivision = tempo =>
+  fastToSlowTempo.map(i => ({ '16n': i }))[tempo]
 
 const createSynth = ({ volumeNode, index }) => {
   const synth =
@@ -44,6 +48,17 @@ const createSynth = ({ volumeNode, index }) => {
   }
   synth.script8Name = index < 3 ? 'synth' : 'noise'
   return synth
+}
+
+const stopNote = ({ time = Tone.context.currentTime, synth }) => {
+  // If time is not provided, we want to play the note right now - use currentTime.
+  // If time is provided,
+  // if it is in the past (smaller than currentTime),
+  // don't play the note.
+  // Otherwise play the note.
+  if (time >= Tone.context.currentTime) {
+    synth.triggerRelease(time)
+  }
 }
 
 const playNote = ({
@@ -65,8 +80,21 @@ const playNote = ({
     const subdivision = tempoToSubdivision(tempo)
 
     if (synth.script8Name === 'synth') {
-      // note, duration, time, velocity
-      synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
+      if (tempo) {
+        // note, duration, time, velocity
+        synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
+      } else {
+        // note, time, velocity
+        synth.triggerAttack(letter, time, normalizedVolume)
+      }
+
+      // console.log({
+      //   tempo,
+      //   note: letter,
+      //   duration: subdivision,
+      //   time,
+      //   velocity: normalizedVolume
+      // })
     } else {
       // duration, time, velocity
       synth.triggerAttackRelease(subdivision, time, normalizedVolume)
@@ -377,6 +405,6 @@ const soundAPI = volumeNode => {
   }
 }
 
-export { createSynth, playNote, tempoToPlaybackRate }
+export { createSynth, playNote, stopNote, tempoToPlaybackRate }
 
 export default soundAPI

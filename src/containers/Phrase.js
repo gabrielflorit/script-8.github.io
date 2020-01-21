@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import {
   createSynth,
   playNote,
+  stopNote,
   tempoToPlaybackRate
 } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
@@ -74,7 +75,9 @@ class Phrase extends Component {
         const phrase = getCurrentPhrase(this.props)
         const value = phrase.notes[index]
         if (value) {
-          playNote({ ...value, time, synth, tempo: phrase.tempo })
+          playNote({ ...value, time, synth })
+        } else {
+          stopNote({ time, synth })
         }
         Tone.Draw.schedule(() => {
           this.drawCallback(index)
@@ -107,6 +110,7 @@ class Phrase extends Component {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
+      stopNote({ synth })
     } else {
       this.sequence.start(settings.startOffset)
     }
