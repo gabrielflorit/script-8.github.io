@@ -4,26 +4,46 @@ import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
 import settings from '../settings.js'
 
-const pulseOptions = {
-  oscillator: {
-    type: 'triangle'
+const synthOptions = [
+  {
+    oscillator: {
+      type: 'triangle'
+    },
+    envelope: {
+      release: 0.07
+    }
   },
-  envelope: {
-    release: 0.07
+  {
+    oscillator: {
+      type: 'sine'
+    },
+    envelope: {
+      release: 0.07
+    }
+  },
+  {
+    oscillator: {
+      type: 'sawtooth'
+    },
+    envelope: {
+      release: 0.07
+    }
   }
-}
+]
 
 const tempoToPlaybackRate = tempo => [1, 2, 3, 5, 8, 13, 21, 34][tempo]
 const tempoToSubdivision = tempo => tempoToPlaybackRate(tempo) * 4 + 'n'
 
-const createSynth = volumeNode => {
-  const pulseSynth = new Tone.Synth(pulseOptions)
+const createSynth = ({ volumeNode, index }) => {
+  const synth =
+    index < 3 ? new Tone.Synth(synthOptions[index]) : new Tone.NoiseSynth()
   if (volumeNode) {
-    pulseSynth.chain(volumeNode, Tone.Master)
+    synth.chain(volumeNode, Tone.Master)
   } else {
-    pulseSynth.chain(Tone.Master)
+    synth.chain(Tone.Master)
   }
-  return pulseSynth
+  synth.script8Name = index < 3 ? 'synth' : 'noise'
+  return synth
 }
 
 const playNote = ({
@@ -43,15 +63,22 @@ const playNote = ({
     const normalizedVolume = normalize.volume(volume)
     const letter = toLetter(note + octave * 12, true, true)
     const subdivision = tempoToSubdivision(tempo)
-    synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
+
+    if (synth.script8Name === 'synth') {
+      // note, duration, time, velocity
+      synth.triggerAttackRelease(letter, subdivision, time, normalizedVolume)
+    } else {
+      // duration, time, velocity
+      synth.triggerAttackRelease(subdivision, time, normalizedVolume)
+    }
   }
 }
 
 const soundAPI = volumeNode => {
-  const chainSynths = _.range(settings.chainChannels).map(() =>
-    createSynth(volumeNode)
+  const chainSynths = _.range(settings.chainChannels).map(index =>
+    createSynth({ volumeNode, index })
   )
-  const phraseSynth = createSynth(volumeNode)
+  const phraseSynth = createSynth({ volumeNode, index: 0 })
 
   Tone.Transport.bpm.value = settings.bpm
   Tone.Transport.start(settings.startOffset)

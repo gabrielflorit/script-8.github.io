@@ -13,7 +13,7 @@ import TextInput from '../components/TextInput.js'
 import toLetter from '../iframe/src/toLetter.js'
 import settings from '../iframe/src/settings.js'
 
-const synth = createSynth()
+const synth = createSynth({ index: 0 })
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
