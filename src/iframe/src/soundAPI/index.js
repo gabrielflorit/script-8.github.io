@@ -1,8 +1,7 @@
 // TODO
-// - check that this all works in chains and songs
 
-// - work on the correct synth triangle/pulse/sin/noise settings
 // - when playing a phrase, let me choose the kind of synth (e.g. triangle/noise)
+
 // - if sustain exists, volume should also just show `-`
 // - in chain, show the synth name instead of 0-1-2-3
 // - add new API functions to docs and remove `not stable`
@@ -13,33 +12,6 @@ import toLetter from '../toLetter.js'
 import normalize from '../normalize.js'
 import settings from '../settings.js'
 
-const synthOptions = [
-  {
-    oscillator: {
-      type: 'triangle'
-    },
-    envelope: {
-      release: 0.07
-    }
-  },
-  {
-    oscillator: {
-      type: 'sine'
-    },
-    envelope: {
-      release: 0.07
-    }
-  },
-  {
-    oscillator: {
-      type: 'sawtooth'
-    },
-    envelope: {
-      release: 0.07
-    }
-  }
-]
-
 const slowToFastTempo = [1, 2, 3, 5, 8, 12, 20, 32]
 const fastToSlowTempo = [...slowToFastTempo].reverse()
 
@@ -48,70 +20,111 @@ const tempoToSubdivision = tempo =>
   fastToSlowTempo.map(i => ({ '16n': i }))[tempo]
 
 const createSynth = ({ volumeNode, index }) => {
-  const synth =
-    index < 3 ? new Tone.Synth(synthOptions[index]) : new Tone.NoiseSynth()
+  let synth
+
+  if (index === 0) {
+    synth = new Tone.Synth({
+      oscillator: {
+        type: 'pulse',
+        width: 0.5
+      },
+      envelope: {
+        release: 0.07
+      }
+    })
+    synth.script8Name = 'synth'
+  }
+
+  if (index === 1) {
+    synth = new Tone.Synth({
+      oscillator: {
+        type: 'pulse',
+        width: 0.75
+      },
+      envelope: {
+        release: 0.07
+      }
+    })
+    synth.script8Name = 'synth'
+  }
+
+  if (index === 2) {
+    synth = new Tone.Synth({
+      oscillator: {
+        type: 'triangle'
+      },
+      envelope: {
+        release: 0.07
+      }
+    })
+    synth.script8Name = 'synth'
+  }
+
+  if (index === 3) {
+    synth = new Tone.NoiseSynth({
+      envelope: {
+        release: 0.07
+      }
+    })
+    synth.script8Name = 'noise'
+  }
+
   if (volumeNode) {
     synth.chain(volumeNode, Tone.Master)
   } else {
     synth.chain(Tone.Master)
   }
-  synth.script8Name = index < 3 ? 'synth' : 'noise'
+
   return synth
 }
 
-const stopNote = ({ time = Tone.context.currentTime, synth }) => {
-  // If time is not provided, we want to play the note right now - use currentTime.
-  // If time is provided,
-  // if it is in the past (smaller than currentTime),
-  // don't play the note.
-  // Otherwise play the note.
+const triggerAttack = ({
+  note: letter,
+  octave,
+  volume,
+  time = Tone.context.currentTime,
+  synth
+}) => {
   if (time >= Tone.context.currentTime) {
-    synth.triggerRelease(time)
+    const note = toLetter(letter + octave * 12, true, true)
+    const velocity = normalize.volume(volume)
+    if (synth.script8Name === 'synth') {
+      synth.triggerAttack(note, time, velocity)
+    }
+    if (synth.script8Name === 'noise') {
+      synth.triggerAttack(time, velocity)
+    }
   }
 }
 
-const playNote = ({
-  note,
+const triggerAttackRelease = ({
+  note: letter,
   octave,
   volume,
   time = Tone.context.currentTime,
   synth,
   tempo
 }) => {
-  // If time is not provided, we want to play the note right now - use currentTime.
-  // If time is provided,
-  // if it is in the past (smaller than currentTime),
-  // don't play the note.
-  // Otherwise play the note.
   if (time >= Tone.context.currentTime) {
-    const normalizedVolume = normalize.volume(volume)
-    const letter = toLetter(note + octave * 12, true, true)
-    const subdivision = tempoToSubdivision(tempo)
-
+    const note = toLetter(letter + octave * 12, true, true)
+    const duration = tempoToSubdivision(tempo)
+    const velocity = normalize.volume(volume)
     if (synth.script8Name === 'synth') {
-      // If the octave is -1, it means we should sustain the previous note.
-      // In other words, do nothing.
-      if (octave === -1) {
-      } else {
-        // If the octave is 0 or higher, do something.
-        if (typeof tempo === 'undefined') {
-          // note, time, velocity
-          synth.triggerAttack(letter, time, normalizedVolume)
-        } else {
-          // note, duration, time, velocity
-          synth.triggerAttackRelease(
-            letter,
-            subdivision,
-            time,
-            normalizedVolume
-          )
-        }
-      }
-    } else {
-      // TODO: handle noise synths
-      // duration, time, velocity
-      // synth.triggerAttackRelease(subdivision, time, normalizedVolume)
+      synth.triggerAttackRelease(note, duration, time, velocity)
     }
+    if (synth.script8Name === 'noise') {
+      synth.triggerAttackRelease(duration, time, velocity)
+    }
+  }
+}
+
+const triggerRelease = ({
+  time = Tone.context.currentTime,
+  delay = 0,
+  synth
+}) => {
+  if (time >= Tone.context.currentTime) {
+    synth.triggerRelease(time + delay)
   }
 }
 
@@ -183,51 +196,81 @@ const soundAPI = volumeNode => {
         const phrasesIndices = _.get(chain, phrasePosition)
 
         // For each channel,
-        return (
-          _.range(settings.chainChannels)
-            .map(channel => {
-              // get the phrase index.
-              const phraseIndex = _.get(phrasesIndices, channel)
+        return _.range(settings.chainChannels).map(channel => {
+          // Get the phrase index for this channel.
+          const phraseIndex = _.get(phrasesIndices, channel)
+          let result
 
-              let result
-              // If the phrase index exists,
-              if (!_.isNil(phraseIndex)) {
-                // get the phrase assigned to this channel.
-                const phrase = _.get(phrases, phraseIndex, {})
+          // If the phrase index exists,
+          if (!_.isNil(phraseIndex)) {
+            // get the phrase assigned to this channel.
+            const phrase = _.get(phrases, phraseIndex, {})
 
-                // Get the note element for this position.
-                const noteElement = _.get(phrase.notes, notePosition)
+            // Get the note element for this position.
+            const noteElement = _.get(phrase.notes, notePosition)
 
-                // If we have a note,
-                if (!_.isNil(noteElement)) {
-                  // add it to the result.
-                  result = {
-                    channel,
-                    noteElement,
-                    tempo: chain.tempo
-                  }
-                }
+            // If we have a note,
+            if (!_.isNil(noteElement)) {
+              // add it to the result.
+              result = {
+                noteElement,
+                tempo: chain.tempo
               }
-              return result
-              //   })
-            })
-            // Only keep non-null elements.
-            .filter(d => d)
-        )
+            }
+          }
+          return result
+        })
       })
       // NOW we can drop from right.
-      .dropRightWhile(_.isEmpty)
+      .dropRightWhile(d =>
+        _(d)
+          .compact()
+          .isEmpty()
+      )
       .value()
 
     const callback = (time, position) => {
-      notePositions[position].forEach(d => {
-        const { channel, noteElement, tempo } = d
-        playNote({
-          ...noteElement,
-          time: time,
-          synth: chainSynths[channel],
-          tempo: tempo
-        })
+      // For every column cell on the grid,
+      notePositions[position].forEach((d, channel) => {
+        // if the channel has a note:
+        if (d && !_.isNil(d.noteElement)) {
+          // If we're on the last position of the entire array,
+          if (position === notePositions.length - 1) {
+            // if we have a note, triggerAttackRelease.
+            if (d.noteElement.octave > -1) {
+              triggerAttackRelease({
+                ...d.noteElement,
+                time,
+                synth: chainSynths[channel],
+                tempo: d.tempo
+              })
+            }
+            // If we have a sustain, triggerRelease(time + duration).
+            if (d.noteElement.octave === -1) {
+              triggerRelease({
+                time,
+                synth: chainSynths[channel],
+                delay: Tone.Time(tempoToSubdivision(d.tempo)).valueOf()
+              })
+            }
+          } else {
+            // If we're not on the last position of the array,
+            // if we have a note, triggerAttack.
+            if (d.noteElement.octave > -1) {
+              triggerAttack({
+                ...d.noteElement,
+                time,
+                synth: chainSynths[channel]
+              })
+            }
+            // If we have a sustain, do nothing.
+            if (d.noteElement.octave === -1) {
+            }
+          }
+        } else {
+          // If the channel does not have a note, stop it.
+          triggerRelease({ time, synth: chainSynths[channel] })
+        }
       })
     }
 
@@ -271,50 +314,81 @@ const soundAPI = volumeNode => {
         const phrasesIndices = _.get(chain, phrasePosition)
 
         // For each channel,
-        return (
-          _.range(settings.chainChannels)
-            .map(channel => {
-              // Get the phrase index for this channel.
-              const phraseIndex = _.get(phrasesIndices, channel)
-              let result
+        return _.range(settings.chainChannels).map(channel => {
+          // Get the phrase index for this channel.
+          const phraseIndex = _.get(phrasesIndices, channel)
+          let result
 
-              // If the phrase index exists,
-              if (!_.isNil(phraseIndex)) {
-                // get the phrase assigned to this channel.
-                const phrase = _.get(phrases, phraseIndex, {})
+          // If the phrase index exists,
+          if (!_.isNil(phraseIndex)) {
+            // get the phrase assigned to this channel.
+            const phrase = _.get(phrases, phraseIndex, {})
 
-                // Get the note element for this position.
-                const noteElement = _.get(phrase.notes, notePosition)
+            // Get the note element for this position.
+            const noteElement = _.get(phrase.notes, notePosition)
 
-                // If we have a note,
-                if (!_.isNil(noteElement)) {
-                  // add it to the result.
-                  result = {
-                    channel,
-                    noteElement,
-                    tempo: song.tempo
-                  }
-                }
+            // If we have a note,
+            if (!_.isNil(noteElement)) {
+              // add it to the result.
+              result = {
+                noteElement,
+                tempo: song.tempo
               }
-              return result
-            })
-            // Only keep non-null elements.
-            .filter(d => d)
-        )
+            }
+          }
+          return result
+        })
       })
       // NOW we can drop from right.
-      .dropRightWhile(_.isEmpty)
+      .dropRightWhile(d =>
+        _(d)
+          .compact()
+          .isEmpty()
+      )
       .value()
 
     const callback = (time, position) => {
-      notePositions[position].forEach(d => {
-        const { channel, noteElement, tempo } = d
-        playNote({
-          ...noteElement,
-          time: time,
-          synth: chainSynths[channel],
-          tempo: tempo
-        })
+      // For every column cell on the grid,
+      notePositions[position].forEach((d, channel) => {
+        // if the channel has a note:
+        if (d && !_.isNil(d.noteElement)) {
+          // If we're on the last position of the entire array,
+          if (position === notePositions.length - 1) {
+            // if we have a note, triggerAttackRelease.
+            if (d.noteElement.octave > -1) {
+              triggerAttackRelease({
+                ...d.noteElement,
+                time,
+                synth: chainSynths[channel],
+                tempo: d.tempo
+              })
+            }
+            // If we have a sustain, triggerRelease(time + duration).
+            if (d.noteElement.octave === -1) {
+              triggerRelease({
+                time,
+                synth: chainSynths[channel],
+                delay: Tone.Time(tempoToSubdivision(d.tempo)).valueOf()
+              })
+            }
+          } else {
+            // If we're not on the last position of the array,
+            // if we have a note, triggerAttack.
+            if (d.noteElement.octave > -1) {
+              triggerAttack({
+                ...d.noteElement,
+                time,
+                synth: chainSynths[channel]
+              })
+            }
+            // If we have a sustain, do nothing.
+            if (d.noteElement.octave === -1) {
+            }
+          }
+        } else {
+          // If the channel does not have a note, stop it.
+          triggerRelease({ time, synth: chainSynths[channel] })
+        }
       })
     }
 
@@ -391,10 +465,48 @@ const soundAPI = volumeNode => {
       const sequence = new Tone.Sequence(
         (time, index) => {
           const value = phrase.notes[index]
+          // if (value) {
+          //   playNote({ ...value, time, synth: phraseSynth, tempo })
+          // }
+
+          // If there is a note,
           if (value) {
-            // console.log(`phraseSynth volume`)
-            // console.log({ volume: phraseSynth.volume.value })
-            playNote({ ...value, time, synth: phraseSynth, tempo })
+            // If we're on the last position of the phrase,
+            if (index === settings.matrixLength - 1) {
+              // if we have a note, triggerAttackRelease.
+              // If we have a sustain, triggerRelease(time + duration).
+              if (value.octave > -1) {
+                triggerAttackRelease({
+                  ...value,
+                  time,
+                  synth: phraseSynth,
+                  tempo
+                })
+              }
+              if (value.octave === -1) {
+                triggerRelease({
+                  time,
+                  synth: phraseSynth,
+                  delay: Tone.Time(tempoToSubdivision(tempo)).valueOf()
+                })
+              }
+            } else {
+              // If we're not on the last position of the array,
+              // if we have a note, triggerAttack.
+              if (value.octave > -1) {
+                triggerAttack({
+                  ...value,
+                  time,
+                  synth: phraseSynth
+                })
+              }
+              // If it's sustain, do nothing.
+              if (value.octave === -1) {
+              }
+            }
+          } else {
+            // If there is no note, triggerRelease.
+            triggerRelease({ time, synth: phraseSynth })
           }
         },
         _.range(settings.matrixLength),
@@ -418,6 +530,12 @@ const soundAPI = volumeNode => {
   }
 }
 
-export { createSynth, playNote, stopNote, tempoToPlaybackRate }
+export {
+  createSynth,
+  tempoToPlaybackRate,
+  triggerAttack,
+  triggerAttackRelease,
+  triggerRelease
+}
 
 export default soundAPI

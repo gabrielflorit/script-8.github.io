@@ -5,8 +5,9 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import {
   createSynth,
-  playNote,
-  tempoToPlaybackRate
+  tempoToPlaybackRate,
+  triggerAttack,
+  triggerRelease
 } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
@@ -104,16 +105,26 @@ class Song extends Component {
             // Get the note element for this position.
             const noteElement = _.get(phrase.notes, notePosition)
 
-            // If we have a note,
+            // If we have a note:
             if (!_.isNil(noteElement)) {
-              // play it!
-              playNote({
-                ...noteElement,
-                time,
-                synth: synths[channel],
-                tempo: song.tempo
-              })
+              // if we have a non-sustain note, triggerAttack.
+              if (noteElement.octave > -1) {
+                triggerAttack({
+                  ...noteElement,
+                  time,
+                  synth: synths[channel]
+                })
+              }
+              // If we have a sustain, do nothing.
+              if (noteElement.octave === -1) {
+              }
+            } else {
+              // If we don't have a note, triggerRelease.
+              triggerRelease({ time, synth: synths[channel] })
             }
+          } else {
+            // If the phrase doesn't exist, stop the synth.
+            triggerRelease({ time, synth: synths[channel] })
           }
         })
 
@@ -147,6 +158,7 @@ class Song extends Component {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
+      synths.forEach(synth => triggerRelease({ synth }))
     } else {
       this.sequence.start(settings.startOffset)
     }
@@ -209,6 +221,18 @@ class Song extends Component {
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
+    synths.forEach(synth => triggerRelease({ synth }))
+  }
+
+  componentDidUpdate(prevProps) {
+    const oldSong = getCurrentSong(prevProps)
+    const newSong = getCurrentSong(this.props)
+    if (
+      prevProps.selectedUi.song !== this.props.selectedUi.song ||
+      oldSong.tempo !== newSong.tempo
+    ) {
+      this.sequence.playbackRate = tempoToPlaybackRate(newSong.tempo)
+    }
   }
 
   render() {

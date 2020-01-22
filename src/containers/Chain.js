@@ -5,8 +5,9 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import {
   createSynth,
-  playNote,
-  tempoToPlaybackRate
+  tempoToPlaybackRate,
+  triggerRelease,
+  triggerAttack
 } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
@@ -97,16 +98,26 @@ class Chain extends Component {
             // Get the note element for this position.
             const noteElement = _.get(phrase.notes, notePosition)
 
-            // If we have a note,
+            // If we have a note:
             if (!_.isNil(noteElement)) {
-              // play it!
-              playNote({
-                ...noteElement,
-                time,
-                synth: synths[channel],
-                tempo: chain.tempo
-              })
+              // if we have a non-sustain note, triggerAttack.
+              if (noteElement.octave > -1) {
+                triggerAttack({
+                  ...noteElement,
+                  time,
+                  synth: synths[channel]
+                })
+              }
+              // If we have a sustain, do nothing.
+              if (noteElement.octave === -1) {
+              }
+            } else {
+              // If we don't have a note, triggerRelease.
+              triggerRelease({ time, synth: synths[channel] })
             }
+          } else {
+            // If the phrase doesn't exist, stop the synth.
+            triggerRelease({ time, synth: synths[channel] })
           }
         })
         Tone.Draw.schedule(() => {
@@ -140,6 +151,7 @@ class Chain extends Component {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
+      synths.forEach(synth => triggerRelease({ synth }))
     } else {
       this.sequence.start(settings.startOffset)
     }
@@ -201,6 +213,18 @@ class Chain extends Component {
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
+    synths.forEach(synth => triggerRelease({ synth }))
+  }
+
+  componentDidUpdate(prevProps) {
+    const oldChain = getCurrentChain(prevProps)
+    const newChain = getCurrentChain(this.props)
+    if (
+      prevProps.selectedUi.chain !== this.props.selectedUi.chain ||
+      oldChain.tempo !== newChain.tempo
+    ) {
+      this.sequence.playbackRate = tempoToPlaybackRate(newChain.tempo)
+    }
   }
 
   render() {

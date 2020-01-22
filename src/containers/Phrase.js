@@ -5,8 +5,9 @@ import * as Tone from 'tone'
 import classNames from 'classnames'
 import {
   createSynth,
-  playNote,
-  stopNote,
+  triggerAttack,
+  triggerAttackRelease,
+  triggerRelease,
   tempoToPlaybackRate
 } from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
@@ -14,12 +15,15 @@ import TextInput from '../components/TextInput.js'
 import toLetter from '../iframe/src/toLetter.js'
 import settings from '../iframe/src/settings.js'
 
-const synth = createSynth({ index: 0 })
+const synths = _.range(settings.chainChannels).map(index =>
+  createSynth({ index })
+)
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
 const getCurrentPhrase = ({ phrases, selectedUi }) => ({
   tempo: 0,
+  synth: 0,
   notes: [],
   ..._.get(phrases, [selectedUi.phrase], {})
 })
@@ -43,6 +47,7 @@ class Phrase extends Component {
 
     this.createSequence = this.createSequence.bind(this)
     this.handleTempoChange = this.handleTempoChange.bind(this)
+    this.handleSynthChange = this.handleSynthChange.bind(this)
     this.handlePhraseIndexChange = this.handlePhraseIndexChange.bind(this)
     this.handleNoteClick = this.handleNoteClick.bind(this)
     this.handleVolumeClick = this.handleVolumeClick.bind(this)
@@ -74,10 +79,22 @@ class Phrase extends Component {
       (time, index) => {
         const phrase = getCurrentPhrase(this.props)
         const value = phrase.notes[index]
+        // If there is a note,
         if (value) {
-          playNote({ ...value, time, synth })
+          // if it's not sustain, triggerAttack.
+          if (value.octave > -1) {
+            triggerAttack({
+              ...value,
+              time,
+              synth: synths[phrase.synth]
+            })
+          }
+          if (value.octave === -1) {
+            // If it's sustain, do nothing.
+          }
         } else {
-          stopNote({ time, synth })
+          // If there is no note, triggerRelease.
+          triggerRelease({ time, synth: synths[phrase.synth] })
         }
         Tone.Draw.schedule(() => {
           this.drawCallback(index)
@@ -86,6 +103,25 @@ class Phrase extends Component {
       _.range(settings.matrixLength),
       settings.subdivision
     )
+  }
+
+  handleSynthChange(e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      // Update the store.
+      const { updatePhrase, selectedUi } = this.props
+      const phraseIndex = selectedUi.phrase
+      const phrase = getCurrentPhrase(this.props)
+      const newPhrase = {
+        ...phrase,
+        synth: value
+      }
+
+      // Stop the old synth.
+      triggerRelease({ synth: synths[phrase.synth] })
+
+      updatePhrase({ phrase: newPhrase, index: phraseIndex })
+    }
   }
 
   handleTempoChange(e) {
@@ -108,9 +144,10 @@ class Phrase extends Component {
 
   handlePlay() {
     const { isPlaying } = this.state
+    const phrase = getCurrentPhrase(this.props)
     if (isPlaying) {
       this.sequence.stop()
-      stopNote({ synth })
+      triggerRelease({ synth: synths[phrase.synth] })
     } else {
       this.sequence.start(settings.startOffset)
     }
@@ -166,7 +203,10 @@ class Phrase extends Component {
     }
 
     if (newPosition && !isPlaying) {
-      playNote({ ...newPosition, synth, tempo })
+      // If the note is not sustain, triggerAttackRelease.
+      if (newPosition.octave > -1) {
+        triggerAttackRelease({ ...newPosition, synth: synths[0], tempo })
+      }
     }
 
     const newPhrase = {
@@ -223,7 +263,10 @@ class Phrase extends Component {
     }
 
     if (newNote && !isPlaying) {
-      playNote({ ...newNote, synth, tempo })
+      // If the note is not sustain, triggerAttackRelease.
+      if (newNote.octave > -1) {
+        triggerAttackRelease({ ...newNote, synth: synths[0], tempo })
+      }
     }
 
     const newPhrase = {
@@ -240,6 +283,7 @@ class Phrase extends Component {
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
+    triggerRelease({ synth: synths[0] })
   }
 
   componentDidUpdate(prevProps) {
@@ -279,6 +323,14 @@ class Phrase extends Component {
               handleChange={this.handleTempoChange}
               type="number"
               options={{ min: 0, max: 7 }}
+            />
+            <div className="title">Synth</div>
+            <TextInput
+              label="#"
+              value={phrase.synth.toString()}
+              handleChange={this.handleSynthChange}
+              type="number"
+              options={{ min: 0, max: 3 }}
             />
           </div>
           <div className="matrix">
