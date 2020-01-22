@@ -1,9 +1,6 @@
 // TODO
 
-// - when playing a phrase, let me choose the kind of synth (e.g. triangle/noise)
-
 // - if sustain exists, volume should also just show `-`
-// - in chain, show the synth name instead of 0-1-2-3
 // - add new API functions to docs and remove `not stable`
 
 import * as Tone from 'tone'

@@ -159,12 +159,14 @@ class Phrase extends Component {
 
   handlePhraseIndexChange(e) {
     const { validity, value } = e.target
+    const phrase = getCurrentPhrase(this.props)
     if (validity.valid) {
       const { selectUi, selectedUi } = this.props
       selectUi({
         ...selectedUi,
         phrase: value
       })
+      triggerRelease({ synth: synths[phrase.synth] })
     }
   }
 
@@ -205,7 +207,11 @@ class Phrase extends Component {
     if (newPosition && !isPlaying) {
       // If the note is not sustain, triggerAttackRelease.
       if (newPosition.octave > -1) {
-        triggerAttackRelease({ ...newPosition, synth: synths[0], tempo })
+        triggerAttackRelease({
+          ...newPosition,
+          synth: synths[phrase.synth],
+          tempo
+        })
       }
     }
 
@@ -265,7 +271,7 @@ class Phrase extends Component {
     if (newNote && !isPlaying) {
       // If the note is not sustain, triggerAttackRelease.
       if (newNote.octave > -1) {
-        triggerAttackRelease({ ...newNote, synth: synths[0], tempo })
+        triggerAttackRelease({ ...newNote, synth: synths[phrase.synth], tempo })
       }
     }
 
@@ -283,7 +289,8 @@ class Phrase extends Component {
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
-    triggerRelease({ synth: synths[0] })
+    const phrase = getCurrentPhrase(this.props)
+    triggerRelease({ synth: synths[phrase.synth] })
   }
 
   componentDidUpdate(prevProps) {
