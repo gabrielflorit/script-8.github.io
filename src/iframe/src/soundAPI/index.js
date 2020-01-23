@@ -129,6 +129,9 @@ const soundAPI = volumeNode => {
   const chainSynths = _.range(settings.chainChannels).map(index =>
     createSynth({ volumeNode, index })
   )
+  const songSynths = _.range(settings.chainChannels).map(index =>
+    createSynth({ volumeNode, index })
+  )
   const phraseSynth = createSynth({ volumeNode, index: 0 })
 
   Tone.Transport.bpm.value = settings.bpm
@@ -143,6 +146,7 @@ const soundAPI = volumeNode => {
     _.forEach(chainContainers, ({ sequence }, key) => {
       if (sequence) {
         sequence.stop()
+        chainSynths.forEach(synth => triggerRelease({ synth }))
       }
     })
   }
@@ -154,6 +158,7 @@ const soundAPI = volumeNode => {
     _.forEach(songContainers, ({ sequence }, key) => {
       if (sequence) {
         sequence.stop()
+        songSynths.forEach(synth => triggerRelease({ synth }))
         // console.log(`stopping song with key: ${key}`)
       }
     })
@@ -356,7 +361,7 @@ const soundAPI = volumeNode => {
               triggerAttackRelease({
                 ...d.noteElement,
                 time,
-                synth: chainSynths[channel],
+                synth: songSynths[channel],
                 tempo: d.tempo
               })
             }
@@ -364,7 +369,7 @@ const soundAPI = volumeNode => {
             if (d.noteElement.octave === -1) {
               triggerRelease({
                 time,
-                synth: chainSynths[channel],
+                synth: songSynths[channel],
                 delay: Tone.Time(tempoToSubdivision(d.tempo)).valueOf()
               })
             }
@@ -375,7 +380,7 @@ const soundAPI = volumeNode => {
               triggerAttack({
                 ...d.noteElement,
                 time,
-                synth: chainSynths[channel]
+                synth: songSynths[channel]
               })
             }
             // If we have a sustain, do nothing.
@@ -384,7 +389,7 @@ const soundAPI = volumeNode => {
           }
         } else {
           // If the channel does not have a note, stop it.
-          triggerRelease({ time, synth: chainSynths[channel] })
+          triggerRelease({ time, synth: songSynths[channel] })
         }
       })
     }
