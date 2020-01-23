@@ -10,7 +10,8 @@ const compressPhrases = phrases => {
     )
     return {
       notes,
-      tempo: _.isNil(phrase.tempo) ? 0 : phrase.tempo
+      tempo: _.isNil(phrase.tempo) ? 0 : phrase.tempo,
+      synth: _.isNil(phrase.synth) ? 0 : phrase.synth
     }
   })
   return result
@@ -44,7 +45,8 @@ const expandPhrases = phrases => {
         ? null
         : {
             notes,
-            tempo: phraseIsArray ? 0 : _.isNil(phrase.tempo) ? 0 : phrase.tempo
+            tempo: phraseIsArray ? 0 : _.isNil(phrase.tempo) ? 0 : phrase.tempo,
+            synth: phraseIsArray ? 0 : _.isNil(phrase.synth) ? 0 : phrase.synth
           }
     })
   )
