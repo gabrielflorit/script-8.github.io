@@ -1,12 +1,29 @@
 .Phrase
 
   .main
-    grid-template-columns auto 17*1.5rem
+    grid-template-columns auto 17*1.5rem auto
     grid-template-rows auto
     grid-row-gap 1.5rem
     grid-column-gap 3rem
     padding 1.5rem
     justify-content start
+
+    .tools
+      > div
+        display flex
+        button
+          padding 0
+        .TextInput
+          margin-bottom 0
+          margin-left 0.5rem
+        margin-bottom 1.5rem
+
+      .add-delete
+        button
+          width calc(2.25rem)
+          height @width
+          padding 0
+
 
     @media screen and (max-width: 36rem)
       grid-template-columns auto

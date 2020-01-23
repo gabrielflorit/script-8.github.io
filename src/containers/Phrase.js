@@ -56,7 +56,8 @@ class Phrase extends Component {
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0
+      playingIndex: 0,
+      mode: '+'
     }
   }
 
@@ -308,7 +309,7 @@ class Phrase extends Component {
     const { selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
-    const { isPlaying, playingIndex } = this.state
+    const { isPlaying, playingIndex, mode } = this.state
     const phrase = getCurrentPhrase(this.props)
 
     return (
@@ -411,6 +412,47 @@ class Phrase extends Component {
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div className="tools">
+            <div>
+              <button className="button">clear</button>
+            </div>
+            <div>
+              <button className="button">load</button>
+              <TextInput
+                label="#"
+                value={phrase.synth.toString()}
+                handleChange={this.handleSynthChange}
+                type="number"
+                options={{ min: 0, max: 3 }}
+              />
+            </div>
+            <div className="add-delete">
+              <button
+                className={classNames('button', {
+                  active: mode === '+'
+                })}
+                onClick={() => {
+                  // this.setMode('+')
+                }}
+              >
+                +
+              </button>
+
+              <button
+                className={classNames('button', {
+                  active: mode === '-'
+                })}
+                onClick={() => {
+                  // this.setMode('-')
+                }}
+              >
+                -
+              </button>
+            </div>
+            <div>
+              <button className="button">clear</button>
+            </div>
           </div>
         </div>
       </div>
