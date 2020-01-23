@@ -3,12 +3,19 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import * as Tone from 'tone'
 import classNames from 'classnames'
-import { createSynth, playNote } from '../iframe/src/soundAPI/index.js'
+import {
+  createSynth,
+  tempoToPlaybackRate,
+  triggerAttack,
+  triggerRelease
+} from '../iframe/src/soundAPI/index.js'
 import actions from '../actions/actions.js'
 import TextInput from '../components/TextInput.js'
 import settings from '../iframe/src/settings.js'
 
-const synths = _.range(settings.chainChannels).map(() => createSynth())
+const synths = _.range(settings.chainChannels).map(index =>
+  createSynth({ index })
+)
 Tone.Transport.bpm.value = settings.bpm
 Tone.Transport.start(settings.startOffset)
 
@@ -17,6 +24,11 @@ const mapStateToProps = ({ songs, chains, phrases, selectedUi }) => ({
   chains,
   phrases,
   selectedUi
+})
+
+const getCurrentSong = ({ songs, selectedUi }) => ({
+  tempo: 0,
+  ..._.get(songs, [selectedUi.song], {})
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -34,9 +46,9 @@ class Song extends Component {
   constructor(props) {
     super(props)
 
+    this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleSongIndexChange = this.handleSongIndexChange.bind(this)
     this.handleChainClick = this.handleChainClick.bind(this)
-    this.getCurrentSong = this.getCurrentSong.bind(this)
     this.handlePlay = this.handlePlay.bind(this)
     this.drawCallback = this.drawCallback.bind(this)
 
@@ -56,10 +68,11 @@ class Song extends Component {
     Tone.context.resume()
 
     const { chains, phrases } = this.props
+    const song = getCurrentSong(this.props)
 
     this.sequence = new Tone.Sequence(
       (time, index) => {
-        const song = this.getCurrentSong()
+        const song = getCurrentSong(this.props)
 
         // Get the chain, phrase and note positions by using base math.
         const [chainPosition, phrasePosition, notePosition] = _.padStart(
@@ -92,16 +105,26 @@ class Song extends Component {
             // Get the note element for this position.
             const noteElement = _.get(phrase.notes, notePosition)
 
-            // If we have a note,
+            // If we have a note:
             if (!_.isNil(noteElement)) {
-              // play it!
-              playNote({
-                ...noteElement,
-                time,
-                synth: synths[channel],
-                tempo: 0
-              })
+              // if we have a non-sustain note, triggerAttack.
+              if (noteElement.octave > -1) {
+                triggerAttack({
+                  ...noteElement,
+                  time,
+                  synth: synths[channel]
+                })
+              }
+              // If we have a sustain, do nothing.
+              if (noteElement.octave === -1) {
+              }
+            } else {
+              // If we don't have a note, triggerRelease.
+              triggerRelease({ time, synth: synths[channel] })
             }
+          } else {
+            // If the phrase doesn't exist, stop the synth.
+            triggerRelease({ time, synth: synths[channel] })
           }
         })
 
@@ -112,17 +135,30 @@ class Song extends Component {
       _.range(Math.pow(settings.matrixLength, 3)),
       settings.subdivision
     )
+
+    this.sequence.playbackRate = tempoToPlaybackRate(song.tempo)
   }
 
-  getCurrentSong() {
-    const { songs, selectedUi } = this.props
-    return _.get(songs, [selectedUi.song], {})
+  handleTempoChange(e) {
+    const { validity, value } = e.target
+    if (validity.valid) {
+      // Update the sequence.
+      this.sequence.playbackRate = tempoToPlaybackRate(value)
+
+      // Update the store.
+      const { updateSong, selectedUi } = this.props
+      const song = getCurrentSong(this.props)
+      const newSong = { ...song, tempo: value }
+      const songIndex = selectedUi.chain
+      updateSong({ song: newSong, index: songIndex })
+    }
   }
 
   handlePlay() {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
+      synths.forEach(synth => triggerRelease({ synth }))
     } else {
       this.sequence.start(settings.startOffset)
     }
@@ -146,7 +182,7 @@ class Song extends Component {
   handleChainClick({ col }) {
     const { chains, updateSong, selectedUi } = this.props
     const songIndex = selectedUi.song
-    const song = this.getCurrentSong()
+    const song = getCurrentSong(this.props)
     let newChain = _.get(song, col)
 
     // Get chains, in order.
@@ -185,13 +221,25 @@ class Song extends Component {
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
+    synths.forEach(synth => triggerRelease({ synth }))
+  }
+
+  componentDidUpdate(prevProps) {
+    const oldSong = getCurrentSong(prevProps)
+    const newSong = getCurrentSong(this.props)
+    if (
+      prevProps.selectedUi.song !== this.props.selectedUi.song ||
+      oldSong.tempo !== newSong.tempo
+    ) {
+      this.sequence.playbackRate = tempoToPlaybackRate(newSong.tempo)
+    }
   }
 
   render() {
     const { selectedUi } = this.props
     const songIndex = selectedUi.song
     const { isPlaying, playingIndex } = this.state
-    const song = this.getCurrentSong()
+    const song = getCurrentSong(this.props)
     const { chains } = this.props
 
     return (
@@ -208,6 +256,14 @@ class Song extends Component {
               handleChange={this.handleSongIndexChange}
               type="number"
               options={{ min: 0, max: settings.songs - 1 }}
+            />
+            <div className="title">Tempo</div>
+            <TextInput
+              label="#"
+              value={song.tempo.toString()}
+              handleChange={this.handleTempoChange}
+              type="number"
+              options={{ min: 0, max: 7 }}
             />
           </div>
           <div className={classNames('matrix', { hide: _.isEmpty(chains) })}>

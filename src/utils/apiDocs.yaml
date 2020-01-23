@@ -71,10 +71,14 @@
       - Prints `message` to the preview window.
     - - new StateMachine({ init, transitions })
       - Creates a state machine. By <a class='text' href='https://github.com/jakesgordon/javascript-state-machine'>Jake Gordon</a>. Consult its documentation.
-- title: Sound (not stable)
+- title: Sound
   dl:
     - - playPhrase(phrase)
       - Plays a phrase as defined in the PHRASE editor. `phrase` is the phrase number. You can only play one phrase at a time.
+    - - playChain(chain, [loop=false])
+      - Plays a chain as defined in the CHAIN editor. `chain` is the chain number. Set `loop` to true to make the chain loop infinitely. You can only play one chain at a time.
+    - - stopChain()
+      - Stops the current chain.
     - - playSong(song, [loop=false])
       - Plays a song as defined in the SONG editor. `song` is the song number. Set `loop` to true to make the song loop infinitely. You can only play one song at a time.
     - - stopSong()
