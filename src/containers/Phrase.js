@@ -538,9 +538,9 @@ class Phrase extends Component {
             <div className="selected">
               <span className="title">octave</span>
               <select value={selectedOctave} onChange={this.handleOctaveChange}>
-                {_.range(3, -1).map(key => (
+                {_.range(3, -2, -1).map(key => (
                   <option key={key} value={key}>
-                    {key}
+                    {key === -1 ? '-' : key}
                   </option>
                 ))}
               </select>
