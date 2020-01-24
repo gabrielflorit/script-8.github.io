@@ -285,49 +285,57 @@ class Phrase extends Component {
   handleNoteClick({ row, col }) {
     const { updatePhrase, selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
-    const { isPlaying } = this.state
+    const { isPlaying, mode } = this.state
     const phrase = getCurrentPhrase(this.props)
     const { tempo } = phrase
     const position = phrase.notes[col]
     let newNote
 
-    // If we do not have a note on this column,
-    if (!position) {
-      // add one at the highest octave.
-      newNote = {
-        note: row,
-        octave: settings.octaves - 1,
-        volume: settings.volumes - 1
-      }
+    if (mode === '-') {
+      newNote = null
     } else {
-      const { note, octave } = position
-
-      // If we do have a note on this column, but not on this row,
-      if (note !== row) {
-        // update the note to this row, and use the same octave.
+      // If we do not have a note on this column,
+      if (!position) {
+        // add one at the highest octave.
         newNote = {
-          ...position,
-          note: row
+          note: row,
+          octave: settings.octaves - 1,
+          volume: settings.volumes - 1
         }
       } else {
-        // If we have a note on this very column and row,
-        // and we're not at -1,
-        if (octave > -1) {
-          // decrease it.
+        const { note, octave } = position
+
+        // If we do have a note on this column, but not on this row,
+        if (note !== row) {
+          // update the note to this row, and use the same octave.
           newNote = {
             ...position,
-            octave: octave - 1
+            note: row
           }
         } else {
-          newNote = null
+          // If we have a note on this very column and row,
+          // and we're not at -1,
+          if (octave > -1) {
+            // decrease it.
+            newNote = {
+              ...position,
+              octave: octave - 1
+            }
+          } else {
+            newNote = null
+          }
         }
       }
-    }
 
-    if (newNote && !isPlaying) {
-      // If the note is not sustain, triggerAttackRelease.
-      if (newNote.octave > -1) {
-        triggerAttackRelease({ ...newNote, synth: synths[phrase.synth], tempo })
+      if (newNote && !isPlaying) {
+        // If the note is not sustain, triggerAttackRelease.
+        if (newNote.octave > -1) {
+          triggerAttackRelease({
+            ...newNote,
+            synth: synths[phrase.synth],
+            tempo
+          })
+        }
       }
     }
 
@@ -358,13 +366,17 @@ class Phrase extends Component {
     ) {
       this.sequence.playbackRate = tempoToPlaybackRate(newPhrase.tempo)
     }
+
+    if (!_.isEmpty(oldPhrase.notes) && _.isEmpty(newPhrase.notes)) {
+      this.setState({ mode: '+' })
+    }
   }
 
   render() {
     const { selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
-    const { isPlaying, playingIndex, selectedCloneIndex } = this.state
+    const { isPlaying, playingIndex, selectedCloneIndex, mode } = this.state
     const phrase = getCurrentPhrase(this.props)
 
     const validClonePhraseKeys = this.getValidClonePhraseKeys()
@@ -508,30 +520,34 @@ class Phrase extends Component {
                 type="number"
                 options={{ min: 0, max: 3 }}
               />
-            </div>
+            </div> */}
             <div className="add-delete">
               <button
                 className={classNames('button', {
                   active: mode === '+'
                 })}
                 onClick={() => {
-                  // this.setMode('+')
+                  this.setState({
+                    mode: '+'
+                  })
                 }}
               >
                 +
               </button>
-
               <button
+                disabled={_.isEmpty(phrase.notes)}
                 className={classNames('button', {
                   active: mode === '-'
                 })}
                 onClick={() => {
-                  // this.setMode('-')
+                  this.setState({
+                    mode: '-'
+                  })
                 }}
               >
                 -
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
