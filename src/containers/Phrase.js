@@ -45,6 +45,8 @@ class Phrase extends Component {
   constructor(props) {
     super(props)
 
+    this.handleOctaveChange = this.handleOctaveChange.bind(this)
+    this.handleVolumeChange = this.handleVolumeChange.bind(this)
     this.handleCloneChange = this.handleCloneChange.bind(this)
     this.handleClear = this.handleClear.bind(this)
     this.handleClone = this.handleClone.bind(this)
@@ -61,8 +63,23 @@ class Phrase extends Component {
       isPlaying: false,
       playingIndex: 0,
       selectedCloneIndex: '',
+      // These are strings because the selects make them strings.
+      selectedOctave: '3',
+      selectedVolume: '7',
       mode: '+'
     }
+  }
+
+  handleOctaveChange(e) {
+    this.setState({
+      selectedOctave: e.target.value
+    })
+  }
+
+  handleVolumeChange(e) {
+    this.setState({
+      selectedVolume: e.target.value
+    })
   }
 
   handleCloneChange(e) {
@@ -285,7 +302,7 @@ class Phrase extends Component {
   handleNoteClick({ row, col }) {
     const { updatePhrase, selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
-    const { isPlaying, mode } = this.state
+    const { isPlaying, mode, selectedOctave, selectedVolume } = this.state
     const phrase = getCurrentPhrase(this.props)
     const { tempo } = phrase
     const position = phrase.notes[col]
@@ -296,11 +313,11 @@ class Phrase extends Component {
     } else {
       // If we do not have a note on this column,
       if (!position) {
-        // add one at the highest octave.
+        // add one according to the selected dropdowns.
         newNote = {
           note: row,
-          octave: settings.octaves - 1,
-          volume: settings.volumes - 1
+          octave: selectedOctave,
+          volume: selectedVolume
         }
       } else {
         const { note, octave } = position
@@ -376,9 +393,16 @@ class Phrase extends Component {
     const { selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
-    const { isPlaying, playingIndex, selectedCloneIndex, mode } = this.state
-    const phrase = getCurrentPhrase(this.props)
+    const {
+      isPlaying,
+      playingIndex,
+      selectedCloneIndex,
+      mode,
+      selectedOctave,
+      selectedVolume
+    } = this.state
 
+    const phrase = getCurrentPhrase(this.props)
     const validClonePhraseKeys = this.getValidClonePhraseKeys()
 
     return (
@@ -511,16 +535,26 @@ class Phrase extends Component {
                 ))}
               </select>
             </div>
-            {/* <div>
-              <button className="button">selected</button>
-              <TextInput
-                label="#"
-                value={phrase.synth.toString()}
-                handleChange={this.handleSynthChange}
-                type="number"
-                options={{ min: 0, max: 3 }}
-              />
-            </div> */}
+            <div className="selected">
+              <span className="title">octave</span>
+              <select value={selectedOctave} onChange={this.handleOctaveChange}>
+                {_.range(3, -1).map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="selected">
+              <span className="title">volume</span>
+              <select value={selectedVolume} onChange={this.handleVolumeChange}>
+                {_.range(7, -1).map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="add-delete">
               <button
                 className={classNames('button', {

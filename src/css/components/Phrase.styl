@@ -18,21 +18,29 @@
           margin-left 0.5rem
         margin-bottom 1.5rem
 
-        &.clone
+        &.clone, &.selected
           margin-bottom 1.5rem
-          height 3rem
+          height calc(3rem + 3px)
 
-          select
-            @extends .VT323
-            margin-left 0.5rem
-            font-size $font-large
-            border-color $palette-6
-            background $palette-7
-            color $palette-1
-            height 2.25rem
-            margin-top 0.375rem
+        &.selected
+          justify-content center
+          align-items center
+
+          span.title
+            margin 0
+
+        select
+          @extends .VT323
+          margin-left 0.5rem
+          font-size $font-large
+          border-color $palette-6
+          background $palette-7
+          color $palette-1
+          height 2.25rem
+          margin-top 0.375rem
 
       .add-delete
+        padding-top 2px
         button
           width calc(2.25rem)
           height @width
