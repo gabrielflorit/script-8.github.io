@@ -1,7 +1,6 @@
 // TODO
 
 // - if sustain exists, volume should also just show `-`
-// - add new API functions to docs and remove `not stable`
 
 import * as Tone from 'tone'
 import _ from 'lodash'

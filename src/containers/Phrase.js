@@ -45,6 +45,11 @@ class Phrase extends Component {
   constructor(props) {
     super(props)
 
+    this.handleOctaveChange = this.handleOctaveChange.bind(this)
+    this.handleVolumeChange = this.handleVolumeChange.bind(this)
+    this.handleCloneChange = this.handleCloneChange.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleClone = this.handleClone.bind(this)
     this.createSequence = this.createSequence.bind(this)
     this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleSynthChange = this.handleSynthChange.bind(this)
@@ -56,7 +61,75 @@ class Phrase extends Component {
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0
+      playingIndex: 0,
+      selectedCloneIndex: '',
+      // These are strings because the selects make them strings.
+      selectedOctave: '3',
+      selectedVolume: '7',
+      mode: '+'
+    }
+  }
+
+  handleOctaveChange(e) {
+    this.setState({
+      selectedOctave: e.target.value
+    })
+  }
+
+  handleVolumeChange(e) {
+    this.setState({
+      selectedVolume: e.target.value
+    })
+  }
+
+  handleCloneChange(e) {
+    this.setState({
+      selectedCloneIndex: e.target.value
+    })
+  }
+
+  getValidClonePhraseKeys() {
+    const { selectedUi, phrases } = this.props
+    const phraseIndex = selectedUi.phrase
+    return Object.entries(phrases)
+      .filter(([key, phrase]) => +key !== +phraseIndex)
+      .map(([key, phrase]) => key)
+  }
+
+  handleClone() {
+    const { selectedUi, phrases, updatePhrase } = this.props
+    const validClonePhraseKeys = this.getValidClonePhraseKeys()
+    const phraseIndex = selectedUi.phrase
+    let { selectedCloneIndex } = this.state
+    if (_.isEmpty(selectedCloneIndex)) {
+      selectedCloneIndex = validClonePhraseKeys[0]
+    }
+
+    if (
+      window.confirm(
+        `Do you really want to clone phrase ${selectedCloneIndex}?`
+      )
+    ) {
+      updatePhrase({
+        phrase: phrases[selectedCloneIndex],
+        index: phraseIndex
+      })
+    }
+  }
+
+  handleClear() {
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+
+    if (window.confirm('Do you really want to clear this phrase?')) {
+      updatePhrase({
+        phrase: {
+          tempo: 0,
+          synth: 0,
+          notes: []
+        },
+        index: phraseIndex
+      })
     }
   }
 
@@ -229,49 +302,57 @@ class Phrase extends Component {
   handleNoteClick({ row, col }) {
     const { updatePhrase, selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
-    const { isPlaying } = this.state
+    const { isPlaying, mode, selectedOctave, selectedVolume } = this.state
     const phrase = getCurrentPhrase(this.props)
     const { tempo } = phrase
     const position = phrase.notes[col]
     let newNote
 
-    // If we do not have a note on this column,
-    if (!position) {
-      // add one at the highest octave.
-      newNote = {
-        note: row,
-        octave: settings.octaves - 1,
-        volume: settings.volumes - 1
-      }
+    if (mode === '-') {
+      newNote = null
     } else {
-      const { note, octave } = position
-
-      // If we do have a note on this column, but not on this row,
-      if (note !== row) {
-        // update the note to this row, and use the same octave.
+      // If we do not have a note on this column,
+      if (!position) {
+        // add one according to the selected dropdowns.
         newNote = {
-          ...position,
-          note: row
+          note: row,
+          octave: selectedOctave,
+          volume: selectedVolume
         }
       } else {
-        // If we have a note on this very column and row,
-        // and we're not at -1,
-        if (octave > -1) {
-          // decrease it.
+        const { note, octave } = position
+
+        // If we do have a note on this column, but not on this row,
+        if (note !== row) {
+          // update the note to this row, and use the same octave.
           newNote = {
             ...position,
-            octave: octave - 1
+            note: row
           }
         } else {
-          newNote = null
+          // If we have a note on this very column and row,
+          // and we're not at -1,
+          if (octave > -1) {
+            // decrease it.
+            newNote = {
+              ...position,
+              octave: octave - 1
+            }
+          } else {
+            newNote = null
+          }
         }
       }
-    }
 
-    if (newNote && !isPlaying) {
-      // If the note is not sustain, triggerAttackRelease.
-      if (newNote.octave > -1) {
-        triggerAttackRelease({ ...newNote, synth: synths[phrase.synth], tempo })
+      if (newNote && !isPlaying) {
+        // If the note is not sustain, triggerAttackRelease.
+        if (newNote.octave > -1) {
+          triggerAttackRelease({
+            ...newNote,
+            synth: synths[phrase.synth],
+            tempo
+          })
+        }
       }
     }
 
@@ -302,14 +383,27 @@ class Phrase extends Component {
     ) {
       this.sequence.playbackRate = tempoToPlaybackRate(newPhrase.tempo)
     }
+
+    if (!_.isEmpty(oldPhrase.notes) && _.isEmpty(newPhrase.notes)) {
+      this.setState({ mode: '+' })
+    }
   }
 
   render() {
     const { selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
-    const { isPlaying, playingIndex } = this.state
+    const {
+      isPlaying,
+      playingIndex,
+      selectedCloneIndex,
+      mode,
+      selectedOctave,
+      selectedVolume
+    } = this.state
+
     const phrase = getCurrentPhrase(this.props)
+    const validClonePhraseKeys = this.getValidClonePhraseKeys()
 
     return (
       <div className="Phrase two-rows-and-grid">
@@ -401,7 +495,7 @@ class Phrase extends Component {
                           highlight: col === playingIndex && isPlaying,
                           [`volume-${value && value.volume}`]: value
                         })}
-                        onClick={e => this.handleVolumeClick(col)}
+                        onClick={() => this.handleVolumeClick(col)}
                       >
                         {highlighter}
                         <button>{value && value.volume}</button>
@@ -412,13 +506,87 @@ class Phrase extends Component {
               </tbody>
             </table>
           </div>
+          <div className="tools">
+            <div>
+              <button
+                className="button"
+                disabled={_.isEmpty(phrase.notes)}
+                onClick={this.handleClear}
+              >
+                clear
+              </button>
+            </div>
+            <div className="clone">
+              <button
+                disabled={_.isEmpty(validClonePhraseKeys)}
+                className="button"
+                onClick={this.handleClone}
+              >
+                clone
+              </button>
+              <select
+                value={selectedCloneIndex}
+                onChange={this.handleCloneChange}
+              >
+                {validClonePhraseKeys.map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="selected">
+              <span className="title">octave</span>
+              <select value={selectedOctave} onChange={this.handleOctaveChange}>
+                {_.range(3, -2, -1).map(key => (
+                  <option key={key} value={key}>
+                    {key === -1 ? '-' : key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="selected">
+              <span className="title">volume</span>
+              <select value={selectedVolume} onChange={this.handleVolumeChange}>
+                {_.range(7, -1).map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="add-delete">
+              <button
+                className={classNames('button', {
+                  active: mode === '+'
+                })}
+                onClick={() => {
+                  this.setState({
+                    mode: '+'
+                  })
+                }}
+              >
+                +
+              </button>
+              <button
+                disabled={_.isEmpty(phrase.notes)}
+                className={classNames('button', {
+                  active: mode === '-'
+                })}
+                onClick={() => {
+                  this.setState({
+                    mode: '-'
+                  })
+                }}
+              >
+                -
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Phrase)
+export default connect(mapStateToProps, mapDispatchToProps)(Phrase)
