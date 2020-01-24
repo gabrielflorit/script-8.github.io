@@ -45,6 +45,9 @@ class Phrase extends Component {
   constructor(props) {
     super(props)
 
+    this.handleCloneChange = this.handleCloneChange.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleClone = this.handleClone.bind(this)
     this.createSequence = this.createSequence.bind(this)
     this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleSynthChange = this.handleSynthChange.bind(this)
@@ -57,7 +60,59 @@ class Phrase extends Component {
     this.state = {
       isPlaying: false,
       playingIndex: 0,
+      selectedCloneIndex: '',
       mode: '+'
+    }
+  }
+
+  handleCloneChange(e) {
+    this.setState({
+      selectedCloneIndex: e.target.value
+    })
+  }
+
+  getValidClonePhraseKeys() {
+    const { selectedUi, phrases } = this.props
+    const phraseIndex = selectedUi.phrase
+    return Object.entries(phrases)
+      .filter(([key, phrase]) => +key !== +phraseIndex)
+      .map(([key, phrase]) => key)
+  }
+
+  handleClone() {
+    const { selectedUi, phrases, updatePhrase } = this.props
+    const validClonePhraseKeys = this.getValidClonePhraseKeys()
+    const phraseIndex = selectedUi.phrase
+    let { selectedCloneIndex } = this.state
+    if (_.isEmpty(selectedCloneIndex)) {
+      selectedCloneIndex = validClonePhraseKeys[0]
+    }
+
+    if (
+      window.confirm(
+        `Do you really want to clone phrase ${selectedCloneIndex}?`
+      )
+    ) {
+      updatePhrase({
+        phrase: phrases[selectedCloneIndex],
+        index: phraseIndex
+      })
+    }
+  }
+
+  handleClear() {
+    const { updatePhrase, selectedUi } = this.props
+    const phraseIndex = selectedUi.phrase
+
+    if (window.confirm('Do you really want to clear this phrase?')) {
+      updatePhrase({
+        phrase: {
+          tempo: 0,
+          synth: 0,
+          notes: []
+        },
+        index: phraseIndex
+      })
     }
   }
 
@@ -309,8 +364,10 @@ class Phrase extends Component {
     const { selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
-    const { isPlaying, playingIndex, mode } = this.state
+    const { isPlaying, playingIndex, selectedCloneIndex } = this.state
     const phrase = getCurrentPhrase(this.props)
+
+    const validClonePhraseKeys = this.getValidClonePhraseKeys()
 
     return (
       <div className="Phrase two-rows-and-grid">
@@ -402,7 +459,7 @@ class Phrase extends Component {
                           highlight: col === playingIndex && isPlaying,
                           [`volume-${value && value.volume}`]: value
                         })}
-                        onClick={e => this.handleVolumeClick(col)}
+                        onClick={() => this.handleVolumeClick(col)}
                       >
                         {highlighter}
                         <button>{value && value.volume}</button>
@@ -415,10 +472,35 @@ class Phrase extends Component {
           </div>
           <div className="tools">
             <div>
-              <button className="button">clear</button>
+              <button
+                className="button"
+                disabled={_.isEmpty(phrase.notes)}
+                onClick={this.handleClear}
+              >
+                clear
+              </button>
             </div>
-            <div>
-              <button className="button">load</button>
+            <div className="clone">
+              <button
+                disabled={_.isEmpty(validClonePhraseKeys)}
+                className="button"
+                onClick={this.handleClone}
+              >
+                clone
+              </button>
+              <select
+                value={selectedCloneIndex}
+                onChange={this.handleCloneChange}
+              >
+                {validClonePhraseKeys.map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* <div>
+              <button className="button">selected</button>
               <TextInput
                 label="#"
                 value={phrase.synth.toString()}
@@ -449,10 +531,7 @@ class Phrase extends Component {
               >
                 -
               </button>
-            </div>
-            <div>
-              <button className="button">clear</button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -460,7 +539,4 @@ class Phrase extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Phrase)
+export default connect(mapStateToProps, mapDispatchToProps)(Phrase)
