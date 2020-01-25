@@ -25,6 +25,12 @@ const mapStateToProps = ({ chains, phrases, selectedUi }) => ({
   selectedUi
 })
 
+const chainIsEmpty = chain =>
+  !_.intersection(
+    Object.keys(chain),
+    _.range(settings.matrixLength).map(i => i.toString())
+  ).length
+
 const getCurrentChain = ({ chains, selectedUi }) => ({
   tempo: 0,
   ..._.get(chains, [selectedUi.chain], {})
@@ -45,6 +51,11 @@ class Chain extends Component {
   constructor(props) {
     super(props)
 
+    this.keydown = this.keydown.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleSelectedPhraseChange = this.handleSelectedPhraseChange.bind(this)
+    this.handleCloneChange = this.handleCloneChange.bind(this)
+    this.handleClone = this.handleClone.bind(this)
     this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleChainIndexChange = this.handleChainIndexChange.bind(this)
     this.handlePhraseClick = this.handlePhraseClick.bind(this)
@@ -53,8 +64,68 @@ class Chain extends Component {
 
     this.state = {
       isPlaying: false,
-      playingIndex: 0
+      playingIndex: 0,
+      selectedCloneIndex: '',
+      selectedPhraseIndex: '',
+      mode: '+'
     }
+  }
+
+  handleSelectedPhraseChange(e) {
+    this.setState({
+      selectedPhraseIndex: e.target.value
+    })
+    e.currentTarget.blur()
+  }
+
+  handleCloneChange(e) {
+    this.setState({
+      selectedCloneIndex: e.target.value
+    })
+    e.currentTarget.blur()
+  }
+
+  getValidCloneChainKeys() {
+    const { selectedUi, chains } = this.props
+    const chainIndex = selectedUi.chain
+    return Object.keys(chains).filter(key => +key !== +chainIndex)
+  }
+
+  handleClone(e) {
+    const { selectedUi, chains, updateChain } = this.props
+    const validCloneChainKeys = this.getValidCloneChainKeys()
+    const chainIndex = selectedUi.chain
+    let { selectedCloneIndex } = this.state
+    const chain = getCurrentChain(this.props)
+    if (_.isEmpty(selectedCloneIndex)) {
+      selectedCloneIndex = validCloneChainKeys[0]
+    }
+
+    if (
+      chainIsEmpty(chain) ||
+      window.confirm(
+        `Do you really want to clone phrase ${selectedCloneIndex}?`
+      )
+    ) {
+      updateChain({
+        chain: chains[selectedCloneIndex],
+        index: chainIndex
+      })
+    }
+    e.currentTarget.blur()
+  }
+
+  handleClear(e) {
+    const { updateChain, selectedUi } = this.props
+    const chainIndex = selectedUi.chain
+
+    if (window.confirm('Do you really want to clear this chain?')) {
+      updateChain({
+        chain: null,
+        index: chainIndex
+      })
+    }
+    e.currentTarget.blur()
   }
 
   drawCallback(playingIndex) {
@@ -129,6 +200,15 @@ class Chain extends Component {
     )
 
     this.sequence.playbackRate = tempoToPlaybackRate(chain.tempo)
+    window.addEventListener('keydown', this.keydown)
+  }
+
+  keydown(event) {
+    // If we pressed space,
+    if (event.code === 'Space') {
+      // toggle the playbar.
+      this.handlePlay(event)
+    }
   }
 
   handleTempoChange(e) {
@@ -147,7 +227,7 @@ class Chain extends Component {
     }
   }
 
-  handlePlay() {
+  handlePlay(e) {
     const { isPlaying } = this.state
     if (isPlaying) {
       this.sequence.stop()
@@ -159,6 +239,7 @@ class Chain extends Component {
       isPlaying: !isPlaying,
       playingIndex: 0
     })
+    e.currentTarget.blur()
   }
 
   handleChainIndexChange(e) {
@@ -172,8 +253,9 @@ class Chain extends Component {
     }
   }
 
-  handlePhraseClick({ channel, col }) {
+  handlePhraseClick({ channel, col, e }) {
     const { phrases, updateChain, selectedUi } = this.props
+    const { selectedPhraseIndex, mode } = this.state
     const chainIndex = selectedUi.chain
     const chain = getCurrentChain(this.props)
     const newChain = _.cloneDeep(chain)
@@ -186,34 +268,41 @@ class Chain extends Component {
       .map(d => +d)
       .value()
 
-    // If the cell is empty,
-    if (_.isNil(newPhrase)) {
-      // add the last overall phrase.
-      newPhrase = _.last(allPhrases)
+    if (mode === '-') {
+      newPhrase = null
     } else {
-      // If the cell is not empty,
-      // get the phrase index.
-      const newPhraseIndex = _.indexOf(allPhrases, newPhrase)
-
-      // If it shows the first overall phrase,
-      if (newPhraseIndex === 0) {
-        // clear the cell.
-        newPhrase = null
+      // If the cell is empty,
+      if (_.isNil(newPhrase)) {
+        // add the selected one.
+        newPhrase = _.isEmpty(selectedPhraseIndex)
+          ? allPhrases[0]
+          : selectedPhraseIndex
       } else {
-        // Else decrease phrase.
-        newPhrase = allPhrases[newPhraseIndex - 1]
+        // If the cell is not empty,
+        // get the phrase index.
+        const newPhraseIndex = _.indexOf(allPhrases, +newPhrase)
+
+        // If it shows the first overall phrase,
+        if (newPhraseIndex === 0) {
+          // clear the cell.
+          newPhrase = null
+        } else {
+          // Else decrease phrase.
+          newPhrase = allPhrases[newPhraseIndex - 1]
+        }
       }
     }
 
     _.setWith(newChain, [col, channel], newPhrase, Object)
-
     updateChain({ chain: newChain, index: chainIndex })
+    e.currentTarget.blur()
   }
 
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
     synths.forEach(synth => triggerRelease({ synth }))
+    window.removeEventListener('keydown', this.keydown)
   }
 
   componentDidUpdate(prevProps) {
@@ -225,15 +314,25 @@ class Chain extends Component {
     ) {
       this.sequence.playbackRate = tempoToPlaybackRate(newChain.tempo)
     }
+
+    if (!chainIsEmpty(oldChain) && chainIsEmpty(newChain)) {
+      this.setState({ mode: '+' })
+    }
   }
 
   render() {
-    const { selectedUi } = this.props
+    const { selectedUi, phrases } = this.props
     const chainIndex = selectedUi.chain
 
-    const { isPlaying, playingIndex } = this.state
+    const {
+      isPlaying,
+      playingIndex,
+      selectedCloneIndex,
+      selectedPhraseIndex,
+      mode
+    } = this.state
     const chain = getCurrentChain(this.props)
-    const { phrases } = this.props
+    const validCloneChainKeys = this.getValidCloneChainKeys()
 
     return (
       <div className="Chain two-rows-and-grid">
@@ -286,8 +385,8 @@ class Chain extends Component {
                               isPlaying &&
                               !_.isNil(phrase)
                           })}
-                          onClick={() =>
-                            this.handlePhraseClick({ channel, col })
+                          onClick={e =>
+                            this.handlePhraseClick({ channel, col, e })
                           }
                         >
                           {highlighter}
@@ -304,13 +403,80 @@ class Chain extends Component {
               </tbody>
             </table>
           </div>
+          <div className="tools">
+            <div>
+              <button
+                className="button"
+                disabled={chainIsEmpty(chain)}
+                onClick={this.handleClear}
+              >
+                clear
+              </button>
+            </div>
+            <div className="clone">
+              <button
+                disabled={_.isEmpty(validCloneChainKeys)}
+                className="button"
+                onClick={this.handleClone}
+              >
+                clone
+              </button>
+              <select
+                value={selectedCloneIndex}
+                onChange={this.handleCloneChange}
+              >
+                {validCloneChainKeys.map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="selected">
+              <span className="title">phrase</span>
+              <select
+                value={selectedPhraseIndex}
+                onChange={this.handleSelectedPhraseChange}
+              >
+                {Object.keys(phrases).map(key => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="add-delete">
+              <button
+                className={classNames('button', {
+                  active: mode === '+'
+                })}
+                onClick={() => {
+                  this.setState({
+                    mode: '+'
+                  })
+                }}
+              >
+                +
+              </button>
+              <button
+                // disabled={_.isEmpty(phrase.notes)}
+                className={classNames('button', {
+                  active: mode === '-'
+                })}
+                onClick={() => {
+                  this.setState({
+                    mode: '-'
+                  })
+                }}
+              >
+                -
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Chain)
+export default connect(mapStateToProps, mapDispatchToProps)(Chain)

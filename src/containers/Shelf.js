@@ -223,8 +223,6 @@ class Shelf extends Component {
       d => d.user.toLowerCase() === shelfUser
     )
 
-    // TODO: consolidate duplication below.
-
     return (
       <div className="Shelf">
         <div className="main">
@@ -296,7 +294,4 @@ class Shelf extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Shelf)
+export default connect(mapStateToProps, mapDispatchToProps)(Shelf)

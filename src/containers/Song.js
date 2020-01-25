@@ -31,6 +31,12 @@ const getCurrentSong = ({ songs, selectedUi }) => ({
   ..._.get(songs, [selectedUi.song], {})
 })
 
+const songIsEmpty = song =>
+  !_.intersection(
+    Object.keys(song),
+    _.range(settings.matrixLength).map(i => i.toString())
+  ).length
+
 const mapDispatchToProps = dispatch => ({
   selectUi: payload => dispatch(actions.selectUi(payload)),
   updateSong: ({ song, index }) =>
@@ -46,6 +52,8 @@ class Song extends Component {
   constructor(props) {
     super(props)
 
+    this.handleClear = this.handleClear.bind(this)
+    this.keydown = this.keydown.bind(this)
     this.handleTempoChange = this.handleTempoChange.bind(this)
     this.handleSongIndexChange = this.handleSongIndexChange.bind(this)
     this.handleChainClick = this.handleChainClick.bind(this)
@@ -55,6 +63,21 @@ class Song extends Component {
     this.state = {
       isPlaying: false,
       playingIndex: 0
+    }
+  }
+
+  handleClear(e) {
+    e.currentTarget.blur()
+    const { updateSong, selectedUi } = this.props
+    const songIndex = selectedUi.song
+
+    if (window.confirm('Do you really want to clear this song?')) {
+      updateSong({
+        song: {
+          tempo: 0
+        },
+        index: songIndex
+      })
     }
   }
 
@@ -137,6 +160,7 @@ class Song extends Component {
     )
 
     this.sequence.playbackRate = tempoToPlaybackRate(song.tempo)
+    window.addEventListener('keydown', this.keydown)
   }
 
   handleTempoChange(e) {
@@ -149,7 +173,7 @@ class Song extends Component {
       const { updateSong, selectedUi } = this.props
       const song = getCurrentSong(this.props)
       const newSong = { ...song, tempo: value }
-      const songIndex = selectedUi.chain
+      const songIndex = selectedUi.song
       updateSong({ song: newSong, index: songIndex })
     }
   }
@@ -218,10 +242,19 @@ class Song extends Component {
     updateSong({ song: newSong, index: songIndex })
   }
 
+  keydown(event) {
+    // If we pressed space,
+    if (event.code === 'Space') {
+      // toggle the playbar.
+      this.handlePlay()
+    }
+  }
+
   componentWillUnmount() {
     this.drawCallback = () => {}
     this.sequence.stop()
     synths.forEach(synth => triggerRelease({ synth }))
+    window.removeEventListener('keydown', this.keydown)
   }
 
   componentDidUpdate(prevProps) {
@@ -305,13 +338,21 @@ class Song extends Component {
               </tbody>
             </table>
           </div>
+          <div className="tools">
+            <div>
+              <button
+                className="button"
+                disabled={songIsEmpty(song)}
+                onClick={this.handleClear}
+              >
+                clear
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Song)
+export default connect(mapStateToProps, mapDispatchToProps)(Song)

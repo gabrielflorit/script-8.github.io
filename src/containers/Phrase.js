@@ -45,6 +45,7 @@ class Phrase extends Component {
   constructor(props) {
     super(props)
 
+    this.keydown = this.keydown.bind(this)
     this.handleOctaveChange = this.handleOctaveChange.bind(this)
     this.handleVolumeChange = this.handleVolumeChange.bind(this)
     this.handleCloneChange = this.handleCloneChange.bind(this)
@@ -63,29 +64,31 @@ class Phrase extends Component {
       isPlaying: false,
       playingIndex: 0,
       selectedCloneIndex: '',
-      // These are strings because the selects make them strings.
-      selectedOctave: '3',
-      selectedVolume: '7',
+      selectedOctave: 3,
+      selectedVolume: 7,
       mode: '+'
     }
   }
 
   handleOctaveChange(e) {
     this.setState({
-      selectedOctave: e.target.value
+      selectedOctave: +e.target.value
     })
+    e.currentTarget.blur()
   }
 
   handleVolumeChange(e) {
     this.setState({
-      selectedVolume: e.target.value
+      selectedVolume: +e.target.value
     })
+    e.currentTarget.blur()
   }
 
   handleCloneChange(e) {
     this.setState({
       selectedCloneIndex: e.target.value
     })
+    e.currentTarget.blur()
   }
 
   getValidClonePhraseKeys() {
@@ -96,16 +99,18 @@ class Phrase extends Component {
       .map(([key, phrase]) => key)
   }
 
-  handleClone() {
+  handleClone(e) {
     const { selectedUi, phrases, updatePhrase } = this.props
     const validClonePhraseKeys = this.getValidClonePhraseKeys()
     const phraseIndex = selectedUi.phrase
     let { selectedCloneIndex } = this.state
+    const phrase = getCurrentPhrase(this.props)
     if (_.isEmpty(selectedCloneIndex)) {
       selectedCloneIndex = validClonePhraseKeys[0]
     }
 
     if (
+      _.isEmpty(phrase.notes) ||
       window.confirm(
         `Do you really want to clone phrase ${selectedCloneIndex}?`
       )
@@ -115,9 +120,10 @@ class Phrase extends Component {
         index: phraseIndex
       })
     }
+    e.currentTarget.blur()
   }
 
-  handleClear() {
+  handleClear(e) {
     const { updatePhrase, selectedUi } = this.props
     const phraseIndex = selectedUi.phrase
 
@@ -130,6 +136,15 @@ class Phrase extends Component {
         },
         index: phraseIndex
       })
+    }
+    e.currentTarget.blur()
+  }
+
+  keydown(event) {
+    // If we pressed space,
+    if (event.code === 'Space') {
+      // toggle the playbar.
+      this.handlePlay()
     }
   }
 
@@ -145,6 +160,8 @@ class Phrase extends Component {
     const phrase = getCurrentPhrase(this.props)
     this.sequence = this.createSequence()
     this.sequence.playbackRate = tempoToPlaybackRate(phrase.tempo)
+
+    window.addEventListener('keydown', this.keydown)
   }
 
   createSequence() {
@@ -372,6 +389,7 @@ class Phrase extends Component {
     this.sequence.stop()
     const phrase = getCurrentPhrase(this.props)
     triggerRelease({ synth: synths[phrase.synth] })
+    window.removeEventListener('keydown', this.keydown)
   }
 
   componentDidUpdate(prevProps) {
