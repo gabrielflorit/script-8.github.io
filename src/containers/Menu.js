@@ -208,9 +208,10 @@ class Menu extends Component {
     const { gist, game } = this.props
     const title = getGameTitle(game).toUpperCase()
     const gistId = _.get(gist, 'data.id', null)
+    const url = `https://script8.github.io/iframe-v${version}.html`
 
     window
-      .fetch(`https://script8.github.io/iframe-v${version}.html`)
+      .fetch(url)
       .then(response => response.text())
       .then(text => {
         const html = text
@@ -829,7 +830,4 @@ class Menu extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Menu)
+export default connect(mapStateToProps, mapDispatchToProps)(Menu)
