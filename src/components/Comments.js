@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import timeAgo from '../utils/timeAgo.js'
 
+/*
+- Add LOAD to bottom of comments
+
+*/
+
 const DEFAULT_COMMENT = 'Insert your comment here.'
 
 const isCommentValid = value =>
@@ -11,6 +16,10 @@ class Comments extends Component {
   constructor(props) {
     super(props)
 
+    this.deleteComment = this.deleteComment.bind(this)
+    this.createIssueAndComment = this.createIssueAndComment.bind(this)
+    this.fetchIssueAndComments = this.fetchIssueAndComments.bind(this)
+    this.updateUserScopes = this.updateUserScopes.bind(this)
     this.createComment = this.createComment.bind(this)
     this.handleCommentCreate = this.handleCommentCreate.bind(this)
     this.handleCommentDelete = this.handleCommentDelete.bind(this)
@@ -26,31 +35,35 @@ class Comments extends Component {
     }
   }
 
-  async componentDidMount() {
-    const { gameId, token } = this.props
+  async updateUserScopes() {
+    const { token } = this.props
+    const currentLogin = _.get(token, 'user.login', null)
 
-    // Get all the comments for this game.
-    const issueSearchUrl = `https://api.github.com/search/issues?q=${gameId}+repo:script8/script8.github.io`
-
-    // If we have a token, send it along so we can query scopes.
-    const options = token
-      ? {
-          headers: {
-            Authorization: `token ${token.value}`,
-            'Content-Type': 'application/json'
-          }
+    if (currentLogin) {
+      const url = `https://api.github.com/users/${currentLogin}`
+      console.log(`updateUserScopes: fetch ${url}`)
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `token ${token.value}`,
+          'Content-Type': 'application/json'
         }
-      : {}
+      })
 
-    // Fetch the issue.
-    const issueResponse = await fetch(issueSearchUrl, options)
-
-    // If we have the x-oauth header, set the user scopes to state.
-    if (issueResponse.headers.has('x-oauth-scopes')) {
-      this.setState({ scopes: issueResponse.headers.get('x-oauth-scopes') })
+      if (response.headers.has('x-oauth-scopes')) {
+        this.setState({ scopes: response.headers.get('x-oauth-scopes') })
+      }
     }
+  }
 
-    // Extract the comments url.
+  async fetchIssueAndComments() {
+    const { gameId } = this.props
+
+    // Fetch this game's issue.
+    const issueSearchUrl = `https://api.github.com/search/issues?q=${gameId}+repo:script8/script8.github.io`
+    console.log(`componentDidMount: fetch ${issueSearchUrl}.`)
+    const issueResponse = await fetch(issueSearchUrl)
+
+    // Extract the comments url from the issue.
     const issueJson = await issueResponse.json()
     const issue = _.get(issueJson, 'items[0]', null)
     const commentsUrl = _.get(issueJson, 'items[0].comments_url', null)
@@ -58,10 +71,23 @@ class Comments extends Component {
     if (issue && commentsUrl) {
       // If we found an issue, set it on state, fetch its comments and set them on state.
       this.setState({ issue })
+
+      console.log(`componentDidMount: fetch ${commentsUrl}.`)
       const commentsResponse = await fetch(commentsUrl)
       const commentsJson = await commentsResponse.json()
       this.setState({ comments: commentsJson })
     }
+
+    this.updateUserScopes()
+  }
+
+  componentDidMount() {
+    this.fetchIssueAndComments()
+  }
+
+  async createIssueAndComment() {
+    await this.createIssue()
+    await this.createComment()
   }
 
   async createIssue() {
@@ -82,6 +108,7 @@ class Comments extends Component {
       body: JSON.stringify({ title: gameId })
     }
 
+    console.log(`createIssue: fetching ${url}`)
     const response = await fetch(url, options)
     if (response.status === 201) {
       const json = await response.json()
@@ -116,6 +143,7 @@ class Comments extends Component {
     }
 
     // POST the commentTextarea to this issue.
+    console.log(`createComment: fetch ${url}`)
     const response = await fetch(url, options)
     // If we got a 201 status, which means CREATED,
     if (response.status === 201) {
@@ -136,7 +164,7 @@ class Comments extends Component {
     }
   }
 
-  async handleCommentDelete(commentId) {
+  async deleteComment(commentId) {
     const { token } = this.props
 
     this.setState({
@@ -151,6 +179,7 @@ class Comments extends Component {
       }
     }
 
+    console.log(`handleCommentDelete: fetch ${url}`)
     const response = await fetch(url, options)
     if (response.status === 204) {
       this.setState({
@@ -167,17 +196,29 @@ class Comments extends Component {
     }
   }
 
-  async handleCommentCreate() {
+  handleCommentDelete(commentId) {
+    this.deleteComment(commentId)
+  }
+
+  handleCommentCreate() {
     const { issue, commentTextarea, isFetching } = this.state
+
+    console.log({ commentTextarea, isFetching, issue })
 
     // If we have an valid comment and we're not fetching:
     if (!isFetching && isCommentValid(commentTextarea)) {
       // If we don't have an issue, first create it.
       if (!issue) {
         try {
-          await this.createIssue()
-          // Then create the comment.
-          await this.createComment()
+          console.log('creating issue and comment')
+          this.createIssueAndComment()
+        } catch (e) {
+          this.setState({ isFetching: false, error: e.message })
+        }
+      } else {
+        try {
+          console.log('creating comment')
+          this.createComment()
         } catch (e) {
           this.setState({ isFetching: false, error: e.message })
         }
@@ -197,23 +238,12 @@ class Comments extends Component {
     )
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const { token: oldToken } = prevProps
     const { token } = this.props
 
     if (oldToken.value !== token.value) {
-      console.log('We are in componentDidUpdate.')
-
-      const response = await fetch('https://api.github.com', {
-        headers: {
-          Authorization: `token ${token.value}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (response.headers.has('x-oauth-scopes')) {
-        this.setState({ scopes: response.headers.get('x-oauth-scopes') })
-      }
+      this.updateUserScopes()
     }
   }
 
