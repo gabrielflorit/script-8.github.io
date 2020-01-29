@@ -1,3 +1,9 @@
+/*
+TODO
+- on insert new, probably best to run clear() and also stop any music.
+- the cassettes on SHELF don't correctly reflect last updated. fix this.
+*/
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import includes from 'lodash/includes'
@@ -12,11 +18,11 @@ import Phrase from './Phrase.js'
 import Chain from './Chain.js'
 import Song from './Song.js'
 import Tutorial from './Tutorial.js'
-import Run from './Run.js'
 import Code from './Code.js'
 import Help from './Help.js'
 import Shelf from './Shelf.js'
 import Notice from './Notice.js'
+import Comments from '../components/Comments.js'
 import TopBar from '../components/TopBar.js'
 import ErrorBoundary from '../components/ErrorBoundary.js'
 import screenTypes from '../iframe/src/utils/screenTypes.js'
@@ -27,12 +33,14 @@ import '../css/App.css'
 console.log(JSON.stringify(`SCRIPT-8 app v ${version}`, null, 2))
 
 const mapStateToProps = ({
+  gist,
   screen,
   tutorial,
   dismissedNotices,
   token,
   hideMenu
 }) => ({
+  gist,
   screen,
   tutorial,
   dismissedNotices,
@@ -75,7 +83,7 @@ const options = {
   [screenTypes.PHRASE]: () => <Phrase />,
   [screenTypes.CHAIN]: () => <Chain />,
   [screenTypes.SONG]: () => <Song />,
-  [screenTypes.RUN]: () => <Run />,
+  [screenTypes.RUN]: () => null,
   [screenTypes.CODE]: () => <Code />,
   [screenTypes.HELP]: () => <Help />,
   [screenTypes.SHELF]: () => <Shelf />
@@ -110,8 +118,9 @@ class App extends Component {
   }
 
   render() {
-    const { screen, tutorial, hideMenu } = this.props
+    const { screen, tutorial, hideMenu, token, gist } = this.props
 
+    const gameId = _.get(gist, 'data.id', null)
     const showNotice = shouldShowNotice(this.props)
 
     return (
@@ -120,7 +129,7 @@ class App extends Component {
           ref={this.setAppElementRef}
           className={classNames('App', `App-${screen}`, {
             'full-height': includes(
-              [screenTypes.BOOT, screenTypes.RUN, screenTypes.CODE],
+              [screenTypes.BOOT, screenTypes.CODE],
               screen
             )
           })}
@@ -137,13 +146,13 @@ class App extends Component {
             />
           ) : null}
           {showNotice ? <Notice /> : null}
+          {screen === screenTypes.RUN && gameId && (
+            <Comments gameId={gameId} token={token} />
+          )}
         </div>
       </ErrorBoundary>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)
