@@ -15,6 +15,15 @@
   @media screen and (max-width: 26rem)
     width calc(100vmin - 1.5rem)
 
+  .loading
+    visibility hidden
+    text-align right
+    display block
+    &.is-fetching
+      visibility visible
+      color $palette-0
+      animation pulse 0.25s infinite alternate
+
   ul
     margin-bottom 3rem
 
@@ -41,7 +50,7 @@
         text-decoration underline
 
   .comment-box
-    margin 3rem 0
+    margin 1.5rem 0
 
     textarea
       @extend .VT323
@@ -53,15 +62,17 @@
       width calc(100vmin - 3rem)
       @media screen and (max-width: 26rem)
         width calc(100vmin - 1.5rem)
+
+    .ok-button
+      display flex
+      justify-content flex-end
+
     button
-      display block
-      padding 0
+      padding 0 0 0 1.5rem
       text-decoration underline
       font-size $font-medium
-      float right
 
     .error
-      clear both
       color $palette-0
 
   .comment-login-prompt

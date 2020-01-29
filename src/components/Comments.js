@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import _ from 'lodash'
 import timeAgo from '../utils/timeAgo.js'
-
-/*
-- Add LOAD to bottom of comments
-
-*/
 
 const DEFAULT_COMMENT = 'Insert your comment here.'
 
@@ -292,13 +288,15 @@ class Comments extends Component {
               value={commentTextarea}
               onChange={this.handleCommentChange}
             ></textarea>
-            <button
-              className="button"
-              disabled={disableAddCommentButton}
-              onClick={this.handleCommentCreate}
-            >
-              > Add comment
-            </button>
+            <div className="ok-button">
+              <button
+                className="button"
+                disabled={disableAddCommentButton}
+                onClick={this.handleCommentCreate}
+              >
+                > Add comment
+              </button>
+            </div>
             {error && <div className="error">Error: {error}</div>}
           </div>
         )}
@@ -312,6 +310,13 @@ class Comments extends Component {
             </button>
           </div>
         )}
+        <div
+          className={classNames('loading', {
+            'is-fetching': isFetching
+          })}
+        >
+          LOAD
+        </div>
       </div>
     )
   }
