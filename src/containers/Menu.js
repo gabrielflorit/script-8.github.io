@@ -263,7 +263,7 @@ class Menu extends Component {
       clearToken()
     } else {
       window.open(
-        `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist`,
+        `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist public_repo`,
         'popup',
         'width=600,height=700'
       )
@@ -358,7 +358,7 @@ class Menu extends Component {
 
         // and log in.
         window.open(
-          `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist`,
+          `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=gist public_repo`,
           'popup',
           'width=600,height=700'
         )
