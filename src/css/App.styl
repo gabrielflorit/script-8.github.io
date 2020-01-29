@@ -39,6 +39,12 @@ body
   a
     text-decoration underline
 
+h2
+  margin 1.5rem 0
+  padding 0
+  font-size $font-large
+  font-weight normal
+
 .App
   position absolute
   width 100%
@@ -54,7 +60,7 @@ body
     .Output
       display flex
       justify-self center
-      align-self center
+      margin-top calc(1.5rem * 3)
       max-width 128px*4
     .TopBar
       display none
@@ -62,7 +68,9 @@ body
     user-select none
     background $palette-7
     grid-template-rows $font-large auto
+    grid-row-gap calc(1.5rem*2)
     .Output
+      position relative
       display flex
       max-width 128px*4
       justify-self center
