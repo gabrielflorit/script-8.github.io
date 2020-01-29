@@ -293,7 +293,7 @@ class Output extends Component {
       // Validate code before drawing.
       getLintErrors({
         // Don't decorate the code because it does lint disallowed things
-        text: assembleOrderedGame(game, false) 
+        text: assembleOrderedGame(game, false)
       }).then(errors => {
         if (!errors.length) {
           sendPayload()
@@ -328,7 +328,7 @@ class Output extends Component {
           src={iframeUrl}
           title="SCRIPT-8"
           sandbox="allow-scripts allow-same-origin"
-          onBlur={this.handleBlur}
+          // onBlur={this.handleBlur}
           ref={_iframe => {
             this._iframe = _iframe
           }}
@@ -372,7 +372,4 @@ class Output extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Output)
+export default connect(mapStateToProps, mapDispatchToProps)(Output)
