@@ -1,0 +1,71 @@
+.Comments
+
+  margin 1.5rem 0 1.5rem 0
+
+  h2
+    text-transform uppercase
+    color $palette-3
+
+  @extend .VT323
+  font-size $font-medium
+  max-width 128px*4
+  width calc(100vmin - 3rem)
+  justify-self center
+  align-self center
+  @media screen and (max-width: 26rem)
+    width calc(100vmin)
+
+  ul
+
+    li
+      margin 1.5rem 0 0 0
+      color $palette-2
+
+      div.info
+        display flex
+
+        button
+          margin-left auto
+          padding 0
+
+      span.user
+        color $palette-4
+        padding-right 0.5rem
+
+      span.time
+        color $palette-4
+
+      button.delete
+        font-size $font-medium
+        text-decoration underline
+
+  .comment-box
+    margin 3rem 0
+
+    textarea
+      @extend .VT323
+      font-weight normal
+      font-size $font-medium
+      color $palette-0
+      background-color $palette-5
+      max-width 128px*4
+      width calc(100vmin - 3rem)
+      @media screen and (max-width: 26rem)
+        width calc(100vmin)
+    button
+      display block
+      padding 0
+      text-decoration underline
+      font-size $font-medium
+      float right
+
+    .error
+      clear both
+      color $palette-0
+
+  .comment-login-prompt
+    button
+      font-size $font-medium
+      padding 0
+      margin 0
+      text-decoration underline
