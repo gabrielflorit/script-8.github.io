@@ -585,7 +585,7 @@ class Menu extends Component {
                 </button>
               </li>
               <li>
-                {isMine ? (
+                {isMine && false ? (
                   <button
                     onClick={this.onExport}
                     disabled={!canShelve}
