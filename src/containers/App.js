@@ -1,9 +1,3 @@
-/*
-TODO
-- on insert new, probably best to run clear() and also stop any music.
-- the cassettes on SHELF don't correctly reflect last updated. fix this.
-*/
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import includes from 'lodash/includes'

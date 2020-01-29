@@ -1,5 +1,3 @@
-// TODO: if sustain exists, volume should also just show `-`
-
 import * as Tone from 'tone'
 import _ from 'lodash'
 import toLetter from '../toLetter.js'
