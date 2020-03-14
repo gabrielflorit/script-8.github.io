@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "acorn": "^6.1.0",
+    "acorn": "^6.4.1",
     "acorn-walk": "^6.1.1",
     "chokidar": "^2.0.2",
     "chokidar-cli": "^1.2.1",
