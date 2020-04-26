@@ -7,7 +7,7 @@
     - - drawActors(state)
       - Draws `actors` in `state`. Internally this function calls `sprite` per actor. So make sure your actors each have at least `x`, `y`, and `sprite` properties.
     - - draw(state)
-      - This function is called after `draw`. `state` is your game's state.
+      - This function is called after `update`. `state` is your game's state.
 - title: Input
   dl:
     - - ''
