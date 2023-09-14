@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This project is now in archive mode.
+
 # script-8-nextjs
 
 This is a rewrite of [SCRIPT-8](https://script-8.github.io).
